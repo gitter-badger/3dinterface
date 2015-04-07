@@ -6,7 +6,7 @@ var PointerCamera = function() {
     this.theta = Math.PI;
     this.phi = Math.PI;
 
-    this.keyboard = 'undefined';
+    // this.keyboard = undefined;
 
     this.dragging = false;
 
@@ -146,8 +146,6 @@ PointerCamera.prototype.onMouseMove = function(event) {
 
         this.move.x = this.mouse.x - mouse.x;
         this.move.y = this.mouse.y - mouse.y;
-
-        console.log(this.move.x, this.move.y);
     }
 }
 

@@ -9,9 +9,7 @@ var visible = 0;
 
 var loader;
 
-var container_size = new Object();
-container_size.width = 1067;
-container_size.height = 600;
+var container_size = {width: 1067, height: 600};
 
 init();
 animate();
@@ -180,9 +178,10 @@ function show(object) {
 
 function click(event) {
     if (cameras.mainCamera() == cameras.get(0)) {
-        var mouse = Object();
-        mouse.x = ( ( event.clientX - renderer.domElement.offsetLeft ) / renderer.domElement.width ) * 2 - 1;
-        mouse.y = - ( ( event.clientY - renderer.domElement.offsetTop ) / renderer.domElement.height ) * 2 + 1;
+        var mouse = {
+            x:   ((event.clientX - renderer.domElement.offsetLeft) / renderer.domElement.width ) * 2 - 1,
+            y: - ((event.clientY - renderer.domElement.offsetTop)  / renderer.domElement.height) * 2 + 1
+        }
 
         var camera = cameras.mainCamera();
         var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
@@ -198,7 +197,7 @@ function click(event) {
 
             // Looking for cameras
             for (i in intersects) {
-                if (typeof minDistance == 'undefined' || intersects[i].distance < minDistance) {
+                if (minDistance === undefined || intersects[i].distance < minDistance) {
                     // We will not consider a line as clickable
                     if (! (intersects[i].object instanceof THREE.Line)) {
                         minDistance = intersects[i].distance;
@@ -206,8 +205,7 @@ function click(event) {
                     }
                 }
             }
-            if (typeof bestIndex!= 'undefined') {
-                console.log(intersects[bestIndex]);
+            if (bestIndex !== undefined) {
                 cameras.setById(intersects[bestIndex].object.id);
             }
 
@@ -218,9 +216,7 @@ function click(event) {
                 }
             }
         }
-    }
-    else
-    {
+    } else {
         cameras.mainCamera(0);
     }
 
