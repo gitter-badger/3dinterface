@@ -197,7 +197,7 @@ function click(event) {
 
             // Looking for cameras
             for (i in intersects) {
-                if (typeof minDistance === 'undefined' || intersects[i].distance < minDistance) {
+                if (minDistance === undefined || intersects[i].distance < minDistance) {
                     // We will not consider a line as clickable
                     if (! (intersects[i].object instanceof THREE.Line)) {
                         minDistance = intersects[i].distance;
@@ -205,7 +205,7 @@ function click(event) {
                     }
                 }
             }
-            if (typeof bestIndex !== 'undefined') {
+            if (bestIndex !== undefined) {
                 cameras.setById(intersects[bestIndex].object.id);
             }
 

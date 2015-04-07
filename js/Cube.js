@@ -15,8 +15,8 @@ var Cube = function(size, style) {
     // Super constructor call
     Displayable.call(this);
 
-    if (typeof size  === 'undefined') size = 100;
-    if (typeof style === 'undefined') style = {};
+    if (size  === undefined) size = 100;
+    if (style === undefined) style = {};
 
     this.geometry = new THREE.BoxGeometry(size, size, size);
     // this.geometry.computeVertexNormals();
@@ -33,7 +33,7 @@ Cube.prototype.constructor = Cube;
 var Plane = function(size1, size2, style) {
     Displayable.call(this);
 
-    if (typeof style === 'undefined')  style = {};
+    if (style === undefined)  style = {};
 
     this.geometry = new THREE.PlaneBufferGeometry(size1, size2);
     this.material = new THREE.MeshLambertMaterial(style);
