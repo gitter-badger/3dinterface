@@ -1,6 +1,3 @@
-// Initialization
-
-
 // class camera extends THREE.PerspectiveCamera
 var PointerCamera = function() {
     THREE.PerspectiveCamera.apply(this, arguments);
@@ -10,6 +7,11 @@ var PointerCamera = function() {
     this.phi = Math.PI;
 
     this.keyboard = 'undefined';
+
+    this.dragging = false;
+
+    this.mouse = {x: 0, y: 0};
+    this.move = {x: 0, y: 0};
 
 
     // Stuff for rendering
@@ -32,9 +34,15 @@ var PointerCamera = function() {
     var self = this;
     var onKeyDown = function(event) {self.onKeyDown(event);};
     var onKeyUp = function(event) {self.onKeyUp(event);};
+    var onMouseDown = function(event) {self.onMouseDown(event); };
+    var onMouseMove = function(event) {self.onMouseMove(event); };
+    var onMouseUp = function(event) {self.onMouseUp(event); };
 
     document.addEventListener('keydown', onKeyDown, false);
     document.addEventListener('keyup', onKeyUp, false);
+    document.addEventListener('mousedown', onMouseDown, false);
+    document.addEventListener('mousemove', onMouseMove, false);
+    document.addEventListener('mouseup', onMouseUp, false);
 }
 PointerCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 PointerCamera.prototype.constructor = PointerCamera;
@@ -46,6 +54,14 @@ PointerCamera.prototype.update = function() {
     if (this.decreasePhi)   this.phi   -= this.sensitivity;
     if (this.increaseTheta) this.theta += this.sensitivity;
     if (this.decreaseTheta) this.theta -= this.sensitivity;
+
+    if (this.dragging) {
+        this.theta += this.move.x;
+        this.phi   -= this.move.y;
+
+        this.move.x = 0;
+        this.move.y = 0;
+    }
 
     // Clamp phi
     this.phi = Math.min(Math.max(-(Math.PI/2-0.1),this.phi), Math.PI/2-0.1);
@@ -113,6 +129,31 @@ PointerCamera.prototype.onKeyDown = function(event) {
 
 PointerCamera.prototype.onKeyUp = function(event) {
     this.onKeyEvent(event, false);
+}
+
+PointerCamera.prototype.onMouseDown = function(event) {
+    this.mouse.x = ( ( event.clientX - renderer.domElement.offsetLeft ) / renderer.domElement.width ) * 2 - 1;
+    this.mouse.y = - ( ( event.clientY - renderer.domElement.offsetTop ) / renderer.domElement.height ) * 2 + 1;
+
+    this.dragging = true;
+}
+
+PointerCamera.prototype.onMouseMove = function(event) {
+    if (this.dragging) {
+        var mouse = {x: this.mouse.x, y: this.mouse.y};
+        this.mouse.x = ( ( event.clientX - renderer.domElement.offsetLeft ) / renderer.domElement.width ) * 2 - 1;
+        this.mouse.y = - ( ( event.clientY - renderer.domElement.offsetTop ) / renderer.domElement.height ) * 2 + 1;
+
+        this.move.x = this.mouse.x - mouse.x;
+        this.move.y = this.mouse.y - mouse.y;
+
+        console.log(this.move.x, this.move.y);
+    }
+}
+
+PointerCamera.prototype.onMouseUp = function(event) {
+    this.onMouseMove(event);
+    this.dragging = false;
 }
 
 // Static members
