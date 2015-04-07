@@ -5,7 +5,7 @@ var FixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
     THREE.PerspectiveCamera.apply(this, arguments);
 
     // Set Position
-    if (position === undefined) {
+    if (typeof position === 'undefined') {
         this.position = new THREE.Vector3(0,0,5);
     } else {
         this.position.x = position.x;
@@ -14,7 +14,7 @@ var FixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
     }
 
 
-    if (target === undefined)
+    if (typeof target === 'undefined')
         target = new THREE.Vector3(0,0,0);
 
     var direction = target.clone();

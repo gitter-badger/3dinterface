@@ -4,7 +4,7 @@ var CameraContainer = function () {
 }
 
 CameraContainer.prototype.mainCamera = function(id) {
-    if (id === undefined) {
+    if (typeof id === 'undefined') {
         return this.cameras[this.current_camera];
     }
     if (id >= cameras.length || id < 0) {
@@ -37,7 +37,7 @@ CameraContainer.prototype.get = function(i) {
 
 CameraContainer.prototype.getById = function(id) {
     for (var i in this.cameras) {
-        if (this.cameras[i].mesh !== undefined) {
+        if (typeof this.cameras[i].mesh !== 'undefined') {
             if (this.cameras[i].mesh.id == id) {
                 return i;
             }
