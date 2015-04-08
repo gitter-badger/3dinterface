@@ -177,47 +177,47 @@ function show(object) {
 }
 
 function click(event) {
-    if (cameras.mainCamera() == cameras.get(0)) {
-        var mouse = {
-            x:   ((event.clientX - renderer.domElement.offsetLeft) / renderer.domElement.width ) * 2 - 1,
-            y: - ((event.clientY - renderer.domElement.offsetTop)  / renderer.domElement.height) * 2 + 1
-        }
+    var mouse = {
+        x:   ((event.clientX - renderer.domElement.offsetLeft) / renderer.domElement.width ) * 2 - 1,
+        y: - ((event.clientY - renderer.domElement.offsetTop)  / renderer.domElement.height) * 2 + 1
+    }
 
-        var camera = cameras.mainCamera();
-        var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
-        vector.unproject(camera);
+    var camera = cameras.mainCamera();
+    var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+    vector.unproject(camera);
 
-        raycaster.set(camera.position, vector.sub(camera.position).normalize());
+    raycaster.set(camera.position, vector.sub(camera.position).normalize());
 
-        var intersects = raycaster.intersectObjects(scene.children, true);
+    var intersects = raycaster.intersectObjects(scene.children, true);
 
-        if ( intersects.length > 0 ) {
-            var minDistance;
-            var bestIndex;
+    if ( intersects.length > 0 ) {
+        var minDistance;
+        var bestIndex;
 
-            // Looking for cameras
-            for (i in intersects) {
-                if (minDistance === undefined || intersects[i].distance < minDistance) {
-                    // We will not consider a line as clickable
-                    if (! (intersects[i].object instanceof THREE.Line)) {
-                        minDistance = intersects[i].distance;
-                        bestIndex = i;
-                    }
-                }
-            }
-            if (bestIndex !== undefined) {
-                cameras.setById(intersects[bestIndex].object.id);
-            }
-
-            // Looking for objects
-            for (o in objects) {
-                if ( intersects[bestIndex].object.id == objects[o].id) {
-                    cameras.mainCamera(objects[o].seen_by[0]);
+        // Looking for cameras
+        for (i in intersects) {
+            if (minDistance === undefined || intersects[i].distance < minDistance) {
+                // We will not consider a line as clickable
+                if (! (intersects[i].object instanceof THREE.Line)) {
+                    minDistance = intersects[i].distance;
+                    bestIndex = i;
                 }
             }
         }
-    } else {
-        cameras.mainCamera(0);
+
+        if (bestIndex !== undefined) {
+            if (cameras.getById(intersects[bestIndex].object.id) !== undefined) {
+                cameras.get(0).move(cameras.getById(intersects[bestIndex].object.id));
+            }
+        }
+
+        // Looking for objects
+        for (o in objects) {
+            if ( intersects[bestIndex].object.id == objects[o].id) {
+                cameras.get(0).move(cameras.get(objects[o].seen_by[0]));
+                break;
+            }
+        }
     }
 
     // var pos = cameras.mainCamera().position;

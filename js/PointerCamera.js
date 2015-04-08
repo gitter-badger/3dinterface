@@ -7,11 +7,11 @@ var PointerCamera = function() {
     this.phi = Math.PI;
 
     // this.keyboard = undefined;
+    this.moving = false;
 
     this.dragging = false;
-
     this.mouse = {x: 0, y: 0};
-    this.move = {x: 0, y: 0};
+    this.mouseMove = {x: 0, y: 0};
 
 
     // Stuff for rendering
@@ -49,48 +49,83 @@ PointerCamera.prototype.constructor = PointerCamera;
 
 // Update function
 PointerCamera.prototype.update = function() {
-    // Update angles
-    if (this.increasePhi)   this.phi   += this.sensitivity;
-    if (this.decreasePhi)   this.phi   -= this.sensitivity;
-    if (this.increaseTheta) this.theta += this.sensitivity;
-    if (this.decreaseTheta) this.theta -= this.sensitivity;
+    if (this.moving) {
+        var position_direction = Tools.diff(this.new_position, this.position);
+        var target_direction = Tools.diff(this.new_target, this.target);
 
-    if (this.dragging) {
-        this.theta += this.move.x;
-        this.phi   -= this.move.y;
+        this.position.add(Tools.mul(position_direction, 0.05));
+        this.target.add(Tools.mul(target_direction, 0.05));
 
-        this.move.x = 0;
-        this.move.y = 0;
+        if (Tools.norm2(Tools.diff(this.position, this.new_position)) < 1 &&
+            Tools.norm2(Tools.diff(this.target, this.new_target))  < 1){
+            // this.position = this.new_position.clone();
+            // this.target = this.new_target.clone();
+            this.moving = false;
+
+            // Update phi and theta so that return to reality does not hurt
+            var forward = Tools.diff(this.new_target, this.new_position);
+            forward.normalize();
+
+            this.phi = Math.asin(forward.z);
+
+            // Don't know why this line works...
+            this.theta = Math.atan(forward.y / forward.x) + Math.PI;
+
+        }
+
+    } else {
+        // Update angles
+        if (this.increasePhi)   this.phi   += this.sensitivity;
+        if (this.decreasePhi)   this.phi   -= this.sensitivity;
+        if (this.increaseTheta) this.theta += this.sensitivity;
+        if (this.decreaseTheta) this.theta -= this.sensitivity;
+
+        if (this.dragging) {
+            this.theta += this.mouseMove.x;
+            this.phi   -= this.mouseMove.y;
+
+            this.mouseMove.x = 0;
+            this.mouseMove.y = 0;
+        }
+
+        // Clamp phi and theta
+        this.phi = Math.min(Math.max(-(Math.PI/2-0.1),this.phi), Math.PI/2-0.1);
+        this.theta = ((this.theta - Math.PI) % (2*Math.PI)) + Math.PI;
+
+        var delta = 0.1;
+
+        // Update direction
+        this.forward.z = Math.sin(this.phi);
+
+        var cos = Math.cos(this.phi);
+        this.forward.x = cos * Math.cos(this.theta);
+        this.forward.y = cos * Math.sin(this.theta);
+        this.forward.normalize();
+
+        // Update
+        var forward = this.forward.clone();
+        forward.multiplyScalar(400.0 * delta);
+        var left = this.up.clone();
+        left.cross(forward);
+        left.normalize();
+        left.multiplyScalar(400.0 * delta);
+
+        if (this.moveForward)  this.position.add(Tools.mul(forward, this.speed));
+        if (this.moveBackward) this.position.sub(Tools.mul(forward, this.speed));
+        if (this.moveLeft)     this.position.add(Tools.mul(left,    this.speed));
+        if (this.moveRight)    this.position.sub(Tools.mul(left,    this.speed));
+
+        this.target = this.position.clone();
+        this.target.add(forward);
     }
 
-    // Clamp phi
-    this.phi = Math.min(Math.max(-(Math.PI/2-0.1),this.phi), Math.PI/2-0.1);
 
-    var delta = 0.1;
+}
 
-    // Update direction
-    this.forward.z = Math.sin(this.phi);
-
-    var cos = Math.cos(this.phi);
-    this.forward.x = cos * Math.cos(this.theta);
-    this.forward.y = cos * Math.sin(this.theta);
-    this.forward.normalize();
-
-    // Update
-    var forward = this.forward.clone();
-    forward.multiplyScalar(400.0 * delta);
-    var left = this.up.clone();
-    left.cross(forward);
-    left.normalize();
-    left.multiplyScalar(400.0 * delta);
-
-    if (this.moveForward)  this.position.add(Tools.mul(forward, this.speed));
-    if (this.moveBackward) this.position.sub(Tools.mul(forward, this.speed));
-    if (this.moveLeft)     this.position.add(Tools.mul(left, this.speed));
-    if (this.moveRight)    this.position.sub(Tools.mul(left, this.speed));
-
-    this.target = this.position.clone();
-    this.target.add(forward);
+PointerCamera.prototype.move = function(otherCamera) {
+    this.moving = true;
+    this.new_target = otherCamera.target.clone();
+    this.new_position = otherCamera.position.clone();
 }
 
 // Look function
@@ -144,8 +179,8 @@ PointerCamera.prototype.onMouseMove = function(event) {
         this.mouse.x = ( ( event.clientX - renderer.domElement.offsetLeft ) / renderer.domElement.width ) * 2 - 1;
         this.mouse.y = - ( ( event.clientY - renderer.domElement.offsetTop ) / renderer.domElement.height ) * 2 + 1;
 
-        this.move.x = this.mouse.x - mouse.x;
-        this.move.y = this.mouse.y - mouse.y;
+        this.mouseMove.x = this.mouse.x - mouse.x;
+        this.mouseMove.y = this.mouse.y - mouse.y;
     }
 }
 
