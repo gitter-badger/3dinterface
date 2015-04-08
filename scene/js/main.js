@@ -135,11 +135,14 @@ function loadScene() {
                     if (child instanceof THREE.Mesh ) {
                         child.material.color.setHex(colors[i]);
                         child.up = new THREE.Vector3(0,0,1);
-                        child.geometry.computeVertexNormals();
                         child.translateX(positions[i].x);
                         child.translateY(positions[i].y);
                         child.translateZ(positions[i].z);
                         new_id = child.id;
+                        child.geometry = toGeometry(child.geometry);
+                        child.geometry.mergeVertices();
+                        child.geometry.computeFaceNormals();
+                        child.geometry.computeVertexNormals();
                     }
                 });
                 spheres[i] = object;
