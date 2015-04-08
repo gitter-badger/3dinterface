@@ -139,7 +139,7 @@ function loadScene() {
                         child.translateY(positions[i].y);
                         child.translateZ(positions[i].z);
                         new_id = child.id;
-                        child.geometry = toGeometry(child.geometry);
+                        child.geometry = Converter.toGeometry(child.geometry);
                         child.geometry.mergeVertices();
                         child.geometry.computeFaceNormals();
                         child.geometry.computeVertexNormals();

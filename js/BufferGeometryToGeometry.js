@@ -1,5 +1,7 @@
-var toGeometry = function (bg) {
-    // The following snipped is from Mattatz - Masatatsu Nakamura http://mattatz.org
+var Converter = {};
+
+Converter.toGeometry = function (bg) {
+    // The following snippet is from Mattatz - Masatatsu Nakamura http://mattatz.org
     var attrib = bg.getAttribute('position');
     if(attrib === undefined) {
         throw new Error('a given BufferGeometry object must have a position attribute.');
