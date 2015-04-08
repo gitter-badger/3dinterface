@@ -196,7 +196,7 @@ function click(event) {
 
         // Looking for cameras
         for (i in intersects) {
-            if (minDistance === undefined || intersects[i].distance < minDistance) {
+            if ((intersects[i].distance > 50 && minDistance === undefined) || (intersects[i].distance < minDistance )) {
                 // We will not consider a line as clickable
                 if (! (intersects[i].object instanceof THREE.Line)) {
                     minDistance = intersects[i].distance;
