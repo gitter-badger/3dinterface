@@ -68,7 +68,8 @@ PointerCamera.prototype.update = function() {
 
             this.phi = Math.asin(forward.z);
 
-            // Don't know why this line works...
+            // Don't know why this line works... But thanks Thierry-san because
+            // it seems to work...
             this.theta = Math.atan(forward.y / forward.x) + Math.PI;
 
         }
