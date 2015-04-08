@@ -19,7 +19,7 @@ function init() {
     container = document.getElementById('container');
     container.style.height = container_size.height + 'px';
     container.style.width = container_size.width + 'px';
-    renderer = new THREE.WebGLRenderer({alpha:"true"});
+    renderer = new THREE.WebGLRenderer({alpha:true});
     renderer.setSize(container_size.width, container_size.height);
     renderer.shadowMapEnabled = true;
     // renderer.setClearColor(0x000000);
@@ -130,7 +130,7 @@ function loadScene() {
         // I am pretty good
         (function(i) {
             var new_id;
-            loader.load('/data/spheres/' + (i+1) + '.obj', function (object) {
+            loader.load('/data/spheres/' + (2*i+2) + '.obj', function (object) {
                 object.traverse(function (child) {
                     if (child instanceof THREE.Mesh ) {
                         child.material.color.setHex(colors[i]);
@@ -216,7 +216,7 @@ function click(event) {
 
         // Looking for objects
         for (o in objects) {
-            if ( intersects[bestIndex].object.id == objects[o].id) {
+            if ( intersects[bestIndex].object.id == objects[o].id && cameras.get(objects[o].seen_by[0]) !== undefined) {
                 cameras.get(0).move(cameras.get(objects[o].seen_by[0]));
                 break;
             }
