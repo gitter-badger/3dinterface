@@ -63,7 +63,7 @@ PointerCamera.prototype.update = function() {
             this.moving = false;
 
             // Update phi and theta so that return to reality does not hurt
-            var forward = Tools.diff(this.new_target, this.new_position);
+            var forward = Tools.diff(this.target, this.position);
             forward.normalize();
 
             this.phi = Math.asin(forward.z);
