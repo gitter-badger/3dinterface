@@ -87,7 +87,6 @@ function init() {
     window.addEventListener('resize', onWindowResize, false);
 
     container.addEventListener('mousedown', click, false);
-    container.addEventListener('touchstart', click, false);
 
     // Load the scene
     loadScene();

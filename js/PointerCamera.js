@@ -41,11 +41,8 @@ var PointerCamera = function() {
     document.addEventListener('keydown', onKeyDown, false);
     document.addEventListener('keyup', onKeyUp, false);
     document.addEventListener('mousedown', onMouseDown, false);
-    document.addEventListener('touchstart', onMouseDown, false);
     document.addEventListener('mousemove', onMouseMove, false);
-    document.addEventListener('touchmove', onMouseMove, false);
     document.addEventListener('mouseup', onMouseUp, false);
-    document.addEventListener('touchend', onMouseUp, false);
 }
 PointerCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 PointerCamera.prototype.constructor = PointerCamera;
