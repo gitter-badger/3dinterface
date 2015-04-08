@@ -70,7 +70,7 @@ ProgessiveSphere.prototype.addFace = function() {
 
     if (!this.wasFinished && this.finished) {
         this.wasFinished = true;
-        alert("Finished reconstructing the mesh !");
+        console.log("Finished reconstructing the mesh !");
     }
 }
 
