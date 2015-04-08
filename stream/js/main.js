@@ -46,7 +46,7 @@ function init() {
 
     // Load the scene
     loader = new THREE.OBJLoader();
-    sphere = new ProgessiveSphere(loader);
+    sphere = new ProgessiveSphere(loader, global_array.res);
 
     plane = new Plane(1000,1000);
     plane.translate(0,0,-100);

@@ -1,4 +1,4 @@
-var ProgessiveSphere = function(loader) {
+var ProgessiveSphere = function(loader, res) {
     Displayable.call(this);
     this.started = false;
     this.finished = false;
@@ -6,8 +6,11 @@ var ProgessiveSphere = function(loader) {
     this.begin = false;
     this.addedToScene = false;
 
+    if (res === undefined)
+        res = 5;
+
     (function(self) {
-        loader.load('/data/spheres/4.obj', function(object) {
+        loader.load('/data/spheres/' + res + '.obj', function(object) {
             object.traverse(function(child) {
                 if (child instanceof THREE.Mesh) {
                     child.up = new THREE.Vector3(0,0,1);

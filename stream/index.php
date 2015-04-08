@@ -21,7 +21,31 @@
         <script src="/js/CameraContainer.js"></script>
         <script src="/js/Tools.js"></script>
         <script src="/js/ProgressiveSphere.js"></script>
-
+        <?php
+            // Set global variables
+            $default = 5;
+            $res = null;
+            try
+            {
+                if (isset($_GET['res']))
+                {
+                    $res = intval($_GET['res']);
+                    if ($res < 1 || $res > 25)
+                    {
+                        throw new Exception('Variable res not set');
+                    }
+                }
+                else
+                {
+                    throw new Exception('Variable res not set');
+                }
+            }
+            catch (Exception $e)
+            {
+                $res = $default;
+            }
+            echo "<script>var global_array = {res: " . $res . "};</script>\n";
+        ?>
         <script src="js/main.js"></script>
     </body>
 </html>
