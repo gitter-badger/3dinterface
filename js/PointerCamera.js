@@ -57,7 +57,7 @@ PointerCamera.prototype.update = function() {
         this.target.add(Tools.mul(target_direction, 0.05));
 
         if (Tools.norm2(Tools.diff(this.position, this.new_position)) < 1 &&
-            Tools.norm2(Tools.diff(this.target, this.new_target))  < 1){
+            Tools.norm2(Tools.diff(this.target, this.new_target))  < 1) {
             // this.position = this.new_position.clone();
             // this.target = this.new_target.clone();
             this.moving = false;
@@ -68,9 +68,9 @@ PointerCamera.prototype.update = function() {
 
             this.phi = Math.asin(forward.z);
 
-            // Don't know why this line works... But thanks Thierry-san because
-            // it seems to work...
-            this.theta = Math.atan(forward.y / forward.x) + Math.PI;
+            // Don't know why this line works... But thanks Thierry-san and
+            // Bastien because it seems to work...
+            this.theta = Math.atan2(forward.y, forward.x);
 
         }
 
