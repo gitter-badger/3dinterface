@@ -57,10 +57,16 @@ ProgessiveSphere.prototype.addFace = function() {
             ));
 
             // Add the new face
-            this.geometry.faces.push(new THREE.Face3(this.current_face, this.current_face+1, this.current_face+2));
+            this.geometry.faces.push(new THREE.Face3(
+                this.geometry.vertices.length-3,
+                this.geometry.vertices.length-2,
+                this.geometry.vertices.length-1
+            ));
 
             // Update the stuff
+            this.geometry.mergeVertices();
             this.geometry.computeFaceNormals();
+            this.geometry.computeVertexNormals();
             this.current_face += 3;
             this.geometry.elementsNeedUpdate = true;
             this.geometry.normalsNeedUpdate = true;
