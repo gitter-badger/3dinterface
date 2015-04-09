@@ -56,8 +56,8 @@ PointerCamera.prototype.update = function() {
         this.position.add(Tools.mul(position_direction, 0.05));
         this.target.add(Tools.mul(target_direction, 0.05));
 
-        if (Tools.norm2(Tools.diff(this.position, this.new_position)) < 1 &&
-            Tools.norm2(Tools.diff(this.target, this.new_target))  < 1) {
+        if (Tools.norm2(Tools.diff(this.position, this.new_position)) < 0.01 &&
+            Tools.norm2(Tools.diff(this.target, this.new_target))  < 0.01) {
             // this.position = this.new_position.clone();
             // this.target = this.new_target.clone();
             this.moving = false;
