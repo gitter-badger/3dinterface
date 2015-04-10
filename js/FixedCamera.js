@@ -13,7 +13,6 @@ var FixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
         this.position.z = position.z;
     }
 
-
     if (target === undefined)
         target = new THREE.Vector3(0,0,0);
 
@@ -22,7 +21,7 @@ var FixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
     direction.normalize();
 
     this.target = this.position.clone();
-    this.target.add(direction);
+    this.target.add(Tools.mul(direction,10));
     this.up = new THREE.Vector3(0,0,1);
 
     // Compute corners
