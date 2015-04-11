@@ -6,6 +6,7 @@
         <?php include("header.php"); ?>
         <?php include("nav.php"); ?>
         <section>
+            <h2>Index</h2>
             <ul>
                 <li><a href="/bouncing/">A bouncing cube that jumps when you click on it</a></li>
                 <li>

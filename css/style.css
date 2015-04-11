@@ -1,0 +1,44 @@
+body {
+    font-family: Ubuntu;
+    margin-left: auto;
+    margin-right: auto;
+    width: 1024px;
+}
+
+header {
+    text-align: center;
+}
+
+nav {
+    margin-bottom: 25px;
+}
+
+nav ul {
+    list-style-type: None;
+    text-align: center;
+}
+
+nav ul li {
+    display: inline-block;
+    width: 18%;
+}
+
+nav a {
+    color: black;
+    text-decoration: None;
+    font-weight: normal;
+}
+
+nav a:hover {
+    font-weight: bold;
+}
+
+nav a:visited {
+}
+
+section {
+}
+
+#container {
+    position: static;
+}
