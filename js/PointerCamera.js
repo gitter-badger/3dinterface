@@ -2,6 +2,11 @@
 var PointerCamera = function() {
     THREE.PerspectiveCamera.apply(this, arguments);
 
+    if (arguments[4] === undefined)
+        listenerTarget = document;
+    else
+        listenerTarget = arguments[4];
+
     // Set Position
     this.theta = Math.PI;
     this.phi = Math.PI;
@@ -40,9 +45,12 @@ var PointerCamera = function() {
 
     document.addEventListener('keydown', onKeyDown, false);
     document.addEventListener('keyup', onKeyUp, false);
-    document.addEventListener('mousedown', onMouseDown, false);
-    document.addEventListener('mousemove', onMouseMove, false);
-    document.addEventListener('mouseup', onMouseUp, false);
+    listenerTarget.addEventListener('mousedown', onMouseDown, false);
+    listenerTarget.addEventListener('mousemove', onMouseMove, false);
+    listenerTarget.addEventListener('mouseup', onMouseUp, false);
+    listenerTarget.addEventListener('mouseout', onMouseUp, false);
+
+    console.log(arguments[3]);
 }
 PointerCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 PointerCamera.prototype.constructor = PointerCamera;

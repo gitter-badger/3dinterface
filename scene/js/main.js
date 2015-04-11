@@ -39,7 +39,7 @@ function init() {
     scene.add(ambient_light);
 
     // on initialise la camera que l’on place ensuite sur la scène
-    var camera1 = new PointerCamera(50, container_size.width / container_size.height, 1, 100000);
+    var camera1 = new PointerCamera(50, container_size.width / container_size.height, 1, 100000, container);
 
     var camera2 = new FixedCamera(50,
         container_size.width / container_size.height,
