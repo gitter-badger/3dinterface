@@ -42,7 +42,7 @@ def main():
     body.add_child(jsIncludes)
     jsIncludes.add_child(mainJs)
 
-    page.print()
+    page.print({'res' : res})
 
 if __name__ == '__main__':
     main()

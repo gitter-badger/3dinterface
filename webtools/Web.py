@@ -40,7 +40,7 @@ class Element:
         self.children.append(child)
 
     def print(self, format = {}):
-        self.open()
+        self.open(format)
         for i in self.children:
                 i.print(format)
-        self.close()
+        self.close(format)
