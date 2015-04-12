@@ -1,1 +1,12 @@
-php_value include_path 'include'
+AddHandler cgi-script .py
+Options +ExecCGI
+
+DirectoryIndex index.py
+
+ErrorDocument 403 /errors/403/
+ErrorDocument 404 /errors/404/
+
+<Files "index.html">
+    Order Allow,Deny
+    Deny from all
+</Files>
