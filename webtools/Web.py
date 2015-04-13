@@ -44,3 +44,18 @@ class Element:
         for i in self.children:
                 i.print(format)
         self.close(format)
+
+def render(filename):
+    print('Content-type: text/html')
+    print()
+
+    page = Element(ROOT_DIR + 'templates/page.html')
+    head = Element(ROOT_DIR + 'templates/head.html')
+    body = Element(ROOT_DIR + 'templates/body.html')
+    content = Element(filename)
+
+    page.add_child(head)
+    page.add_child(body)
+    body.add_child(content)
+
+    page.print()
