@@ -6,6 +6,7 @@ var objects = [];
 var cameras = new CameraContainer();
 var spheres = new Array(mesh_number);
 var visible = 0;
+var stats;
 
 var loader;
 
@@ -23,11 +24,19 @@ function init() {
     renderer.setSize(container_size.width, container_size.height);
     renderer.shadowMapEnabled = true;
     // renderer.setClearColor(0x000000);
-    document.getElementById('container').appendChild(renderer.domElement);
 
     // on initialise la scène
     scene = new THREE.Scene();
     raycaster = new THREE.Raycaster();
+
+    // Create stats counter
+    stats = new Stats();
+    stats.setMode(0);
+
+    stats.domElement.style.position = 'absolute';
+    stats.domElement.style.cssFloat = "top-left";
+    container.appendChild( stats.domElement );
+    container.appendChild(renderer.domElement);
 
     // init light
     var directional_light = new THREE.DirectionalLight(0x999999);
@@ -157,10 +166,12 @@ function animate() {
     // on appelle la fonction animate() récursivement à chaque frame
     requestAnimationFrame(animate);
 
+    stats.begin();
     cameras.update();
     cameras.look();
 
     renderer.render(scene, cameras.mainCamera());
+    stats.end();
 }
 
 function onWindowResize() {
