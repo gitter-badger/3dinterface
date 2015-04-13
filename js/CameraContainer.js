@@ -58,3 +58,7 @@ CameraContainer.prototype.nextCamera = function() {
         this.current_camera%=this.cameras.length;
     }
 }
+
+CameraContainer.prototype.map = function(callback) {
+    this.cameras.map(callback);
+}

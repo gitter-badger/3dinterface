@@ -105,3 +105,8 @@ FixedCamera.prototype.addToScene = function(scene) {
     scene.add(this.mesh);
     scene.add(this.line);
 }
+
+FixedCamera.prototype.traverse = function(callback) {
+    callback(this.mesh);
+    callback(this.line);
+}
