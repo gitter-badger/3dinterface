@@ -167,7 +167,7 @@ function animate() {
     requestAnimationFrame(animate);
 
     stats.begin();
-    cameras.update();
+    cameras.update(cameras.mainCamera().position);
     cameras.look();
 
     renderer.render(scene, cameras.mainCamera());
@@ -204,9 +204,6 @@ function click(event) {
 
     var intersects = raycaster.intersectObjects(scene.children, true);
 
-    // Re-show all cameras
-    cameras.map(function(elt) { show(elt); });
-
     if ( intersects.length > 0 ) {
         var minDistance;
         var bestIndex;
@@ -225,7 +222,6 @@ function click(event) {
         if (bestIndex !== undefined) {
             if (cameras.getById(intersects[bestIndex].object.id) !== undefined) {
                 var new_camera = cameras.getById(intersects[bestIndex].object.id);
-                hide(new_camera)
                 cameras.get(0).move(new_camera);
             }
         }
@@ -234,7 +230,6 @@ function click(event) {
         for (o in objects) {
             if ( intersects[bestIndex].object.id == objects[o].id && cameras.get(objects[o].seen_by[0]) !== undefined) {
                 var new_camera = cameras.get(objects[o].seen_by[0]);
-                hide(new_camera);
                 cameras.get(0).move(new_camera);
                 break;
             }

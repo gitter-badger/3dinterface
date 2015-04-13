@@ -91,8 +91,19 @@ FixedCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 FixedCamera.prototype.constructor = FixedCamera;
 
 // Update function
-FixedCamera.prototype.update = function() {
+FixedCamera.prototype.update = function(position) {
+    // Compute distance between center of camera and position
+    dist = Tools.norm2(Tools.diff(position, this.position));
 
+    var low_bound = 500;
+    var high_bound = 500000;
+
+    if (dist < 500)
+        this.mesh.material.opacity = 0;
+    else if (dist > 500000)
+        this.mesh.material.opacity = 0.5;
+    else
+        this.mesh.material.opacity = (dist - 50)*0.5/(high_bound - low_bound);
 }
 
 // Look function

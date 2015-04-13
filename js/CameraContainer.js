@@ -23,8 +23,8 @@ CameraContainer.prototype.look = function() {
     this.cameras[this.current_camera].look();
 }
 
-CameraContainer.prototype.update = function() {
-    this.cameras[this.current_camera].update();
+CameraContainer.prototype.update = function(position) {
+    this.cameras.map(function (elt) { elt.update(position); });
 }
 
 CameraContainer.prototype.push = function(camera) {
