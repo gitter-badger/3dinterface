@@ -37,13 +37,8 @@ var Plane = function(size1, size2, style) {
 
     this.geometry = new THREE.PlaneBufferGeometry(size1, size2);
     this.material = new THREE.MeshLambertMaterial(style);
-    this.material.side = THREE.FrontSide;
-
-    this.materialBack = new THREE.MeshLambertMaterial(style);
-    this.materialBack.side = THREE.BackSide;
-
+    this.material.side = THREE.DoubleSide;
     this.mesh = new THREE.Mesh(this.geometry, this.material);
-    this.meshBack = new THREE.Mesh(this.geometry, this.materialBack);
 
     this.mesh.receiveShadow = true;
 }
@@ -52,5 +47,4 @@ Plane.prototype.constructor = Plane;
 
 Plane.prototype.addToScene = function(scene) {
     scene.add(this.mesh);
-    scene.add(this.meshBack);
 }

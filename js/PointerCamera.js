@@ -23,7 +23,7 @@ var PointerCamera = function() {
     this.position = new THREE.Vector3();
     this.forward = new THREE.Vector3();
     this.left = new THREE.Vector3();
-    this.up = new THREE.Vector3(0,0,1);
+    // this.up = new THREE.Vector3(0,0,1);
     this.target = new THREE.Vector3(0,1,0);
 
     // Stuff for events
@@ -104,11 +104,11 @@ PointerCamera.prototype.update = function() {
         var delta = 0.1;
 
         // Update direction
-        this.forward.z = Math.sin(this.phi);
+        this.forward.y = Math.sin(this.phi);
 
         var cos = Math.cos(this.phi);
-        this.forward.x = cos * Math.cos(this.theta);
-        this.forward.y = cos * Math.sin(this.theta);
+        this.forward.z = cos * Math.cos(this.theta);
+        this.forward.x = cos * Math.sin(this.theta);
         this.forward.normalize();
 
         // Update

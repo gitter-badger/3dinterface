@@ -23,7 +23,7 @@ function init() {
     renderer = new THREE.WebGLRenderer({alpha:true});
     renderer.setSize(container_size.width, container_size.height);
     renderer.shadowMapEnabled = true;
-    // renderer.setClearColor(0x000000);
+    renderer.setClearColor(0x000000);
 
     // on initialise la scène
     scene = new THREE.Scene();
@@ -39,47 +39,70 @@ function init() {
     container.appendChild(renderer.domElement);
 
     // init light
-    var directional_light = new THREE.DirectionalLight(0x999999);
-    directional_light.position.set(1, 0.5, 1).normalize();
-    directional_light.castShadow = true;
-    scene.add(directional_light);
+    // var directional_light = new THREE.DirectionalLight(0x999999);
+    // directional_light.position.set(1, 0.5, 1).normalize();
+    // directional_light.castShadow = true;
+    // scene.add(directional_light);
 
-    var ambient_light = new THREE.AmbientLight(0x333333);
+    var ambient_light = new THREE.AmbientLight(0xffffff);
     scene.add(ambient_light);
 
     // on initialise la camera que l’on place ensuite sur la scène
-    var camera1 = new PointerCamera(50, container_size.width / container_size.height, 1, 100000, container);
-
-    var camera2 = new FixedCamera(50,
-        container_size.width / container_size.height,
-        1, 100000,
-        new THREE.Vector3(707,-247,603),
-        new THREE.Vector3(683,-269,580)
-    );
-
-    var camera3 = new FixedCamera(50,
-        container_size.width / container_size.height,
-        1, 100000,
-        new THREE.Vector3(727,165,310),
-        new THREE.Vector3(693,173,291)
-    );
-
-    var camera4 = new FixedCamera(50,
-        container_size.width / container_size.height,
-        1, 100000,
-        new THREE.Vector3(-67,-105,306),
-        new THREE.Vector3(-103,-120,314)
-    );
-
+    var camera1 = new PointerCamera(50, container_size.width / container_size.height, 0.01, 100000, container);
+    camera1.speed = 0.001;
     scene.add(camera1);
     cameras.push(camera1);
-    cameras.push(camera2);
-    cameras.push(camera3);
-    cameras.push(camera4);
 
-    camera2.addToScene(scene);
-    camera3.addToScene(scene);
-    camera4.addToScene(scene);
+    var loader = new THREE.OBJMTLLoader();
+
+    var onProgress = function ( xhr ) {
+        if ( xhr.lengthComputable ) {
+            var percentComplete = xhr.loaded / xhr.total * 100;
+            console.log( Math.round(percentComplete, 2) + '% downloaded' );
+        }
+    };
+
+    var onError = function ( xhr ) {
+    };
+
+    // THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
+    var loader = new THREE.OBJMTLLoader();
+    // loader.load( '/data/castle/princess peaches castle (outside).obj',
+    //              '/data/castle/princess peaches castle (outside).mtl',
+    loader.load( '/data/first/Floor 1.obj',
+                 '/data/first/Floor 1.mtl',
+    function ( object ) {
+        object.position.z -= 10.9;
+        object.position.y += 0.555;
+        object.position.x += 3.23;
+
+        var theta = 0.27;
+        // object.rotation.x = -Math.PI/2;
+        object.rotation.y = Math.PI - theta;
+        // object.rotation.z = - Math.PI/2;
+
+        object.up = new THREE.Vector3(0,0,1);
+        scene.add(object);
+        object.traverse(function (object) {
+            if (object instanceof THREE.Material){
+                object.material.transparent = true;
+            }
+        });
+    }, onProgress, onError );
+
+    loader.load( '/data/castle/princess peaches castle (outside).obj',
+                 '/data/castle/princess peaches castle (outside).mtl',
+    function ( object ) {
+        // object.rotation.y = Math.PI/2;
+        // object.rotation.z = Math.PI/2;
+        object.up = new THREE.Vector3(0,0,1);
+        scene.add(object);
+        object.traverse(function (object) {
+            if (object instanceof THREE.Material){
+                object.material.transparent = true;
+            }
+        });
+    }, onProgress, onError );
 
     // var camera3 = new FixedCamera(
     //         50,
@@ -100,66 +123,11 @@ function init() {
     // Load the scene
     loadScene();
 
-    plane = new Plane(1000,1000);
-    plane.translate(0,0,-100);
-    plane.addToScene(scene);
 
 }
 
 function loadScene() {
-    var positions = [
-        new THREE.Vector3(139.4026786273838,135.5184946130355,398.44068539970607),
-        new THREE.Vector3(-435.43466612542625,-213.42817928744614,357.9683852860272),
-        new THREE.Vector3(331.55730402813379,-554.75051838788778,327.9545043861335),
-        new THREE.Vector3(337.83563114154583,494.02776032947725,91.40149126173162),
-        new THREE.Vector3(-483.7218395537484,26.07460345877575,16.1503626453437)
-    ];
 
-    var colors = [
-        0x5bf9ef,
-        0xec5e15,
-        0xcac518,
-        0x39c8d6,
-        0x04da72
-    ];
-
-    var seen_by = [
-        [],
-        [3],
-        [1],
-        [2],
-        [2]
-    ];
-
-    var mesh_number = positions.length;
-
-    loader = new THREE.OBJLoader();
-    for (var i = 0; i < mesh_number; i++) {
-        // Capture of i
-        // I am pretty good
-        (function(i) {
-            var new_id;
-            loader.load('/data/spheres/' + (2*i+2) + '.obj', function (object) {
-                object.traverse(function (child) {
-                    if (child instanceof THREE.Mesh ) {
-                        child.material.color.setHex(colors[i]);
-                        child.up = new THREE.Vector3(0,0,1);
-                        child.translateX(positions[i].x);
-                        child.translateY(positions[i].y);
-                        child.translateZ(positions[i].z);
-                        new_id = child.id;
-                        child.geometry = Converter.toGeometry(child.geometry);
-                        child.geometry.mergeVertices();
-                        child.geometry.computeFaceNormals();
-                        child.geometry.computeVertexNormals();
-                    }
-                });
-                spheres[i] = object;
-                scene.add(object);
-                objects.push({obj: object, seen_by: seen_by[i], id: new_id});
-            });
-        })(i);
-    }
 }
 
 function animate() {
