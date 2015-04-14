@@ -23,7 +23,7 @@ function init() {
     renderer = new THREE.WebGLRenderer({alpha:true});
     renderer.setSize(container_size.width, container_size.height);
     renderer.shadowMapEnabled = true;
-    renderer.setClearColor(0x000000);
+    renderer.setClearColor(0x87ceeb);
 
     // on initialise la scène
     scene = new THREE.Scene();
