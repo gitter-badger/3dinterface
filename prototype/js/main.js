@@ -68,8 +68,22 @@ function init() {
 
     // THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
     var loader = new THREE.OBJMTLLoader();
-    // loader.load( '/data/castle/princess peaches castle (outside).obj',
-    //              '/data/castle/princess peaches castle (outside).mtl',
+        loader.load( '/data/castle/princess peaches castle (outside).obj',
+                 '/data/castle/princess peaches castle (outside).mtl',
+    function ( object ) {
+        object.up = new THREE.Vector3(0,0,1);
+        scene.add(object);
+        object.traverse(function (object) {
+            if (object instanceof THREE.Mesh) {
+                object.geometry.mergeVertices();
+                if (object.material.name === 'Material.103_princess_peaches_cast') {
+                    console.log(object.material.name);
+                    object.material.transparent = true;
+                }
+            }
+        });
+    }, onProgress, onError );
+
     loader.load( '/data/first/Floor 1.obj',
                  '/data/first/Floor 1.mtl',
     function ( object ) {
@@ -78,9 +92,7 @@ function init() {
         object.position.x += 3.23;
 
         var theta = 0.27;
-        // object.rotation.x = -Math.PI/2;
         object.rotation.y = Math.PI - theta;
-        // object.rotation.z = - Math.PI/2;
 
         object.up = new THREE.Vector3(0,0,1);
         scene.add(object);
@@ -96,23 +108,6 @@ function init() {
         });
     }, onProgress, onError );
 
-    loader.load( '/data/castle/princess peaches castle (outside).obj',
-                 '/data/castle/princess peaches castle (outside).mtl',
-    function ( object ) {
-        // object.rotation.y = Math.PI/2;
-        // object.rotation.z = Math.PI/2;
-        object.up = new THREE.Vector3(0,0,1);
-        scene.add(object);
-        object.traverse(function (object) {
-            if (object instanceof THREE.Mesh) {
-                object.geometry.mergeVertices();
-                if (object.material.name === 'Material.103_princess_peaches_cast') {
-                    console.log(object.material.name);
-                    object.material.transparent = true;
-                }
-            }
-        });
-    }, onProgress, onError );
 
     // var camera3 = new FixedCamera(
     //         50,
