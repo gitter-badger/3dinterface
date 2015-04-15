@@ -49,8 +49,6 @@ var PointerCamera = function() {
     listenerTarget.addEventListener('mousemove', onMouseMove, false);
     listenerTarget.addEventListener('mouseup', onMouseUp, false);
     listenerTarget.addEventListener('mouseout', onMouseUp, false);
-
-    console.log(arguments[3]);
 }
 PointerCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 PointerCamera.prototype.constructor = PointerCamera;

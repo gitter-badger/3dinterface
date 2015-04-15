@@ -24,6 +24,7 @@ function init() {
     renderer.setSize(container_size.width, container_size.height);
     renderer.shadowMapEnabled = true;
     renderer.setClearColor(0x87ceeb);
+    renderer.sortObjects = false
 
     // on initialise la scène
     scene = new THREE.Scene();
@@ -85,7 +86,12 @@ function init() {
         scene.add(object);
         object.traverse(function (object) {
             if (object instanceof THREE.Material){
+                console.log(object.material.transparent)
                 object.material.transparent = true;
+            }
+            if (object instanceof THREE.Mesh) {
+                console.log(object.geometry.vertices.length);
+                object.geometry.mergeVertices();
             }
         });
     }, onProgress, onError );
@@ -98,8 +104,12 @@ function init() {
         object.up = new THREE.Vector3(0,0,1);
         scene.add(object);
         object.traverse(function (object) {
-            if (object instanceof THREE.Material){
-                object.material.transparent = true;
+            if (object instanceof THREE.Mesh) {
+                object.geometry.mergeVertices();
+                if (object.material.name === 'Material.103_princess_peaches_cast') {
+                    console.log(object.material.name);
+                    object.material.transparent = true;
+                }
             }
         });
     }, onProgress, onError );
