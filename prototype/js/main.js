@@ -76,6 +76,7 @@ function init() {
         object.traverse(function (object) {
             if (object instanceof THREE.Mesh) {
                 object.geometry.mergeVertices();
+                object.material.side = THREE.DoubleSide;
                 if (object.material.name === 'Material.103_princess_peaches_cast') {
                     console.log(object.material.name);
                     object.material.transparent = true;
@@ -97,13 +98,14 @@ function init() {
         object.up = new THREE.Vector3(0,0,1);
         scene.add(object);
         object.traverse(function (object) {
-            if (object instanceof THREE.Material){
-                console.log(object.material.transparent)
-                object.material.transparent = true;
-            }
             if (object instanceof THREE.Mesh) {
+                object.material.side = THREE.DoubleSide;
                 console.log(object.geometry.vertices.length);
                 object.geometry.mergeVertices();
+                if (object.material.name === 'Material.054_777F0E0B_c.bmp' ||
+                    object.material.name === 'Material.061_5C3492AB_c.bmp'   ) {
+                    object.material.transparent = true;
+                }
             }
         });
     }, onProgress, onError );
