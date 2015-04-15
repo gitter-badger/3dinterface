@@ -158,10 +158,10 @@ PointerCamera.prototype.onKeyEvent = function(event, toSet) {
         // case 40: case 83: this.moveBackward = toSet; break; // down / s
         // case 39: case 68: this.moveRight    = toSet; break; // right / d
 
-        case 104: this.increasePhi   = toSet; break; // 8 Up for angle
-        case 98:  this.decreasePhi   = toSet; break; // 2 Down for angle
-        case 100: this.increaseTheta = toSet; break; // 4 Left for angle
-        case 102: this.decreaseTheta = toSet; break; // 6 Right for angle
+        case 73: case 104: this.increasePhi   = toSet; break; // 8 Up for angle
+        case 75: case 98:  this.decreasePhi   = toSet; break; // 2 Down for angle
+        case 74: case 100: this.increaseTheta = toSet; break; // 4 Left for angle
+        case 76: case 102: this.decreaseTheta = toSet; break; // 6 Right for angle
     }
 }
 
