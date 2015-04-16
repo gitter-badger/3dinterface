@@ -21,8 +21,8 @@ var FixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
     direction.normalize();
 
     this.target = this.position.clone();
-    this.target.add(Tools.mul(direction,10));
-    this.up = new THREE.Vector3(0,0,1);
+    this.target.add(Tools.mul(direction,20));
+    // this.up = new THREE.Vector3(0,0,1);
 
     // Compute corners
 
@@ -30,55 +30,66 @@ var FixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
 
     var geometry = new THREE.Geometry();
 
+    var position = this.position.clone();
     var left = Tools.cross(direction, this.up);
     var other = Tools.cross(direction, left);
+
+    position.sub(direction);
+
     left.normalize();
     other.normalize();
-    left = Tools.mul(left, 100);
-    other  = Tools.mul(other, 100);
+    left = Tools.mul(left, 0.2);
+    other  = Tools.mul(other, 0.2);
 
-    geometry.vertices.push(Tools.sum(Tools.sum(this.position, left), other),
-                           Tools.diff(Tools.sum(this.position, other),left),
-                           Tools.diff(Tools.diff(this.position, left),other),
-                           Tools.sum(Tools.diff(this.position, other), left)
+    geometry.vertices.push(Tools.sum( Tools.sum( position, left),  other),
+                           Tools.diff(Tools.sum( position, other), left),
+                           Tools.diff(Tools.diff(position, left),  other),
+                           Tools.sum( Tools.diff(position, other), left),
+                           Tools.sum(position, direction)
                           );
 
     geometry.faces.push(new THREE.Face3(0,1,2), // new THREE.Face3(0,2,1),
-                        new THREE.Face3(0,2,3)  // new THREE.Face3(0,3,2)
+                        new THREE.Face3(0,2,3),  // new THREE.Face3(0,3,2)
+                        new THREE.Face3(4,1,2),
+                        new THREE.Face3(4,0,1),
+                        new THREE.Face3(4,3,0),
+                        new THREE.Face3(4,2,3)
                         );
 
-    (function(self, direction, left, other) {
-        var material = new THREE.LineBasicMaterial({ color: '0x000000'});
+    geometry.computeFaceNormals();
+
+    (function(self, direction, left, other, position) {
+        var material = new THREE.LineBasicMaterial({ color: '0x000000', transparent: true});
         var geometry = new THREE.Geometry();
-        var direction = Tools.mul(direction, -200);
-        var target = Tools.sum(self.position, direction);
-        // geometry.vertices.push(self.position, target);
+        // var direction = Tools.mul(direction, 1);
+        var target = Tools.sum(position, direction);
+        // geometry.vertices.push(position, target);
         geometry.vertices.push(
-            Tools.sum(Tools.sum(self.position, left), other),
-            Tools.diff(Tools.sum(self.position, other),left),
-            Tools.diff(Tools.diff(self.position, left),other),
-            Tools.sum(Tools.diff(self.position, other), left),
-            Tools.sum(Tools.sum(self.position, left), other),
-            Tools.sum(Tools.diff(self.position, other), left),
+            Tools.sum(Tools.sum(position, left), other),
+            Tools.diff(Tools.sum(position, other),left),
+            Tools.diff(Tools.diff(position, left),other),
+            Tools.sum(Tools.diff(position, other), left),
+            Tools.sum(Tools.sum(position, left), other),
+            Tools.sum(Tools.diff(position, other), left),
 
-            Tools.sum(self.position, direction),
-            Tools.sum(Tools.sum(self.position, left), other),
+            Tools.sum(position, direction),
+            Tools.sum(Tools.sum(position, left), other),
 
-            Tools.sum(self.position, direction),
-            Tools.diff(Tools.sum(self.position, other),left),
+            Tools.sum(position, direction),
+            Tools.diff(Tools.sum(position, other),left),
 
-            Tools.sum(self.position, direction),
-            Tools.diff(Tools.diff(self.position, left),other),
+            Tools.sum(position, direction),
+            Tools.diff(Tools.diff(position, left),other),
 
-            Tools.sum(self.position, direction),
-            Tools.sum(Tools.diff(self.position, other), left)
+            Tools.sum(position, direction),
+            Tools.sum(Tools.diff(position, other), left)
         );
 
-        self.line = new THREE.Line(geometry, material);
-    })(this, direction, left, other);
+        self.border = new THREE.Line(geometry, material);
+    })(this, direction, left, other, position);
 
 
-    var material = new THREE.MeshBasicMaterial({
+    var material = new THREE.MeshLambertMaterial({
         color : 0xff0000,
         transparent : true,
         opacity : 0.5,
@@ -95,15 +106,25 @@ FixedCamera.prototype.update = function(position) {
     // Compute distance between center of camera and position
     dist = Tools.norm2(Tools.diff(position, this.position));
 
-    var low_bound = 500;
-    var high_bound = 500000;
+    var low_bound = 1;
+    var high_bound = 5;
+    var new_value;
 
-    if (dist < 500)
-        this.mesh.material.opacity = 0;
-    else if (dist > 500000)
-        this.mesh.material.opacity = 0.5;
-    else
-        this.mesh.material.opacity = (dist - 50)*0.5/(high_bound - low_bound);
+    if (dist < low_bound) {
+        new_value = 0;
+    }
+    else if (dist > high_bound) {
+        new_value = 1;
+    }
+    else {
+        new_value = (dist - low_bound)/(high_bound - low_bound);
+    }
+
+    // Update opacity
+    this.mesh.material.transparent =   new_value < 0.9;
+    this.border.material.transparent = new_value < 0.9;
+    this.mesh.material.opacity = new_value;
+    this.border.material.opacity = new_value;
 }
 
 // Look function
@@ -114,10 +135,10 @@ FixedCamera.prototype.look = function() {
 FixedCamera.prototype.addToScene = function(scene) {
     scene.add(this);
     scene.add(this.mesh);
-    scene.add(this.line);
+    scene.add(this.border);
 }
 
 FixedCamera.prototype.traverse = function(callback) {
     callback(this.mesh);
-    callback(this.line);
+    callback(this.border);
 }

@@ -16,14 +16,14 @@ function toString(variable) {
 }
 
 // Test with THREE.Vector3
-t = [0,1];
-f = [new THREE.Vector3(0,0,0), new THREE.Vector3(1,1,1)];
-fp = [new THREE.Vector3(0,1,2), new THREE.Vector3(0,0,0)];
+// t = [0,1];
+// f = [new THREE.Vector3(0,0,0), new THREE.Vector3(1,1,1)];
+// fp = [new THREE.Vector3(0,1,2), new THREE.Vector3(0,0,0)];
 
 // Test with doubles
-// t = [0,1];
-// f = [0,1];
-// fp = [-1,-1]0;
+t = [0,1];
+f = [0,1];
+fp = [-1,-1];
 
 var hermite = new Hermite.Polynom(t, f, fp);
 

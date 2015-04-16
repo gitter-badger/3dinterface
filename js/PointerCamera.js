@@ -56,14 +56,15 @@ PointerCamera.prototype.constructor = PointerCamera;
 // Update function
 PointerCamera.prototype.update = function() {
     if (this.moving) {
+        // Linear version
         var position_direction = Tools.diff(this.new_position, this.position);
         var target_direction = Tools.diff(this.new_target, this.target);
 
         this.position.add(Tools.mul(position_direction, 0.05));
         this.target.add(Tools.mul(target_direction, 0.05));
 
-        if (Tools.norm2(Tools.diff(this.position, this.new_position)) < 0.1 &&
-            Tools.norm2(Tools.diff(this.target, this.new_target))  < 0.1) {
+        if (Tools.norm2(Tools.diff(this.position, this.new_position)) < 0.01 &&
+            Tools.norm2(Tools.diff(this.target, this.new_target))  < 0.01) {
             // this.position = this.new_position.clone();
             // this.target = this.new_target.clone();
             this.moving = false;
@@ -72,13 +73,37 @@ PointerCamera.prototype.update = function() {
             var forward = Tools.diff(this.target, this.position);
             forward.normalize();
 
-            this.phi = Math.asin(forward.z);
+            this.phi = Math.asin(forward.y);
 
             // Don't know why this line works... But thanks Thierry-san and
             // Bastien because it seems to work...
-            this.theta = Math.atan2(forward.y, forward.x);
+            this.theta = Math.atan2(forward.x, forward.z);
 
         }
+
+        // Hermite polynom version
+        // var eval = this.hermite.eval(this.t);
+        // this.position.x = eval.x;
+        // this.position.y = eval.y;
+        // this.position.z = eval.z;
+
+        // this.target = Tools.sum(this.position, this.hermite.prime(this.t));
+
+        // this.t += 0.005;
+
+        // if (this.t > 1) {
+        //     this.moving = false;
+        //     // Update phi and theta so that return to reality does not hurt
+        //     var forward = Tools.diff(this.target, this.position);
+        //     forward.normalize();
+
+        //     this.phi = Math.asin(forward.y);
+
+        //     // Don't know why this line works... But thanks Thierry-san and
+        //     // Bastien because it seems to work...
+        //     this.theta = Math.atan2(forward.x, forward.z);
+
+        // }
 
     } else {
         // Update angles
@@ -133,6 +158,11 @@ PointerCamera.prototype.move = function(otherCamera) {
     this.moving = true;
     this.new_target = otherCamera.target.clone();
     this.new_position = otherCamera.position.clone();
+    var t = [0,1];
+    var f = [this.position.clone(), this.new_position];
+    var fp = [Tools.diff(this.target, this.position), Tools.diff(this.new_target, this.new_position)];
+    this.hermite = new Hermite.Polynom(t,f,fp);
+    this.t = 0;
 }
 
 // Look function
@@ -162,6 +192,8 @@ PointerCamera.prototype.onKeyEvent = function(event, toSet) {
         case 75: case 98:  this.decreasePhi   = toSet; break; // 2 Down for angle
         case 74: case 100: this.increaseTheta = toSet; break; // 4 Left for angle
         case 76: case 102: this.decreaseTheta = toSet; break; // 6 Right for angle
+
+        case 13: if (toSet) this.log(); break;
     }
 }
 
@@ -194,6 +226,11 @@ PointerCamera.prototype.onMouseMove = function(event) {
 PointerCamera.prototype.onMouseUp = function(event) {
     this.onMouseMove(event);
     this.dragging = false;
+}
+
+PointerCamera.prototype.log = function() {
+    console.log(this.position.x, this.position.y, this.position.z);
+    console.log(this.target.x, this.target.y, this.target.z);
 }
 
 // Static members
