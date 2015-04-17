@@ -40,12 +40,12 @@ function init() {
     container.appendChild(renderer.domElement);
 
     // init light
-    var directional_light = new THREE.DirectionalLight(0xaaaaaa);
+    var directional_light = new THREE.DirectionalLight(0x777777);
     directional_light.position.set(1, 0.5, 1).normalize();
     directional_light.castShadow = true;
     scene.add(directional_light);
 
-    var ambient_light = new THREE.AmbientLight(0x666666);
+    var ambient_light = new THREE.AmbientLight(0x777777);
     scene.add(ambient_light);
 
     // on initialise la camera que l’on place ensuite sur la scène
@@ -70,7 +70,7 @@ function init() {
 
     // THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
     var loader = new THREE.OBJMTLLoader();
-        loader.load( '/data/castle/princess peaches castle (outside).obj',
+    loader.load( '/data/castle/princess peaches castle (outside).obj',
                  '/data/castle/princess peaches castle (outside).mtl',
     function ( object ) {
         object.up = new THREE.Vector3(0,0,1);
@@ -114,6 +114,27 @@ function init() {
         });
     }, onProgress, onError );
 
+    // loader.load( '/data/bobomb/bobomb battlefeild.obj',
+    //              '/data/bobomb/bobomb battlefeild.mtl',
+    //         function ( object ) {
+    //             // object.position.z -= 10.9;
+    //             // object.position.y += 0.555;
+    //             // object.position.x += 3.23;
+
+    //             var theta = 0.27;
+    //             object.rotation.y = Math.PI - theta;
+
+    //             object.up = new THREE.Vector3(0,0,1);
+    //             scene.add(object);
+    //             object.traverse(function (object) {
+    //                 if (object instanceof THREE.Mesh) {
+    //                     object.material.side = THREE.DoubleSide;
+    //                     console.log(object.geometry.vertices.length);
+    //                     object.geometry.mergeVertices();
+    //                     object.geometry.computeVertexNormals();
+    //                 }
+    //             });
+    //         }, onProgress, onError );
 
     createCamera(
             new THREE.Vector3(-3.349895207953063, 5.148106346852601, 0.3365943929701533),
@@ -179,7 +200,7 @@ function animate() {
     requestAnimationFrame(animate);
 
     stats.begin();
-    cameras.update(cameras.mainCamera().position);
+    cameras.update(cameras.mainCamera());
     cameras.look();
 
     renderer.render(scene, cameras.mainCamera());

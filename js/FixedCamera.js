@@ -30,22 +30,22 @@ var FixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
 
     var geometry = new THREE.Geometry();
 
-    var position = this.position.clone();
+    this.center = this.position.clone();
     var left = Tools.cross(direction, this.up);
     var other = Tools.cross(direction, left);
 
-    position.sub(direction);
+    this.center.sub(direction);
 
     left.normalize();
     other.normalize();
     left = Tools.mul(left, 0.2);
     other  = Tools.mul(other, 0.2);
 
-    geometry.vertices.push(Tools.sum( Tools.sum( position, left),  other),
-                           Tools.diff(Tools.sum( position, other), left),
-                           Tools.diff(Tools.diff(position, left),  other),
-                           Tools.sum( Tools.diff(position, other), left),
-                           Tools.sum(position, direction)
+    geometry.vertices.push(Tools.sum( Tools.sum( this.position, left),  other),
+                           Tools.diff(Tools.sum( this.position, other), left),
+                           Tools.diff(Tools.diff(this.position, left),  other),
+                           Tools.sum( Tools.diff(this.position, other), left),
+                           Tools.sum(this.position, direction)
                           );
 
     geometry.faces.push(new THREE.Face3(0,1,2), // new THREE.Face3(0,2,1),
@@ -97,14 +97,20 @@ var FixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
     });
 
     this.mesh = new THREE.Mesh(geometry, material);
+    this.arrow = new THREE.Line(new THREE.Geometry(), new THREE.LineBasicMaterial({color: 0xff0000}), THREE.LinePieces);
+    this.arrow.material.linewidth=10;
+    this.arrow.geometry.vertices.push(new THREE.Vector3());
+    this.arrow.geometry.vertices.push(new THREE.Vector3());
+    this.arrow.geometry.vertices[0] = new THREE.Vector3();// mainCamera.position.clone();
+    this.arrow.geometry.vertices[1] = this.position.clone();
 }
 FixedCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 FixedCamera.prototype.constructor = FixedCamera;
 
 // Update function
-FixedCamera.prototype.update = function(position) {
+FixedCamera.prototype.update = function(mainCamera) {
     // Compute distance between center of camera and position
-    dist = Tools.norm2(Tools.diff(position, this.position));
+    dist = Tools.norm2(Tools.diff(mainCamera.position, this.center));
 
     var low_bound = 1;
     var high_bound = 5;
@@ -123,8 +129,38 @@ FixedCamera.prototype.update = function(position) {
     // Update opacity
     this.mesh.material.transparent =   new_value < 0.9;
     this.border.material.transparent = new_value < 0.9;
+    this.arrow.material.transparent =  new_value < 0.9;
     this.mesh.material.opacity = new_value;
     this.border.material.opacity = new_value;
+    this.arrow.material.opacity = new_value;
+
+    this.regenerateArrow(mainCamera);
+}
+
+FixedCamera.prototype.regenerateArrow = function(mainCamera) {
+    var vertices = new Array();
+    var t = [0,1];
+    var f = [mainCamera.position.clone(), this.position.clone()];
+    var fp = [Tools.diff(mainCamera.target, mainCamera.position), Tools.diff(this.target, this.position)];
+    var hermite = new Hermite.Polynom(t,f,fp);
+
+    vertices.push(hermite.eval(0.5));
+    for (var i = 0.5; i <= 1.001; i += 0.05) {
+        var point = hermite.eval(i);
+        vertices.push(point, point);
+    }
+
+    this.arrow.geometry.vertices = vertices;
+
+    // this.arrow.geometry.vertices[0] = new THREE.Vector3(); // mainCamera.position.clone();
+    // this.arrow.geometry.vertices[1] = this.position.clone();
+
+    this.arrow.geometry.dynamic = true;
+    this.arrow.geometry.verticesNeedUpdate = true;
+    this.arrow.geometry.elementsNeedUpdate = true;
+    this.arrow.geometry.groupsNeedUpdate = true;
+    this.arrow.geometry.normalsNeedUpdate = true;
+
 }
 
 // Look function
@@ -136,6 +172,7 @@ FixedCamera.prototype.addToScene = function(scene) {
     scene.add(this);
     scene.add(this.mesh);
     scene.add(this.border);
+    scene.add(this.arrow);
 }
 
 FixedCamera.prototype.traverse = function(callback) {

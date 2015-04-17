@@ -142,10 +142,12 @@ PointerCamera.prototype.update = function() {
         left.normalize();
         left.multiplyScalar(400.0 * delta);
 
-        if (this.moveForward)  this.position.add(Tools.mul(forward, this.speed));
-        if (this.moveBackward) this.position.sub(Tools.mul(forward, this.speed));
-        if (this.moveLeft)     this.position.add(Tools.mul(left,    this.speed));
-        if (this.moveRight)    this.position.sub(Tools.mul(left,    this.speed));
+        var speed = this.speed;
+        if (this.boost) speed *= 10;
+        if (this.moveForward)  this.position.add(Tools.mul(forward, speed));
+        if (this.moveBackward) this.position.sub(Tools.mul(forward, speed));
+        if (this.moveLeft)     this.position.add(Tools.mul(left,    speed));
+        if (this.moveRight)    this.position.sub(Tools.mul(left,    speed));
 
         this.target = this.position.clone();
         this.target.add(forward);
@@ -181,6 +183,7 @@ PointerCamera.prototype.onKeyEvent = function(event, toSet) {
         case 37: case 81: this.moveLeft     = toSet; break; // left / q
         case 40: case 83: this.moveBackward = toSet; break; // down / s
         case 39: case 68: this.moveRight    = toSet; break; // right / d
+        case 32:          this.boost = toSet; break;
 
         // Qwerty keyboards
         // case 38: case 87: this.moveForward  = toSet; break; // up / w
