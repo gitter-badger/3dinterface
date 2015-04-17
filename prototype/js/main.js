@@ -16,6 +16,9 @@ init();
 animate();
 
 function init() {
+    // Add the listener on the button
+    document.getElementById('reset').onclick = function() { cameras.mainCamera().reset(); };
+
     // on initialise le moteur de rendu
     container = document.getElementById('container');
     container.style.height = container_size.height + 'px';
@@ -51,8 +54,7 @@ function init() {
     // on initialise la camera que l’on place ensuite sur la scène
     var camera1 = new PointerCamera(50, container_size.width / container_size.height, 0.01, 100000, container);
     camera1.speed = 0.001;
-    camera1.position = new THREE.Vector3(0,2,0);
-    camera1.phi = -0.1;
+    camera1.reset();
     scene.add(camera1);
     cameras.push(camera1);
 

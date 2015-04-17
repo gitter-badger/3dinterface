@@ -65,20 +65,8 @@ PointerCamera.prototype.update = function() {
 
         if (Tools.norm2(Tools.diff(this.position, this.new_position)) < 0.01 &&
             Tools.norm2(Tools.diff(this.target, this.new_target))  < 0.01) {
-            // this.position = this.new_position.clone();
-            // this.target = this.new_target.clone();
             this.moving = false;
-
-            // Update phi and theta so that return to reality does not hurt
-            var forward = Tools.diff(this.target, this.position);
-            forward.normalize();
-
-            this.phi = Math.asin(forward.y);
-
-            // Don't know why this line works... But thanks Thierry-san and
-            // Bastien because it seems to work...
-            this.theta = Math.atan2(forward.x, forward.z);
-
+            this.anglesFromVectors();
         }
 
         // Hermite polynom version
@@ -124,17 +112,11 @@ PointerCamera.prototype.update = function() {
         this.phi = Math.min(Math.max(-(Math.PI/2-0.1),this.phi), Math.PI/2-0.1);
         this.theta = ((this.theta - Math.PI) % (2*Math.PI)) + Math.PI;
 
+        // Compute vectors (position and target)
+        this.vectorsFromAngles();
+
+        // Update with events
         var delta = 0.1;
-
-        // Update direction
-        this.forward.y = Math.sin(this.phi);
-
-        var cos = Math.cos(this.phi);
-        this.forward.z = cos * Math.cos(this.theta);
-        this.forward.x = cos * Math.sin(this.theta);
-        this.forward.normalize();
-
-        // Update
         var forward = this.forward.clone();
         forward.multiplyScalar(400.0 * delta);
         var left = this.up.clone();
@@ -152,8 +134,35 @@ PointerCamera.prototype.update = function() {
         this.target = this.position.clone();
         this.target.add(forward);
     }
+}
 
+PointerCamera.prototype.reset = function() {
+    this.position.copy(new THREE.Vector3(-8.849933489419644, 9.050627639459208, 0.6192960680432451));
+    this.target.copy(new THREE.Vector3(17.945323228767702, -15.156828589982375, -16.585740412769756));
+    this.anglesFromVectors();
+}
 
+PointerCamera.prototype.vectorsFromAngles = function() {
+    // Update direction
+    this.forward.y = Math.sin(this.phi);
+
+    var cos = Math.cos(this.phi);
+    this.forward.z = cos * Math.cos(this.theta);
+    this.forward.x = cos * Math.sin(this.theta);
+    this.forward.normalize();
+
+}
+
+PointerCamera.prototype.anglesFromVectors = function() {
+    // Update phi and theta so that return to reality does not hurt
+    var forward = Tools.diff(this.target, this.position);
+    forward.normalize();
+
+    this.phi = Math.asin(forward.y);
+
+    // Don't know why this line works... But thanks Thierry-san and
+    // Bastien because it seems to work...
+    this.theta = Math.atan2(forward.x, forward.z);
 }
 
 PointerCamera.prototype.move = function(otherCamera) {
