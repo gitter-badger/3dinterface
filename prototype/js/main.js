@@ -43,12 +43,12 @@ function init() {
     container.appendChild(renderer.domElement);
 
     // init light
-    var directional_light = new THREE.DirectionalLight(0x777777);
+    var directional_light = new THREE.DirectionalLight(0xdddddd);
     directional_light.position.set(1, 0.5, 1).normalize();
     directional_light.castShadow = true;
     scene.add(directional_light);
 
-    var ambient_light = new THREE.AmbientLight(0x777777);
+    var ambient_light = new THREE.AmbientLight(0x444444);
     scene.add(ambient_light);
 
     // on initialise la camera que l’on place ensuite sur la scène
