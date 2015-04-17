@@ -100,6 +100,7 @@ var FixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
     // this.arrow = new THREE.Line(new THREE.Geometry(), new THREE.LineBasicMaterial({color: 0xff0000}), THREE.LinePieces);
     this.arrow = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0xff0000, side:THREE.DoubleSide}));
 
+    this.fullArrow = false;
 }
 FixedCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 FixedCamera.prototype.constructor = FixedCamera;
@@ -146,7 +147,7 @@ FixedCamera.prototype.regenerateArrow = function(mainCamera) {
     var hermite = new Hermite.Polynom(t,f,fp);
 
     var up = this.up.clone();
-    for (var i = 0.5; i <= 1.001; i += 0.05) {
+    for (var i = this.fullArrow ? 0 : 0.5; i <= 1.001; i += 0.05) {
         var point = hermite.eval(i);
         var deriv = hermite.prime(i);
         var left = Tools.cross(up, deriv); left.normalize(); left.multiplyScalar(0.1);
@@ -161,10 +162,10 @@ FixedCamera.prototype.regenerateArrow = function(mainCamera) {
     }
 
     var faces = new Array();
-    // faces.push(
-    //     new THREE.Face3(0,1,2),
-    //     new THREE.Face3(0,2,3)
-    // );
+    faces.push(
+        new THREE.Face3(0,1,2),
+        new THREE.Face3(0,2,3)
+    );
 
     for (var i = 0; i < vertices.length - 4; i+= 4) {
         faces.push(new THREE.Face3(i,i+1,i+5),new THREE.Face3(i,i+5,i+4),

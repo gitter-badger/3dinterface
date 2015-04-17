@@ -18,6 +18,21 @@ animate();
 function init() {
     // Add the listener on the button
     document.getElementById('reset').onclick = function() { cameras.mainCamera().reset(); };
+    var fullarrow = document.getElementById('fullarrow');
+    fullarrow.onclick = function() {
+        console.log(fullarrow.innerHTML);
+        if (fullarrow.innerHTML === 'Full arrow') {
+            fullarrow.innerHTML = "Half arrow";
+        } else {
+            fullarrow.innerHTML = "Full arrow";
+        }
+
+        cameras.map(function(camera) {
+            if (camera instanceof FixedCamera) {
+                camera.fullArrow = !camera.fullArrow;
+            }
+        });
+    };
 
     // on initialise le moteur de rendu
     container = document.getElementById('container');
