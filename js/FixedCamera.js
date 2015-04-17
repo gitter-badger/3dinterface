@@ -97,12 +97,9 @@ var FixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
     });
 
     this.mesh = new THREE.Mesh(geometry, material);
-    this.arrow = new THREE.Line(new THREE.Geometry(), new THREE.LineBasicMaterial({color: 0xff0000}), THREE.LinePieces);
-    this.arrow.material.linewidth=10;
-    this.arrow.geometry.vertices.push(new THREE.Vector3());
-    this.arrow.geometry.vertices.push(new THREE.Vector3());
-    this.arrow.geometry.vertices[0] = new THREE.Vector3();// mainCamera.position.clone();
-    this.arrow.geometry.vertices[1] = this.position.clone();
+    // this.arrow = new THREE.Line(new THREE.Geometry(), new THREE.LineBasicMaterial({color: 0xff0000}), THREE.LinePieces);
+    this.arrow = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0xff0000, side:THREE.DoubleSide}));
+
 }
 FixedCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 FixedCamera.prototype.constructor = FixedCamera;
@@ -148,13 +145,40 @@ FixedCamera.prototype.regenerateArrow = function(mainCamera) {
     var fp = [Tools.mul(first,40), Tools.diff(this.target, this.position)];
     var hermite = new Hermite.Polynom(t,f,fp);
 
-    vertices.push(hermite.eval(0.5));
+    var up = this.up.clone();
     for (var i = 0.5; i <= 1.001; i += 0.05) {
         var point = hermite.eval(i);
-        vertices.push(point, point);
+        var deriv = hermite.prime(i);
+        var left = Tools.cross(up, deriv); left.normalize(); left.multiplyScalar(0.1);
+        var other = Tools.cross(deriv, left);  other.normalize(); other.multiplyScalar(0.1);
+
+        vertices.push(
+            Tools.sum(Tools.sum(point, left), other),
+            Tools.sum(Tools.diff(point, left), other),
+            Tools.diff(point, Tools.sum(other,left)),
+            Tools.sum(Tools.diff(point, other), left)
+        );
     }
 
+    var faces = new Array();
+    // faces.push(
+    //     new THREE.Face3(0,1,2),
+    //     new THREE.Face3(0,2,3)
+    // );
+
+    for (var i = 0; i < vertices.length - 4; i+= 4) {
+        faces.push(new THREE.Face3(i,i+1,i+5),new THREE.Face3(i,i+5,i+4),
+                   new THREE.Face3(i+1,i+2,i+6),new THREE.Face3(i+1,i+6,i+5),
+                   new THREE.Face3(i+2,i+3,i+7),new THREE.Face3(i+2,i+7,i+6),
+                   new THREE.Face3(i,i+7,i+3), new THREE.Face3(i,i+4,i+7));
+    }
+
+
     this.arrow.geometry.vertices = vertices;
+    this.arrow.geometry.faces = faces;
+
+    this.arrow.geometry.mergeVertices();
+    this.arrow.geometry.computeFaceNormals();
 
     // this.arrow.geometry.vertices[0] = new THREE.Vector3(); // mainCamera.position.clone();
     // this.arrow.geometry.vertices[1] = this.position.clone();
@@ -164,6 +188,7 @@ FixedCamera.prototype.regenerateArrow = function(mainCamera) {
     this.arrow.geometry.elementsNeedUpdate = true;
     this.arrow.geometry.groupsNeedUpdate = true;
     this.arrow.geometry.normalsNeedUpdate = true;
+    this.arrow.geometry.facesNeedUpdate = true;
 
 }
 
