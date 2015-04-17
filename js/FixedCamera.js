@@ -141,7 +141,11 @@ FixedCamera.prototype.regenerateArrow = function(mainCamera) {
     var vertices = new Array();
     var t = [0,1];
     var f = [mainCamera.position.clone(), this.position.clone()];
-    var fp = [Tools.diff(mainCamera.target, mainCamera.position), Tools.diff(this.target, this.position)];
+
+    var first = Tools.diff(mainCamera.target, mainCamera.position);
+    first.normalize();
+
+    var fp = [Tools.mul(first,40), Tools.diff(this.target, this.position)];
     var hermite = new Hermite.Polynom(t,f,fp);
 
     vertices.push(hermite.eval(0.5));
