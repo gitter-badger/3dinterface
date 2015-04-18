@@ -1,7 +1,18 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import sys
-from webtools import Web
+from django import template
+from django.conf import settings
 
-Web.render('index.html')
+settings.configure()
+t = template.Template(open('index.html','r').read())
+c = template.Context({})
+v = t.render(c)
+
+print('Content-type: text/html')
+print()
+
+print(v)
+
+
+# Web.render('index.html')
