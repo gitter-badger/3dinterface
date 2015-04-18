@@ -20,7 +20,6 @@ function init() {
     document.getElementById('reset').onclick = function() { cameras.mainCamera().reset(); };
     var fullarrow = document.getElementById('fullarrow');
     fullarrow.onclick = function() {
-        console.log(fullarrow.innerHTML);
         if (fullarrow.innerHTML === 'Full arrow') {
             fullarrow.innerHTML = "Half arrow";
         } else {
@@ -98,7 +97,6 @@ function init() {
                 object.geometry.computeVertexNormals();
                 object.material.side = THREE.DoubleSide;
                 if (object.material.name === 'Material.103_princess_peaches_cast') {
-                    console.log(object.material.name);
                     object.material.transparent = true;
                 }
             }
@@ -120,7 +118,6 @@ function init() {
         object.traverse(function (object) {
             if (object instanceof THREE.Mesh) {
                 object.material.side = THREE.DoubleSide;
-                console.log(object.geometry.vertices.length);
                 object.geometry.mergeVertices();
                 object.geometry.computeVertexNormals();
                 if (object.material.name === 'Material.054_777F0E0B_c.bmp' ||
