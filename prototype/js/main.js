@@ -86,8 +86,8 @@ function init() {
 
     // THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
     var loader = new THREE.OBJMTLLoader();
-    loader.load( '/data/castle/princess peaches castle (outside).obj',
-                 '/data/castle/princess peaches castle (outside).mtl',
+    loader.load( static_path + 'data/castle/princess peaches castle (outside).obj',
+                 static_path + 'data/castle/princess peaches castle (outside).mtl',
     function ( object ) {
         object.up = new THREE.Vector3(0,0,1);
         scene.add(object);
@@ -103,8 +103,8 @@ function init() {
         });
     }, onProgress, onError );
 
-    loader.load( '/data/first/Floor 1.obj',
-                 '/data/first/Floor 1.mtl',
+    loader.load( static_path + 'data/first/Floor 1.obj',
+                 static_path + 'data/first/Floor 1.mtl',
     function ( object ) {
         object.position.z -= 10.9;
         object.position.y += 0.555;
@@ -128,8 +128,8 @@ function init() {
         });
     }, onProgress, onError );
 
-    // loader.load( '/data/bobomb/bobomb battlefeild.obj',
-    //              '/data/bobomb/bobomb battlefeild.mtl',
+    // loader.load( static_path + 'data/bobomb/bobomb battlefeild.obj',
+    //              static_path + 'data/bobomb/bobomb battlefeild.mtl',
     //         function ( object ) {
     //             // object.position.z -= 10.9;
     //             // object.position.y += 0.555;
@@ -274,8 +274,8 @@ function click(event) {
         }
 
         if (bestIndex !== undefined) {
-            if (cameras.getById(intersects[bestIndex].object.id) !== undefined) {
-                var new_camera = cameras.getById(intersects[bestIndex].object.id);
+            if (cameras.getById(intersects[bestIndex].object.parent.id) !== undefined) {
+                var new_camera = cameras.getById(intersects[bestIndex].object.parent.id);
                 // hide(new_camera);
                 cameras.get(0).move(new_camera);
             }

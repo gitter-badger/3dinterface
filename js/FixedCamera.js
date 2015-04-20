@@ -100,6 +100,10 @@ var FixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
     // this.arrow = new THREE.Line(new THREE.Geometry(), new THREE.LineBasicMaterial({color: 0xff0000}), THREE.LinePieces);
     this.arrow = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0xff0000, side:THREE.DoubleSide}));
 
+    this.object3D = new THREE.Object3D();
+    this.object3D.add(this.mesh);
+    this.object3D.add(this.arrow);
+
     this.fullArrow = false;
 }
 FixedCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
@@ -180,6 +184,8 @@ FixedCamera.prototype.regenerateArrow = function(mainCamera) {
 
     this.arrow.geometry.mergeVertices();
     this.arrow.geometry.computeFaceNormals();
+    // this.arrow.geometry.computeVertexNormals();
+    this.arrow.geometry.computeBoundingSphere();
 
     // this.arrow.geometry.vertices[0] = new THREE.Vector3(); // mainCamera.position.clone();
     // this.arrow.geometry.vertices[1] = this.position.clone();
@@ -200,12 +206,9 @@ FixedCamera.prototype.look = function() {
 
 FixedCamera.prototype.addToScene = function(scene) {
     scene.add(this);
-    scene.add(this.mesh);
-    scene.add(this.border);
-    scene.add(this.arrow);
+    scene.add(this.object3D);
 }
 
 FixedCamera.prototype.traverse = function(callback) {
-    callback(this.mesh);
-    callback(this.border);
+    this.object3D.traverse(callback);
 }

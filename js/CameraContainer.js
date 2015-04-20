@@ -37,8 +37,8 @@ CameraContainer.prototype.get = function(i) {
 
 CameraContainer.prototype.getById = function(id) {
     for (var i in this.cameras) {
-        if (this.cameras[i].mesh !== undefined) {
-            if (this.cameras[i].mesh.id == id) {
+        if (this.cameras[i].object3D !== undefined) {
+            if (this.cameras[i].object3D.id == id) {
                 return this.get(i);
             }
         }
