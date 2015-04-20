@@ -5,7 +5,7 @@ import sys
 import os
 
 # ROOT_DIR = '/'.join(__file__.split('/')[:-2]) + '/'
-ROOT_DIR = '/home/thomas/stage/javascript/web/'
+ROOT_DIR = '/home/thomas/stage/javascript/master/'
 
 
 class Element:
