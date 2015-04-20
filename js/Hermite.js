@@ -169,3 +169,33 @@ Hermite.BaseFunction.prototype.prime = function(t) {
 
     return this.eval(t) * ret;
 }
+
+Hermite.special = {};
+
+// This polynom interpolates with two coords and one derivative
+// t = [0,1]
+Hermite.special.Polynom = function(P0, P1, PP1) {
+    this.tools = {};
+    if (P0 instanceof THREE.Vector3) {
+        this.tools.sum = Tools.sum;
+        this.tools.mul = Tools.mul;
+        this.tools.diff = Tools.diff;
+        this.c = P0.clone();
+    } else {
+        this.tools.sum = function(a,b) { return a+b; };
+        this.tools.mul = function(a,b) { return a*b; };
+        this.tools.diff = function(a,b) { return a-b; };
+        this.c = P0;
+    }
+
+    this.a = this.tools.sum(PP1, this.tools.diff(P0, P1));
+    this.b = this.tools.diff(this.tools.mul(this.tools.diff(P1,P0), 2), PP1);
+}
+
+Hermite.special.Polynom.prototype.eval = function(t) {
+    return this.tools.sum(this.tools.mul(this.a, t*t), this.tools.sum(this.tools.mul(this.b, t), this.c));
+}
+
+Hermite.special.Polynom.prototype.prime = function(t) {
+    return this.tools.sum(this.tools.mul(this.a,2*t), this.b);
+}

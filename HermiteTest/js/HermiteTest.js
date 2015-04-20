@@ -25,19 +25,19 @@ t = [0,1];
 f = [0,1];
 fp = [-1,-1];
 
-var hermite = new Hermite.Polynom(t, f, fp);
+var hermite = new Hermite.special.Polynom(0, 1, -1);
 
 print('M = [');
 for (var t = 0; t < 1; t += 0.01) {
     var res = hermite.eval(t);
-    print(t + ',' + toString(res) + ';');
+    print("\t" + t + ',' + toString(res) + ';');
 }
 print('];');
 
 print('MP = [');
 for (var t = 0; t < 1; t += 0.01) {
     var res = hermite.prime(t);
-    print(t + ',' + toString(res) + ';');
+    print("\t" + t + ',' + toString(res) + ';');
 }
 print('];');
 

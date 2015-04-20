@@ -10,7 +10,7 @@ var ProgessiveSphere = function(loader, res) {
         res = 5;
 
     (function(self) {
-        loader.load('/data/spheres/' + res + '.obj', function(object) {
+        loader.load(static_path + 'data/spheres/' + res + '.obj', function(object) {
             object.traverse(function(child) {
                 if (child instanceof THREE.Mesh) {
                     child.up = new THREE.Vector3(0,0,1);

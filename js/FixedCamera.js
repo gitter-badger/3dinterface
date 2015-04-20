@@ -129,12 +129,12 @@ FixedCamera.prototype.update = function(mainCamera) {
     }
 
     // Update opacity
-    this.mesh.material.transparent =   new_value < 0.9;
-    this.border.material.transparent = new_value < 0.9;
-    this.arrow.material.transparent =  new_value < 0.9;
-    this.mesh.material.opacity = new_value;
-    this.border.material.opacity = new_value;
-    this.arrow.material.opacity = new_value;
+    this.object3D.traverse(function(elt) {
+        if (elt instanceof THREE.Mesh) {
+            elt.material.transparent =   new_value < 0.9;
+            elt.material.opacity = new_value;
+        }
+    });
 
     this.regenerateArrow(mainCamera);
 }
@@ -151,9 +151,17 @@ FixedCamera.prototype.regenerateArrow = function(mainCamera) {
     var hermite = new Hermite.Polynom(t,f,fp);
 
     var up = this.up.clone();
-    for (var i = this.fullArrow ? 0 : 0.5; i <= 1.001; i += 0.05) {
-        var point = hermite.eval(i);
-        var deriv = hermite.prime(i);
+    var point;
+    var deriv;
+    // for (var i = this.fullArrow ? 0 : 0.5; i <= 1.001; i += 0.05) {
+    for (var i = 1; this.fullArrow ? i > 0 : i > 0.5; i -= 0.05) {
+        point = hermite.eval(i);
+        deriv = hermite.prime(i);
+        up.cross(deriv);
+        up.cross(deriv);
+        up.multiplyScalar(-1);
+        up.normalize();
+
         var left = Tools.cross(up, deriv); left.normalize(); left.multiplyScalar(0.1);
         var other = Tools.cross(deriv, left);  other.normalize(); other.multiplyScalar(0.1);
 
@@ -166,10 +174,6 @@ FixedCamera.prototype.regenerateArrow = function(mainCamera) {
     }
 
     var faces = new Array();
-    faces.push(
-        new THREE.Face3(0,1,2),
-        new THREE.Face3(0,2,3)
-    );
 
     for (var i = 0; i < vertices.length - 4; i+= 4) {
         faces.push(new THREE.Face3(i,i+1,i+5),new THREE.Face3(i,i+5,i+4),
@@ -177,6 +181,9 @@ FixedCamera.prototype.regenerateArrow = function(mainCamera) {
                    new THREE.Face3(i+2,i+3,i+7),new THREE.Face3(i+2,i+7,i+6),
                    new THREE.Face3(i,i+7,i+3), new THREE.Face3(i,i+4,i+7));
     }
+
+    var len = vertices.length;
+    faces.push(new THREE.Face3(len-4,len-3,len-2), new THREE.Face3(len-4,len-2,len-1));
 
 
     this.arrow.geometry.vertices = vertices;
