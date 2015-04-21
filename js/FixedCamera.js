@@ -148,13 +148,17 @@ FixedCamera.prototype.regenerateArrow = function(mainCamera) {
     first.normalize();
 
     var fp = [Tools.mul(first,40), Tools.diff(this.target, this.position)];
-    var hermite = new Hermite.Polynom(t,f,fp);
+    fp[1].normalize();
+    fp[1].multiplyScalar(4);
+    var hermite = new Hermite.special.Polynom(f[0], f[1], fp[1]);
 
     var up = this.up.clone();
     var point;
     var deriv;
+    var limit = this.fullArrow ? 0.1 : 0.3;
+
     // for (var i = this.fullArrow ? 0 : 0.5; i <= 1.001; i += 0.05) {
-    for (var i = 1; this.fullArrow ? i > 0 : i > 0.5; i -= 0.05) {
+    for (var i = 1; i > limit; i -= 0.01) {
         point = hermite.eval(i);
         deriv = hermite.prime(i);
         up.cross(deriv);
@@ -189,7 +193,7 @@ FixedCamera.prototype.regenerateArrow = function(mainCamera) {
     this.arrow.geometry.vertices = vertices;
     this.arrow.geometry.faces = faces;
 
-    this.arrow.geometry.mergeVertices();
+    // this.arrow.geometry.mergeVertices();
     this.arrow.geometry.computeFaceNormals();
     // this.arrow.geometry.computeVertexNormals();
     this.arrow.geometry.computeBoundingSphere();
