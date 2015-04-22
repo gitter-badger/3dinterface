@@ -10,7 +10,7 @@ var stats;
 
 var loader;
 
-var container_size = {width: 1067, height: 600};
+var container_size = {width: 1024, height: 576};
 var prev = {x:0, y:0, go:false};
 var showArrows = true;
 
