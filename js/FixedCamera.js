@@ -166,8 +166,9 @@ FixedCamera.prototype.regenerateArrow = function(mainCamera) {
         up.multiplyScalar(-1);
         up.normalize();
 
-        var left = Tools.cross(up, deriv); left.normalize(); left.multiplyScalar(0.1);
-        var other = Tools.cross(deriv, left);  other.normalize(); other.multiplyScalar(0.1);
+        var coeff = 0.1*i;
+        var left = Tools.cross(up, deriv); left.normalize(); left.multiplyScalar(coeff);
+        var other = Tools.cross(deriv, left);  other.normalize(); other.multiplyScalar(coeff);
 
         vertices.push(
             Tools.sum(Tools.sum(point, left), other),

@@ -1,11 +1,10 @@
 var CameraContainer = function () {
-    this.current_camera = 0;
     this.cameras = new Array();
 }
 
 CameraContainer.prototype.mainCamera = function(id) {
     if (id === undefined) {
-        return this.cameras[this.current_camera];
+        return this.pointerCamera;
     }
     if (id >= cameras.length || id < 0) {
         console.log('Warning : this camera does not exist');
@@ -20,7 +19,11 @@ CameraContainer.prototype.forEach = function(callback) {
 }
 
 CameraContainer.prototype.look = function() {
-    this.cameras[this.current_camera].look();
+    this.mainCamera().look();
+}
+
+CameraContainer.prototype.updateMainCamera = function() {
+    this.pointerCamera.update();
 }
 
 CameraContainer.prototype.update = function(position) {
@@ -28,7 +31,10 @@ CameraContainer.prototype.update = function(position) {
 }
 
 CameraContainer.prototype.push = function(camera) {
-    this.cameras.push(camera);
+    this.pointerCamera = camera;
+    this.push = function(camera) {
+        this.cameras.push(camera);
+    };
 }
 
 CameraContainer.prototype.get = function(i) {

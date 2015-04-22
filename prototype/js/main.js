@@ -16,6 +16,9 @@ init();
 animate();
 
 function init() {
+    // Collidable objects to prevent camera from traversing objects
+    var collidableObjects = new Array();
+
     // Add the listener on the button
     document.getElementById('reset').onclick = function() { cameras.mainCamera().reset(); };
     var fullarrow = document.getElementById('fullarrow');
@@ -91,6 +94,7 @@ function init() {
     function ( object ) {
         object.up = new THREE.Vector3(0,0,1);
         scene.add(object);
+        collidableObjects.push(object);
         object.traverse(function (object) {
             if (object instanceof THREE.Mesh) {
                 object.geometry.mergeVertices();
@@ -115,6 +119,7 @@ function init() {
 
         object.up = new THREE.Vector3(0,0,1);
         scene.add(object);
+        collidableObjects.push(object);
         object.traverse(function (object) {
             if (object instanceof THREE.Mesh) {
                 object.material.side = THREE.DoubleSide;
@@ -184,6 +189,8 @@ function init() {
 
     container.addEventListener('mousedown', click, false);
 
+    camera1.collidableObjects = collidableObjects;
+
     // Load the scene
     loadScene();
 
@@ -214,6 +221,7 @@ function animate() {
     requestAnimationFrame(animate);
 
     stats.begin();
+    cameras.updateMainCamera();
     cameras.update(cameras.mainCamera());
     cameras.look();
 
@@ -277,7 +285,7 @@ function click(event) {
             if (cameras.getById(intersects[bestIndex].object.parent.id) !== undefined) {
                 var new_camera = cameras.getById(intersects[bestIndex].object.parent.id);
                 // hide(new_camera);
-                cameras.get(0).move(new_camera);
+                cameras.mainCamera().move(new_camera);
             }
         }
 
@@ -285,7 +293,7 @@ function click(event) {
         for (o in objects) {
             if ( intersects[bestIndex].object.id == objects[o].id && cameras.get(objects[o].seen_by[0]) !== undefined) {
                 var new_camera = cameras.get(objects[o].seen_by[0]);
-                cameras.get(0).move(new_camera);
+                cameras.mainCamera().move(new_camera);
                 break;
             }
         }

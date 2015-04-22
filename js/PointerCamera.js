@@ -35,6 +35,9 @@ var PointerCamera = function() {
     this.sensitivity = 0.05;
     this.speed = 1;
 
+    // Raycaster for collisions
+    this.raycaster = new THREE.Raycaster();
+
     // Set events from the document
     var self = this;
     var onKeyDown = function(event) {self.onKeyDown(event);};
@@ -124,13 +127,23 @@ PointerCamera.prototype.update = function() {
         left.normalize();
         left.multiplyScalar(400.0 * delta);
 
+        // Move only if no collisions
         var speed = this.speed;
-        if (this.boost) speed *= 10;
-        if (this.moveForward)  this.position.add(Tools.mul(forward, speed));
-        if (this.moveBackward) this.position.sub(Tools.mul(forward, speed));
-        if (this.moveLeft)     this.position.add(Tools.mul(left,    speed));
-        if (this.moveRight)    this.position.sub(Tools.mul(left,    speed));
+        var direction = new THREE.Vector3();
 
+        if (this.boost) speed *= 10;
+        if (this.moveForward)  direction.add(Tools.mul(forward, speed));
+        if (this.moveBackward) direction.sub(Tools.mul(forward, speed));
+        if (this.moveLeft)     direction.add(Tools.mul(left,    speed));
+        if (this.moveRight)    direction.sub(Tools.mul(left,    speed));
+
+        if (!this.isColliding(direction)) {
+            this.position.add(direction);
+        } else {
+            this.position.sub(direction);
+        }
+
+        // Update angle
         this.target = this.position.clone();
         this.target.add(forward);
     }
@@ -174,6 +187,19 @@ PointerCamera.prototype.move = function(otherCamera) {
     var fp = [Tools.diff(this.target, this.position), Tools.diff(this.new_target, this.new_position)];
     this.hermite = new Hermite.Polynom(t,f,fp);
     this.t = 0;
+}
+
+PointerCamera.prototype.isColliding = function(direction) {
+    this.raycaster.set(this.position, direction.clone().normalize());
+    var intersects = this.raycaster.intersectObjects(this.collidableObjects, true);
+
+    for (var i in intersects) {
+        if (intersects[i].distance < 0.1) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 // Look function
