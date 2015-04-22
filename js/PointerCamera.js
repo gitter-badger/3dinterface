@@ -52,6 +52,8 @@ var PointerCamera = function() {
     listenerTarget.addEventListener('mousemove', onMouseMove, false);
     listenerTarget.addEventListener('mouseup', onMouseUp, false);
     listenerTarget.addEventListener('mouseout', onMouseUp, false);
+
+    this.collisions = true;
 }
 PointerCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 PointerCamera.prototype.constructor = PointerCamera;
@@ -137,7 +139,7 @@ PointerCamera.prototype.update = function() {
         if (this.moveLeft)     direction.add(Tools.mul(left,    speed));
         if (this.moveRight)    direction.sub(Tools.mul(left,    speed));
 
-        if (!this.isColliding(direction)) {
+        if (!this.collisions || !this.isColliding(direction)) {
             this.position.add(direction);
         }
 

@@ -22,19 +22,18 @@ function init() {
     // Add the listener on the button
     document.getElementById('reset').onclick = function() { cameras.mainCamera().reset(); };
     var fullarrow = document.getElementById('fullarrow');
-    fullarrow.onclick = function() {
-        if (fullarrow.innerHTML === 'Full arrow') {
-            fullarrow.innerHTML = "Half arrow";
-        } else {
-            fullarrow.innerHTML = "Full arrow";
-        }
-
+    fullarrow.onchange = function() {
         cameras.map(function(camera) {
             if (camera instanceof FixedCamera) {
-                camera.fullArrow = !camera.fullArrow;
+                camera.fullArrow = fullarrow.checked;
             }
         });
-    };
+    }
+
+    var collisions = document.getElementById('collisions');
+    collisions.onchange = function() {
+        cameras.mainCamera().collisions = collisions.checked;
+    }
 
     // on initialise le moteur de rendu
     container = document.getElementById('container');
