@@ -11,6 +11,7 @@ var stats;
 var loader;
 
 var container_size = {width: 1067, height: 600};
+var prev = {x:0, y:0, go:false};
 
 init();
 animate();
@@ -160,8 +161,8 @@ function init() {
     );
 
     createCamera(
-            new THREE.Vector3(4.659399030971226, 0.018674883050052597, -2.578139604982815),
-            new THREE.Vector3(-24.57865295128155, -14.475635296016854, -25.70931529313326)
+            new THREE.Vector3(4.659399030971226, 1.018674883050052597, -2.578139604982815),
+            new THREE.Vector3(-16.08800293200113, -28.8795632312717, -19.165379404919797)
     );
 
     createCamera(
@@ -187,6 +188,7 @@ function init() {
     window.addEventListener('resize', onWindowResize, false);
 
     container.addEventListener('mousedown', click, false);
+    container.addEventListener('mousemove', mouseMove, false);
 
     camera1.collidableObjects = collidableObjects;
 
@@ -215,16 +217,41 @@ function loadScene() {
 
 }
 
+function render() {
+    cameras.map(function(camera) { if (camera instanceof FixedCamera) show(camera); });
+    cameras.updateMainCamera();
+    cameras.update(cameras.mainCamera());
+    cameras.look();
+
+    var left = 0, bottom = 0, width = container.offsetWidth, height = container.offsetHeight;
+    renderer.setScissor(left, bottom, width, height);
+    renderer.enableScissorTest(true);
+    renderer.setViewport(left, bottom, width, height);
+    renderer.render(scene, cameras.mainCamera());
+
+    if (prev.go) {
+        // Hide arrows
+        cameras.map(function(camera) { if (camera instanceof FixedCamera) hide(camera); });
+
+        width = container.offsetWidth / 5;
+        height = container.offsetHeight / 5;
+        left = prev.x - width/2;
+        bottom =  prev.y + height/5;
+
+        prev.camera.look();
+        renderer.setScissor(left, bottom, width, height);
+        renderer.enableScissorTest (true);
+        renderer.setViewport(left, bottom, width, height);
+        renderer.render(scene, prev.camera);
+    }
+}
+
 function animate() {
     // on appelle la fonction animate() récursivement à chaque frame
     requestAnimationFrame(animate);
 
     stats.begin();
-    cameras.updateMainCamera();
-    cameras.update(cameras.mainCamera());
-    cameras.look();
-
-    renderer.render(scene, cameras.mainCamera());
+    render();
     stats.end();
 }
 
@@ -233,7 +260,7 @@ function onWindowResize() {
     cameras.forEach(function(camera) {camera.updateProjectionMatrix();});
 
     renderer.setSize(container.offsetWidth, container.offsetHeight);
-    renderer.render(scene, cameras.mainCamera());
+    render();
 }
 
 function hide(object) {
@@ -244,17 +271,34 @@ function show(object) {
     object.traverse(function(object) {object.visible = true;});
 }
 
+function mouseMove(event) {
+    var hovered = pointedCamera(event);
+
+    if (hovered !== undefined) {
+        prev.x = event.clientX - renderer.domElement.offsetLeft;
+        prev.y = container.offsetHeight - (event.clientY - renderer.domElement.offsetTop);
+        prev.camera = hovered;
+        prev.go = true;
+    } else {
+        prev.go = false;
+    }
+}
+
 function click(event) {
+    var newCamera = pointedCamera(event);
+    if (newCamera !== undefined)
+        cameras.mainCamera().move(newCamera);
+}
+
+function pointedCamera(event) {
+    var returnCamera;
+
     var mouse = {
         x:   ((event.clientX - renderer.domElement.offsetLeft) / renderer.domElement.width ) * 2 - 1,
         y: - ((event.clientY - renderer.domElement.offsetTop)  / renderer.domElement.height) * 2 + 1
     }
 
-    // Show all cameras
-    // cameras.map(show);
-
     var camera = cameras.mainCamera();
-
 
     var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
     vector.unproject(camera);
@@ -282,24 +326,8 @@ function click(event) {
 
         if (bestIndex !== undefined) {
             if (cameras.getById(intersects[bestIndex].object.parent.id) !== undefined) {
-                var new_camera = cameras.getById(intersects[bestIndex].object.parent.id);
-                // hide(new_camera);
-                cameras.mainCamera().move(new_camera);
-            }
-        }
-
-        // Looking for objects
-        for (o in objects) {
-            if ( intersects[bestIndex].object.id == objects[o].id && cameras.get(objects[o].seen_by[0]) !== undefined) {
-                var new_camera = cameras.get(objects[o].seen_by[0]);
-                cameras.mainCamera().move(new_camera);
-                break;
+                return cameras.getById(intersects[bestIndex].object.parent.id);
             }
         }
     }
-
-    // var pos = cameras.mainCamera().position;
-    // var target = cameras.mainCamera().target
-    // console.log("Position = ", pos.x, pos.y, pos.z);
-    // console.log("Target   = ", target.x, target.y, target.z);
 }
