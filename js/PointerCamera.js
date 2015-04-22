@@ -139,8 +139,6 @@ PointerCamera.prototype.update = function() {
 
         if (!this.isColliding(direction)) {
             this.position.add(direction);
-        } else {
-            this.position.sub(direction);
         }
 
         // Update angle
