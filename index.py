@@ -5,3 +5,5 @@ import sys
 from webtools import Web
 
 Web.render('index.html')
+
+print('<a href="/priv">download</a>')

@@ -142,7 +142,9 @@ FixedCamera.prototype.update = function(mainCamera) {
 FixedCamera.prototype.regenerateArrow = function(mainCamera) {
     var vertices = new Array();
     var t = [0,1];
-    var f = [mainCamera.position.clone(), this.position.clone()];
+    var f0 = mainCamera.position.clone();
+    f0.add(Tools.sum(Tools.mul(this.up,-1), Tools.diff(this.target, this.position).normalize()));
+    var f = [Tools.sum(mainCamera.position, Tools.diff(this.target, this.position)).normalize(), this.position.clone()];
 
     var first = Tools.diff(mainCamera.target, mainCamera.position);
     first.normalize();
@@ -150,12 +152,12 @@ FixedCamera.prototype.regenerateArrow = function(mainCamera) {
     var fp = [Tools.mul(first,40), Tools.diff(this.target, this.position)];
     fp[1].normalize();
     fp[1].multiplyScalar(4);
-    var hermite = new Hermite.special.Polynom(f[0], f[1], fp[1]);
+    var hermite = new Hermite.special.Polynom(f0, f[1], fp[1]);
 
     var up = this.up.clone();
     var point;
     var deriv;
-    var limit = this.fullArrow ? 0.1 : 0.3;
+    var limit = this.fullArrow ? 0.1 : 0.2;
 
     // for (var i = this.fullArrow ? 0 : 0.5; i <= 1.001; i += 0.05) {
     for (var i = 1; i > limit; i -= 0.01) {
