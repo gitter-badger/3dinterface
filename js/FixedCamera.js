@@ -166,7 +166,7 @@ FixedCamera.prototype.regenerateArrow = function(mainCamera) {
         up.multiplyScalar(-1);
         up.normalize();
 
-        var coeff = 0.1*i;
+        var coeff = 0.1;
         var left = Tools.cross(up, deriv); left.normalize(); left.multiplyScalar(coeff);
         var other = Tools.cross(deriv, left);  other.normalize(); other.multiplyScalar(coeff);
 
