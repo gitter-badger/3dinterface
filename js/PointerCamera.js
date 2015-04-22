@@ -267,8 +267,8 @@ PointerCamera.prototype.onMouseUp = function(event) {
 }
 
 PointerCamera.prototype.log = function() {
-    console.log(this.position.x, this.position.y, this.position.z);
-    console.log(this.target.x, this.target.y, this.target.z);
+    console.log("(" + this.position.x + "," +  this.position.y + ',' + this.position.z + ')');
+    console.log("(" + this.target.x + "," +  this.target.y + ',' + this.target.z + ')');
 }
 
 // Static members
