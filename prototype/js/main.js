@@ -12,6 +12,7 @@ var loader;
 
 var container_size = {width: 1067, height: 600};
 var prev = {x:0, y:0, go:false};
+var showArrows = true;
 
 init();
 animate();
@@ -34,6 +35,11 @@ function init() {
     var collisions = document.getElementById('collisions');
     collisions.onchange = function() {
         cameras.mainCamera().collisions = collisions.checked;
+    }
+
+    var showarrows = document.getElementById('showarrows');
+    showarrows.onchange = function() {
+        showArrows = showarrows.checked;
     }
 
     // on initialise le moteur de rendu
@@ -218,7 +224,17 @@ function loadScene() {
 }
 
 function render() {
-    cameras.map(function(camera) { if (camera instanceof FixedCamera) show(camera); });
+    var transform = showArrows ? show : hide;
+    cameras.map(function(camera) {
+        if (camera instanceof FixedCamera) {
+            transform(camera);
+
+            camera.traverse(function(elt) {
+                elt.raycastable = showArrows;
+            });
+        }
+    });
+
     cameras.updateMainCamera();
     cameras.update(cameras.mainCamera());
     cameras.look();
@@ -313,12 +329,14 @@ function pointedCamera(event) {
 
         // Looking for cameras
         for (i in intersects) {
-            if ((intersects[i].distance > 0.5 && minDistance === undefined) || (intersects[i].distance < minDistance )) {
-                // We will not consider a line as clickable
-                if (! (intersects[i].object instanceof THREE.Line)) {
-                    if (!(intersects[i].object instanceof THREE.Mesh && intersects[i].object.material.opacity < 0.1)) {
-                        minDistance = intersects[i].distance;
-                        bestIndex = i;
+            if (intersects[i].object.raycastable) {
+                if ((intersects[i].distance > 0.5 && minDistance === undefined) || (intersects[i].distance < minDistance )) {
+                    // We will not consider a line as clickable
+                    if (! (intersects[i].object instanceof THREE.Line)) {
+                        if (!(intersects[i].object instanceof THREE.Mesh && intersects[i].object.material.opacity < 0.1)) {
+                            minDistance = intersects[i].distance;
+                            bestIndex = i;
+                        }
                     }
                 }
             }
