@@ -204,7 +204,8 @@ function init() {
     window.addEventListener('resize', onWindowResize, false);
 
     container.addEventListener('mousedown', function(event) { if (event.which == 1) click(event); }, false);
-    container.addEventListener('mousemove', mouseMove, false);
+    container.addEventListener('mousemove', updateMouse, false);
+    // container.addEventListener('keydown', updateMouse, false);
 
     camera1.collidableObjects = collidableObjects;
 
@@ -234,6 +235,8 @@ function loadScene() {
 }
 
 function render() {
+    updateMouse();
+
     var transform = showArrows ? show : hide;
     cameras.map(function(camera) {
         if (camera instanceof FixedCamera) {
@@ -312,12 +315,18 @@ function show(object) {
     object.traverse(function(object) {object.visible = true;});
 }
 
-function mouseMove(event) {
+function updateMouse(event) {
+
+    if (event !== undefined && event.clientX !== undefined) {
+        mouse.x = event.clientX - renderer.domElement.offsetLeft;
+        mouse.y = container.offsetHeight - (event.clientY - renderer.domElement.offsetTop);
+    }
+
     var hovered = pointedCamera(event);
 
     if (hovered !== undefined) {
-        prev.x = event.clientX - renderer.domElement.offsetLeft;
-        prev.y = container.offsetHeight - (event.clientY - renderer.domElement.offsetTop);
+        prev.x = mouse.x;
+        prev.y = mouse.y;
         prev.camera = hovered;
         prev.go = true;
     } else {
@@ -334,14 +343,12 @@ function click(event) {
 function pointedCamera(event) {
     var returnCamera;
 
-    var mouse = {
-        x:   ((event.clientX - renderer.domElement.offsetLeft) / renderer.domElement.width ) * 2 - 1,
-        y: - ((event.clientY - renderer.domElement.offsetTop)  / renderer.domElement.height) * 2 + 1
-    }
+    var x =   (mouse.x / renderer.domElement.width ) * 2 - 1;
+    var y = - ((container.offsetHeight - mouse.y) / renderer.domElement.height) * 2 + 1;
 
     var camera = cameras.mainCamera();
 
-    var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+    var vector = new THREE.Vector3(x, y, 0.5);
     vector.unproject(camera);
 
     raycaster.set(camera.position, vector.sub(camera.position).normalize());
