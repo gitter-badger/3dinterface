@@ -7,6 +7,7 @@ var cameras = new CameraContainer();
 var spheres = new Array(mesh_number);
 var visible = 0;
 var stats;
+var ctx2d;
 
 var loader;
 
@@ -50,7 +51,15 @@ function init() {
     renderer.setSize(container_size.width, container_size.height);
     renderer.shadowMapEnabled = true;
     renderer.setClearColor(0x87ceeb);
-    renderer.sortObjects = false
+    renderer.sortObjects = false;
+
+    var canvas = document.createElement('canvas');
+    canvas.style.position ="absolute";
+    canvas.style.cssFloat = 'top-left';
+    canvas.width = container_size.width;
+    canvas.height = container_size.height;
+    ctx2d = canvas.getContext('2d');
+    ctx2d.lineWidth = 2;
 
     // on initialise la scène
     scene = new THREE.Scene();
@@ -63,6 +72,7 @@ function init() {
     stats.domElement.style.position = 'absolute';
     stats.domElement.style.cssFloat = "top-left";
     container.appendChild( stats.domElement );
+    container.appendChild(canvas);
     container.appendChild(renderer.domElement);
 
     // init light
@@ -193,7 +203,7 @@ function init() {
 
     window.addEventListener('resize', onWindowResize, false);
 
-    container.addEventListener('mousedown', click, false);
+    container.addEventListener('mousedown', function(event) { if (event.which == 1) click(event); }, false);
     container.addEventListener('mousemove', mouseMove, false);
 
     camera1.collidableObjects = collidableObjects;
@@ -245,6 +255,9 @@ function render() {
     renderer.setViewport(left, bottom, width, height);
     renderer.render(scene, cameras.mainCamera());
 
+    // Clear canvas
+    ctx2d.clearRect(0,0,container_size.width, container_size.height);
+
     if (prev.go) {
         // Hide arrows
         cameras.map(function(camera) { if (camera instanceof FixedCamera) hide(camera); });
@@ -254,6 +267,18 @@ function render() {
         left = prev.x - width/2;
         bottom =  prev.y + height/5;
 
+
+        // Draw border
+        var can_bottom = container.offsetHeight - bottom - height - 1;
+        ctx2d.beginPath();
+        ctx2d.moveTo(left-1, can_bottom);
+        ctx2d.lineTo(left-1, can_bottom + height);
+        ctx2d.lineTo(left + width-1, can_bottom + height);
+        ctx2d.lineTo(left + width-1, can_bottom);
+        ctx2d.closePath();
+        ctx2d.stroke();
+
+        // Do render in previsualization
         prev.camera.look();
         renderer.setScissor(left, bottom, width, height);
         renderer.enableScissorTest (true);
