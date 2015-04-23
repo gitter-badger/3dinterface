@@ -1,17 +1,23 @@
-        <section>
-            <h2>Streaming simulator</h2>
-            <p>
-                In fact, it's not really streaming. The sphere is fully
-                preloaded and then, a mesh is created and vertices and faces
-                are dynamically added to this mesh as time goes by.
-            </p>
-            <p>
-                You can try with a different resolution (between 1 and 25)
-                <form action="" method="GET">
-                    Resolution : <input id="res" name="res" type="number" min="1" max="25" value="%(res)s" length=10/>
-                    <input type="submit" value="Go !" />
-                </form>
-            </p>
-            <div style="border-width:1px; border-style: solid;" id="container"></div>
-#
-        </section>
+---
+title: Streaming simulator
+layout: withjs
+extrajs:  <script>params = {}; params.get= {}; params.get.res = 5;</script>
+          <script>
+              submitFunction = function(event) {
+                  var form = document.getElementById('form');
+                  form.action = "{% url 'stream' %}" + document.getElementById('res').value;
+                  form.submit();
+              }
+          </script>
+          <script src="/static/js/stream/main.js"></script>
+---
+<section>
+    <h2>Streaming simulator</h2>
+    <p>
+        In fact, it's not really streaming. The sphere is fully
+        preloaded and then, a mesh is created and vertices and faces
+        are dynamically added to this mesh as time goes by.
+    </p>
+    <div style="border-width:1px; border-style: solid;" id="container"></div>
+</section>
+

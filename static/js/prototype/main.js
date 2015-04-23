@@ -59,7 +59,7 @@ function init() {
     canvas.width = container_size.width;
     canvas.height = container_size.height;
     ctx2d = canvas.getContext('2d');
-    ctx2d.lineWidth = 2;
+    ctx2d.lineWidth = 1;
 
     // on initialise la scène
     scene = new THREE.Scene();
@@ -116,6 +116,7 @@ function init() {
                 object.geometry.mergeVertices();
                 object.geometry.computeVertexNormals();
                 object.material.side = THREE.DoubleSide;
+                object.raycastable = true;
                 if (object.material.name === 'Material.103_princess_peaches_cast') {
                     object.material.transparent = true;
                 }
@@ -141,6 +142,7 @@ function init() {
                 object.material.side = THREE.DoubleSide;
                 object.geometry.mergeVertices();
                 object.geometry.computeVertexNormals();
+                object.raycastable = true;
                 if (object.material.name === 'Material.054_777F0E0B_c.bmp' ||
                     object.material.name === 'Material.061_5C3492AB_c.bmp'   ) {
                     object.material.transparent = true;
@@ -273,11 +275,21 @@ function render() {
 
         // Draw border
         var can_bottom = container.offsetHeight - bottom - height - 1;
+        ctx2d.strokeStyle = "#ffffff";
         ctx2d.beginPath();
         ctx2d.moveTo(left-1, can_bottom);
         ctx2d.lineTo(left-1, can_bottom + height);
         ctx2d.lineTo(left + width-1, can_bottom + height);
         ctx2d.lineTo(left + width-1, can_bottom);
+        ctx2d.closePath();
+        ctx2d.stroke();
+
+        ctx2d.strokeStyle = "#000000";
+        ctx2d.beginPath();
+        ctx2d.moveTo(left, can_bottom + 1);
+        ctx2d.lineTo(left, can_bottom + height - 1);
+        ctx2d.lineTo(left + width - 2 , can_bottom + height-1);
+        ctx2d.lineTo(left + width - 2, can_bottom+1);
         ctx2d.closePath();
         ctx2d.stroke();
 
@@ -363,12 +375,9 @@ function pointedCamera(event) {
         for (i in intersects) {
             if (intersects[i].object.raycastable) {
                 if ((intersects[i].distance > 0.5 && minDistance === undefined) || (intersects[i].distance < minDistance )) {
-                    // We will not consider a line as clickable
-                    if (! (intersects[i].object instanceof THREE.Line)) {
-                        if (!(intersects[i].object instanceof THREE.Mesh && intersects[i].object.material.opacity < 0.1)) {
-                            minDistance = intersects[i].distance;
-                            bestIndex = i;
-                        }
+                    if (!(intersects[i].object instanceof THREE.Mesh && intersects[i].object.material.opacity < 0.1)) {
+                        minDistance = intersects[i].distance;
+                        bestIndex = i;
                     }
                 }
             }

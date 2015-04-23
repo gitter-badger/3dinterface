@@ -52,7 +52,7 @@ function init() {
         // Capture of i
         // I am pretty good
         (function(i) {
-            loader.load('/data/spheres/' + (i+1) + '.obj', function (object) {
+            loader.load(static_path + 'data/spheres/' + (i+1) + '.obj', function (object) {
                 object.traverse(function (child) {
                     if (child instanceof THREE.Mesh ) {
                         child.material.color.setHex(0xff0000);

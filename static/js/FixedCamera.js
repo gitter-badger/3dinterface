@@ -160,7 +160,7 @@ FixedCamera.prototype.regenerateArrow = function(mainCamera) {
     var up = this.up.clone();
     var point;
     var deriv;
-    var limit = this.fullArrow ? 0.1 : 0.2;
+    var limit = this.fullArrow ? 0.1 : 0.3;
 
     // for (var i = this.fullArrow ? 0 : 0.5; i <= 1.001; i += 0.05) {
     for (var i = 1; i > limit; i -= 0.01) {

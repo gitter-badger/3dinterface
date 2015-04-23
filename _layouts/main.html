@@ -1,6 +1,14 @@
+<!doctype html>
+<html>
+    <head>
+        <title>3DUI - {{ page.title }}</title>
+        <meta charset='utf-8' />
+        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Ubuntu:400,700,400italic" />
+        <link rel="stylesheet" href="/static/css/style.css" />
+    </head>
     <body>
         <header>
-            <h1 id="title">Welcome ! <img src='/img/python-powered.svg' alt='Python powered' width=80/></h1>
+            <h1 id="title">Welcome !</h1>
         </header>
         <nav>
             <ul>
@@ -11,5 +19,8 @@
                 <li><a href="/stream/">Streaming simulator</a></li>
             </ul>
         </nav>
-#
+        {{ content }}
+        {{ page.extrajs }}
     </body>
+</html>
+
