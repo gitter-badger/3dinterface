@@ -134,7 +134,7 @@ FixedCamera.prototype.update = function(mainCamera) {
             elt.material.transparent =   new_value < 0.9;
             elt.material.opacity = new_value;
 
-            if (new_value < 0.05)
+            if (new_value < 0.1)
                 elt.material.transparent = elt.visible = false;
         }
     });
