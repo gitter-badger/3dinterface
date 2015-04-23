@@ -133,6 +133,8 @@ FixedCamera.prototype.update = function(mainCamera) {
         if (elt instanceof THREE.Mesh) {
             elt.material.transparent =   new_value < 0.9;
             elt.material.opacity = new_value;
+
+            elt.material.transparent = elt.visible = new_value > 0.05;
         }
     });
 
