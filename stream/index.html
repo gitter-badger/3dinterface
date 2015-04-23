@@ -2,13 +2,6 @@
 title: Streaming simulator
 layout: withjs
 extrajs:  <script>params = {}; params.get= {}; params.get.res = 5;</script>
-          <script>
-              submitFunction = function(event) {
-                  var form = document.getElementById('form');
-                  form.action = "{% url 'stream' %}" + document.getElementById('res').value;
-                  form.submit();
-              }
-          </script>
           <script src="/static/js/stream/main.js"></script>
 ---
 <section>
