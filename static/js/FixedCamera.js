@@ -97,8 +97,7 @@ var FixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
     });
 
     this.mesh = new THREE.Mesh(geometry, material);
-    // this.arrow = new THREE.Line(new THREE.Geometry(), new THREE.LineBasicMaterial({color: 0xff0000}), THREE.LinePieces);
-    this.arrow = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0xff0000, side:THREE.DoubleSide}));
+    this.arrow = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0xff0000, side:THREE.BackSide}));
 
     this.object3D = new THREE.Object3D();
     this.object3D.add(this.mesh);
