@@ -270,7 +270,7 @@ function render() {
         width = container.offsetWidth / 5;
         height = container.offsetHeight / 5;
         left = prev.x - width/2;
-        bottom =  prev.y + height/5;
+        bottom =  renderer.domElement.height - prev.y + height/5;
 
 
         // Draw border
@@ -329,9 +329,9 @@ function show(object) {
 
 function updateMouse(event) {
 
-    if (event !== undefined && event.clientX !== undefined) {
-        mouse.x = event.clientX - renderer.domElement.offsetLeft;
-        mouse.y = container.offsetHeight - (event.clientY - renderer.domElement.offsetTop);
+    if (event !== undefined) {
+        mouse.x = event.offsetX == undefined ? event.layerX : event.offsetX;
+        mouse.y = event.offsetY == undefined ? event.layerY : event.offsetY;
     }
 
     var hovered = pointedCamera(event);
@@ -355,8 +355,8 @@ function click(event) {
 function pointedCamera(event) {
     var returnCamera;
 
-    var x =   (mouse.x / renderer.domElement.width ) * 2 - 1;
-    var y = - ((container.offsetHeight - mouse.y) / renderer.domElement.height) * 2 + 1;
+    var x = ( mouse.x / renderer.domElement.width ) * 2 - 1;
+    var y = - (mouse.y / renderer.domElement.height) * 2 + 1;
 
     var camera = cameras.mainCamera();
 
