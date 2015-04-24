@@ -15,6 +15,7 @@ var loader;
 var container_size = {width: 1024, height: 576};
 var prev = {x:0, y:0, go:false};
 var showArrows = true;
+var beenFullscreen = false;
 
 init();
 animate();
@@ -221,6 +222,12 @@ function init() {
 }
 
 function fullscreen() {
+
+    if (!beenFullscreen) {
+        beenFullscreen = true;
+        alert('To quit fullscren mode, type ESC key');
+    }
+
     container.style.position = "absolute";
     container.style.cssFloat = "top-left";
     container.style.top = "0px";
