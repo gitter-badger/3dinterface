@@ -8,7 +8,7 @@ title: Index
 
     Jumps and bounce when you click on it :smiley:
 
-  - [Sphere with multi-resolution](/multipshere/)
+  - [Sphere with multi-resolution](/multisphere/)
 
     Lots of obj files loaded and displayed. When you click
     somewhere, the current obj is hidden and the next one, with a
