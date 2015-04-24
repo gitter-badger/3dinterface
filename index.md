@@ -29,4 +29,3 @@ title: Index
     A mesh of a sphere is fully loaded,
     and displayed progressively. This test is here to prove that we can dynamically
     add vertices and faces to a mesh.
-
