@@ -162,7 +162,7 @@ FixedCamera.prototype.regenerateArrow = function(mainCamera) {
     var limit = this.fullArrow ? 0.1 : 0.3;
 
     // for (var i = this.fullArrow ? 0 : 0.5; i <= 1.001; i += 0.05) {
-    for (var i = 1; i > limit; i -= 0.01) {
+    for (var i = 1; i > limit; i -= 0.05) {
         point = hermite.eval(i);
         deriv = hermite.prime(i);
         up.cross(deriv);
@@ -211,7 +211,7 @@ FixedCamera.prototype.regenerateArrow = function(mainCamera) {
     this.arrow.geometry.elementsNeedUpdate = true;
     this.arrow.geometry.groupsNeedUpdate = true;
     this.arrow.geometry.normalsNeedUpdate = true;
-    this.arrow.geometry.facesNeedUpdate = true;
+    // this.arrow.geometry.facesNeedUpdate = true;
 
 }
 

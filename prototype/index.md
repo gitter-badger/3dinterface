@@ -17,6 +17,7 @@ when you come closer to them, and you can automatically move to them by
 clicking on them. You can reset the camera at anytime by clicking on the reset
 button.
 
+<button id="full" style="margin-bottom: 10px;">Fullscreen</button>
 <button id="reset" style="margin-bottom:10px">Reset camera</button>
 <input type="checkbox" id="fullarrow" style="margin-bottom:10px">
 <label for="fullarrow">Full arrow</label>
@@ -25,4 +26,4 @@ button.
 <input type="checkbox" id="showarrows" style="margin-bottom:10px" checked>
 <label for="showarrows">Show arrows</label>
 
-<div id="container"> </div>
+<div id="container" style="padding: 0px; margin: 0px;"></div>

@@ -7,6 +7,7 @@ var cameras = new CameraContainer();
 var spheres = new Array(mesh_number);
 var visible = 0;
 var stats;
+var canvas;
 var ctx2d;
 
 var loader;
@@ -21,6 +22,8 @@ animate();
 function init() {
     // Collidable objects to prevent camera from traversing objects
     var collidableObjects = new Array();
+
+    document.getElementById('full').onclick = fullscreen;
 
     // Add the listener on the button
     document.getElementById('reset').onclick = function() { cameras.mainCamera().reset(); };
@@ -53,7 +56,7 @@ function init() {
     renderer.setClearColor(0x87ceeb);
     renderer.sortObjects = false;
 
-    var canvas = document.createElement('canvas');
+    canvas = document.createElement('canvas');
     canvas.style.position ="absolute";
     canvas.style.cssFloat = 'top-left';
     canvas.width = container_size.width;
@@ -78,7 +81,7 @@ function init() {
     // init light
     var directional_light = new THREE.DirectionalLight(0xdddddd);
     directional_light.position.set(1, 0.5, 1).normalize();
-    directional_light.castShadow = true;
+    directional_light.castShadow = false;
     scene.add(directional_light);
 
     var ambient_light = new THREE.AmbientLight(0x444444);
@@ -140,8 +143,8 @@ function init() {
         object.traverse(function (object) {
             if (object instanceof THREE.Mesh) {
                 object.material.side = THREE.DoubleSide;
-                object.geometry.mergeVertices();
-                object.geometry.computeVertexNormals();
+                // object.geometry.mergeVertices();
+                // object.geometry.computeVertexNormals();
                 object.raycastable = true;
                 if (object.material.name === 'Material.054_777F0E0B_c.bmp' ||
                     object.material.name === 'Material.061_5C3492AB_c.bmp'   ) {
@@ -207,7 +210,7 @@ function init() {
 
     container.addEventListener('mousedown', function(event) { if (event.which == 1) click(event); }, false);
     container.addEventListener('mousemove', updateMouse, false);
-    // container.addEventListener('keydown', updateMouse, false);
+    document.addEventListener('keydown', function(event) { if (event.keyCode == 27) { stopFullscreen();} }, false);
 
     camera1.collidableObjects = collidableObjects;
 
@@ -215,6 +218,50 @@ function init() {
     loadScene();
 
 
+}
+
+function fullscreen() {
+    container.style.position = "absolute";
+    container.style.cssFloat = "top-left";
+    container.style.top = "0px";
+    container.style.bottom = "0px";
+    container.style.left = "0px";
+    container.style.right = "0px";
+    container.style.width="";
+    container.style.height="";
+    container.style.overflow = "hidden";
+
+    // canvas.style.position = "absolute";
+    // canvas.style.cssFloat = "top-left";
+    // canvas.style.top = "0px";
+    // canvas.style.bottom = "0px";
+    // canvas.style.left = "0px";
+    // canvas.style.right = "0px";
+    // canvas.width=window.innerWidth;
+    // canvas.height=window.innerHeight;
+    // canvas.style.overflow = "hidden";
+
+    onWindowResize();
+}
+
+function stopFullscreen() {
+    container.style.position = "";
+    container.style.cssFloat = "";
+    container.style.width = container_size.width + "px";
+    container.style.height = container_size.height + "px";
+    container.style.overflow = "";
+
+    // canvas.style.position = "";
+    // canvas.style.cssFloat = "";
+    // canvas.style.width = container_size.width + "px";
+    // canvas.style.height = container_size.height + "px";
+    // canvas.style.overflow = "";
+
+    onWindowResize();
+}
+
+function log() {
+    console.log(container.style.width);
 }
 
 function createCamera(position, target) {
@@ -261,7 +308,14 @@ function render() {
     renderer.render(scene, cameras.mainCamera());
 
     // Clear canvas
-    ctx2d.clearRect(0,0,container_size.width, container_size.height);
+    // canvas.width = canvas.width;
+
+    width = container.offsetWidth / 5;
+    height = container.offsetHeight / 5;
+    left = prev.x - width/2;
+    bottom =  renderer.domElement.height - prev.y + height/5;
+
+    // ctx2d.clearRect(left-1,bottom+1,width+1,height+1);
 
     if (prev.go) {
         // Hide arrows
@@ -274,24 +328,24 @@ function render() {
 
 
         // Draw border
-        var can_bottom = container.offsetHeight - bottom - height - 1;
-        ctx2d.strokeStyle = "#ffffff";
-        ctx2d.beginPath();
-        ctx2d.moveTo(left-1, can_bottom);
-        ctx2d.lineTo(left-1, can_bottom + height);
-        ctx2d.lineTo(left + width-1, can_bottom + height);
-        ctx2d.lineTo(left + width-1, can_bottom);
-        ctx2d.closePath();
-        ctx2d.stroke();
+        // var can_bottom = container.offsetHeight - bottom - height ;
+        // ctx2d.strokeStyle = "#ffffff";
+        // ctx2d.beginPath();
+        // ctx2d.moveTo(left-1, can_bottom);
+        // ctx2d.lineTo(left-1, can_bottom + height);
+        // ctx2d.lineTo(left + width-1, can_bottom + height);
+        // ctx2d.lineTo(left + width-1, can_bottom);
+        // ctx2d.closePath();
+        // ctx2d.stroke();
 
-        ctx2d.strokeStyle = "#000000";
-        ctx2d.beginPath();
-        ctx2d.moveTo(left, can_bottom + 1);
-        ctx2d.lineTo(left, can_bottom + height - 1);
-        ctx2d.lineTo(left + width - 2 , can_bottom + height-1);
-        ctx2d.lineTo(left + width - 2, can_bottom+1);
-        ctx2d.closePath();
-        ctx2d.stroke();
+        // ctx2d.strokeStyle = "#000000";
+        // ctx2d.beginPath();
+        // ctx2d.moveTo(left, can_bottom + 1);
+        // ctx2d.lineTo(left, can_bottom + height - 1);
+        // ctx2d.lineTo(left + width - 2 , can_bottom + height-1);
+        // ctx2d.lineTo(left + width - 2, can_bottom+1);
+        // ctx2d.closePath();
+        // ctx2d.stroke();
 
         // Do render in previsualization
         prev.camera.look();
