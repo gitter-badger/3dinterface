@@ -17,8 +17,8 @@ when you come closer to them, and you can automatically move to them by
 clicking on them. You can reset the camera at anytime by clicking on the reset
 button.
 
-<button id="full" style="margin-bottom: 10px;">Fullscreen</button>
-<button id="reset" style="margin-bottom:10px">Reset camera</button>
+<button class="btn btn-primary" id="full" style="margin-bottom: 10px;">Fullscreen</button>
+<button class="btn btn-primary" id="reset" style="margin-bottom:10px">Reset camera</button>
 <input type="checkbox" id="fullarrow" style="margin-bottom:10px">
 <label for="fullarrow">Full arrow</label>
 <input type="checkbox" id="collisions" style="margin-bottom:10px" checked>
