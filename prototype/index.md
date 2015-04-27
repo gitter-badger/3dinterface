@@ -35,4 +35,4 @@ button.
 
 </div>
 
-<div id="container" style="padding: 0px; margin: 0px;"></div>
+<div id="container" style="padding: 0px; margin: 0px;" tabindex="1"></div>
