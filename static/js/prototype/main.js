@@ -69,7 +69,7 @@ function init() {
     container = document.getElementById('container');
     container.style.height = container_size.height() + 'px';
     container.style.width = container_size.width() + 'px';
-    renderer = new THREE.WebGLRenderer({alpha:true});
+    renderer = new THREE.WebGLRenderer({alpha:true, antialias:true});
     renderer.setSize(container_size.width(), container_size.height());
     // renderer.setSize(container_size.width(), container_size.height());
     renderer.shadowMapEnabled = true;
