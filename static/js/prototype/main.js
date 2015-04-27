@@ -175,64 +175,64 @@ function init() {
         });
     }, onProgress, onError );
 
-    loader.load( static_path + 'data/bobomb/bobomb battlefeild.obj',
-                 static_path + 'data/bobomb/bobomb battlefeild.mtl',
-            function ( object ) {
-                // object.position.z -= 10.9;
-                // object.position.y += 0.555;
-                // object.position.x += 3.23;
+    // loader.load( static_path + 'data/bobomb/bobomb battlefeild.obj',
+    //              static_path + 'data/bobomb/bobomb battlefeild.mtl',
+    //         function ( object ) {
+    //             // object.position.z -= 10.9;
+    //             // object.position.y += 0.555;
+    //             // object.position.x += 3.23;
 
-                var theta = 0.27;
-                object.rotation.y = Math.PI - theta;
+    //             var theta = 0.27;
+    //             object.rotation.y = Math.PI - theta;
 
-                object.up = new THREE.Vector3(0,0,1);
-                collidableObjects.push(object);
-                scene.add(object);
-                object.traverse(function (object) {
-                    if (object instanceof THREE.Mesh) {
-                        object.material.side = THREE.DoubleSide;
-                        console.log(object.geometry.vertices.length);
-                        object.geometry.mergeVertices();
-                        object.geometry.computeVertexNormals();
-                        if (object.material.name === 'Material.071_574B138E_c.bmp' ||
-                            object.material.name === 'Material.070_41A41EE3_c.bmp') {
-                            object.material.transparent = true;
-                        }
+    //             object.up = new THREE.Vector3(0,0,1);
+    //             collidableObjects.push(object);
+    //             scene.add(object);
+    //             object.traverse(function (object) {
+    //                 if (object instanceof THREE.Mesh) {
+    //                     object.material.side = THREE.DoubleSide;
+    //                     console.log(object.geometry.vertices.length);
+    //                     object.geometry.mergeVertices();
+    //                     object.geometry.computeVertexNormals();
+    //                     if (object.material.name === 'Material.071_574B138E_c.bmp' ||
+    //                         object.material.name === 'Material.070_41A41EE3_c.bmp') {
+    //                         object.material.transparent = true;
+    //                     }
 
-                    }
-                });
-            }, onProgress, onError );
+    //                 }
+    //             });
+    //         }, onProgress, onError );
 
-    loader.load( static_path + 'data/star/GrandStar.obj',
-                 static_path + 'data/star/GrandStar.mtl',
-    function ( object ) {
-        object.position.z -= 10.9;
-        object.position.y += 0.555;
-        object.position.x += 3.23;
+    // loader.load( static_path + 'data/star/GrandStar.obj',
+    //              static_path + 'data/star/GrandStar.mtl',
+    // function ( object ) {
+    //     object.position.z -= 10.9;
+    //     object.position.y += 0.555;
+    //     object.position.x += 3.23;
 
-        var theta = 0.27;
-        object.rotation.y = Math.PI - theta;
+    //     var theta = 0.27;
+    //     object.rotation.y = Math.PI - theta;
 
-        object.up = new THREE.Vector3(0,0,1);
-        scene.add(object);
-        collidableObjects.push(object);
-        object.traverse(function (object) {
-            if (object instanceof THREE.Mesh) {
-                object.scale.set(0.005,0.005,0.005);
-                object.position.x = 13;
-                object.position.z = -35;
-                object.position.y = 30;
+    //     object.up = new THREE.Vector3(0,0,1);
+    //     scene.add(object);
+    //     collidableObjects.push(object);
+    //     object.traverse(function (object) {
+    //         if (object instanceof THREE.Mesh) {
+    //             object.scale.set(0.005,0.005,0.005);
+    //             object.position.x = 13;
+    //             object.position.z = -35;
+    //             object.position.y = 30;
 
-                object.rotation.z = Math.PI/2;
-                object.rotation.x = Math.PI/2;
-                object.rotation.y = Math.PI;
-                object.material.side = THREE.DoubleSide;
-                object.geometry.mergeVertices();
-                object.geometry.computeVertexNormals();
-                object.raycastable = true;
-            }
-        });
-    }, onProgress, onError );
+    //             object.rotation.z = Math.PI/2;
+    //             object.rotation.x = Math.PI/2;
+    //             object.rotation.y = Math.PI;
+    //             object.material.side = THREE.DoubleSide;
+    //             object.geometry.mergeVertices();
+    //             object.geometry.computeVertexNormals();
+    //             object.raycastable = true;
+    //         }
+    //     });
+    // }, onProgress, onError );
 
     createCamera(
             new THREE.Vector3(-3.349895207953063, 5.148106346852601, 0.3365943929701533),
