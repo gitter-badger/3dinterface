@@ -4,7 +4,8 @@ layout: withjs
 extrajs: <script src="/static/js/prototype/main.js"></script>
 extrahead: <link rel="stylesheet" href="/static/css/prototype.css" />
 ---
-<div id="main-div">
+<div id="main-div" style="margin: 10px;">
+<div style="display: none;">
 
 <h2>3D Interface</h2>
 
@@ -26,13 +27,13 @@ button.
 
 <button class="btn btn-primary" id="full" style="margin-bottom: 10px;">Fullscreen</button>
 <button class="btn btn-primary" id="reset" style="margin-bottom:10px">Reset camera</button>
-<input type="checkbox" id="fullarrow" style="margin-bottom:10px">
-<label for="fullarrow">Full arrow</label>
-<input type="checkbox" id="collisions" style="margin-bottom:10px" checked>
-<label for="collisions">Collisions</label>
-<input type="checkbox" id="showarrows" style="margin-bottom:10px" checked>
-<label for="showarrows">Show arrows</label>
-
+<input  type="checkbox" id="fullarrow" style="margin-bottom:10px">
+<label  for="fullarrow">Full arrow</label>
+<input  type="checkbox" id="collisions" style="margin-bottom:10px" checked>
+<label  for="collisions">Collisions</label>
+<input  type="checkbox" id="showarrows" style="margin-bottom:10px" checked>
+<label  for="showarrows">Show arrows</label>
+</div>
 </div>
 
 <div id="container" style="padding: 0px; margin: 0px;" tabindex="1"></div>
