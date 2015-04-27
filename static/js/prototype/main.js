@@ -166,6 +166,7 @@ function init() {
     //             object.rotation.y = Math.PI - theta;
 
     //             object.up = new THREE.Vector3(0,0,1);
+    //             collidableObjects.push(object);
     //             scene.add(object);
     //             object.traverse(function (object) {
     //                 if (object instanceof THREE.Mesh) {
@@ -238,15 +239,15 @@ function fullscreen() {
     container.style.height="";
     container.style.overflow = "hidden";
 
-    // canvas.style.position = "absolute";
-    // canvas.style.cssFloat = "top-left";
-    // canvas.style.top = "0px";
-    // canvas.style.bottom = "0px";
-    // canvas.style.left = "0px";
-    // canvas.style.right = "0px";
-    // canvas.width=window.innerWidth;
-    // canvas.height=window.innerHeight;
-    // canvas.style.overflow = "hidden";
+    canvas.style.position = "absolute";
+    canvas.style.cssFloat = "top-left";
+    canvas.style.top = "0px";
+    canvas.style.bottom = "0px";
+    canvas.style.left = "0px";
+    canvas.style.right = "0px";
+    canvas.width=window.innerWidth;
+    canvas.height=window.innerHeight;
+    canvas.style.overflow = "hidden";
 
     onWindowResize();
 }
@@ -260,8 +261,12 @@ function stopFullscreen() {
 
     // canvas.style.position = "";
     // canvas.style.cssFloat = "";
-    // canvas.style.width = container_size.width + "px";
-    // canvas.style.height = container_size.height + "px";
+    canvas.style.top = "";
+    canvas.style.bottom = "";
+    canvas.style.left = "";
+    canvas.style.right = "";
+    canvas.width = container_size.width;
+    canvas.height = container_size.height;
     // canvas.style.overflow = "";
 
     onWindowResize();
@@ -315,14 +320,12 @@ function render() {
     renderer.render(scene, cameras.mainCamera());
 
     // Clear canvas
-    // canvas.width = canvas.width;
+    canvas.width = canvas.width;
 
     width = container.offsetWidth / 5;
     height = container.offsetHeight / 5;
     left = prev.x - width/2;
     bottom =  renderer.domElement.height - prev.y + height/5;
-
-    // ctx2d.clearRect(left-1,bottom+1,width+1,height+1);
 
     if (prev.go) {
         // Hide arrows
@@ -335,24 +338,24 @@ function render() {
 
 
         // Draw border
-        // var can_bottom = container.offsetHeight - bottom - height ;
-        // ctx2d.strokeStyle = "#ffffff";
-        // ctx2d.beginPath();
-        // ctx2d.moveTo(left-1, can_bottom);
-        // ctx2d.lineTo(left-1, can_bottom + height);
-        // ctx2d.lineTo(left + width-1, can_bottom + height);
-        // ctx2d.lineTo(left + width-1, can_bottom);
-        // ctx2d.closePath();
-        // ctx2d.stroke();
+        var can_bottom = container.offsetHeight - bottom - height ;
+        ctx2d.strokeStyle = "#ffffff";
+        ctx2d.beginPath();
+        ctx2d.moveTo(left-1, can_bottom);
+        ctx2d.lineTo(left-1, can_bottom + height);
+        ctx2d.lineTo(left + width-1, can_bottom + height);
+        ctx2d.lineTo(left + width-1, can_bottom);
+        ctx2d.closePath();
+        ctx2d.stroke();
 
-        // ctx2d.strokeStyle = "#000000";
-        // ctx2d.beginPath();
-        // ctx2d.moveTo(left, can_bottom + 1);
-        // ctx2d.lineTo(left, can_bottom + height - 1);
-        // ctx2d.lineTo(left + width - 2 , can_bottom + height-1);
-        // ctx2d.lineTo(left + width - 2, can_bottom+1);
-        // ctx2d.closePath();
-        // ctx2d.stroke();
+        ctx2d.strokeStyle = "#000000";
+        ctx2d.beginPath();
+        ctx2d.moveTo(left, can_bottom + 1);
+        ctx2d.lineTo(left, can_bottom + height - 1);
+        ctx2d.lineTo(left + width - 2 , can_bottom + height-1);
+        ctx2d.lineTo(left + width - 2, can_bottom+1);
+        ctx2d.closePath();
+        ctx2d.stroke();
 
         // Do render in previsualization
         prev.camera.look();
