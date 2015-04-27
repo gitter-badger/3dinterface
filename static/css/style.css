@@ -2,3 +2,17 @@ body {
     padding-top: 50px;
     text-align: justify;
 }
+
+html, body {
+    height: 100%;
+}
+
+#main-section {
+    min-height: 100%;
+}
+
+#container {
+    position: absolute;
+    margin: 0 auto;
+    min-height: 100%;
+}

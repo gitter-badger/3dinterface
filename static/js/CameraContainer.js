@@ -15,6 +15,7 @@ CameraContainer.prototype.mainCamera = function(id) {
 }
 
 CameraContainer.prototype.forEach = function(callback) {
+    callback(this.pointerCamera);
     this.cameras.forEach(callback);
 }
 

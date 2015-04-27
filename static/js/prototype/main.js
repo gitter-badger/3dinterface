@@ -12,7 +12,25 @@ var ctx2d;
 
 var loader;
 
-var container_size = {width: 1024, height: 576};
+var main_section = document.getElementById('main-section');
+var offset = function() {
+    return
+        document.getElementById('nav').offsetHeight
+        + document.getElementById('main-div').offsetHeight;
+}
+
+console.log(document.getElementById('main-div').offsetHeight);
+var container_size = {
+    width: function() { return main_section.clientWidth; },
+    height: function() {
+        return main_section.clientHeight
+            - document.getElementById('nav').offsetHeight
+            - document.getElementById('main-div').offsetHeight;
+    }
+};
+
+console.log(container_size.width(), container_size.height());
+
 var prev = {x:0, y:0, go:false};
 var showArrows = true;
 var beenFullscreen = false;
@@ -49,19 +67,19 @@ function init() {
 
     // on initialise le moteur de rendu
     container = document.getElementById('container');
-    container.style.height = container_size.height + 'px';
-    container.style.width = container_size.width + 'px';
+    container.style.height = container_size.height() + 'px';
+    container.style.width = container_size.width() + 'px';
     renderer = new THREE.WebGLRenderer({alpha:true});
-    renderer.setSize(container_size.width, container_size.height);
+    renderer.setSize(container_size.width(), container_size.height());
+    // renderer.setSize(container_size.width(), container_size.height());
     renderer.shadowMapEnabled = true;
     renderer.setClearColor(0x87ceeb);
-    renderer.sortObjects = false;
 
     canvas = document.createElement('canvas');
     canvas.style.position ="absolute";
     canvas.style.cssFloat = 'top-left';
-    canvas.width = container_size.width;
-    canvas.height = container_size.height;
+    canvas.width = container_size.width();
+    canvas.height = container_size.height();
     ctx2d = canvas.getContext('2d');
     ctx2d.lineWidth = 1;
 
@@ -81,7 +99,7 @@ function init() {
 
     // init light
     var directional_light = new THREE.DirectionalLight(0xdddddd);
-    directional_light.position.set(1, 0.5, 1).normalize();
+    directional_light.position.set(1, 2.5, 1).normalize();
     directional_light.castShadow = false;
     scene.add(directional_light);
 
@@ -89,7 +107,7 @@ function init() {
     scene.add(ambient_light);
 
     // on initialise la camera que l’on place ensuite sur la scène
-    var camera1 = new PointerCamera(50, container_size.width / container_size.height, 0.01, 100000, container);
+    var camera1 = new PointerCamera(50, container_size.width() / container_size.height(), 0.01, 100000, container);
     camera1.speed = 0.001;
     camera1.reset();
     scene.add(camera1);
@@ -109,6 +127,8 @@ function init() {
 
     // THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
     var loader = new THREE.OBJMTLLoader();
+
+
     loader.load( static_path + 'data/castle/princess peaches castle (outside).obj',
                  static_path + 'data/castle/princess peaches castle (outside).mtl',
     function ( object ) {
@@ -155,28 +175,64 @@ function init() {
         });
     }, onProgress, onError );
 
-    // loader.load( static_path + 'data/bobomb/bobomb battlefeild.obj',
-    //              static_path + 'data/bobomb/bobomb battlefeild.mtl',
-    //         function ( object ) {
-    //             // object.position.z -= 10.9;
-    //             // object.position.y += 0.555;
-    //             // object.position.x += 3.23;
+    loader.load( static_path + 'data/bobomb/bobomb battlefeild.obj',
+                 static_path + 'data/bobomb/bobomb battlefeild.mtl',
+            function ( object ) {
+                // object.position.z -= 10.9;
+                // object.position.y += 0.555;
+                // object.position.x += 3.23;
 
-    //             var theta = 0.27;
-    //             object.rotation.y = Math.PI - theta;
+                var theta = 0.27;
+                object.rotation.y = Math.PI - theta;
 
-    //             object.up = new THREE.Vector3(0,0,1);
-    //             collidableObjects.push(object);
-    //             scene.add(object);
-    //             object.traverse(function (object) {
-    //                 if (object instanceof THREE.Mesh) {
-    //                     object.material.side = THREE.DoubleSide;
-    //                     console.log(object.geometry.vertices.length);
-    //                     object.geometry.mergeVertices();
-    //                     object.geometry.computeVertexNormals();
-    //                 }
-    //             });
-    //         }, onProgress, onError );
+                object.up = new THREE.Vector3(0,0,1);
+                collidableObjects.push(object);
+                scene.add(object);
+                object.traverse(function (object) {
+                    if (object instanceof THREE.Mesh) {
+                        object.material.side = THREE.DoubleSide;
+                        console.log(object.geometry.vertices.length);
+                        object.geometry.mergeVertices();
+                        object.geometry.computeVertexNormals();
+                        if (object.material.name === 'Material.071_574B138E_c.bmp' ||
+                            object.material.name === 'Material.070_41A41EE3_c.bmp') {
+                            object.material.transparent = true;
+                        }
+
+                    }
+                });
+            }, onProgress, onError );
+
+    loader.load( static_path + 'data/star/GrandStar.obj',
+                 static_path + 'data/star/GrandStar.mtl',
+    function ( object ) {
+        object.position.z -= 10.9;
+        object.position.y += 0.555;
+        object.position.x += 3.23;
+
+        var theta = 0.27;
+        object.rotation.y = Math.PI - theta;
+
+        object.up = new THREE.Vector3(0,0,1);
+        scene.add(object);
+        collidableObjects.push(object);
+        object.traverse(function (object) {
+            if (object instanceof THREE.Mesh) {
+                object.scale.set(0.005,0.005,0.005);
+                object.position.x = 13;
+                object.position.z = -35;
+                object.position.y = 30;
+
+                object.rotation.z = Math.PI/2;
+                object.rotation.x = Math.PI/2;
+                object.rotation.y = Math.PI;
+                object.material.side = THREE.DoubleSide;
+                object.geometry.mergeVertices();
+                object.geometry.computeVertexNormals();
+                object.raycastable = true;
+            }
+        });
+    }, onProgress, onError );
 
     createCamera(
             new THREE.Vector3(-3.349895207953063, 5.148106346852601, 0.3365943929701533),
@@ -255,8 +311,8 @@ function fullscreen() {
 function stopFullscreen() {
     container.style.position = "";
     container.style.cssFloat = "";
-    container.style.width = container_size.width + "px";
-    container.style.height = container_size.height + "px";
+    container.style.width = container_size.width() + "px";
+    container.style.height = container_size.height() + "px";
     container.style.overflow = "";
 
     // canvas.style.position = "";
@@ -265,8 +321,8 @@ function stopFullscreen() {
     canvas.style.bottom = "";
     canvas.style.left = "";
     canvas.style.right = "";
-    canvas.width = container_size.width;
-    canvas.height = container_size.height;
+    canvas.width = container_size.width();
+    canvas.height = container_size.height();
     // canvas.style.overflow = "";
 
     onWindowResize();
@@ -279,7 +335,7 @@ function log() {
 function createCamera(position, target) {
     var camera = new FixedCamera(
             50,
-            container_size.width / container_size.height,
+            container_size.width() / container_size.height(),
             1,
             100000,
             position,
@@ -313,7 +369,7 @@ function render() {
     cameras.update(cameras.mainCamera());
     cameras.look();
 
-    var left = 0, bottom = 0, width = container.offsetWidth, height = container.offsetHeight;
+    var left = 0, bottom = 0, width = container_size.width(), height = container_size.height();
     renderer.setScissor(left, bottom, width, height);
     renderer.enableScissorTest(true);
     renderer.setViewport(left, bottom, width, height);
@@ -322,8 +378,8 @@ function render() {
     // Clear canvas
     canvas.width = canvas.width;
 
-    width = container.offsetWidth / 5;
-    height = container.offsetHeight / 5;
+    width = container_size.width() / 5;
+    height = container_size.height() / 5;
     left = prev.x - width/2;
     bottom =  renderer.domElement.height - prev.y + height/5;
 
@@ -331,14 +387,14 @@ function render() {
         // Hide arrows
         cameras.map(function(camera) { if (camera instanceof FixedCamera) hide(camera); });
 
-        width = container.offsetWidth / 5;
-        height = container.offsetHeight / 5;
-        left = prev.x - width/2;
-        bottom =  renderer.domElement.height - prev.y + height/5;
+        width  = Math.floor(container_size.width() / 5);
+        height = Math.floor(container_size.height() / 5);
+        left   = Math.floor(prev.x - width/2);
+        bottom = Math.floor(renderer.domElement.height - prev.y + height/5);
 
 
         // Draw border
-        var can_bottom = container.offsetHeight - bottom - height ;
+        var can_bottom = container_size.height() - bottom - height ;
         ctx2d.strokeStyle = "#ffffff";
         ctx2d.beginPath();
         ctx2d.moveTo(left-1, can_bottom);
@@ -376,10 +432,16 @@ function animate() {
 }
 
 function onWindowResize() {
-    cameras.forEach(function(camera) {camera.aspect = container.offsetWidth / container.offsetHeight;});
-    cameras.forEach(function(camera) {camera.updateProjectionMatrix();});
 
-    renderer.setSize(container.offsetWidth, container.offsetHeight);
+    container.style.width = container_size.width() + "px";
+    container.style.height = container_size.height() + "px";
+
+    canvas.width = container_size.width();
+    canvas.height = container_size.height();
+
+    renderer.setSize(container_size.width(), container_size.height());
+    cameras.forEach(function(camera) {camera.aspect = container_size.width() / container_size.height();});
+    cameras.forEach(function(camera) {camera.updateProjectionMatrix();});
     render();
 }
 
