@@ -46,8 +46,8 @@ var PointerCamera = function() {
     var onMouseMove = function(event) {self.onMouseMove(event); };
     var onMouseUp = function(event) {self.onMouseUp(event); };
 
-    listenerTarget.addEventListener('keydown', onKeyDown, false);
-    listenerTarget.addEventListener('keyup', onKeyUp, false);
+    document.addEventListener('keydown', onKeyDown, false);
+    document.addEventListener('keyup', onKeyUp, false);
     listenerTarget.addEventListener('mousedown', function(event) { if (event.which == 1) onMouseDown(event);}, false);
     listenerTarget.addEventListener('mousemove', function(event) { if (event.which == 1) onMouseMove(event);}, false);
     listenerTarget.addEventListener('mouseup', onMouseUp, false);
