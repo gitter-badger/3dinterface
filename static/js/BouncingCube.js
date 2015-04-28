@@ -1,7 +1,3 @@
-DT = new THREE.Vector3(0.1,0.1,0.1);
-FRICTION = new THREE.Vector3(1, 1, 1);
-G = new THREE.Vector3(0,0,-10);
-
 var BouncingCube = function(size, style) {
     Cube.call(this, size, style);
 
@@ -16,21 +12,25 @@ BouncingCube.prototype.constructor = BouncingCube;
 BouncingCube.prototype.update = function() {
     // Compute new center
     var speed_clone = this.speed.clone();
-    speed_clone.multiply(DT);
+    speed_clone.multiply(BouncingCube.DT);
 
-    this.speed.add(G);
+    this.speed.add(BouncingCube.G);
 
     if (this.speed.dot(this.speed) > 100) {
         this.center.add(speed_clone);
     }
 
     if (this.center.z < 0) {
-        this.speed.multiply(new THREE.Vector3(1,1,-0.5));
+        this.speed.multiply(BouncingCube.FRICTION);
         this.center.z = 0;
     }
 
     // Update the mesh
     this.mesh.position.set(this.center.x, this.center.y, this.center.z);
-
-    // console.log(this.center.x, this.center.y, this.center.z);
 }
+
+// Static variables
+BouncingCube.DT = new THREE.Vector3(0.1,0.1,0.1);
+BouncingCube.FRICTION = new THREE.Vector3(1, 1, -0.5);
+BouncingCube.G = new THREE.Vector3(0,0,-10);
+
