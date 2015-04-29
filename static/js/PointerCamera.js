@@ -247,6 +247,16 @@ PointerCamera.prototype.log = function() {
     console.log("(" + this.target.x + "," +  this.target.y + ',' + this.target.z + ')');
 }
 
+PointerCamera.prototype.save = function() {
+    this.backup = {};
+    this.backup.position = this.position.clone();
+    this.backup.target = this.target.clone();
+}
+
+PointerCamera.prototype.load = function() {
+    this.move(this.backup);
+}
+
 // Static members
 PointerCamera.DISTANCE_X = 1000;
 PointerCamera.DISTANCE_Z = 300;

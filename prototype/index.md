@@ -26,6 +26,7 @@ button.
 
 <button class="btn btn-primary" id="full" style="margin-bottom: 10px; display: none;">Fullscreen</button>
 <button class="btn btn-primary" id="reset" style="margin-bottom:10px">Reset camera</button>
+<button class="btn btn-primary" id="undo" style="margin-bottom:10px">Undo</button>
 <input  type="checkbox" id="fullarrow" style="margin-bottom:10px">
 <label  for="fullarrow">Full arrow</label>
 <input  type="checkbox" id="collisions" style="margin-bottom:10px" checked>

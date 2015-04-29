@@ -65,6 +65,10 @@ function init() {
         showArrows = showarrows.checked;
     }
 
+    document.getElementById('undo').onclick = function() {
+        cameras.mainCamera().load();
+    }
+
     // on initialise le moteur de rendu
     container = document.getElementById('container');
     container.style.height = container_size.height() + 'px';
@@ -474,8 +478,10 @@ function updateMouse(event) {
 
 function click(event) {
     var newCamera = pointedCamera(event);
-    if (newCamera !== undefined)
+    if (newCamera !== undefined) {
+        cameras.mainCamera().save();
         cameras.mainCamera().move(newCamera);
+    }
 }
 
 function pointedCamera(event) {
