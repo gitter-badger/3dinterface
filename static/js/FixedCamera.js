@@ -43,8 +43,8 @@ var FixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
                            Tools.sum(this.position, direction)
                           );
 
-    geometry.faces.push(new THREE.Face3(0,1,2), // new THREE.Face3(0,2,1),
-                        new THREE.Face3(0,2,3),  // new THREE.Face3(0,3,2)
+    geometry.faces.push(new THREE.Face3(0,2,1), // new THREE.Face3(0,2,1),
+                        new THREE.Face3(0,3,2),  // new THREE.Face3(0,3,2)
                         new THREE.Face3(4,1,2),
                         new THREE.Face3(4,0,1),
                         new THREE.Face3(4,3,0),
@@ -57,7 +57,7 @@ var FixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
         color : 0xff0000,
         transparent : true,
         opacity : 0.5,
-        side: THREE.DoubleSide
+        side: THREE.FrontSide
     });
 
     this.mesh = new THREE.Mesh(geometry, material);
