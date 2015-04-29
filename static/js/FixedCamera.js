@@ -22,11 +22,6 @@ var FixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
 
     this.target = this.position.clone();
     this.target.add(Tools.mul(direction,20));
-    // this.up = new THREE.Vector3(0,0,1);
-
-    // Compute corners
-
-    // Create the mesh to draw
 
     var geometry = new THREE.Geometry();
 
@@ -57,37 +52,6 @@ var FixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
                         );
 
     geometry.computeFaceNormals();
-
-    (function(self, direction, left, other, position) {
-        var material = new THREE.LineBasicMaterial({ color: '0x000000', transparent: true});
-        var geometry = new THREE.Geometry();
-        // var direction = Tools.mul(direction, 1);
-        var target = Tools.sum(position, direction);
-        // geometry.vertices.push(position, target);
-        geometry.vertices.push(
-            Tools.sum(Tools.sum(position, left), other),
-            Tools.diff(Tools.sum(position, other),left),
-            Tools.diff(Tools.diff(position, left),other),
-            Tools.sum(Tools.diff(position, other), left),
-            Tools.sum(Tools.sum(position, left), other),
-            Tools.sum(Tools.diff(position, other), left),
-
-            Tools.sum(position, direction),
-            Tools.sum(Tools.sum(position, left), other),
-
-            Tools.sum(position, direction),
-            Tools.diff(Tools.sum(position, other),left),
-
-            Tools.sum(position, direction),
-            Tools.diff(Tools.diff(position, left),other),
-
-            Tools.sum(position, direction),
-            Tools.sum(Tools.diff(position, other), left)
-        );
-
-        self.border = new THREE.Line(geometry, material);
-    })(this, direction, left, other, position);
-
 
     var material = new THREE.MeshLambertMaterial({
         color : 0xff0000,

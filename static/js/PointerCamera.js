@@ -23,7 +23,6 @@ var PointerCamera = function() {
     this.position = new THREE.Vector3();
     this.forward = new THREE.Vector3();
     this.left = new THREE.Vector3();
-    // this.up = new THREE.Vector3(0,0,1);
     this.target = new THREE.Vector3(0,1,0);
 
     // Stuff for events
@@ -62,7 +61,7 @@ PointerCamera.prototype.constructor = PointerCamera;
 // Update function
 PointerCamera.prototype.update = function() {
     if (this.moving) {
-        // Linear version
+        // Linear motion
         var position_direction = Tools.diff(this.new_position, this.position);
         var target_direction = Tools.diff(this.new_target, this.target);
 
@@ -74,30 +73,6 @@ PointerCamera.prototype.update = function() {
             this.moving = false;
             this.anglesFromVectors();
         }
-
-        // Hermite polynom version
-        // var eval = this.hermite.eval(this.t);
-        // this.position.x = eval.x;
-        // this.position.y = eval.y;
-        // this.position.z = eval.z;
-
-        // this.target = Tools.sum(this.position, this.hermite.prime(this.t));
-
-        // this.t += 0.005;
-
-        // if (this.t > 1) {
-        //     this.moving = false;
-        //     // Update phi and theta so that return to reality does not hurt
-        //     var forward = Tools.diff(this.target, this.position);
-        //     forward.normalize();
-
-        //     this.phi = Math.asin(forward.y);
-
-        //     // Don't know why this line works... But thanks Thierry-san and
-        //     // Bastien because it seems to work...
-        //     this.theta = Math.atan2(forward.x, forward.z);
-
-        // }
 
     } else {
         // Update angles
