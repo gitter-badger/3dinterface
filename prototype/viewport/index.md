@@ -1,7 +1,7 @@
 ---
 title: Prototype
 layout: withjs
-extrajs: <script src="/static/js/prototype/main.js"></script>
+extrajs: <script src="/static/js/prototype/viewport/main.js"></script>
 extrahead: <link rel="stylesheet" href="/static/css/prototype.css" />
 ---
 <div id="main-div">
