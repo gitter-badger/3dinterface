@@ -35,6 +35,24 @@ var prev = {x:0, y:0, go:false};
 var showArrows = true;
 var beenFullscreen = false;
 
+var undoElement = document.getElementById('undo');
+var redoElement = document.getElementById('redo');
+
+function updateElements() {
+    // Update icon
+    if (!cameras.mainCamera().undoable()) {
+        undoElement.className = "btn btn-danger";
+    } else {
+        undoElement.className = "btn btn-primary";
+    }
+
+    if (!cameras.mainCamera().redoable()) {
+        redoElement.className = "btn btn-danger";
+    } else {
+        redoElement.className = "btn btn-primary";
+    }
+}
+
 init();
 animate();
 
@@ -65,8 +83,15 @@ function init() {
         showArrows = showarrows.checked;
     }
 
-    document.getElementById('undo').onclick = function() {
-        cameras.mainCamera().load();
+    undoElement.onclick = function() {
+        cameras.mainCamera().undo();
+        updateElements();
+
+    }
+
+    redoElement.onclick = function() {
+        cameras.mainCamera().redo();
+        updateElements();
     }
 
     // on initialise le moteur de rendu
@@ -479,8 +504,8 @@ function updateMouse(event) {
 function click(event) {
     var newCamera = pointedCamera(event);
     if (newCamera !== undefined) {
-        cameras.mainCamera().save();
         cameras.mainCamera().move(newCamera);
+        updateElements();
     }
 }
 

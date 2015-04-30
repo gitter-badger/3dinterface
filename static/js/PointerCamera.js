@@ -37,6 +37,9 @@ var PointerCamera = function() {
     // Raycaster for collisions
     this.raycaster = new THREE.Raycaster();
 
+    // Create history object
+    this.history = new History();
+
     // Set events from the document
     var self = this;
     var onKeyDown = function(event) {self.onKeyDown(event);};
@@ -76,10 +79,10 @@ PointerCamera.prototype.update = function() {
 
     } else {
         // Update angles
-        if (this.increasePhi)   this.phi   += this.sensitivity;
-        if (this.decreasePhi)   this.phi   -= this.sensitivity;
-        if (this.increaseTheta) this.theta += this.sensitivity;
-        if (this.decreaseTheta) this.theta -= this.sensitivity;
+        if (this.increasePhi)   {this.phi   += this.sensitivity; this.changed = true; }
+        if (this.decreasePhi)   {this.phi   -= this.sensitivity; this.changed = true; }
+        if (this.increaseTheta) {this.theta += this.sensitivity; this.changed = true; }
+        if (this.decreaseTheta) {this.theta -= this.sensitivity; this.changed = true; }
 
         if (this.dragging) {
             this.theta += this.mouseMove.x;
@@ -87,6 +90,8 @@ PointerCamera.prototype.update = function() {
 
             this.mouseMove.x = 0;
             this.mouseMove.y = 0;
+
+            this.changed = true;
         }
 
         // Clamp phi and theta
@@ -110,10 +115,10 @@ PointerCamera.prototype.update = function() {
         var direction = new THREE.Vector3();
 
         if (this.boost) speed *= 10;
-        if (this.moveForward)  direction.add(Tools.mul(forward, speed));
-        if (this.moveBackward) direction.sub(Tools.mul(forward, speed));
-        if (this.moveLeft)     direction.add(Tools.mul(left,    speed));
-        if (this.moveRight)    direction.sub(Tools.mul(left,    speed));
+        if (this.moveForward)  {direction.add(Tools.mul(forward, speed)); this.changed = true;}
+        if (this.moveBackward) {direction.sub(Tools.mul(forward, speed)); this.changed = true;}
+        if (this.moveLeft)     {direction.add(Tools.mul(left,    speed)); this.changed = true;}
+        if (this.moveRight)    {direction.sub(Tools.mul(left,    speed)); this.changed = true;}
 
         if (!this.collisions || !this.isColliding(direction)) {
             this.position.add(direction);
@@ -129,6 +134,7 @@ PointerCamera.prototype.reset = function() {
     this.position.copy(new THREE.Vector3(-8.849933489419644, 9.050627639459208, 0.6192960680432451));
     this.target.copy(new THREE.Vector3(17.945323228767702, -15.156828589982375, -16.585740412769756));
     this.anglesFromVectors();
+    this.save();
 }
 
 PointerCamera.prototype.vectorsFromAngles = function() {
@@ -154,7 +160,10 @@ PointerCamera.prototype.anglesFromVectors = function() {
     this.theta = Math.atan2(forward.x, forward.z);
 }
 
-PointerCamera.prototype.move = function(otherCamera) {
+PointerCamera.prototype.move = function(otherCamera, toSave) {
+    if (toSave === undefined)
+        toSave = true;
+
     this.moving = true;
     this.new_target = otherCamera.target.clone();
     this.new_position = otherCamera.position.clone();
@@ -163,6 +172,14 @@ PointerCamera.prototype.move = function(otherCamera) {
     var fp = [Tools.diff(this.target, this.position), Tools.diff(this.new_target, this.new_position)];
     this.hermite = new Hermite.Polynom(t,f,fp);
     this.t = 0;
+
+    if (toSave) {
+        if (this.changed) {
+            this.save();
+            this.changed = false;
+        }
+        this.history.addState({position: otherCamera.position.clone(), target: otherCamera.target.clone()});
+    }
 }
 
 PointerCamera.prototype.isColliding = function(direction) {
@@ -248,15 +265,74 @@ PointerCamera.prototype.log = function() {
 }
 
 PointerCamera.prototype.save = function() {
-    this.backup = {};
-    this.backup.position = this.position.clone();
-    this.backup.target = this.target.clone();
+    var backup = {};
+    backup.position = this.position.clone();
+    backup.target = this.target.clone();
+    this.history.addState(backup);
 }
 
-PointerCamera.prototype.load = function() {
-    this.move(this.backup);
+PointerCamera.prototype.undo = function() {
+    var move = this.history.undo();
+    if (move !== undefined)
+        this.move(move, false);
+}
+
+PointerCamera.prototype.redo = function() {
+    var move = this.history.redo();
+    if (move !== undefined)
+        this.move(move, false);
+}
+
+PointerCamera.prototype.undoable = function() {
+    return this.history.undoable();
+}
+
+PointerCamera.prototype.redoable = function() {
+    return this.history.redoable();
 }
 
 // Static members
 PointerCamera.DISTANCE_X = 1000;
 PointerCamera.DISTANCE_Z = 300;
+
+var History = function() {
+    this.states = new Array();
+    this.index = -1;
+    this.size = 0;
+    console.log('New state ' + this.index + ' / ' + this.size);
+}
+
+History.prototype.addState = function(state) {
+    ++this.index;
+    this.size = this.index + 1;
+    this.states[this.size-1] = state;
+    console.log('New state ' + this.index + ' / ' + this.size);
+}
+
+History.prototype.undo = function() {
+    if (this.undoable()) {
+        this.index--;
+        console.log('New state ' + this.index + ' / ' + this.size);
+        return this.currentState();
+    }
+}
+
+History.prototype.redo = function() {
+    if (this.redoable()) {
+        this.index++;
+        console.log('New state ' + this.index + ' / ' + this.size);
+        return this.currentState();
+    }
+}
+
+History.prototype.undoable = function() {
+    return this.index > 0;
+}
+
+History.prototype.redoable = function() {
+    return this.index < this.size - 1;
+}
+
+History.prototype.currentState = function() {
+    return this.states[this.index];
+}

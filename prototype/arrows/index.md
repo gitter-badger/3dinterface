@@ -26,7 +26,14 @@ button.
 
 <button class="btn btn-primary" id="full" style="margin-bottom: 10px; display: none;">Fullscreen</button>
 <button class="btn btn-primary" id="reset" style="margin-bottom:10px">Reset camera</button>
-<button class="btn btn-primary" id="undo" style="margin-bottom:10px">Undo</button>
+
+<button class="btn btn-danger" id="undo" style="margin-bottom:10px">
+<span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span>
+</button>
+
+<button class="btn btn-danger" id="redo" style="margin-bottom:10px">
+<span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span>
+</button>
 <input  type="checkbox" id="fullarrow" style="margin-bottom:10px">
 <label  for="fullarrow">Full arrow</label>
 <input  type="checkbox" id="collisions" style="margin-bottom:10px" checked>
