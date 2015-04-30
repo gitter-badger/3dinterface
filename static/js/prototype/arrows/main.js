@@ -41,13 +41,13 @@ var redoElement = document.getElementById('redo');
 function updateElements() {
     // Update icon
     if (!cameras.mainCamera().undoable()) {
-        undoElement.className = "btn btn-danger";
+        undoElement.className = "btn btn-default";
     } else {
         undoElement.className = "btn btn-primary";
     }
 
     if (!cameras.mainCamera().redoable()) {
-        redoElement.className = "btn btn-danger";
+        redoElement.className = "btn btn-default";
     } else {
         redoElement.className = "btn btn-primary";
     }
@@ -139,6 +139,7 @@ function init() {
     var camera1 = new PointerCamera(50, container_size.width() / container_size.height(), 0.01, 100000, container);
     camera1.speed = 0.001;
     camera1.reset();
+    camera1.save();
     scene.add(camera1);
     cameras.push(camera1);
 

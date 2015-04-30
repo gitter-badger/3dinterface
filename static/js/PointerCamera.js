@@ -134,7 +134,6 @@ PointerCamera.prototype.reset = function() {
     this.position.copy(new THREE.Vector3(-8.849933489419644, 9.050627639459208, 0.6192960680432451));
     this.target.copy(new THREE.Vector3(17.945323228767702, -15.156828589982375, -16.585740412769756));
     this.anglesFromVectors();
-    this.save();
 }
 
 PointerCamera.prototype.vectorsFromAngles = function() {
