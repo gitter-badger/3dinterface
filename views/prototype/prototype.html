@@ -1,8 +1,10 @@
----
-title: Prototype with old cameras
-layout: withjs
-extrahead: <link rel="stylesheet" href="/static/css/prototype.css" />
----
+<%{ '../withjs' }%>
+
+<%{ title %>Prototype with old cameras<%} %>
+<%{ extrajs %><%- extrajs %><%} %>
+<%{ extrahead %><link rel="stylesheet" href="/static/css/prototype.css" /><%} %>
+
+<%{ content %>
 <div id="main-div">
 <!--<div style="display: none;">-->
 <h2>3D Interface</h2>
@@ -43,3 +45,4 @@ button.
 <!-- </div> -->
 
 <div id="container" style="padding: 0px; margin: 0px;" tabindex="1"></div>
+<%} %>

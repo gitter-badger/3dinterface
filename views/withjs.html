@@ -1,6 +1,6 @@
----
-layout: main
-js: <script src="/static/js/three.js"></script>
+<%{ 'main.html' }%>
+<%{ js %>
+    <script src="/static/js/three.js"></script>
     <script src="/static/js/Tools.js"></script>
     <script src="/static/js/three/stats.min.js"></script>
     <script src="/static/js/three/DDSLoader.js"></script>
@@ -19,7 +19,4 @@ js: <script src="/static/js/three.js"></script>
     <script src="/static/js/CameraContainer.js"></script>
     <script src="/static/js/Hermite.js"></script>
     <script>static_path="/static/"</script>
----
-{{ content }}
-
-
+<%} %>

@@ -1,0 +1,16 @@
+<%{ '../withjs' }%>
+<%{ title %>Streaming simulator<%} %>
+<%{ extrajs %>
+<script>params = {}; params.get= {}; params.get.res = <%= resolution %>;</script>
+<script src="/static/js/stream/main.js"></script>
+<%} %>
+
+<%{ content %>
+<h2>Streaming simulator</h2>
+
+<p>In fact, it's not really streaming. The sphere is fully preloaded and then, a
+mesh is created and vertices and faces are dynamically added to this mesh as
+time goes by.</p>
+
+<div style="border-width:1px; border-style: solid;" id="container"></div>
+<%} %>

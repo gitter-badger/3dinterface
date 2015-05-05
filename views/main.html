@@ -7,8 +7,8 @@
         <link rel="stylesheet" href="/static/css/style.css" />
         <link rel="stylesheet" href="/static/css/syntax.css" />
         <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Ubuntu:400,700,400italic" />
-        {{ page.extrahead }}
-        <title>3DUI - {{ page.title }}</title>
+        <%{{ extrahead }}%>
+        <title><%= title %> - <%{{ title }}%></title>
     </head>
     <body>
         <nav id="nav" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -24,26 +24,26 @@
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li><a href="/bouncing/">Bouncing cube</a></li>
-                        <li><a href="/multisphere/">Multi-sphere</a></li>
+                        <li><a href="<%= urls.bouncing %>">Bouncing cube</a></li>
+                        <li><a href="<%= urls.multisphere %>">Multi-sphere</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Prototypes <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="/prototype/arrows/">Arrows</a></li>
-                                <li><a href="/prototype/viewports/">Viewport</a></li>
+                                <li><a href="<%= urls.arrows %>">Arrows</a></li>
+                                <li><a href="<%= urls.viewports %>">Viewports</a></li>
                             </ul>
                         </li>
-                        <li><a href="/stream/">Streaming simulator</a></li>
+                        <li><a href="<%= urls.stream %>">Streaming simulator</a></li>
                     </ul>
                 </div><!--/.nav-collapse -->
             </div>
         </nav>
         <section class="container" id="main-section">
-            {{ content }}
+            <%{{ content }}%>
         </section>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
         <script src="/static/bootstrap/js/bootstrap.min.js"></script>
-        {{ page.js }}
-        {{ page.extrajs }}
+        <%{{ js }}%>
+        <%{{ extrajs }}%>
     </body>
 </html>
