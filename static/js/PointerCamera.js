@@ -77,6 +77,21 @@ PointerCamera.prototype.update = function() {
             this.anglesFromVectors();
         }
 
+    } else if (this.movingHermite) {
+        // Hermite polynom version
+        var eval = this.hermitePosition.eval(this.t);
+        this.position.x = eval.x;
+        this.position.y = eval.y;
+        this.position.z = eval.z;
+
+        this.target = Tools.sum(this.position, this.hermiteAngles.eval(this.t));
+
+        this.t += 0.005;
+
+        if (this.t > 1) {
+            this.movingHermite = false;
+            this.anglesFromVectors();
+        }
     } else {
         // Update angles
         if (this.increasePhi)   {this.phi   += this.sensitivity; this.changed = true; }
@@ -171,6 +186,34 @@ PointerCamera.prototype.move = function(otherCamera, toSave) {
     var fp = [Tools.diff(this.target, this.position), Tools.diff(this.new_target, this.new_position)];
     this.hermite = new Hermite.Polynom(t,f,fp);
     this.t = 0;
+
+    if (toSave) {
+        if (this.changed) {
+            this.save();
+            this.changed = false;
+        }
+        this.history.addState({position: otherCamera.position.clone(), target: otherCamera.target.clone()});
+    }
+}
+
+PointerCamera.prototype.moveHermite = function(otherCamera, toSave) {
+    if (toSave === undefined)
+        toSave = true;
+
+    this.movingHermite = true;
+    this.t = 0;
+
+    this.hermitePosition = new Hermite.special.Polynom(
+        this.position.clone(),
+        otherCamera.position.clone(),
+        Tools.diff(otherCamera.target, otherCamera.position)
+    );
+
+    this.hermiteAngles = new Hermite.special.Polynom(
+        Tools.diff(this.target, this.position),
+        Tools.diff(otherCamera.target, otherCamera.position),
+        new THREE.Vector3()
+    );
 
     if (toSave) {
         if (this.changed) {

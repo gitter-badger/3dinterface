@@ -505,7 +505,7 @@ function updateMouse(event) {
 function click(event) {
     var newCamera = pointedCamera(event);
     if (newCamera !== undefined) {
-        cameras.mainCamera().move(newCamera);
+        cameras.mainCamera().moveHermite(newCamera);
         updateElements();
     }
 }
