@@ -1,7 +1,4 @@
-var pejs = require('pejs');
 var tools = require('../../my_modules/filterInt')
-
-views = pejs();
 
 module.exports.index = function(req, res, next) {
 
@@ -22,7 +19,8 @@ module.exports.index = function(req, res, next) {
     }
 
     res.setHeader('Content-Type', 'text/html');
-    views.render('stream/index.html', res.locals, function(err, result) {
+    res.render('index.jade', res.locals, function(err, result) {
+        console.log(err);
         res.send(result);
     });
 }

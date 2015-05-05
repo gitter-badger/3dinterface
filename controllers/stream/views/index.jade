@@ -1,0 +1,18 @@
+extends ../../../views/withjs
+
+block title
+    title #{title} - Streaming simulator
+
+block extrajs
+    script params = {}; params.get= {}; params.get.res = #{resolution}
+    script(src="/static/js/stream/main.js")
+
+block content
+    h2 Streaming simulator
+
+    p.
+        In fact, it's not really streaming. The sphere is fully preloaded and then,
+        a mesh is created and vertices and faces are dynamically added to this mesh
+        as time goes by.
+
+    #container

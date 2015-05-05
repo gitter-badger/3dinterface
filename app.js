@@ -1,14 +1,13 @@
 var http = require('http');
 var express = require('express');
-var pejs = require('pejs');
 var module = require('./my_modules/filterInt');
+var jade = require('jade');
 
 var app = express();
-var views = pejs();
 
 var urls = require('./urls');
 
-app.set('view engine', 'pejs');
+app.set('view engine', 'jade');
 
 app.use(function(req, res, next) {
     res.locals.title = "3DUI";
@@ -25,7 +24,7 @@ app.use(function(err, req, res, next) {
     if (err.status === 404) {
         res.setHeader('Content-Type', 'text/html');
 
-        views.render('404', res.locals, function(err, result) {
+        res.render('404.jade', res.locals, function(err, result) {
             res.send(result);
         });
     }
@@ -34,7 +33,7 @@ app.use(function(err, req, res, next) {
 app.use(function(req, res) {
     res.setHeader('Content-Type', 'text/html');
 
-    views.render('404', res.locals, function(err, result) {
+    res.render('404.jade', res.locals, function(err, result) {
         res.send(result);
     });
 });
