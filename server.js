@@ -39,7 +39,7 @@ app.use(function(req, res) {
     });
 });
 
-// Set ports and ip adress
+// Set ports and ip address
 var server_port, server_ip_address;
 if ( app.get('env') === 'development' ) {
     server_port = 4000;
