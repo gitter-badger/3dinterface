@@ -42,7 +42,6 @@ CameraSelecter.prototype.pointedCamera = function() {
             // if (this.cameras.getById(intersects[bestIndex].object.parent.id) !== undefined) {
                 var obj = intersects[bestIndex].object;
                 if (Recommendation === FixedCamera) {
-                    console.log("toto");
                     return this.cameras.getById(intersects[bestIndex].object.parent.id);
                 } else {
                     return this.cameras.getById(intersects[bestIndex].object.id);
