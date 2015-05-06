@@ -4,7 +4,15 @@ block title
     title #{title} - Prototype
 
 block extrajs
-    #{extrajs}
+    script(src="/static/js/prototype/initScene.js")
+    script(src="/static/js/prototype/raycasterTools.js")
+    script(src="/static/js/prototype/Previewer.js")
+    script(src="/static/js/prototype/ButtonManager.js")
+    if cameraStyle == 'arrows'
+        script Recommendation = FixedCamera;
+    else if cameraStyle == 'viewports'
+        script Recommendation = OldFixedCamera;
+    script(src="/static/js/prototype/main.js")
 
 block extrahead
     link(rel="stylesheet" href="/static/css/prototype.css")

@@ -1,5 +1,13 @@
-var CameraContainer = function () {
-    this.cameras = new Array();
+var CameraContainer = function (pointerCamera, cameras) {
+    if (cameras !== undefined) {
+        this.cameras = cameras;
+    } else {
+        this.cameras = [];
+    }
+
+    if (pointerCamera !== undefined) {
+        this.push(pointerCamera);
+    }
 }
 
 CameraContainer.prototype.mainCamera = function(id) {

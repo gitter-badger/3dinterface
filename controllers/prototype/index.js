@@ -10,7 +10,7 @@ module.exports.index = function(req, res) {
 module.exports.arrows = function(req, res) {
     res.setHeader('Content-Type', 'text/html');
 
-    res.locals.extrajs = '<script src="/static/js/prototype/arrows/main.js"></script>';
+    res.locals.cameraStyle = 'arrows';
 
     res.render('prototype.jade', res.locals, function(err, result) {
         console.log(err);
@@ -21,7 +21,7 @@ module.exports.arrows = function(req, res) {
 module.exports.viewports = function(req, res) {
     res.setHeader('Content-Type', 'text/html');
 
-    res.locals.extrajs = '<script src="/static/js/prototype/viewports/main.js"></script>';
+    res.locals.cameraStyle = 'viewports';
 
     res.render('prototype.jade', res.locals, function(err, result) {
         res.send(result);

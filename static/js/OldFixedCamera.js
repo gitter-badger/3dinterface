@@ -86,6 +86,7 @@ var OldFixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
     });
 
     this.mesh = new THREE.Mesh(geometry, material);
+    this.mesh.raycastable = true;
 }
 OldFixedCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 OldFixedCamera.prototype.constructor = OldFixedCamera;
