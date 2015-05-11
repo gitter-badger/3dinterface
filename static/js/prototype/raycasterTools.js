@@ -62,7 +62,7 @@ CameraSelecter.prototype.update = function(event) {
 
     var hovered = this.pointedCamera(event);
 
-    if (hovered !== undefined && !hovered instanceof Coin) {
+    if (hovered !== undefined && !(hovered instanceof Coin)) {
         this.prev.x = this.mouse.x;
         this.prev.y = this.mouse.y;
         this.prev.camera = hovered;
@@ -74,7 +74,7 @@ CameraSelecter.prototype.update = function(event) {
 
 CameraSelecter.prototype.click = function(event) {
     var newCamera = this.pointedCamera(event);
-    if (newCamera !== undefined && !newCamera instanceof Coin) {
+    if (newCamera !== undefined && !(newCamera instanceof Coin)) {
         this.cameras.mainCamera().moveHermite(newCamera);
         buttonManager.updateElements();
     } else if (newCamera instanceof Coin) {
