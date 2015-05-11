@@ -27,7 +27,7 @@ var ArrowCamera = function(arg1, arg2, arg3, arg4, position, target) {
     this.target.add(Tools.mul(direction,20));
 
 
-    this.arrow = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0xff0000, side:THREE.BackSide}));
+    this.arrow = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0x00ff00, side:THREE.BackSide}));
 
     this.object3D = new THREE.Object3D();
     this.object3D.add(this.initExtremity());
@@ -72,7 +72,7 @@ ArrowCamera.prototype.initExtremity = function() {
     geometry.computeFaceNormals();
 
     var material = new THREE.MeshLambertMaterial({
-        color : 0xff0000,
+        color : 0x00ff00,
         transparent : true,
         opacity : 0.5,
         side: THREE.FrontSide

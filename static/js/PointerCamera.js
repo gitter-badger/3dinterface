@@ -94,7 +94,7 @@ PointerCamera.prototype.hermiteMotion = function() {
 
     this.target = Tools.sum(this.position, this.hermiteAngles.eval(this.t));
 
-    this.t += 0.005;
+    this.t += 0.01;
 
     if (this.t > 1) {
         this.movingHermite = false;
@@ -155,8 +155,15 @@ PointerCamera.prototype.normalMotion = function() {
 }
 
 PointerCamera.prototype.reset = function() {
-    this.position.copy(new THREE.Vector3(-8.849933489419644, 9.050627639459208, 0.6192960680432451));
-    this.target.copy(new THREE.Vector3(17.945323228767702, -15.156828589982375, -16.585740412769756));
+    this.resetBobomb();
+    // this.position.copy(new THREE.Vector3(-8.849933489419644, 9.050627639459208, 0.6192960680432451));
+    // this.target.copy(new THREE.Vector3(17.945323228767702, -15.156828589982375, -16.585740412769756));
+    // this.anglesFromVectors();
+}
+
+PointerCamera.prototype.resetBobomb = function() {
+    this.position.copy(new THREE.Vector3(34.51854618261728,10.038879540840306,-21.772598201888613));
+    this.target.copy(new THREE.Vector3(-2.593404107644737,8.039712770013185,-6.983870133675925));
     this.anglesFromVectors();
 }
 
@@ -238,7 +245,7 @@ PointerCamera.prototype.isColliding = function(direction) {
     var intersects = this.raycaster.intersectObjects(this.collidableObjects, true);
 
     for (var i in intersects) {
-        if (intersects[i].distance < 0.1) {
+        if (intersects[i].distance < 100*this.speed) {
             return true;
         }
     }

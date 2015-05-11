@@ -10,6 +10,7 @@ var stats;
 var previewer;
 
 var loader;
+var coins;
 
 var main_section = document.getElementById('main-section');
 var offset = function() {
@@ -80,7 +81,7 @@ function init() {
     // Initialize pointer camera
     var camera1 = new PointerCamera(50, container_size.width() / container_size.height(), 0.01, 100000, container);
     camera1.speed = 0.001;
-    camera1.reset();
+    camera1.resetBobomb();
     camera1.save();
     scene.add(camera1);
 
@@ -97,7 +98,11 @@ function init() {
     var loader = new THREE.OBJMTLLoader();
 
     // Load scene
-    initPeachCastle(scene, collidableObjects, loader, static_path);
+    // initPeachCastle(scene, collidableObjects, loader, static_path);
+    initBobombScene(scene, collidableObjects, loader, static_path);
+    coins = createBobombCoins();
+
+    setTimeout(function() {coins.forEach(function(coin) { coin.addToScene(scene);})}, 1000);
 
     // Add listeners
     initListeners();
@@ -193,6 +198,9 @@ function render() {
             });
         }
     });
+
+    // Update coins
+    coins.forEach(function(coin) { coin.update(); });
 
     // Update main camera
     cameras.updateMainCamera();

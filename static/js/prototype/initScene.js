@@ -61,6 +61,7 @@ function initPeachCastle(scene, collidableObjects, loader, static_path) {
             });
         }
     );
+
 }
 
 
@@ -111,7 +112,7 @@ function createPeachCameras(width, height) {
     return cams;
 }
 
-function initBobombScene(scene, loader, static_path) {
+function initBobombScene(scene, collidableObjects, loader, static_path) {
     // Create loader if not already done
     if (loader === undefined) {
         loader = new THREE.OBJMTLLoader();
@@ -139,7 +140,6 @@ function initBobombScene(scene, loader, static_path) {
             object.traverse(function (object) {
                 if (object instanceof THREE.Mesh) {
                     object.material.side = THREE.DoubleSide;
-                    console.log(object.geometry.vertices.length);
                     object.geometry.mergeVertices();
                     object.geometry.computeVertexNormals();
                     if (object.material.name === 'Material.071_574B138E_c.bmp' ||
@@ -152,36 +152,51 @@ function initBobombScene(scene, loader, static_path) {
         }
     );
 
-    loader.load(
-        static_path + 'data/star/GrandStar.obj',
-        static_path + 'data/star/GrandStar.mtl',
-        function ( object ) {
-            object.position.z -= 10.9;
-            object.position.y += 0.555;
-            object.position.x += 3.23;
+    // loader.load(
+    //     static_path + 'data/star/GrandStar.obj',
+    //     static_path + 'data/star/GrandStar.mtl',
+    //     function ( object ) {
+    //         object.position.z -= 10.9;
+    //         object.position.y += 0.555;
+    //         object.position.x += 3.23;
 
-            var theta = 0.27;
-            object.rotation.y = Math.PI - theta;
+    //         var theta = 0.27;
+    //         object.rotation.y = Math.PI - theta;
 
-            object.up = new THREE.Vector3(0,0,1);
-            scene.add(object);
-            collidableObjects.push(object);
-            object.traverse(function (object) {
-                if (object instanceof THREE.Mesh) {
-                    object.scale.set(0.005,0.005,0.005);
-                    object.position.x = 13;
-                    object.position.z = -35;
-                    object.position.y = 30;
+    //         object.up = new THREE.Vector3(0,0,1);
+    //         scene.add(object);
+    //         collidableObjects.push(object);
+    //         object.traverse(function (object) {
+    //             if (object instanceof THREE.Mesh) {
+    //                 object.scale.set(0.005,0.005,0.005);
+    //                 object.position.x = 13;
+    //                 object.position.z = -35;
+    //                 object.position.y = 30;
 
-                    object.rotation.z = Math.PI/2;
-                    object.rotation.x = Math.PI/2;
-                    object.rotation.y = Math.PI;
-                    object.material.side = THREE.DoubleSide;
-                    object.geometry.mergeVertices();
-                    object.geometry.computeVertexNormals();
-                    object.raycastable = true;
-                }
-            });
-        }
-   );
+    //                 object.rotation.z = Math.PI/2;
+    //                 object.rotation.x = Math.PI/2;
+    //                 object.rotation.y = Math.PI;
+    //                 object.material.side = THREE.DoubleSide;
+    //                 object.geometry.mergeVertices();
+    //                 object.geometry.computeVertexNormals();
+    //                 object.raycastable = true;
+    //             }
+    //         });
+    //     }
+    //);
+}
+
+function createBobombCoins() {
+    var coins = [];
+
+    coins.push(
+        new Coin(30.451451579494677,12.95882671478358,-4.441244895059621),
+        new Coin(-23.255456493345882,15.763954882327724,-11.08029248078497),
+        new Coin(-7.238094745133173,12.95460420281499,-3.1009487490121885),
+        new Coin(-17.10578612221326,24.17871082944758,-11.574224169812915),
+        new Coin(-19.696802461559027,29.787916906980758,17.187300848990844),
+        new Coin(-12.418656949661646,17.09780294217035,32.472022253887665)
+    );
+
+    return coins;
 }
