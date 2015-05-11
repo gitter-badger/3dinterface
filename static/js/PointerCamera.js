@@ -64,85 +64,94 @@ PointerCamera.prototype.constructor = PointerCamera;
 // Update function
 PointerCamera.prototype.update = function() {
     if (this.moving) {
-        // Linear motion
-        var position_direction = Tools.diff(this.new_position, this.position);
-        var target_direction = Tools.diff(this.new_target, this.target);
-
-        this.position.add(Tools.mul(position_direction, 0.05));
-        this.target.add(Tools.mul(target_direction, 0.05));
-
-        if (Tools.norm2(Tools.diff(this.position, this.new_position)) < 0.01 &&
-            Tools.norm2(Tools.diff(this.target, this.new_target))  < 0.01) {
-            this.moving = false;
-            this.anglesFromVectors();
-        }
-
+        this.linearMotion();
     } else if (this.movingHermite) {
-        // Hermite polynom version
-        var eval = this.hermitePosition.eval(this.t);
-        this.position.x = eval.x;
-        this.position.y = eval.y;
-        this.position.z = eval.z;
-
-        this.target = Tools.sum(this.position, this.hermiteAngles.eval(this.t));
-
-        this.t += 0.005;
-
-        if (this.t > 1) {
-            this.movingHermite = false;
-            this.anglesFromVectors();
-        }
+        this.hermiteMotion();
     } else {
-        // Update angles
-        if (this.increasePhi)   {this.phi   += this.sensitivity; this.changed = true; }
-        if (this.decreasePhi)   {this.phi   -= this.sensitivity; this.changed = true; }
-        if (this.increaseTheta) {this.theta += this.sensitivity; this.changed = true; }
-        if (this.decreaseTheta) {this.theta -= this.sensitivity; this.changed = true; }
-
-        if (this.dragging) {
-            this.theta += this.mouseMove.x;
-            this.phi   -= this.mouseMove.y;
-
-            this.mouseMove.x = 0;
-            this.mouseMove.y = 0;
-
-            this.changed = true;
-        }
-
-        // Clamp phi and theta
-        this.phi = Math.min(Math.max(-(Math.PI/2-0.1),this.phi), Math.PI/2-0.1);
-        this.theta = ((this.theta - Math.PI) % (2*Math.PI)) + Math.PI;
-
-        // Compute vectors (position and target)
-        this.vectorsFromAngles();
-
-        // Update with events
-        var delta = 0.1;
-        var forward = this.forward.clone();
-        forward.multiplyScalar(400.0 * delta);
-        var left = this.up.clone();
-        left.cross(forward);
-        left.normalize();
-        left.multiplyScalar(400.0 * delta);
-
-        // Move only if no collisions
-        var speed = this.speed;
-        var direction = new THREE.Vector3();
-
-        if (this.boost) speed *= 10;
-        if (this.moveForward)  {direction.add(Tools.mul(forward, speed)); this.changed = true;}
-        if (this.moveBackward) {direction.sub(Tools.mul(forward, speed)); this.changed = true;}
-        if (this.moveLeft)     {direction.add(Tools.mul(left,    speed)); this.changed = true;}
-        if (this.moveRight)    {direction.sub(Tools.mul(left,    speed)); this.changed = true;}
-
-        if (!this.collisions || !this.isColliding(direction)) {
-            this.position.add(direction);
-        }
-
-        // Update angle
-        this.target = this.position.clone();
-        this.target.add(forward);
+        this.normalMotion();
     }
+}
+
+PointerCamera.prototype.linearMotion = function() {
+    var position_direction = Tools.diff(this.new_position, this.position);
+    var target_direction = Tools.diff(this.new_target, this.target);
+
+    this.position.add(Tools.mul(position_direction, 0.05));
+    this.target.add(Tools.mul(target_direction, 0.05));
+
+    if (Tools.norm2(Tools.diff(this.position, this.new_position)) < 0.01 &&
+        Tools.norm2(Tools.diff(this.target, this.new_target))  < 0.01) {
+        this.moving = false;
+    this.anglesFromVectors();
+    }
+}
+
+PointerCamera.prototype.hermiteMotion = function() {
+    var eval = this.hermitePosition.eval(this.t);
+    this.position.x = eval.x;
+    this.position.y = eval.y;
+    this.position.z = eval.z;
+
+    this.target = Tools.sum(this.position, this.hermiteAngles.eval(this.t));
+
+    this.t += 0.005;
+
+    if (this.t > 1) {
+        this.movingHermite = false;
+        this.anglesFromVectors();
+    }
+}
+
+PointerCamera.prototype.normalMotion = function() {
+    // Update angles
+    if (this.increasePhi)   {this.phi   += this.sensitivity; this.changed = true; }
+    if (this.decreasePhi)   {this.phi   -= this.sensitivity; this.changed = true; }
+    if (this.increaseTheta) {this.theta += this.sensitivity; this.changed = true; }
+    if (this.decreaseTheta) {this.theta -= this.sensitivity; this.changed = true; }
+
+    if (this.dragging) {
+        this.theta += this.mouseMove.x;
+        this.phi   -= this.mouseMove.y;
+
+        this.mouseMove.x = 0;
+        this.mouseMove.y = 0;
+
+        this.changed = true;
+    }
+
+    // Clamp phi and theta
+    this.phi = Math.min(Math.max(-(Math.PI/2-0.1),this.phi), Math.PI/2-0.1);
+    this.theta = ((this.theta - Math.PI) % (2*Math.PI)) + Math.PI;
+
+    // Compute vectors (position and target)
+    this.vectorsFromAngles();
+
+    // Update with events
+    var delta = 0.1;
+    var forward = this.forward.clone();
+    forward.multiplyScalar(400.0 * delta);
+    var left = this.up.clone();
+    left.cross(forward);
+    left.normalize();
+    left.multiplyScalar(400.0 * delta);
+
+    // Move only if no collisions
+    var speed = this.speed;
+    var direction = new THREE.Vector3();
+
+    if (this.boost) speed *= 10;
+    if (this.moveForward)  {direction.add(Tools.mul(forward, speed)); this.changed = true;}
+    if (this.moveBackward) {direction.sub(Tools.mul(forward, speed)); this.changed = true;}
+    if (this.moveLeft)     {direction.add(Tools.mul(left,    speed)); this.changed = true;}
+    if (this.moveRight)    {direction.sub(Tools.mul(left,    speed)); this.changed = true;}
+
+    if (!this.collisions || !this.isColliding(direction)) {
+        this.position.add(direction);
+    }
+
+    // Update angle
+    this.target = this.position.clone();
+    this.target.add(forward);
 }
 
 PointerCamera.prototype.reset = function() {
@@ -206,7 +215,7 @@ PointerCamera.prototype.moveHermite = function(otherCamera, toSave) {
     this.hermitePosition = new Hermite.special.Polynom(
         this.position.clone(),
         otherCamera.position.clone(),
-        Tools.diff(otherCamera.target, otherCamera.position)
+        Tools.mul(Tools.diff(otherCamera.target, otherCamera.position).normalize(),4)
     );
 
     this.hermiteAngles = new Hermite.special.Polynom(
