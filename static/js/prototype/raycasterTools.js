@@ -41,11 +41,10 @@ CameraSelecter.prototype.pointedCamera = function() {
         if (bestIndex !== undefined) {
             // if (this.cameras.getById(intersects[bestIndex].object.parent.id) !== undefined) {
                 var obj = intersects[bestIndex].object;
-                if (Recommendation === FixedCamera) {
+                if (Recommendation === FixedCamera || Recommendation === ReverseCamera) {
                     return this.cameras.getById(intersects[bestIndex].object.parent.id);
                 } else {
                     return this.cameras.getById(intersects[bestIndex].object.id);
-                    console.log('tata');
                 }
             // }
         }

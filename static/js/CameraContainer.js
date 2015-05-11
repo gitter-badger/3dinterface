@@ -52,7 +52,7 @@ CameraContainer.prototype.get = function(i) {
 
 CameraContainer.prototype.getById = function(id) {
     for (var i in this.cameras) {
-        if (this.cameras[i] instanceof FixedCamera) {
+        if (this.cameras[i] instanceof FixedCamera || this.cameras[i] instanceof ReverseCamera) {
             if (this.cameras[i].object3D !== undefined) {
                 if (this.cameras[i].object3D.id == id) {
                     return this.get(i);

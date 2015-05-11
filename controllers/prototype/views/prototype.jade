@@ -12,6 +12,8 @@ block extrajs
         script Recommendation = FixedCamera;
     else if cameraStyle == 'viewports'
         script Recommendation = OldFixedCamera;
+    else if cameraStyle == 'reverse'
+        script Recommendation = ReverseCamera
     script(src="/static/js/prototype/main.js")
 
 block extrahead

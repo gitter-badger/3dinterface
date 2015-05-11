@@ -5,3 +5,4 @@ module.exports.prototype = '/prototype/';
 module.exports.arrows = '/prototype/arrows/';
 module.exports.viewports = '/prototype/viewports/';
 module.exports.stream = '/stream/';
+module.exports.reverse = '/prototype/reverse/';

@@ -39,10 +39,10 @@ Previewer.prototype.render = function(prev, container_width, container_height) {
 
         // Do render in previsualization
         prev.camera.look();
-        renderer.setScissor(left, bottom, width, height);
-        renderer.enableScissorTest (true);
-        renderer.setViewport(left, bottom, width, height);
-        renderer.render(scene, prev.camera);
+        this.renderer.setScissor(left, bottom, width, height);
+        this.renderer.enableScissorTest (true);
+        this.renderer.setViewport(left, bottom, width, height);
+        this.renderer.render(scene, prev.camera);
     }
 
 }

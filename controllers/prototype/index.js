@@ -25,3 +25,13 @@ module.exports.viewports = function(req, res) {
         res.send(result);
     });
 }
+
+module.exports.reverse = function(req, res) {
+    res.setHeader('Content-Type', 'text/html');
+
+    res.locals.cameraStyle = 'reverse';
+
+    res.render('prototype.jade', res.locals, function(err, result) {
+        res.send(result);
+    });
+}
