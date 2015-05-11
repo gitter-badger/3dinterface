@@ -41,10 +41,16 @@ html(lang='fr')
                             a(href="#{urls.stream}") Streaming simulator
 
                     ul.nav.navbar-nav.navbar-right.navbar-form
-                        div.form-group
-                            a.btn.btn-default.btn-xs(type="button", href="https://github.com/tforgione/3dinterface")
-                                img(src="/static/GitHub-Mark/PNG/GitHub-Mark-32px.png")
-                                span(style={'margin':'10px'}) Github Repo
+                        div.form-group(style={margin: '5px'})
+                            a.btn.btn-default.btn-sm(type="button", href="https://github.com/tforgione/3dinterface")
+                                img(src="/static/GitHub-Mark/PNG/GitHub-Mark-32px.png", width="17px")
+                                span(style={'margin':'5px'}) Github Repo
+                        div.form-group(style={margin: '5px'})
+                            a(href="mailto:thomas.forgione@gmail.com")
+                                button.btn.btn-default.btn-sm(type="button")
+                                    span.glyphicon.glyphicon-envelope(aria-hidden=true)
+                                    span(style={'margin-left':'5px'}) Contact
+
 
         section#main-section.container
             block content
