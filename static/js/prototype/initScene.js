@@ -139,6 +139,7 @@ function initBobombScene(scene, collidableObjects, loader, static_path) {
             scene.add(object);
             object.traverse(function (object) {
                 if (object instanceof THREE.Mesh) {
+                    object.raycastable = true;
                     object.material.side = THREE.DoubleSide;
                     object.geometry.mergeVertices();
                     object.geometry.computeVertexNormals();
@@ -199,4 +200,41 @@ function createBobombCoins() {
     );
 
     return coins;
+}
+
+function createBobombCameras(width, height) {
+    var cams = [];
+
+    var createCamera = function(position, target) {
+        return new RecommendedCamera(
+            50,
+            width / height,
+            1,
+            100000,
+            position,
+            target
+        );
+    }
+
+    cams.push(
+        createCamera(
+            new THREE.Vector3(-24.10987782946019,26.75997424452833,-24.7814217620827),
+            new THREE.Vector3(-13.724964120740987,14.939165978074758,11.993869660150779)
+        ),
+        createCamera(
+            new THREE.Vector3(-13.484471970922971,20.25938194278451,-30.850247430073622),
+            new THREE.Vector3(-42.04654352929252,-7.608886431102082,-28.099304657929874)
+        ),
+        createCamera(
+            new THREE.Vector3(23.58849177613168,18.628351213754488,31.516769692916675),
+            new THREE.Vector3(8.319765065757787,-0.5486703304136178,-0.09189730426033549)
+        )
+        // createCamera(
+        //     new THREE.Vector3(28.438969076366728,18.888756501203087,26.694456000440766),
+        //     new THREE.Vector3(-5.369166248035665,2.54925886583683,12.909289954623416)
+        // )
+    );
+
+    return cams;
+
 }

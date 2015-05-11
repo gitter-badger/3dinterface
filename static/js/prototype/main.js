@@ -75,12 +75,12 @@ function init() {
     directional_light.castShadow = false;
     scene.add(directional_light);
 
-    var ambient_light = new THREE.AmbientLight(0x444444);
+    var ambient_light = new THREE.AmbientLight(0x555555);
     scene.add(ambient_light);
 
     // Initialize pointer camera
     var camera1 = new PointerCamera(50, container_size.width() / container_size.height(), 0.01, 100000, container);
-    camera1.speed = 0.001;
+    camera1.speed = 0.005;
     camera1.resetBobomb();
     camera1.save();
     scene.add(camera1);
@@ -90,7 +90,7 @@ function init() {
 
 
     // Initialize recommendations
-    var otherCams = createPeachCameras(container_size.width(), container_size.height());
+    var otherCams = createBobombCameras(container_size.width(), container_size.height());
     cameras = new CameraContainer(camera1, otherCams);
     otherCams.forEach(function(cam) { cam.addToScene(scene); });
 

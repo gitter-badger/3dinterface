@@ -1,19 +1,7 @@
 var Coin = function(x,y,z) {
-    if (Coin.BASIC_MESH !== null) {
-            this.mesh = Coin.BASIC_MESH.clone();
-            this.mesh.position.x = x;
-            this.mesh.position.y = y;
-            this.mesh.position.z = z;
-    } else {
-        (function(self) {
-            setTimeout(function() {
-                self.mesh = Coin.BASIC_MESH.clone();
-                self.mesh.position.x = x;
-                self.mesh.position.y = y;
-                self.mesh.position.z = z;
-            },1000);
-        })(this);
-    }
+    this.ready = false;
+    this.got = false;
+    this.init(x,y,z);
 }
 
 Coin.prototype.init = function(x,y,z) {
@@ -22,6 +10,8 @@ Coin.prototype.init = function(x,y,z) {
         this.mesh.position.x = x;
         this.mesh.position.y = y;
         this.mesh.position.z = z;
+        this.mesh.raycastable = true;
+        this.ready = true;
     } else {
         (function(self,x,y,z) {
             setTimeout(function() {
@@ -36,9 +26,24 @@ Coin.prototype.addToScene = function(scene) {
 }
 
 Coin.prototype.update = function() {
-    this.mesh.rotation.y += 0.1;
+    if (this.ready)
+        (function(self) {
+            self.update = function() {
+                self.mesh.rotation.y += 0.1;
+            }
+        })(this);
 }
 
+Coin.prototype.get = function() {
+    this.got = true;
+    this.mesh.visible = false;
+    Coin.total ++;
+    var sound = new Audio('/static/data/music/redcoins/' + Coin.total + '.mp3');
+    sound.play();
+    console.log(sound)
+}
+
+Coin.total = 0;
 Coin.BASIC_MESH = null;
 
 Coin._loader = new THREE.OBJLoader();
