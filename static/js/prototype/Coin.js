@@ -10,12 +10,13 @@ Coin.prototype.init = function(x,y,z) {
         this.mesh.position.x = x;
         this.mesh.position.y = y;
         this.mesh.position.z = z;
-        this.mesh.raycastable = true;
         this.ready = true;
+        this.mesh.raycastable = true;
     } else {
         (function(self,x,y,z) {
             setTimeout(function() {
                 self.init(x,y,z);
+                Coin.nextSound = new Audio(static_path + 'data/music/redcoins/1.mp3');
             },1000);
         })(this,x,y,z);
     }
@@ -39,13 +40,12 @@ Coin.prototype.get = function() {
         this.got = true;
         this.mesh.visible = false;
         Coin.total ++;
-        var sound = new Audio('/static/data/music/redcoins/' + Coin.total + '.mp3');
-        sound.play();
-        console.log(sound)
+        Coin.nextSound.play();
+        Coin.nextSound = new Audio('/static/data/music/redcoins/' + Coin.total + '.mp3');
     }
 }
 
-Coin.total = 0;
+Coin.total = 1;
 Coin.BASIC_MESH = null;
 
 Coin._loader = new THREE.OBJLoader();
