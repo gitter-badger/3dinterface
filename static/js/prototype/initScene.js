@@ -1,5 +1,5 @@
-// Define Recommendation if not defined
-var Recommendation = Recommendation || FixedCamera;
+// Define RecommendedCamera if not defined
+var RecommendedCamera = RecommendedCamera || FixedCamera;
 
 function initPeachCastle(scene, collidableObjects, loader, static_path) {
     // Create loader if not already done
@@ -68,7 +68,7 @@ function createPeachCameras(width, height) {
     var cams = [];
 
     var createCamera = function(position, target) {
-        return new Recommendation(
+        return new RecommendedCamera(
             50,
             width / height,
             1,

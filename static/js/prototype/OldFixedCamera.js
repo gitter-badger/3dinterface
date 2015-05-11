@@ -130,3 +130,8 @@ OldFixedCamera.prototype.traverse = function(callback) {
     callback(this.mesh);
     callback(this.line);
 }
+
+OldFixedCamera.prototype.containsObject = function(object) {
+    return object === this.mesh;
+}
+

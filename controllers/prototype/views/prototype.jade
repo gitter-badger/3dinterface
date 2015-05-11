@@ -4,16 +4,20 @@ block title
     title #{title} - Prototype
 
 block extrajs
+    script(src="/static/js/prototype/ArrowCamera.js")
+    script(src="/static/js/prototype/FixedCamera.js")
+    script(src="/static/js/prototype/OldFixedCamera.js")
+    script(src="/static/js/prototype/ReverseCamera.js")
     script(src="/static/js/prototype/initScene.js")
     script(src="/static/js/prototype/raycasterTools.js")
     script(src="/static/js/prototype/Previewer.js")
     script(src="/static/js/prototype/ButtonManager.js")
     if cameraStyle == 'arrows'
-        script Recommendation = FixedCamera;
+        script RecommendedCamera = FixedCamera;
     else if cameraStyle == 'viewports'
-        script Recommendation = OldFixedCamera;
+        script RecommendedCamera = OldFixedCamera;
     else if cameraStyle == 'reverse'
-        script Recommendation = ReverseCamera
+        script RecommendedCamera = ReverseCamera
     script(src="/static/js/prototype/main.js")
 
 block extrahead

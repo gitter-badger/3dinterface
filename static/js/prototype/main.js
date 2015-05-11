@@ -185,7 +185,7 @@ function render() {
     // Update recommendations (set raycastable if shown)
     var transform = buttonManager.showArrows ? show : hide;
     cameras.map(function(camera) {
-        if (camera instanceof Recommendation) {
+        if (camera instanceof RecommendedCamera) {
             transform(camera);
 
             camera.traverse(function(elt) {
@@ -213,7 +213,7 @@ function render() {
     previewer.clear();
 
     // Hide arrows in recommendation
-    cameras.map(function(camera) { if (camera instanceof Recommendation) hide(camera); });
+    cameras.map(function(camera) { if (camera instanceof RecommendedCamera) hide(camera); });
 
     // Render preview
     previewer.render(cameraSelecter.prev, container_size.width(), container_size.height());

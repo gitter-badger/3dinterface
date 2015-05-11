@@ -1,7 +1,7 @@
 // Initialization
 
 // class camera extends THREE.PerspectiveCamera
-var FixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
+var ArrowCamera = function(arg1, arg2, arg3, arg4, position, target) {
     THREE.PerspectiveCamera.apply(this, arguments);
 
     // Set Position
@@ -20,16 +20,34 @@ var FixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
     direction.sub(this.position);
     direction.normalize();
 
+    this.center = this.position.clone();
+    this.center.sub(direction);
+
     this.target = this.position.clone();
     this.target.add(Tools.mul(direction,20));
 
+
+    this.arrow = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0xff0000, side:THREE.BackSide}));
+
+    this.object3D = new THREE.Object3D();
+    this.object3D.add(this.initExtremity());
+    this.object3D.add(this.arrow);
+
+    this.fullArrow = false;
+}
+ArrowCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
+ArrowCamera.prototype.constructor = ArrowCamera;
+
+ArrowCamera.prototype.initExtremity = function() {
     var geometry = new THREE.Geometry();
 
-    this.center = this.position.clone();
+    var direction = this.target.clone();
+    direction.sub(this.position);
+    direction.normalize();
+
     var left = Tools.cross(direction, this.up);
     var other = Tools.cross(direction, left);
 
-    this.center.sub(direction);
 
     left.normalize();
     other.normalize();
@@ -61,19 +79,11 @@ var FixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
     });
 
     this.mesh = new THREE.Mesh(geometry, material);
-    this.arrow = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0xff0000, side:THREE.BackSide}));
-
-    this.object3D = new THREE.Object3D();
-    this.object3D.add(this.mesh);
-    this.object3D.add(this.arrow);
-
-    this.fullArrow = false;
+    return this.mesh;
 }
-FixedCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
-FixedCamera.prototype.constructor = FixedCamera;
 
 // Update function
-FixedCamera.prototype.update = function(mainCamera) {
+ArrowCamera.prototype.update = function(mainCamera) {
     // Compute distance between center of camera and position
     dist = Tools.norm2(Tools.diff(mainCamera.position, this.center));
 
@@ -105,7 +115,7 @@ FixedCamera.prototype.update = function(mainCamera) {
     this.regenerateArrow(mainCamera);
 }
 
-FixedCamera.prototype.regenerateArrow = function(mainCamera) {
+ArrowCamera.prototype.regenerateArrow = function(mainCamera) {
     var vertices = new Array();
     var t = [0,1];
     var f0 = mainCamera.position.clone();
@@ -180,15 +190,19 @@ FixedCamera.prototype.regenerateArrow = function(mainCamera) {
 }
 
 // Look function
-FixedCamera.prototype.look = function() {
+ArrowCamera.prototype.look = function() {
     this.lookAt(this.target);
 }
 
-FixedCamera.prototype.addToScene = function(scene) {
+ArrowCamera.prototype.addToScene = function(scene) {
     scene.add(this);
     scene.add(this.object3D);
 }
 
-FixedCamera.prototype.traverse = function(callback) {
+ArrowCamera.prototype.traverse = function(callback) {
     this.object3D.traverse(callback);
+}
+
+ArrowCamera.prototype.containsObject = function(object) {
+    return object.parent === this.object3D;
 }

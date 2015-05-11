@@ -50,20 +50,10 @@ CameraContainer.prototype.get = function(i) {
     return this.cameras[i];
 }
 
-CameraContainer.prototype.getById = function(id) {
+CameraContainer.prototype.getByObject = function(object) {
     for (var i in this.cameras) {
-        if (this.cameras[i] instanceof FixedCamera || this.cameras[i] instanceof ReverseCamera) {
-            if (this.cameras[i].object3D !== undefined) {
-                if (this.cameras[i].object3D.id == id) {
-                    return this.get(i);
-                }
-            }
-        } else if (this.cameras[i] instanceof OldFixedCamera) {
-            if (this.cameras[i].mesh !== undefined) {
-                if (this.cameras[i].mesh.id == id) {
-                    return this.get(i);
-                }
-            }
+        if (this.cameras[i].containsObject(object)) {
+            return this.get(i);
         }
     }
 }
