@@ -35,12 +35,14 @@ Coin.prototype.update = function() {
 }
 
 Coin.prototype.get = function() {
-    this.got = true;
-    this.mesh.visible = false;
-    Coin.total ++;
-    var sound = new Audio('/static/data/music/redcoins/' + Coin.total + '.mp3');
-    sound.play();
-    console.log(sound)
+    if (!this.got) {
+        this.got = true;
+        this.mesh.visible = false;
+        Coin.total ++;
+        var sound = new Audio('/static/data/music/redcoins/' + Coin.total + '.mp3');
+        sound.play();
+        console.log(sound)
+    }
 }
 
 Coin.total = 0;
