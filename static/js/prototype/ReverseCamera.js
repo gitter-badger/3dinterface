@@ -62,7 +62,7 @@ ReverseCamera.prototype.initExtremity = function() {
     geometry.computeFaceNormals();
 
     var material = new THREE.MeshLambertMaterial({
-        color : 0xff0000,
+        color : 0x0000ff,
         transparent : true,
         opacity : 0.5,
         side: THREE.FrontSide
