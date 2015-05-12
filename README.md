@@ -3,8 +3,8 @@ A prototype for a user-friendly 3D interface allowing to browse 3D scenes / mode
 
 It is hosted by [OpenShift](https://www.openshift.com/) at [3dinterface.no-ip.org](http://3dinterface.no-ip.org).
 
-## To deploy
-As usual with NodeJS, it's quite easy to deploy. Just clone this repo somewhere, and then, in the repo do
+## To test it locally
+As usual with NodeJS, it's quite easy to test. Just clone this repo somewhere, and then, in the repo do
 
 ``` sh
 npm install
