@@ -272,10 +272,10 @@ PointerCamera.prototype.onKeyEvent = function(event, toSet) {
         case 32:          this.boost = toSet; break;
 
         // Qwerty keyboards
-        // case 38: case 87: this.moveForward  = toSet; break; // up / w
-        // case 37: case 65: this.moveLeft     = toSet; break; // left / a
-        // case 40: case 83: this.moveBackward = toSet; break; // down / s
-        // case 39: case 68: this.moveRight    = toSet; break; // right / d
+        case 38: case 87: this.moveForward  = toSet; break; // up / w
+        case 37: case 65: this.moveLeft     = toSet; break; // left / a
+        case 40: case 83: this.moveBackward = toSet; break; // down / s
+        case 39: case 68: this.moveRight    = toSet; break; // right / d
 
         case 73: case 104: this.increasePhi   = toSet; break; // 8 Up for angle
         case 75: case 98:  this.decreasePhi   = toSet; break; // 2 Down for angle
