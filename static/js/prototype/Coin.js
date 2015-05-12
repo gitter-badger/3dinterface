@@ -41,8 +41,9 @@ Coin.prototype.get = function() {
         this.mesh.visible = false;
         Coin.total ++;
         Coin.nextSound.play();
-        if (Coin.total ===9) {
-            alert("You got all the red coins !");
+        if (Coin.total === 9) {
+            var audio = new Audio('/static/data/music/starappears.mp3');
+            audio.play();
         } else {
             Coin.nextSound = new Audio('/static/data/music/redcoins/' + Coin.total + '.mp3');
         }
