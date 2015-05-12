@@ -14,22 +14,23 @@ var ButtonManager = function(cameras) {
     this.showarrowsElement = document.getElementById('showarrows');
 
     this.fullscreenElement.onclick = function() {};
-    this.resetElement.onclick = cameras.mainCamera().reset();
 
     (function(self) {
-        self.undoElement.onclick = function() {cameras.mainCamera().undo(); self.updateElements();}
-        self.redoElement.onclick = function() {cameras.mainCamera().redo(); self.updateElements();}
+        self.undoElement.onclick = function() {self.cameras.mainCamera().undo(); self.updateElements();}
+        self.redoElement.onclick = function() {self.cameras.mainCamera().redo(); self.updateElements();}
 
         self.fullElement.onclick = function() {
-        cameras.map(function(camera) {
-            if (!(camera instanceof PointerCamera)) {
-                camera.fullArrow = self.fullElement.checked;
-            }
-        });
+            self.cameras.map(function(camera) {
+                if (!(camera instanceof PointerCamera)) {
+                    camera.fullArrow = self.fullElement.checked;
+                }
+            });
 
-        self.collisionElement.onchange = function() {cameras.mainCamera().collisions = self.collisionElement.checked;}
-        self.showarrowsElement.onchange = function() {self.showArrows = self.showarrowsElement.checked;}
         };
+
+        self.collisionElement.onchange = function() {self.cameras.mainCamera().collisions = self.collisionElement.checked;}
+        self.showarrowsElement.onchange = function() {self.showArrows = self.showarrowsElement.checked;}
+        self.resetElement.onclick = function() {self.cameras.mainCamera().reset();}
     })(this);
 
 }
