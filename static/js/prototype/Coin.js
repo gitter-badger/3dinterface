@@ -5,7 +5,7 @@ var Coin = function(x,y,z) {
 }
 
 var _toto = new Audio();
-Coin.extension = _toto.canPlayType("audio.mpeg") === "" ? ".mp3" : ".ogg";
+Coin.extension = _toto.canPlayType("audio/x-vorbis") === "" ? ".ogg" : ".mp3";
 
 Coin.prototype.init = function(x,y,z) {
     if (Coin.BASIC_MESH !== null) {
