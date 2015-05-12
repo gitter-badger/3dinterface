@@ -1,3 +1,6 @@
+// Disable scrolling
+window.onscroll = function () { window.scrollTo(0, 0); };
+
 var mesh_number = 25;
 var renderer, scene, controls, cube, container, plane, mouse= {x:0, y:0};
 var bigmesh;
