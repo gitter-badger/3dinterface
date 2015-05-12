@@ -135,17 +135,12 @@ ArrowCamera.prototype.regenerateArrow = function(mainCamera) {
 
     if (fp1.dot(dir) < -0.5) {
         // Regen polynom with better stuff
-        // var new_dir = Tools.cross(Tools.diff(this.position, mainCamera.position).normalize(), mainCamera.up);
-        // new_dir.multiplyScalar(new_dir.dot(fp1) < 0 ? 1 : -1);
-        // new_dir.add(dir);
-        // new_dir.add(dir);
-        // new_dir.multiplyScalar(2);
-        var up = new THREE.Vector3(0,1,0);
-
-        if (mainCamera.position.y < this.position.y)
-            up.multiplyScalar(-1);
-
-        f0.add(Tools.mul(up,2));
+        var new_dir = Tools.cross(Tools.diff(this.position, mainCamera.position).normalize(), mainCamera.up);
+        new_dir.multiplyScalar(new_dir.dot(fp1) < 0 ? 1 : -1);
+        new_dir.add(dir);
+        new_dir.add(dir);
+        new_dir.multiplyScalar(2);
+        f0.add(new_dir);
     }
 
     fp1.multiplyScalar(4);
