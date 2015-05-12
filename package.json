@@ -4,5 +4,9 @@
     "dependencies": {
         "express": "4.0",
         "jade": "1.9.2"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/tforgione/3dinterface"
     }
 }
