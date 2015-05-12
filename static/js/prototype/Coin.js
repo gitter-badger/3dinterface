@@ -43,7 +43,21 @@ Coin.prototype.get = function() {
         Coin.nextSound.play();
         if (Coin.total === 9) {
             // You got the last coin
-            setTimeout(function() {Coin.lastSound.play();}, Coin.nextSound.duration + 1000);
+            var music = document.getElementById('music');
+            var wasPlaying = !music.paused;
+            music.pause();
+            (function(music, wasPlaying) {
+                setTimeout(function() {
+                    Coin.lastSound.play();
+                    (function(wasPlaying) {
+                        setTimeout(function() {
+                            if (wasPlaying) {
+                                music.play();
+                            }
+                        }, Coin.lastSound.duration*1000);
+                    })(wasPlaying);
+                }, Coin.nextSound.duration*1000);
+            })(music, wasPlaying);
         } else {
             Coin.nextSound = new Audio('/static/data/music/redcoins/' + Coin.total + '.mp3');
             Coin.nextSound.preload = "auto";
