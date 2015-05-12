@@ -13,7 +13,6 @@ module.exports.arrows = function(req, res) {
 
     res.render('prototype.jade', res.locals, function(err, result) {
         res.send(result);
-        console.log(err);
     });
 }
 
