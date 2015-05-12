@@ -20,6 +20,7 @@ block extrajs
     else if cameraStyle == 'reverse'
         script RecommendedCamera = ReverseCamera
     script(src="/static/js/prototype/main.js")
+    script document.getElementById('music').volume = 0.5;
 
 block extrahead
     link(rel="stylesheet" href="/static/css/prototype.css")
@@ -61,7 +62,7 @@ block content
         input#showarrows(type="checkbox", style={'margin-right': '10px', 'margin-bottom': '10px'}, checked)
         label(for="showarrows" style={'margin-right':'10px'}) Show arrows
 
-        audio(controls)
+        audio#music(controls, volume=0.5)
             source(src="/static/data/music/bobomb.mp3")
 
         #container(style={'padding': '0px', 'margin': '0px'}, tabindex="1")
