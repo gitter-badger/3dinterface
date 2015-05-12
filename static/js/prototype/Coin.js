@@ -42,13 +42,17 @@ Coin.prototype.get = function() {
         Coin.total ++;
         Coin.nextSound.play();
         if (Coin.total === 9) {
-            var audio = new Audio('/static/data/music/starappears.mp3');
-            audio.play();
+            // You got the last coin
+            setTimeout(function() {Coin.lastSound.play();}, Coin.nextSound.duration + 1000);
         } else {
             Coin.nextSound = new Audio('/static/data/music/redcoins/' + Coin.total + '.mp3');
+            Coin.nextSound.preload = "auto";
         }
     }
 }
+
+Coin.lastSound = new Audio('/static/data/music/starappears.mp3');
+Coin.lastSound.preload = "auto";
 
 Coin.total = 1;
 Coin.BASIC_MESH = null;
