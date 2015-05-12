@@ -117,18 +117,35 @@ ArrowCamera.prototype.update = function(mainCamera) {
 
 ArrowCamera.prototype.regenerateArrow = function(mainCamera) {
     var vertices = new Array();
-    var t = [0,1];
+
+    // First point of curve
     var f0 = mainCamera.position.clone();
     f0.add(Tools.sum(Tools.mul(this.up,-1), Tools.diff(this.target, this.position).normalize()));
-    var f = [Tools.sum(mainCamera.position, Tools.diff(this.target, this.position)).normalize(), this.position.clone()];
 
-    var first = Tools.diff(mainCamera.target, mainCamera.position);
-    first.normalize();
+    // Last point of curve
+    var f1 = this.position.clone();
 
-    var fp = [Tools.mul(first,40), Tools.diff(this.target, this.position)];
-    fp[1].normalize();
-    fp[1].multiplyScalar(4);
-    var hermite = new Hermite.special.Polynom(f0, f[1], fp[1]);
+    // Last derivative of curve
+    var fp1 = Tools.diff(this.target, this.position);
+    fp1.normalize();
+
+    // Camera direction
+    var dir = Tools.diff(this.position, mainCamera.position);
+    dir.normalize();
+
+    if (fp1.dot(dir) < -0.5) {
+        // Regen polynom with better stuff
+        var new_dir = Tools.cross(Tools.diff(this.position, mainCamera.position).normalize(), mainCamera.up);
+        new_dir.multiplyScalar(new_dir.dot(fp1) < 0 ? 1 : -1);
+        new_dir.add(dir);
+        new_dir.add(dir);
+        new_dir.multiplyScalar(2);
+        f0.add(new_dir);
+    }
+
+    fp1.multiplyScalar(4);
+
+    var hermite = new Hermite.special.Polynom(f0, f1, fp1);
 
     var up = this.up.clone();
     var point;
