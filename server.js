@@ -1,6 +1,5 @@
 var http = require('http');
 var express = require('express');
-var module = require('./my_modules/filterInt');
 var jade = require('jade');
 
 var app = express();
