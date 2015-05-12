@@ -68,7 +68,7 @@ Coin.prototype.get = function() {
     }
 }
 
-Coin.lastSound = new Audio('/static/data/music/starappears.mp3');
+Coin.lastSound = new Audio('/static/data/music/starappears' + Coin.extension);
 Coin.lastSound.preload = "auto";
 
 Coin.total = 1;
