@@ -4,6 +4,9 @@ var Coin = function(x,y,z) {
     this.init(x,y,z);
 }
 
+var _toto = new Audio();
+Coin.extension = _toto.canPlayType("audio.mpeg") === "" ? ".mp3" : ".ogg";
+
 Coin.prototype.init = function(x,y,z) {
     if (Coin.BASIC_MESH !== null) {
         this.mesh = Coin.BASIC_MESH.clone();
@@ -16,7 +19,7 @@ Coin.prototype.init = function(x,y,z) {
         (function(self,x,y,z) {
             setTimeout(function() {
                 self.init(x,y,z);
-                Coin.nextSound = new Audio(static_path + 'data/music/redcoins/1.mp3');
+                Coin.nextSound = new Audio(static_path + 'data/music/redcoins/1' + Coin.extension);
             },1000);
         })(this,x,y,z);
     }
@@ -59,7 +62,7 @@ Coin.prototype.get = function() {
                 }, Coin.nextSound.duration*1000);
             })(music, wasPlaying);
         } else {
-            Coin.nextSound = new Audio('/static/data/music/redcoins/' + Coin.total + '.mp3');
+            Coin.nextSound = new Audio('/static/data/music/redcoins/' + Coin.total + Coin.extension);
             Coin.nextSound.preload = "auto";
         }
     }
