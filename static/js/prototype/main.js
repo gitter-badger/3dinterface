@@ -14,6 +14,8 @@ var previewer;
 
 var loader;
 var coins;
+var beenFullscreen = false;
+var isFullscreen = false;
 
 var main_section = document.getElementById('main-section');
 var offset = function() {
@@ -24,11 +26,14 @@ var offset = function() {
 
 console.log(document.getElementById('main-div').offsetHeight);
 var container_size = {
-    width: function() { return main_section.clientWidth; },
+    width: function() { if (!isFullscreen) return main_section.clientWidth; else return screen.width;},
     height: function() {
-        return main_section.clientHeight
-            - document.getElementById('nav').offsetHeight
-            - document.getElementById('main-div').offsetHeight;
+        if (!isFullscreen)
+            return main_section.clientHeight
+                - document.getElementById('nav').offsetHeight
+                - document.getElementById('main-div').offsetHeight;
+        else
+            return screen.height;
     }
 };
 
@@ -138,6 +143,7 @@ function initListeners() {
 }
 
 function fullscreen() {
+    isFullscreen = true;
 
     if (!beenFullscreen) {
         beenFullscreen = true;
@@ -146,7 +152,7 @@ function fullscreen() {
 
     container.style.position = "absolute";
     container.style.cssFloat = "top-left";
-    container.style.top = "0px";
+    container.style.top = "50px";
     container.style.bottom = "0px";
     container.style.left = "0px";
     container.style.right = "0px";
@@ -154,21 +160,23 @@ function fullscreen() {
     container.style.height="";
     container.style.overflow = "hidden";
 
-    canvas.style.position = "absolute";
-    canvas.style.cssFloat = "top-left";
-    canvas.style.top = "0px";
-    canvas.style.bottom = "0px";
-    canvas.style.left = "0px";
-    canvas.style.right = "0px";
-    canvas.width=window.innerWidth;
-    canvas.height=window.innerHeight;
-    canvas.style.overflow = "hidden";
+    // canvas.style.position = "absolute";
+    // canvas.style.cssFloat = "top-left";
+    // canvas.style.top = "0px";
+    // canvas.style.bottom = "0px";
+    // canvas.style.left = "0px";
+    // canvas.style.right = "0px";
+    // canvas.width=window.innerWidth;
+    // canvas.height=window.innerHeight;
+    // canvas.style.overflow = "hidden";
 
     onWindowResize();
 }
 
 function stopFullscreen() {
-    container.style.position = "";
+    isFullscreen = false;
+
+    // container.style.position = "";
     container.style.cssFloat = "";
     container.style.width = container_size.width() + "px";
     container.style.height = container_size.height() + "px";
@@ -176,12 +184,12 @@ function stopFullscreen() {
 
     // canvas.style.position = "";
     // canvas.style.cssFloat = "";
-    canvas.style.top = "";
-    canvas.style.bottom = "";
-    canvas.style.left = "";
-    canvas.style.right = "";
-    canvas.width = container_size.width();
-    canvas.height = container_size.height();
+    // canvas.style.top = "";
+    // canvas.style.bottom = "";
+    // canvas.style.left = "";
+    // canvas.style.right = "";
+    // canvas.width = container_size.width();
+    // canvas.height = container_size.height();
     // canvas.style.overflow = "";
 
     onWindowResize();
