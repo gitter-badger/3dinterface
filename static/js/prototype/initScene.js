@@ -61,7 +61,73 @@ function initPeachCastle(scene, collidableObjects, loader, static_path) {
             });
         }
     );
+}
 
+function initZeldaScene(scene, collidableObjects, loader, static_path) {
+    // Create loader if not already done
+    if (loader === undefined) {
+        loader = new THREE.OBJMTLLoader();
+    }
+
+    // Try to guess the path to static files
+    if (static_path === undefined) {
+        static_path = "/static/";
+    }
+
+    loader.load(
+        static_path + 'data/zelda/Island.obj',
+        static_path + 'data/zelda/Island.mtl',
+        function ( object ) {
+            scene.add(object);
+            collidableObjects.push(object);
+            object.scale.set(0.01,0.01,0.01);
+            object.traverse(function (object) {
+                if (object instanceof THREE.Mesh) {
+                    object.geometry.mergeVertices();
+                    object.geometry.computeVertexNormals();
+                    object.material.side = THREE.DoubleSide;
+                    object.raycastable = true;
+                    if (object.material.name === 'm0') {
+                        object.material.transparent = true;
+                    }
+                }
+            });
+        }
+    );
+
+    // loader.load(
+    //     static_path + 'data/zelda/Sea.obj',
+    //     static_path + 'data/zelda/Sea.mtl',
+    //     function ( object ) {
+    //         scene.add(object);
+    //         collidableObjects.push(object);
+    //         object.scale.set(0.01,0.01,0.01);
+    //         object.traverse(function (object) {
+    //             if (object instanceof THREE.Mesh) {
+    //                 object.geometry.mergeVertices();
+    //                 object.geometry.computeVertexNormals();
+    //                 object.raycastable = true;
+    //             }
+    //         });
+    //     }
+    // );
+
+    // loader.load(
+    //     static_path + 'data/zelda/Window Lights.obj',
+    //     static_path + 'data/zelda/Window Lights.mtl',
+    //     function ( object ) {
+    //         scene.add(object);
+    //         collidableObjects.push(object);
+    //         object.scale.set(0.01,0.01,0.01);
+    //         object.traverse(function (object) {
+    //             if (object instanceof THREE.Mesh) {
+    //                 object.geometry.mergeVertices();
+    //                 object.geometry.computeVertexNormals();
+    //                 object.raycastable = true;
+    //             }
+    //         });
+    //     }
+    // );
 }
 
 
