@@ -62,13 +62,13 @@ PointerCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 PointerCamera.prototype.constructor = PointerCamera;
 
 // Update function
-PointerCamera.prototype.update = function() {
+PointerCamera.prototype.update = function(time) {
     if (this.moving) {
         this.linearMotion();
     } else if (this.movingHermite) {
         this.hermiteMotion();
     } else {
-        this.normalMotion();
+        this.normalMotion(time);
     }
 }
 
@@ -102,7 +102,7 @@ PointerCamera.prototype.hermiteMotion = function() {
     }
 }
 
-PointerCamera.prototype.normalMotion = function() {
+PointerCamera.prototype.normalMotion = function(time) {
     // Update angles
     if (this.increasePhi)   {this.phi   += this.sensitivity; this.changed = true; }
     if (this.decreasePhi)   {this.phi   -= this.sensitivity; this.changed = true; }
@@ -136,7 +136,7 @@ PointerCamera.prototype.normalMotion = function() {
     left.multiplyScalar(400.0 * delta);
 
     // Move only if no collisions
-    var speed = this.speed;
+    var speed = this.speed * time / 60;
     var direction = new THREE.Vector3();
 
     if (this.boost) speed *= 10;

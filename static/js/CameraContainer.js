@@ -31,8 +31,8 @@ CameraContainer.prototype.look = function() {
     this.mainCamera().look();
 }
 
-CameraContainer.prototype.updateMainCamera = function() {
-    this.pointerCamera.update();
+CameraContainer.prototype.updateMainCamera = function(time) {
+    this.pointerCamera.update(time);
 }
 
 CameraContainer.prototype.update = function(position) {

@@ -16,6 +16,7 @@ var loader;
 var coins;
 var beenFullscreen = false;
 var isFullscreen = false;
+var previousTime;
 
 var main_section = document.getElementById('main-section');
 var offset = function() {
@@ -196,6 +197,7 @@ function stopFullscreen() {
 }
 
 function render() {
+    var currentTime = Date.now() - previousTime;
     cameraSelecter.update();
 
     // Update recommendations (set raycastable if shown)
@@ -214,10 +216,12 @@ function render() {
     coins.forEach(function(coin) { coin.update(); });
 
     // Update main camera
-    cameras.updateMainCamera();
+    cameras.updateMainCamera(currentTime);
 
     // Update the recommendations
     cameras.update(cameras.mainCamera());
+
+    previousTime = Date.now();
 
     // Set current position of camera
     cameras.look();
