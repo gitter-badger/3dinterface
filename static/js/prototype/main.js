@@ -177,11 +177,14 @@ function fullscreen() {
 function stopFullscreen() {
     isFullscreen = false;
 
-    // container.style.position = "";
+    container.style.position = "";
     container.style.cssFloat = "";
+    container.style.top = "";
+    container.style.bottom = "";
+    container.style.left = "";
+    container.style.right = "";
     container.style.width = container_size.width() + "px";
     container.style.height = container_size.height() + "px";
-    container.style.overflow = "";
 
     // canvas.style.position = "";
     // canvas.style.cssFloat = "";
