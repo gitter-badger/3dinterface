@@ -64,20 +64,20 @@ PointerCamera.prototype.constructor = PointerCamera;
 // Update function
 PointerCamera.prototype.update = function(time) {
     if (this.moving) {
-        this.linearMotion();
+        this.linearMotion(time);
     } else if (this.movingHermite) {
-        this.hermiteMotion();
+        this.hermiteMotion(time);
     } else {
         this.normalMotion(time);
     }
 }
 
-PointerCamera.prototype.linearMotion = function() {
+PointerCamera.prototype.linearMotion = function(time) {
     var position_direction = Tools.diff(this.new_position, this.position);
     var target_direction = Tools.diff(this.new_target, this.target);
 
-    this.position.add(Tools.mul(position_direction, 0.05));
-    this.target.add(Tools.mul(target_direction, 0.05));
+    this.position.add(Tools.mul(position_direction, 0.05 * time / 20));
+    this.target.add(Tools.mul(target_direction, 0.05 * time / 20));
 
     if (Tools.norm2(Tools.diff(this.position, this.new_position)) < 0.01 &&
         Tools.norm2(Tools.diff(this.target, this.new_target))  < 0.01) {
@@ -86,7 +86,7 @@ PointerCamera.prototype.linearMotion = function() {
     }
 }
 
-PointerCamera.prototype.hermiteMotion = function() {
+PointerCamera.prototype.hermiteMotion = function(time) {
     var eval = this.hermitePosition.eval(this.t);
     this.position.x = eval.x;
     this.position.y = eval.y;
@@ -94,7 +94,7 @@ PointerCamera.prototype.hermiteMotion = function() {
 
     this.target = Tools.sum(this.position, this.hermiteAngles.eval(this.t));
 
-    this.t += 0.01;
+    this.t += 0.01 * time / 20;
 
     if (this.t > 1) {
         this.movingHermite = false;
@@ -136,7 +136,7 @@ PointerCamera.prototype.normalMotion = function(time) {
     left.multiplyScalar(400.0 * delta);
 
     // Move only if no collisions
-    var speed = this.speed * time / 60;
+    var speed = this.speed * time / 20;
     var direction = new THREE.Vector3();
 
     if (this.boost) speed *= 10;
