@@ -197,7 +197,6 @@ function stopFullscreen() {
 }
 
 function render() {
-    var currentTime = Date.now() - previousTime;
     cameraSelecter.update();
 
     // Update recommendations (set raycastable if shown)
@@ -216,12 +215,13 @@ function render() {
     coins.forEach(function(coin) { coin.update(); });
 
     // Update main camera
-    cameras.updateMainCamera(currentTime);
+    var currentTime = Date.now() - previousTime;
+    cameras.updateMainCamera(isNaN(currentTime) ? 20 : currentTime);
+    previousTime = Date.now();
 
     // Update the recommendations
     cameras.update(cameras.mainCamera());
 
-    previousTime = Date.now();
 
     // Set current position of camera
     cameras.look();
