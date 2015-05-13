@@ -13,7 +13,7 @@ var ButtonManager = function(cameras) {
     this.collisionElement = document.getElementById('collisions');
     this.showarrowsElement = document.getElementById('showarrows');
 
-    this.fullscreenElement.onclick = function() {};
+    this.fullscreenElement.onclick = function() {fullscreen();};
 
     (function(self) {
         self.undoElement.onclick = function() {self.cameras.mainCamera().undo(); self.updateElements();}
