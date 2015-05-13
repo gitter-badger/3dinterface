@@ -29,11 +29,14 @@ var ArrowCamera = function(arg1, arg2, arg3, arg4, position, target) {
 
     this.arrow = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0x0000ff, side:THREE.BackSide}));
 
+    this.size = 0.4;
+
     this.object3D = new THREE.Object3D();
     this.object3D.add(this.initExtremity());
     this.object3D.add(this.arrow);
 
     this.fullArrow = false;
+
 }
 ArrowCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 ArrowCamera.prototype.constructor = ArrowCamera;
@@ -51,8 +54,8 @@ ArrowCamera.prototype.initExtremity = function() {
 
     left.normalize();
     other.normalize();
-    left = Tools.mul(left, 0.2);
-    other  = Tools.mul(other, 0.2);
+    left = Tools.mul(left, this.size);
+    other  = Tools.mul(other, this.size);
 
     geometry.vertices.push(Tools.sum( Tools.sum( this.position, left),  other),
                            Tools.diff(Tools.sum( this.position, other), left),
@@ -120,7 +123,7 @@ ArrowCamera.prototype.regenerateArrow = function(mainCamera) {
 
     // First point of curve
     var f0 = mainCamera.position.clone();
-    f0.add(Tools.sum(Tools.mul(this.up,-1), Tools.diff(this.target, this.position).normalize()));
+    f0.add(Tools.mul(Tools.sum(new THREE.Vector3(0,-0.5,0), Tools.diff(this.target, this.position).normalize()),2));
 
     // Last point of curve
     var f1 = this.position.clone();
@@ -128,6 +131,7 @@ ArrowCamera.prototype.regenerateArrow = function(mainCamera) {
     // Last derivative of curve
     var fp1 = Tools.diff(this.target, this.position);
     fp1.normalize();
+    fp1.multiplyScalar(2);
 
     // Camera direction
     var dir = Tools.diff(this.position, mainCamera.position);
@@ -160,7 +164,7 @@ ArrowCamera.prototype.regenerateArrow = function(mainCamera) {
     var limit = this.fullArrow ? 0.1 : 0.3;
 
     // for (var i = this.fullArrow ? 0 : 0.5; i <= 1.001; i += 0.05) {
-    for (var i = 1; i > limit; i -= 0.05) {
+    for (var i = 1; i > limit; i -= 0.1) {
         point = hermite.eval(i);
         deriv = hermite.prime(i);
         up.cross(deriv);
@@ -168,8 +172,8 @@ ArrowCamera.prototype.regenerateArrow = function(mainCamera) {
         up.multiplyScalar(-1);
         up.normalize();
 
-        var coeff = 0.1;
-        var left = Tools.cross(up, deriv); left.normalize(); left.multiplyScalar(coeff);
+        var coeff = this.size / 2;
+        var left = Tools.cross(up, deriv);     left.normalize(); left.multiplyScalar(coeff);
         var other = Tools.cross(deriv, left);  other.normalize(); other.multiplyScalar(coeff);
 
         vertices.push(
@@ -180,21 +184,31 @@ ArrowCamera.prototype.regenerateArrow = function(mainCamera) {
         );
     }
 
-    var faces = new Array();
-
-    for (var i = 0; i < vertices.length - 4; i+= 4) {
-        faces.push(new THREE.Face3(i,i+1,i+5),new THREE.Face3(i,i+5,i+4),
-                   new THREE.Face3(i+1,i+2,i+6),new THREE.Face3(i+1,i+6,i+5),
-                   new THREE.Face3(i+2,i+3,i+7),new THREE.Face3(i+2,i+7,i+6),
-                   new THREE.Face3(i,i+7,i+3), new THREE.Face3(i,i+4,i+7));
-    }
-
-    var len = vertices.length;
-    faces.push(new THREE.Face3(len-4,len-3,len-2), new THREE.Face3(len-4,len-2,len-1));
-
-
     this.arrow.geometry.vertices = vertices;
-    this.arrow.geometry.faces = faces;
+
+    if (this.arrow.geometry.faces.length == 0) {
+        var faces = new Array();
+
+        for (var i = 0; i < vertices.length - 4; i+= 4) {
+            faces.push(new THREE.Face3(i,i+1,i+5),new THREE.Face3(i,i+5,i+4),
+                       new THREE.Face3(i+1,i+2,i+6),new THREE.Face3(i+1,i+6,i+5),
+                       new THREE.Face3(i+2,i+3,i+7),new THREE.Face3(i+2,i+7,i+6),
+                       new THREE.Face3(i,i+7,i+3), new THREE.Face3(i,i+4,i+7));
+        }
+
+        var len = vertices.length;
+        faces.push(new THREE.Face3(len-4,len-3,len-2), new THREE.Face3(len-4,len-2,len-1));
+
+        var max = 0;
+        for (var i = 0; i < faces.length; i++) {
+            max = Math.max(max, faces[i].a, faces[i].b, faces[i].c);
+        }
+        console.log(max + '/' + len);
+
+
+        this.arrow.geometry.faces = faces;
+        this.arrow.geometry.facesNeedUpdate = true;
+    }
 
     // this.arrow.geometry.mergeVertices();
     this.arrow.geometry.computeFaceNormals();
@@ -209,7 +223,6 @@ ArrowCamera.prototype.regenerateArrow = function(mainCamera) {
     this.arrow.geometry.elementsNeedUpdate = true;
     this.arrow.geometry.groupsNeedUpdate = true;
     this.arrow.geometry.normalsNeedUpdate = true;
-    // this.arrow.geometry.facesNeedUpdate = true;
 
 }
 

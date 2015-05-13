@@ -43,10 +43,14 @@ Previewer.prototype.render = function(prev, container_width, container_height) {
         this.renderer.enableScissorTest (true);
         this.renderer.setViewport(left, bottom, width, height);
         this.renderer.render(scene, prev.camera);
-    }
 
+        this.clearNeeded = true;
+    }
 }
 
 Previewer.prototype.clear = function() {
-    this.domElement.width = this.domElement.width;
+    if (this.clearNeeded) {
+        this.domElement.width = this.domElement.width;
+        this.clearNeeded = false;
+    }
 }
