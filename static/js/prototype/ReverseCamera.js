@@ -20,8 +20,8 @@ ReverseCamera.prototype.initExtremity = function() {
 
     left.normalize();
     other.normalize();
-    left = Tools.mul(left, 0.1);
-    other  = Tools.mul(other, 0.1);
+    left = Tools.mul(left, this.size / 2 );
+    other  = Tools.mul(other, this.size / 2);
 
     var pyramidCenter = Tools.diff(this.position, Tools.mul(direction,0.25))
     geometry.vertices.push(
