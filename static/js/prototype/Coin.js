@@ -33,7 +33,7 @@ Coin.prototype.update = function() {
     if (this.ready)
         (function(self) {
             self.update = function() {
-                self.mesh.rotation.y += 0.1;
+                // self.mesh.rotation.y += 0.1;
             }
         })(this);
 }
