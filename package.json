@@ -3,7 +3,8 @@
     "version": "2.0.0",
     "dependencies": {
         "express": "4.0",
-        "jade": "1.9.2"
+        "jade": "1.9.2",
+        "pg": "4.3.0"
     },
     "repository": {
         "type": "git",
