@@ -1,3 +1,21 @@
+var pg = require('pg');
+var pgc = require('../../private.js');
+
+var createNewId = function() {
+    var value;
+    pg.connect(pgc.url, function(err, client, release) {
+        client.query(
+            "INSERT INTO users(name) VALUES('anonymous'); SELECT currval('users_id_seq');",
+            [],
+            function(err, result) {
+                value = result.rows[0].currval;
+                release();
+                return value;
+            }
+        );
+    });
+}
+
 module.exports.index = function(req, res) {
     res.setHeader('Content-Type', 'text/html');
 
@@ -7,6 +25,7 @@ module.exports.index = function(req, res) {
 }
 
 module.exports.arrows = function(req, res) {
+    // req.session.user_id = createNewId();
     res.setHeader('Content-Type', 'text/html');
 
     res.locals.cameraStyle = 'arrows';

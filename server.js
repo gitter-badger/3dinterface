@@ -3,14 +3,23 @@ var express = require('express');
 var jade = require('jade');
 var pg = require('pg');
 
-// pg conf
-var pgc = require('./private');
+// secret variables
+var secret = require('./private');
 
 var app = express();
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
+var session = require('express-session');
+var cookieParser = require('cookie-parser');
 var urls = require('./urls');
 
 app.set('view engine', 'jade');
+
+app.use(cookieParser());
+app.use(session({
+    saveUninitialized: true,
+    resave: true,
+    secret: secret.secret
+}));
 
 app.use(bodyParser.text());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -29,10 +38,10 @@ require('./lib/boot')(app, { verbose: !module.parent });
 app.use('/static', express.static('static'));
 
 app.post('/post', function(req, res) {
-    var user_id = req.body.user_id;
+    var user_id = 1;
     var arrow_id = req.body.arrow_id;
 
-    pg.connect(pgc.url, function(err, client, release) {
+    pg.connect(secret.url, function(err, client, release) {
         client.query(
             "INSERT INTO arrowclicked(user_id, arrow_id) VALUES($1,$2);",
             [user_id, arrow_id],
