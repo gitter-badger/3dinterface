@@ -1,6 +1,10 @@
 var http = require('http');
 var express = require('express');
 var jade = require('jade');
+var pg = require('pg');
+
+// pg conf
+var pgc = require('./private');
 
 var app = express();
 var urls = require('./urls');
@@ -51,3 +55,12 @@ if ( app.get('env') === 'development' ) {
 
 console.log("Starting server on " + server_ip_address + ":" + server_port);
 app.listen(server_port, server_ip_address);
+
+console.log("Trying to connect to the db...");
+pg.connect(pgc.url, function(err, client, done) {
+    if (err) {
+        return console.error('error fetching client from pool', err);
+    }
+
+    client.query('INSERT INTO Users(name) VALUES(\'Hello\')');
+});
