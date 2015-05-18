@@ -35,7 +35,7 @@ app.post('/post', function(req, res) {
 
     pg.connect(pgc.url, function(err, client, done) {
         client.query("INSERT INTO arrowclicked(user_id, arrow_id) VALUES($1,$2);", [user_id, arrow_id], function(err, result) {
-            console.log(err);
+            // console.log(err);
         });
     });
 
