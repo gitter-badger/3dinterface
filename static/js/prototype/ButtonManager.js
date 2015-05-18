@@ -1,5 +1,6 @@
-var ButtonManager = function(cameras) {
+var ButtonManager = function(cameras, previewer) {
     this.cameras = cameras;
+    this.previewer = previewer;
 
     this.showArrows = true;
     this.beenFullscreen = false;
@@ -12,6 +13,8 @@ var ButtonManager = function(cameras) {
 
     this.collisionElement = document.getElementById('collisions');
     this.showarrowsElement = document.getElementById('showarrows');
+
+    this.recommendationElement = document.getElementById('recommendation');
 
     this.fullscreenElement.onclick = function() {fullscreen();};
 
@@ -31,6 +34,10 @@ var ButtonManager = function(cameras) {
         self.collisionElement.onchange = function() {self.cameras.mainCamera().collisions = self.collisionElement.checked;}
         self.showarrowsElement.onchange = function() {self.showArrows = self.showarrowsElement.checked;}
         self.resetElement.onclick = function() {self.cameras.mainCamera().reset();}
+
+        self.recommendationElement.onchange = function() {
+            previewer.fixedRecommendation(self.recommendationElement.checked);
+        }
     })(this);
 
 }

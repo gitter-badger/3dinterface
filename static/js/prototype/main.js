@@ -137,7 +137,7 @@ function initListeners() {
     document.addEventListener('keydown', function(event) { if (event.keyCode == 27) { stopFullscreen();} }, false);
 
     // HTML Bootstrap buttons
-    buttonManager = new ButtonManager(cameras);
+    buttonManager = new ButtonManager(cameras, previewer);
 
     // Camera selecter for hover and clicking recommendations
     cameraSelecter = new CameraSelecter(renderer, cameras, buttonManager);

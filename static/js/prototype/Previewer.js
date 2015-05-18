@@ -2,20 +2,22 @@ var Previewer = function(renderer) {
     this.domElement = document.createElement('canvas');
     this.ctx = this.domElement.getContext('2d');
     this.renderer = renderer;
+    this.fixed = false;
 }
 
 Previewer.prototype.render = function(prev, container_width, container_height) {
-    var width = container_width / 5;
-    var height = container_height / 5;
-    var left = prev.x - width/2;
-    var bottom =  renderer.domElement.height - prev.y + height/5;
+    var width, height, left, bottom;
 
     if (prev.go) {
         width  = Math.floor(container_width / 5);
         height = Math.floor(container_height / 5);
-        left   = Math.floor(prev.x - width/2);
-        bottom = Math.floor(renderer.domElement.height - prev.y + height/5);
-
+        if (!this.fixed) {
+            left = Math.floor(prev.x - width/2);
+            bottom = Math.floor(this.renderer.domElement.height - prev.y + height/5);
+        } else {
+            left = 0;
+            bottom = 0;
+        }
 
         // Draw border
         var can_bottom = container_height - bottom - height ;
@@ -40,7 +42,7 @@ Previewer.prototype.render = function(prev, container_width, container_height) {
         // Do render in previsualization
         prev.camera.look();
         this.renderer.setScissor(left, bottom, width, height);
-        this.renderer.enableScissorTest (true);
+        this.renderer.enableScissorTest(true);
         this.renderer.setViewport(left, bottom, width, height);
         this.renderer.render(scene, prev.camera);
 
@@ -53,4 +55,8 @@ Previewer.prototype.clear = function() {
         this.domElement.width = this.domElement.width;
         this.clearNeeded = false;
     }
+}
+
+Previewer.prototype.fixedRecommendation = function(bool) {
+    this.fixed = bool;
 }
