@@ -7,9 +7,16 @@ var pg = require('pg');
 var pgc = require('./private');
 
 var app = express();
+var bodyParser = require('body-parser')
 var urls = require('./urls');
 
+
 app.set('view engine', 'jade');
+
+app.use(bodyParser.text());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+// app.use(bodyParser.text({ type: 'text/html' }))
 
 app.use(function(req, res, next) {
     res.locals.title = "3DUI";
@@ -21,6 +28,20 @@ app.use(function(req, res, next) {
 require('./lib/boot')(app, { verbose: !module.parent });
 
 app.use('/static', express.static('static'));
+
+app.post('/post', function(req, res) {
+    var user_id = req.body.user_id;
+    var arrow_id = req.body.arrow_id;
+
+    pg.connect(pgc.url, function(err, client, done) {
+        client.query("INSERT INTO arrowclicked(user_id, arrow_id) VALUES($1,$2);", [user_id, arrow_id], function(err, result) {
+            console.log(err);
+        });
+    });
+
+    res.setHeader('Content-Type', 'text/html');
+    res.send("Hello");
+});
 
 // When error raised
 app.use(function(err, req, res, next) {

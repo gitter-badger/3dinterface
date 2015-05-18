@@ -75,6 +75,11 @@ CameraSelecter.prototype.update = function(event) {
 CameraSelecter.prototype.click = function(event) {
     var newCamera = this.pointedCamera(event);
     if (newCamera !== undefined && !(newCamera instanceof Coin)) {
+        var event = new BD.Event.ArrowClicked();
+        event.arrow_id = cameras.cameras.indexOf(newCamera);
+        event.user_id = 1;
+        event.send();
+
         this.cameras.mainCamera().moveHermite(newCamera);
         buttonManager.updateElements();
     } else if (newCamera instanceof Coin) {
