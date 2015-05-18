@@ -4,7 +4,7 @@ BD.Event = {};
 
 BD.Event.ArrowClicked = function() {};
 BD.Event.ArrowClicked.prototype.send = function() {
-    var url = "http://localhost:4000/post";
+    var url = "/post";
 
     var data = {};
 
