@@ -46,6 +46,10 @@ Previewer.prototype.render = function(prev, container_width, container_height) {
         this.renderer.setViewport(left, bottom, width, height);
         this.renderer.render(scene, prev.camera);
 
+        if (!this.fixed) {
+            this.clearNeeded = true;
+        }
+    } else if (this.fixed) {
         this.clearNeeded = true;
     }
 }
