@@ -55,12 +55,3 @@ if ( app.get('env') === 'development' ) {
 
 console.log("Starting server on " + server_ip_address + ":" + server_port);
 app.listen(server_port, server_ip_address);
-
-console.log("Trying to connect to the db...");
-pg.connect(pgc.url, function(err, client, done) {
-    if (err) {
-        return console.error('error fetching client from pool', err);
-    }
-
-    client.query('INSERT INTO users(name) VALUES(\'Hello\')');
-});
