@@ -62,5 +62,5 @@ pg.connect(pgc.url, function(err, client, done) {
         return console.error('error fetching client from pool', err);
     }
 
-    client.query('INSERT INTO Users(name) VALUES(\'Hello\')');
+    client.query('INSERT INTO users(name) VALUES(\'Hello\')');
 });
