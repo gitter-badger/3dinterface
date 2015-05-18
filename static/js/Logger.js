@@ -8,7 +8,6 @@ BD.Event.ArrowClicked.prototype.send = function() {
 
     var data = {};
 
-    data.session_id = session_id;
     data.arrow_id = this.arrow_id;
 
     var xhr = new XMLHttpRequest();
