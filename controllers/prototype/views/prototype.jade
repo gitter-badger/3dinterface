@@ -14,13 +14,21 @@ block extrajs
     script(src="/static/js/prototype/ButtonManager.js")
     script(src="/static/js/prototype/Coin.js")
     script(src="/static/js/Logger.js")
-    if cameraStyle == 'arrows'
-        script RecommendedCamera = FixedCamera;
-    else if cameraStyle == 'viewports'
-        script RecommendedCamera = OldFixedCamera;
-    else if cameraStyle == 'reverse'
-        script RecommendedCamera = ReverseCamera
-    script(src="/static/js/prototype/main.js")
+
+    if cameraStyle == 'replay'
+        script var params = params || {}; params.get = params.get || {}; params.get.id = #{id};
+        script(src="/static/js/ReplayCamera.js")
+        script(src="/static/js/prototype/replay.js")
+    else
+        if cameraStyle == 'arrows'
+            script RecommendedCamera = FixedCamera;
+        else if cameraStyle == 'viewports'
+            script RecommendedCamera = OldFixedCamera;
+        else if cameraStyle == 'reverse'
+            script RecommendedCamera = ReverseCamera
+
+        script(src="/static/js/prototype/main.js")
+
     script document.getElementById('music').volume = 0.5;
 
 block extrahead

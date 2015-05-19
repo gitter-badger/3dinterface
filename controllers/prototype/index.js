@@ -1,7 +1,8 @@
+var tools = require('../../my_modules/filterInt.js');
 var pg = require('pg');
 var pgc = require('../../private.js');
 
-var createNewId = function(req, callback) {
+var createNewId = function(req, res, callback) {
     pg.connect(pgc.url, function(err, client, release) {
         client.query(
             "INSERT INTO users(name) VALUES('anonymous'); SELECT currval('users_id_seq');",
@@ -9,6 +10,42 @@ var createNewId = function(req, callback) {
             function(err, result) {
                 req.session.user_id = result.rows[0].currval;
                 req.session.save();
+                callback();
+                release();
+            }
+        );
+    });
+}
+
+var getPathFromId = function(req, res, callback, id) {
+    pg.connect(pgc.url, function(err, client, release) {
+        client.query(
+            "SELECT ((camera).position).x AS px, " +
+                   "((camera).position).y AS py, " +
+                   "((camera).position).z AS pz, " +
+                   "((camera).target).x   AS tx, " +
+                   "((camera).target).y   AS ty, " +
+                   "((camera).target).z   AS tz " +
+            "FROM keyboardevent WHERE user_id = $1;",
+            [id],
+            function(err, result) {
+                res.locals.path = [];
+                for (var i in result.rows) {
+                    res.locals.path.push(
+                        {
+                            position : {
+                                x: result.rows[i].px,
+                                y: result.rows[i].py,
+                                z: result.rows[i].pz
+                            },
+                            target : {
+                                x: result.rows[i].tx,
+                                y: result.rows[i].ty,
+                                z: result.rows[i].tz
+                            }
+                        }
+                    );
+                }
                 callback();
                 release();
             }
@@ -25,7 +62,7 @@ module.exports.index = function(req, res) {
 }
 
 module.exports.arrows = function(req, res) {
-    createNewId(req, function() {
+    createNewId(req, res, function() {
         res.setHeader('Content-Type', 'text/html');
 
         res.locals.cameraStyle = 'arrows';
@@ -37,7 +74,7 @@ module.exports.arrows = function(req, res) {
 }
 
 module.exports.viewports = function(req, res) {
-    createNewId(req, function() {
+    createNewId(req, res, function() {
         res.setHeader('Content-Type', 'text/html');
 
         res.locals.cameraStyle = 'viewports';
@@ -49,7 +86,7 @@ module.exports.viewports = function(req, res) {
 }
 
 module.exports.reverse = function(req, res) {
-    createNewId(req, function() {
+    createNewId(req, res, function() {
         res.setHeader('Content-Type', 'text/html');
 
         res.locals.cameraStyle = 'reverse';
@@ -58,4 +95,25 @@ module.exports.reverse = function(req, res) {
             res.send(result);
         });
     });
+}
+
+module.exports.replay_info = function(req, res) {
+    res.setHeader('Content-Type', 'text/plain');
+
+    // Parse id
+    var id = tools.filterInt(req.params.id);
+
+    getPathFromId(req, res, function() {
+        res.send(JSON.stringify(res.locals.path));
+    }, id);
+}
+
+module.exports.replay = function(req, res) {
+    res.setHeader('Content-Type', 'text/html');
+    res.locals.cameraStyle = "replay";
+    res.locals.id = tools.filterInt(req.params.id);
+    res.render('prototype.jade', res.locals, function(err, result) {
+        res.send(result);
+    });
+
 }
