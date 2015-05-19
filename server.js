@@ -35,13 +35,18 @@ app.use(function(req, res, next) {
         res.locals.alertCookie = false;
     } else {
         res.locals.alertCookie = true;
-        res.cookie('alreadyCame', true);
+        res.cookie('alreadyCame', true, {maxAge: 604800000}); // One week in ms
     }
     next();
 });
 
 // Load controllers
-require('./lib/boot')(app, { verbose: !module.parent });
+console.log("Loading controllers :");
+require('./lib/controllers')(app, { verbose: !module.parent });
+
+// Load post to log data from user study
+console.log("Loading posts :");
+require('./lib/posts')(app, { verbose: !module.parent });
 
 app.use('/static', express.static('static'));
 
