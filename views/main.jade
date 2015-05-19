@@ -55,8 +55,14 @@ html(lang='fr')
                                     span.glyphicon.glyphicon-envelope(aria-hidden=true)
                                     span(style={'margin-left':'5px'}) Contact
 
-
         section#main-section.container
+            if alertCookie
+                .alert.alert-warning.alert-dismissible(role="alert", style={'margin-top':'20px'})
+                    button.close(type="button", data-dismiss="alert", aria-label="Close")
+                        span(aria-hidden="true")
+                            &times;
+                    <strong>Warning</strong> : this website use cookies !
+
             block content
 
         script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js")

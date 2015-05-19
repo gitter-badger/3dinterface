@@ -8,17 +8,22 @@ var secret = require('./private');
 
 var app = express();
 var bodyParser = require('body-parser');
-var session = require('express-session');
+var session = require('cookie-session');
 var cookieParser = require('cookie-parser');
 var urls = require('./urls');
 
 app.set('view engine', 'jade');
+app.set('trust proxy', 1);
 
-app.use(cookieParser());
+app.use(cookieParser(secret.secret));
 app.use(session({
-    saveUninitialized: true,
-    resave: true,
-    secret: secret.secret
+    // express-session
+    // saveUninitialized: true,
+    // resave: true,
+    // secret: secret.secret
+
+    // cookie-session
+    keys: ['key1', 'key2']
 }));
 
 app.use(bodyParser.text());
@@ -32,13 +37,23 @@ app.use(function(req, res, next) {
     next();
 });
 
+app.use(function(req, res, next) {
+    if (req.cookies.alreadyCame) {
+        res.locals.alertCookie = false;
+    } else {
+        res.locals.alertCookie = true;
+        res.cookie('alreadyCame', true);
+    }
+    next();
+});
+
 // Load controllers
 require('./lib/boot')(app, { verbose: !module.parent });
 
 app.use('/static', express.static('static'));
 
 app.post('/post', function(req, res) {
-    var user_id = 1;
+    var user_id = req.session.user_id;
     var arrow_id = req.body.arrow_id;
 
     pg.connect(secret.url, function(err, client, release) {
@@ -52,7 +67,7 @@ app.post('/post', function(req, res) {
     });
 
     res.setHeader('Content-Type', 'text/html');
-    res.send("Hello");
+    res.send("user_id = " + user_id);
 });
 
 // When error raised
@@ -86,5 +101,4 @@ if ( app.get('env') === 'development' ) {
     server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 }
 
-console.log("Starting server on " + server_ip_address + ":" + server_port);
 app.listen(server_port, server_ip_address);
