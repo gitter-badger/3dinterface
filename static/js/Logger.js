@@ -24,3 +24,23 @@ BD.Event.CoinClicked.prototype.send = function() {
     BD.Private.sendData(url, data);
 }
 
+BD.Event.KeyboardEvent = function() {};
+BD.Event.KeyboardEvent.prototype.send = function() {
+    var url = "/keyboard-event";
+    var data = {
+        camera: {
+            // Compact camera
+            position: {
+                x: this.camera.position.x,
+                y: this.camera.position.y,
+                z: this.camera.position.z
+            },
+            target: {
+                x: this.camera.target.x,
+                y: this.camera.target.y,
+                z: this.camera.target.z
+            }
+        }
+    };
+    BD.Private.sendData(url, data);
+}
