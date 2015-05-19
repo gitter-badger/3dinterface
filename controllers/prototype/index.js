@@ -45,7 +45,7 @@ var getPathFromId = function(req, res, callback, id) {
                    "((camera).target).x   AS tx, " +
                    "((camera).target).y   AS ty, " +
                    "((camera).target).z   AS tz " +
-            "FROM keyboardevent WHERE user_id = $1;",
+            "FROM keyboardevent WHERE user_id = $1 ORDER BY time;",
             [id],
             function(err, result) {
                 res.locals.path = [];
