@@ -35,75 +35,76 @@ block extrahead
     link(rel="stylesheet" href="/static/css/prototype.css")
 
 block content
-    #main-div.panel-group
-        #instructions.panel.panel-default(style={'margin-top':'10px', 'margin-bottom':'10px'})
-            .panel-heading
-                h4.panel-title
-                    a(data-target="#", data-toggle="collapse",onclick="setTimeout(onWindowResize,500);") Instructions
+    #main-div.panel-group(style={'margin-top':'10px', 'margin-bottom':'10px'})
+        if cameraStyle != 'replay'
+            #instructions.panel.panel-default
+                .panel-heading
+                    h4.panel-title
+                        a(href="#", data-target="#collapseInstructions", data-toggle="collapse",onclick="setTimeout(onWindowResize,500);") Instructions
 
-            .panel-collapse.collapse.in#collapseInstructions
-                .panel-body
-                    p
-                        | This is the prototype of a 3D interface. You can move
-                        | the camera with the arrow keys of your keyboard (or
-                        | WASD if you like FPS-games, and by the way, if you
-                        | use azerty keyboard, you can also use ZQSD instead),
-                        | and change the angle of the camera by dragging and
-                        | dropping the scene around it (you can also use your
-                        | numpad, 2 to look lower, 8 to look higher, 4 to look
-                        | on the left and 6 to look on the right, but if you're
-                        | more comfortable with non-numpad keys, you can also
-                        | use i for up, j for left, k for down, and l for
-                        | right).
-
-                    p
-                        | This is a re-creation of the Bob-omb Battlefield
-                        | level from Super Mario 64, and with its 8 red coins.
-                        | You can click on them to get them, and once you got
-                        | them all, you get... well you get nothing but the
-                        | sound of the star is played (but the star doesn't
-                        | appear... sorry guys)
-
-                    p
-                        | It contains <em>recommended views</em> : 3D objects
-                        | here to guide you through this coin search.
-
-                    if cameraStyle == 'arrows'
+                .panel-collapse.collapse.in#collapseInstructions
+                    .panel-body
+                        p
+                            | This is the prototype of a 3D interface. You can move
+                            | the camera with the arrow keys of your keyboard (or
+                            | WASD if you like FPS-games, and by the way, if you
+                            | use azerty keyboard, you can also use ZQSD instead),
+                            | and change the angle of the camera by dragging and
+                            | dropping the scene around it (you can also use your
+                            | numpad, 2 to look lower, 8 to look higher, 4 to look
+                            | on the left and 6 to look on the right, but if you're
+                            | more comfortable with non-numpad keys, you can also
+                            | use i for up, j for left, k for down, and l for
+                            | right).
 
                         p
-                            | Recommended views are displayed with a
-                            | transparent blue arrow.  They disappear when you
-                            | come closer to them, and shows the motion between
-                            | your current position and the recommendation.
-
-                    else if cameraStyle == 'viewports'
-
-                        p
-                            | Recommended views are displayed with a
-                            | transparent red rectangle and some lines.
-                            | Basically, it represents the position of a camera
-                            | (the point at the extramities of the lines
-                            | represents the optical center, and the red
-                            | rectangle represents the image plane).
-
-                    else if cameraStyle == 'reverse'
+                            | This is a re-creation of the Bob-omb Battlefield
+                            | level from Super Mario 64, and with its 8 red coins.
+                            | You can click on them to get them, and once you got
+                            | them all, you get... well you get nothing but the
+                            | sound of the star is played (but the star doesn't
+                            | appear... sorry guys)
 
                         p
-                            | Recommended views are displayed with a strange
-                            | blue object.  Basically, the curve at the
-                            | begining of this weird object shows the motion
-                            | that starts from where you are and leads to the
-                            | recommended view, and the extremity is in fact an
-                            | object representing a camera.
+                            | It contains <em>recommended views</em> : 3D objects
+                            | here to guide you through this coin search.
 
-                    p
-                        | You can click on a recommendation to move to the
-                        | recommended viewpoint. The recommendation will become
-                        | more and more transparent as you come closer, and
-                        | will disappear when you reach it.
+                        if cameraStyle == 'arrows'
 
-                    p
-                        | You may now <a href="#" data-target="#collapseInstructions" data-toggle="collapse" onclick="setTimeout(onWindowResize,500);">hide this panel</a> and start playing !
+                            p
+                                | Recommended views are displayed with a
+                                | transparent blue arrow.  They disappear when you
+                                | come closer to them, and shows the motion between
+                                | your current position and the recommendation.
+
+                        else if cameraStyle == 'viewports'
+
+                            p
+                                | Recommended views are displayed with a
+                                | transparent red rectangle and some lines.
+                                | Basically, it represents the position of a camera
+                                | (the point at the extramities of the lines
+                                | represents the optical center, and the red
+                                | rectangle represents the image plane).
+
+                        else if cameraStyle == 'reverse'
+
+                            p
+                                | Recommended views are displayed with a strange
+                                | blue object.  Basically, the curve at the
+                                | begining of this weird object shows the motion
+                                | that starts from where you are and leads to the
+                                | recommended view, and the extremity is in fact an
+                                | object representing a camera.
+
+                        p
+                            | You can click on a recommendation to move to the
+                            | recommended viewpoint. The recommendation will become
+                            | more and more transparent as you come closer, and
+                            | will disappear when you reach it.
+
+                        p
+                            | You may now <a href="#" data-target="#collapseInstructions" data-toggle="collapse" onclick="setTimeout(onWindowResize,500);">hide this panel</a> and start playing !
 
         button#full.btn.btn-primary(style={'margin-right': '10px', 'margin-bottom': '10px'}) Fullscreen
         button#reset.btn.btn-primary(style={'margin-right': '10px', 'margin-bottom':'10px'}) Reset camera
