@@ -17,7 +17,7 @@ app.set('trust proxy', 1);
 
 app.use(cookieParser(secret.secret));
 app.use(session({
-    keys: ['key1', 'key2']
+    keys: [secret.secret]
 }));
 
 app.use(bodyParser.text());
