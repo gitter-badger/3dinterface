@@ -17,6 +17,25 @@ var createNewId = function(req, res, callback) {
     });
 }
 
+var checkId = function(req, res, next, callback, id) {
+    pg.connect(pgc.url, function(err, client, release) {
+        client.query(
+            "SELECT id FROM users WHERE id = $1",
+            [id],
+            function(err, result) {
+                if (result.rows.length > 0) {
+                    callback();
+                } else {
+                    var error = new Error("Id not found");
+                    error.status = 404;
+                    next(error);
+                }
+                release();
+            }
+        );
+    });
+}
+
 var getPathFromId = function(req, res, callback, id) {
     pg.connect(pgc.url, function(err, client, release) {
         client.query(
@@ -108,12 +127,14 @@ module.exports.replay_info = function(req, res) {
     }, id);
 }
 
-module.exports.replay = function(req, res) {
-    res.setHeader('Content-Type', 'text/html');
-    res.locals.cameraStyle = "replay";
+module.exports.replay = function(req, res, next) {
     res.locals.id = tools.filterInt(req.params.id);
-    res.render('prototype.jade', res.locals, function(err, result) {
-        res.send(result);
-    });
+    checkId(req,res, next, function() {
+        res.setHeader('Content-Type', 'text/html');
+        res.locals.cameraStyle = "replay";
+        res.render('prototype.jade', res.locals, function(err, result) {
+            res.send(result);
+        });
+    }, res.locals.id);
 
 }
