@@ -26,7 +26,6 @@ module.exports.index = function(req, res) {
 
 module.exports.arrows = function(req, res) {
     createNewId(req, function() {
-
         res.setHeader('Content-Type', 'text/html');
 
         res.locals.cameraStyle = 'arrows';
@@ -34,26 +33,29 @@ module.exports.arrows = function(req, res) {
         res.render('prototype.jade', res.locals, function(err, result) {
             res.send(result);
         });
-
     });
 }
 
 module.exports.viewports = function(req, res) {
-    res.setHeader('Content-Type', 'text/html');
+    createNewId(req, function() {
+        res.setHeader('Content-Type', 'text/html');
 
-    res.locals.cameraStyle = 'viewports';
+        res.locals.cameraStyle = 'viewports';
 
-    res.render('prototype.jade', res.locals, function(err, result) {
-        res.send(result);
+        res.render('prototype.jade', res.locals, function(err, result) {
+            res.send(result);
+        });
     });
 }
 
 module.exports.reverse = function(req, res) {
-    res.setHeader('Content-Type', 'text/html');
+    createNewId(req, function() {
+        res.setHeader('Content-Type', 'text/html');
 
-    res.locals.cameraStyle = 'reverse';
+        res.locals.cameraStyle = 'reverse';
 
-    res.render('prototype.jade', res.locals, function(err, result) {
-        res.send(result);
+        res.render('prototype.jade', res.locals, function(err, result) {
+            res.send(result);
+        });
     });
 }

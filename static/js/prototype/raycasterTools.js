@@ -77,12 +77,15 @@ CameraSelecter.prototype.click = function(event) {
     if (newCamera !== undefined && !(newCamera instanceof Coin)) {
         var event = new BD.Event.ArrowClicked();
         event.arrow_id = cameras.cameras.indexOf(newCamera);
-        event.user_id = 1;
         event.send();
 
         this.cameras.mainCamera().moveHermite(newCamera);
         buttonManager.updateElements();
     } else if (newCamera instanceof Coin) {
+        // Coin found, notify server
+        var event = new BD.Event.CoinClicked();
+        event.coin_id = coins.indexOf(newCamera);
+        event.send();
         newCamera.get();
     }
 }
