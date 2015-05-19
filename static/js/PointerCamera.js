@@ -26,10 +26,7 @@ var PointerCamera = function() {
     this.target = new THREE.Vector3(0,1,0);
 
     // Stuff for events
-    this.moveForward = false;
-    this.moveBackward = false;
-    this.moveRight = false;
-    this.moveLeft = false;
+    this.motion = {};
 
     this.sensitivity = 0.05;
     this.speed = 1;
@@ -104,10 +101,10 @@ PointerCamera.prototype.hermiteMotion = function(time) {
 
 PointerCamera.prototype.normalMotion = function(time) {
     // Update angles
-    if (this.increasePhi)   {this.phi   += this.sensitivity; this.changed = true; }
-    if (this.decreasePhi)   {this.phi   -= this.sensitivity; this.changed = true; }
-    if (this.increaseTheta) {this.theta += this.sensitivity; this.changed = true; }
-    if (this.decreaseTheta) {this.theta -= this.sensitivity; this.changed = true; }
+    if (this.motion.increasePhi)   {this.phi   += this.sensitivity; this.changed = true; }
+    if (this.motion.decreasePhi)   {this.phi   -= this.sensitivity; this.changed = true; }
+    if (this.motion.increaseTheta) {this.theta += this.sensitivity; this.changed = true; }
+    if (this.motion.decreaseTheta) {this.theta -= this.sensitivity; this.changed = true; }
 
     if (this.dragging) {
         this.theta += this.mouseMove.x;
@@ -139,11 +136,11 @@ PointerCamera.prototype.normalMotion = function(time) {
     var speed = this.speed * time / 20;
     var direction = new THREE.Vector3();
 
-    if (this.boost) speed *= 10;
-    if (this.moveForward)  {direction.add(Tools.mul(forward, speed)); this.changed = true;}
-    if (this.moveBackward) {direction.sub(Tools.mul(forward, speed)); this.changed = true;}
-    if (this.moveLeft)     {direction.add(Tools.mul(left,    speed)); this.changed = true;}
-    if (this.moveRight)    {direction.sub(Tools.mul(left,    speed)); this.changed = true;}
+    if (this.motion.boost) speed *= 10;
+    if (this.motion.moveForward)  {direction.add(Tools.mul(forward, speed)); this.changed = true;}
+    if (this.motion.moveBackward) {direction.sub(Tools.mul(forward, speed)); this.changed = true;}
+    if (this.motion.moveLeft)     {direction.add(Tools.mul(left,    speed)); this.changed = true;}
+    if (this.motion.moveRight)    {direction.sub(Tools.mul(left,    speed)); this.changed = true;}
 
     if (!this.collisions || !this.isColliding(direction)) {
         this.position.add(direction);
@@ -265,26 +262,35 @@ PointerCamera.prototype.addToScene = function(scene) {
 }
 
 PointerCamera.prototype.onKeyEvent = function(event, toSet) {
+    // Create copy of state
+    var motionJsonCopy = JSON.stringify(this.motion);
+
     switch ( event.keyCode ) {
         // Azerty keyboards
-        case 38: case 90: this.moveForward  = toSet; break; // up / z
-        case 37: case 81: this.moveLeft     = toSet; break; // left / q
-        case 40: case 83: this.moveBackward = toSet; break; // down / s
-        case 39: case 68: this.moveRight    = toSet; break; // right / d
-        case 32:          this.boost = toSet; break;
+        case 38: case 90:  this.motion.moveForward   = toSet; break; // up / z
+        case 37: case 81:  this.motion.moveLeft      = toSet; break; // left / q
+        case 40: case 83:  this.motion.moveBackward  = toSet; break; // down / s
+        case 39: case 68:  this.motion.moveRight     = toSet; break; // right / d
+        case 32:           this.motion.boost         = toSet; break;
 
         // Qwerty keyboards
-        case 38: case 87: this.moveForward  = toSet; break; // up / w
-        case 37: case 65: this.moveLeft     = toSet; break; // left / a
-        case 40: case 83: this.moveBackward = toSet; break; // down / s
-        case 39: case 68: this.moveRight    = toSet; break; // right / d
+        case 38: case 87:  this.motion.moveForward   = toSet; break; // up / w
+        case 37: case 65:  this.motion.moveLeft      = toSet; break; // left / a
+        case 40: case 83:  this.motion.moveBackward  = toSet; break; // down / s
+        case 39: case 68:  this.motion.moveRight     = toSet; break; // right / d
 
-        case 73: case 104: this.increasePhi   = toSet; break; // 8 Up for angle
-        case 75: case 98:  this.decreasePhi   = toSet; break; // 2 Down for angle
-        case 74: case 100: this.increaseTheta = toSet; break; // 4 Left for angle
-        case 76: case 102: this.decreaseTheta = toSet; break; // 6 Right for angle
+        case 73: case 104: this.motion.increasePhi   = toSet; break; // 8 Up for angle
+        case 75: case 98:  this.motion.decreasePhi   = toSet; break; // 2 Down for angle
+        case 74: case 100: this.motion.increaseTheta = toSet; break; // 4 Left for angle
+        case 76: case 102: this.motion.decreaseTheta = toSet; break; // 6 Right for angle
 
         case 13: if (toSet) this.log(); break;
+    }
+    if (motionJsonCopy != JSON.stringify(this.motion)) {
+        // Log any change
+        var event = new BD.Event.KeyboardEvent();
+        event.camera = this;
+        event.send();
     }
 }
 

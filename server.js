@@ -30,6 +30,8 @@ app.use(function(req, res, next) {
     next();
 });
 
+// Set a cookie to know if already came. If not, France laws force to
+// warn the user that the website uses cookies.
 app.use(function(req, res, next) {
     if (req.cookies.alreadyCame) {
         res.locals.alertCookie = false;
@@ -48,6 +50,7 @@ require('./lib/controllers')(app, { verbose: !module.parent });
 console.log("Loading posts :");
 require('./lib/posts')(app, { verbose: !module.parent });
 
+// Static files
 app.use('/static', express.static('static'));
 
 // When error raised
@@ -81,4 +84,6 @@ if ( app.get('env') === 'development' ) {
     server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 }
 
+// Start server
+console.log("Server started on " + server_ip_address + ":" + server_port);
 app.listen(server_port, server_ip_address);
