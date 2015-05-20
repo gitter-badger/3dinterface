@@ -41,6 +41,13 @@ var ArrowCamera = function(arg1, arg2, arg3, arg4, position, target) {
 ArrowCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 ArrowCamera.prototype.constructor = ArrowCamera;
 
+ArrowCamera.prototype.check = function() {
+    this.object3D.traverse(function(obj) {
+        if (obj instanceof THREE.Mesh)
+            obj.material.color.setHex(0x663366);
+    });
+}
+
 ArrowCamera.prototype.initExtremity = function() {
     var geometry = new THREE.Geometry();
 

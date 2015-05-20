@@ -91,6 +91,8 @@ var OldFixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
 OldFixedCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 OldFixedCamera.prototype.constructor = OldFixedCamera;
 
+OldFixedCamera.prototype.check = function() {}
+
 // Update function
 OldFixedCamera.prototype.update = function(position) {
     // Compute distance between center of camera and position

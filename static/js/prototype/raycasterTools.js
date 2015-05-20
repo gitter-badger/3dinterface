@@ -79,6 +79,7 @@ CameraSelecter.prototype.click = function(event) {
         event.arrow_id = cameras.cameras.indexOf(newCamera);
         event.send();
 
+        newCamera.check();
         this.cameras.mainCamera().moveHermite(newCamera);
         buttonManager.updateElements();
     } else if (newCamera instanceof Coin) {
