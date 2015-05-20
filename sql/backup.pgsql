@@ -18,17 +18,6 @@ CREATE TYPE CAMERA AS(
     target VECTOR3
 );
 
-CREATE TYPE DIRECTION AS ENUM(
-    'n',
-    'ne',
-    'e',
-    'se',
-    's',
-    'sw',
-    'w',
-    'nw'
-);
-
 CREATE TABLE users(
     id SERIAL PRIMARY KEY,
     name CHAR(50)
@@ -52,6 +41,5 @@ CREATE TABLE keyboardevent(
     id SERIAL PRIMARY KEY,
     user_id SERIAL REFERENCES users (id),
     time TIMESTAMP DEFAULT NOW(),
-    direction DIRECTION,
     camera CAMERA
 );
