@@ -79,7 +79,7 @@ var OldFixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
 
 
     var material = new THREE.MeshBasicMaterial({
-        color : 0xff0000,
+        color : 0x0000ff,
         transparent : true,
         opacity : 1,
         side: THREE.DoubleSide
@@ -91,7 +91,9 @@ var OldFixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
 OldFixedCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 OldFixedCamera.prototype.constructor = OldFixedCamera;
 
-OldFixedCamera.prototype.check = function() {}
+OldFixedCamera.prototype.check = function() {
+    this.mesh.material.color.setHex(0x663366);
+}
 
 // Update function
 OldFixedCamera.prototype.update = function(position) {
