@@ -36,7 +36,7 @@ var checkId = function(req, res, next, callback, id) {
     });
 }
 
-var getPathFromId = function(req, res, callback, id) {
+var addCamerasFromId = function(req, res, callback, id) {
     pg.connect(pgc.url, function(err, client, release) {
         client.query(
             "SELECT ((camera).position).x AS px, " +
@@ -44,14 +44,17 @@ var getPathFromId = function(req, res, callback, id) {
                    "((camera).position).z AS pz, " +
                    "((camera).target).x   AS tx, " +
                    "((camera).target).y   AS ty, " +
-                   "((camera).target).z   AS tz " +
+                   "((camera).target).z   AS tz, " +
+                   "time                  AS time " +
             "FROM keyboardevent WHERE user_id = $1 ORDER BY time;",
             [id],
             function(err, result) {
-                res.locals.path = [];
+                res.locals.path = res.locals.path || [];
                 for (var i in result.rows) {
+                    console.log(result.rows[i].time);
                     res.locals.path.push(
                         {
+                            type: 'camera',
                             position : {
                                 x: result.rows[i].px,
                                 y: result.rows[i].py,
@@ -61,7 +64,54 @@ var getPathFromId = function(req, res, callback, id) {
                                 x: result.rows[i].tx,
                                 y: result.rows[i].ty,
                                 z: result.rows[i].tz
-                            }
+                            },
+                            time: result.rows[i].time
+                        }
+                    );
+                }
+                callback();
+                release();
+            }
+        );
+    });
+}
+
+var addCoinsFromId = function(req, res, callback, id) {
+    pg.connect(pgc.url, function(err, client, release) {
+        client.query(
+            "SELECT coin_id, time FROM coinclicked WHERE user_id = $1",
+            [id],
+            function(err,result) {
+                res.locals.path = res.locals.path || [];
+                for (var i in result.rows) {
+                    res.locals.path.push(
+                        {
+                            type: 'coin',
+                            time: result.rows[i].time,
+                            id: result.rows[i].coin_id
+                        }
+                    );
+                }
+                callback();
+                release();
+            }
+        );
+    });
+}
+
+var addArrowsFromId = function(req, res, callback, id) {
+    pg.connect(pgc.url, function(err, client, release) {
+        client.query(
+            "SELECT arrow_id, time FROM arrowclicked WHERE user_id = $1",
+            [id],
+            function(err, result) {
+                res.locals.path = res.locals.path || [];
+                for (var i in result.rows) {
+                    res.locals.path.push(
+                        {
+                            type: 'arrow',
+                            time: result.rows[i].time,
+                            id: result.rows[i].arrow_id
                         }
                     );
                 }
@@ -122,8 +172,20 @@ module.exports.replay_info = function(req, res) {
     // Parse id
     var id = tools.filterInt(req.params.id);
 
-    getPathFromId(req, res, function() {
-        res.send(JSON.stringify(res.locals.path));
+    addCamerasFromId(req, res, function() {
+        addCoinsFromId(req, res, function() {
+            addArrowsFromId(req, res, function() {
+                res.locals.path.sort(function(elt1, elt2) {
+                    // Dates as string can be compared
+                    if (elt1.time < elt2.time)
+                        return -1;
+                    if (elt1.time > elt2.time)
+                        return 1;
+                    return 0;
+                });
+                res.send(JSON.stringify(res.locals.path));
+            }, id);
+        }, id);
     }, id);
 }
 

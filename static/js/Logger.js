@@ -2,6 +2,9 @@ var BD = {};
 
 BD.Private = {};
 BD.Private.sendData = function(url, data) {
+    // Append time to data
+    data.time = Date.now() / 1000;
+
     var xhr = new XMLHttpRequest();
     xhr.open("POST", url, true);
     xhr.setRequestHeader("Content-type", "application/json;charset=UTF-8");

@@ -8,8 +8,8 @@ module.exports.index = function(req, res) {
 
     pg.connect(secret.url, function(err, client, release) {
         client.query(
-            "INSERT INTO arrowclicked(user_id, arrow_id) VALUES($1,$2);",
-            [user_id, arrow_id],
+            "INSERT INTO arrowclicked(user_id, arrow_id, time) VALUES($1,$2, to_timestamp($3));",
+            [user_id, arrow_id, req.body.time],
             function(err, result) {
                 release();
             }

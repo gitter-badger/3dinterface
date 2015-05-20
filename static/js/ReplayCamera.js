@@ -28,7 +28,7 @@ var ReplayCamera = function() {
                     self.path[0].target.z
                 );
                 self.started = true;
-                self.move(self.path[++self.counter]);
+                self.nextEvent();
             }
         }
     })(this);
@@ -49,8 +49,15 @@ ReplayCamera.prototype.look = function() {
 
 // Update function
 ReplayCamera.prototype.update = function(time) {
-    if (this.started)
-        this.linearMotion(time);
+    if (this.started) {
+        if (this.event.type == 'camera') {
+            this.linearMotion(time);
+        } else if (this.event.type == 'arrow') {
+            this.hermiteMotion(time);
+        } else if (this.event.type == 'coin') {
+            // Nothing to do
+        }
+    }
 }
 
 ReplayCamera.prototype.linearMotion = function(time) {
@@ -62,12 +69,48 @@ ReplayCamera.prototype.linearMotion = function(time) {
     this.t += 0.1 * time / 20;
 
     if (this.t > 1) {
-        this.counter++;
-        if (this.counter < this.path.length) {
-            this.move(this.path[this.counter]);
-        } else {
-            this.started = false;
-        }
+        this.nextEvent();
+    }
+}
+
+ReplayCamera.prototype.hermiteMotion = function(time) {
+    var eval = this.hermitePosition.eval(this.t);
+    this.position.x = eval.x;
+    this.position.y = eval.y;
+    this.position.z = eval.z;
+
+    this.target = Tools.sum(this.position, this.hermiteAngles.eval(this.t));
+
+    this.t += 0.01 * time / 20;
+
+    if (this.t > 1) {
+        this.nextEvent();
+    }
+}
+
+ReplayCamera.prototype.nextEvent = function() {
+    this.counter++;
+
+    // Finished
+    if (this.counter >= this.path.length) {
+        this.started = false;
+        return;
+    }
+
+    this.event = this.path[this.counter];
+
+    if (this.event.type == 'camera') {
+        this.move(this.event);
+    } else if (this.event.type == 'coin') {
+        coins[this.event.id].get();
+        // Wait a little before launching nextEvent
+        (function(self) {
+            setTimeout(function() {
+                self.nextEvent();
+            },500);
+        })(this);
+    } else if (this.event.type == 'arrow') {
+        this.moveHermite(cameras.cameras[this.event.id]);
     }
 }
 
@@ -117,4 +160,21 @@ ReplayCamera.prototype.move = function(otherCamera) {
     this.new_position = new THREE.Vector3(otherCamera.position.x, otherCamera.position.y, otherCamera.position.z);
     this.t = 0;
 
+}
+
+ReplayCamera.prototype.moveHermite = function(otherCamera) {
+    this.movingHermite = true;
+    this.t = 0;
+
+    this.hermitePosition = new Hermite.special.Polynom(
+        this.position.clone(),
+        otherCamera.position.clone(),
+        Tools.mul(Tools.diff(otherCamera.target, otherCamera.position).normalize(),4)
+    );
+
+    this.hermiteAngles = new Hermite.special.Polynom(
+        Tools.diff(this.target, this.position),
+        Tools.diff(otherCamera.target, otherCamera.position),
+        new THREE.Vector3()
+    );
 }
