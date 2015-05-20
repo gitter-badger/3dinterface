@@ -112,6 +112,20 @@ var addArrowsFromId = function(client, req, res, callback, id) {
     );
 }
 
+var getAllUsers = function(req, res, callback) {
+    pg.connect(pgc.url, function(err, client, release) {
+        client.query(
+            "SELECT id, name FROM users;",
+            [],
+            function(err, result) {
+                res.locals.ids = result.rows;
+                callback();
+                release();
+            }
+        );
+    });
+}
+
 module.exports.index = function(req, res) {
     res.setHeader('Content-Type', 'text/html');
 
@@ -192,4 +206,12 @@ module.exports.replay = function(req, res, next) {
         });
     }, res.locals.id);
 
+}
+
+module.exports.replay_index = function(req, res, next) {
+    getAllUsers(req, res, function() {
+        res.render("replay_index.jade", res.locals, function(err, result) {
+            res.send(result);
+        });
+    });
 }

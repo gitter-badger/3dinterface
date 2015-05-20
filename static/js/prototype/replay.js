@@ -10,7 +10,6 @@ var cameras, cameraSelecter;
 var spheres = new Array(mesh_number);
 var visible = 0;
 var stats;
-var previewer;
 
 var loader;
 var coins;
@@ -57,13 +56,6 @@ function init() {
     renderer.shadowMapEnabled = true;
     renderer.setClearColor(0x87ceeb);
 
-    // Initialize previewer
-    previewer = new Previewer(renderer);
-    previewer.domElement.style.position ="absolute";
-    previewer.domElement.style.cssFloat = 'top-left';
-    previewer.domElement.width = container_size.width();
-    previewer.domElement.height = container_size.height();
-
     // Initialize scene
     scene = new THREE.Scene();
 
@@ -75,7 +67,6 @@ function init() {
 
     // Add elements to page
     container.appendChild( stats.domElement );
-    container.appendChild(previewer.domElement);
     container.appendChild(renderer.domElement);
 
     // init light
@@ -130,7 +121,7 @@ function initListeners() {
     document.addEventListener('keydown', function(event) { if (event.keyCode == 27) { stopFullscreen();} }, false);
 
     // HTML Bootstrap buttons
-    buttonManager = new ButtonManager(cameras, previewer);
+    buttonManager = new ButtonManager(cameras);
 
     // Camera selecter for hover and clicking recommendations
     cameraSelecter = new CameraSelecter(renderer, cameras, buttonManager);
@@ -228,14 +219,8 @@ function render() {
     renderer.setViewport(left, bottom, width, height);
     renderer.render(scene, cameras.mainCamera());
 
-    // Remove borders of preview
-    previewer.clear();
-
     // Hide arrows in recommendation
     cameras.map(function(camera) { if (camera instanceof RecommendedCamera) hide(camera); });
-
-    // Render preview
-    previewer.render(cameraSelecter.prev, container_size.width(), container_size.height());
 }
 
 function animate() {
@@ -252,9 +237,6 @@ function onWindowResize() {
 
     container.style.width = container_size.width() + "px";
     container.style.height = container_size.height() + "px";
-
-    previewer.domElement.width = container_size.width();
-    previewer.domElement.height = container_size.height();
 
     renderer.setSize(container_size.width(), container_size.height());
     cameras.forEach(function(camera) {camera.aspect = container_size.width() / container_size.height();});
