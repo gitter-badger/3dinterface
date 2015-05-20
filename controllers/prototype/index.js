@@ -51,7 +51,6 @@ var addCamerasFromId = function(req, res, callback, id) {
             function(err, result) {
                 res.locals.path = res.locals.path || [];
                 for (var i in result.rows) {
-                    console.log(result.rows[i].time);
                     res.locals.path.push(
                         {
                             type: 'camera',
