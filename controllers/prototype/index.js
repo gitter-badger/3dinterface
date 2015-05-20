@@ -131,6 +131,43 @@ var addResetsFromId = function(client, req, res, callback, id) {
     );
 }
 
+var addPreviousNextFromId = function(client, req, res, callback, id) {
+    client.query(
+        "SELECT ((camera).position).x AS px, " +
+            "((camera).position).y AS py, " +
+            "((camera).position).z AS pz, " +
+            "((camera).target).x   AS tx, " +
+            "((camera).target).y   AS ty, " +
+            "((camera).target).z   AS tz, " +
+            "time                  AS time " +
+            "FROM previousnextclicked;",
+        [],
+        function(err, result) {
+            res.locals.path = res.locals.path || [];
+            for (var i in result.rows) {
+                res.locals.path.push(
+                    {
+                        type: 'previousnext',
+                        time: result.rows[i].time,
+                        previous: result.rows[i].previousnext == 'p',
+                        position : {
+                            x: result.rows[i].px,
+                            y: result.rows[i].py,
+                            z: result.rows[i].pz
+                        },
+                        target : {
+                            x: result.rows[i].tx,
+                            y: result.rows[i].ty,
+                            z: result.rows[i].tz
+                        }
+                    }
+                );
+            }
+            callback();
+        }
+    );
+}
+
 var getAllUsers = function(req, res, callback) {
     pg.connect(pgc.url, function(err, client, release) {
         client.query(
@@ -200,15 +237,17 @@ module.exports.replay_info = function(req, res) {
             addCoinsFromId(client, req, res, function() {
                 addArrowsFromId(client, req, res, function() {
                     addResetsFromId(client, req, res, function() {
-                        res.locals.path.sort(function(elt1, elt2) {
-                            // Dates as string can be compared
-                            if (elt1.time < elt2.time)
-                                return -1;
-                            if (elt1.time > elt2.time)
-                                return 1;
-                            return 0;
-                        });
-                        res.send(JSON.stringify(res.locals.path));
+                        addPreviousNextFromId(client, req, res, function() {
+                            res.locals.path.sort(function(elt1, elt2) {
+                                // Dates as string can be compared
+                                if (elt1.time < elt2.time)
+                                    return -1;
+                                if (elt1.time > elt2.time)
+                                    return 1;
+                                return 0;
+                            });
+                            res.send(JSON.stringify(res.locals.path));
+                        }, id);
                     }, id);
                 }, id);
             }, id);

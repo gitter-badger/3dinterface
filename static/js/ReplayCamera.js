@@ -45,11 +45,14 @@ ReplayCamera.prototype.update = function(time) {
     if (this.started) {
         if (this.event.type == 'camera') {
             this.linearMotion(time);
+        } else if (this.event.type == 'previousnext') {
+            this.linearMotion(time / 5);
         } else if (this.event.type == 'arrow') {
             this.hermiteMotion(time);
         } else if (this.event.type == 'coin') {
             // Nothing to do
         } else if (this.event.type == 'reset') {
+            // Nothing to do
         }
     }
 }
@@ -112,6 +115,8 @@ ReplayCamera.prototype.nextEvent = function() {
                 self.nextEvent();
             },500);
         })(this);
+    } else if (this.event.type == 'previousnext') {
+        this.move(this.event);
     }
 }
 

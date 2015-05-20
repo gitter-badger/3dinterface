@@ -350,14 +350,26 @@ PointerCamera.prototype.save = function() {
 
 PointerCamera.prototype.undo = function() {
     var move = this.history.undo();
-    if (move !== undefined)
+    if (move !== undefined) {
+        var event = new BD.Event.PreviousNextClicked();
+        event.previous = true;
+        event.camera = move;
+        event.send();
+
         this.move(move, false);
+    }
 }
 
 PointerCamera.prototype.redo = function() {
     var move = this.history.redo();
-    if (move !== undefined)
+    if (move !== undefined) {
+        var event = new BD.Event.PreviousNextClicked();
+        event.previous = false;
+        event.camera = move;
+        event.send();
+
         this.move(move, false);
+    }
 }
 
 PointerCamera.prototype.undoable = function() {
