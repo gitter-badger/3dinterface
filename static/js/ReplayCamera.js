@@ -19,14 +19,7 @@ var ReplayCamera = function() {
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 self.path = JSON.parse(xhr.responseText);
-                self.position.x = self.path[0].position.x;
-                self.position.y = self.path[0].position.y;
-                self.position.z = self.path[0].position.z;
-                self.target = new THREE.Vector3(
-                    self.path[0].target.x,
-                    self.path[0].target.y,
-                    self.path[0].target.z
-                );
+                self.reset();
                 self.started = true;
                 self.nextEvent();
             }
@@ -56,6 +49,7 @@ ReplayCamera.prototype.update = function(time) {
             this.hermiteMotion(time);
         } else if (this.event.type == 'coin') {
             // Nothing to do
+        } else if (this.event.type == 'reset') {
         }
     }
 }
@@ -111,6 +105,13 @@ ReplayCamera.prototype.nextEvent = function() {
         })(this);
     } else if (this.event.type == 'arrow') {
         this.moveHermite(cameras.cameras[this.event.id]);
+    } else if (this.event.type == 'reset') {
+        this.reset();
+        (function (self) {
+            setTimeout(function() {
+                self.nextEvent();
+            },500);
+        })(this);
     }
 }
 

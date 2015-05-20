@@ -112,6 +112,25 @@ var addArrowsFromId = function(client, req, res, callback, id) {
     );
 }
 
+var addResetsFromId = function(client, req, res, callback, id) {
+    client.query(
+        "SELECT time FROM resetclicked WHERE user_id = $1",
+        [id],
+        function(err, result) {
+            res.locals.path = res.locals.path || [];
+            for (var i in result.rows) {
+                res.locals.path.push(
+                    {
+                        type: 'reset',
+                        time: result.rows[i].time
+                    }
+                );
+            }
+            callback();
+        }
+    );
+}
+
 var getAllUsers = function(req, res, callback) {
     pg.connect(pgc.url, function(err, client, release) {
         client.query(
@@ -180,15 +199,17 @@ module.exports.replay_info = function(req, res) {
         addCamerasFromId(client, req, res, function() {
             addCoinsFromId(client, req, res, function() {
                 addArrowsFromId(client, req, res, function() {
-                    res.locals.path.sort(function(elt1, elt2) {
-                        // Dates as string can be compared
-                        if (elt1.time < elt2.time)
-                            return -1;
-                        if (elt1.time > elt2.time)
-                            return 1;
-                        return 0;
-                    });
-                    res.send(JSON.stringify(res.locals.path));
+                    addResetsFromId(client, req, res, function() {
+                        res.locals.path.sort(function(elt1, elt2) {
+                            // Dates as string can be compared
+                            if (elt1.time < elt2.time)
+                                return -1;
+                            if (elt1.time > elt2.time)
+                                return 1;
+                            return 0;
+                        });
+                        res.send(JSON.stringify(res.locals.path));
+                    }, id);
                 }, id);
             }, id);
         }, id);

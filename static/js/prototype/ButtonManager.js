@@ -33,7 +33,11 @@ var ButtonManager = function(cameras, previewer) {
 
         self.collisionElement.onchange = function() {self.cameras.mainCamera().collisions = self.collisionElement.checked;}
         self.showarrowsElement.onchange = function() {self.showArrows = self.showarrowsElement.checked;}
-        self.resetElement.onclick = function() {self.cameras.mainCamera().reset();}
+
+        self.resetElement.onclick = function() {
+            // Reinit camera
+            self.cameras.mainCamera().reset();
+        }
 
         self.recommendationElement.onchange = function() {
             previewer.fixedRecommendation(self.recommendationElement.checked);

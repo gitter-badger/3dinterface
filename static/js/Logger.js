@@ -47,3 +47,10 @@ BD.Event.KeyboardEvent.prototype.send = function() {
     };
     BD.Private.sendData(url, data);
 }
+
+BD.Event.ResetClicked = function() {};
+BD.Event.ResetClicked.prototype.send = function() {
+    var url = "/reset-clicked";
+    var data = {};
+    BD.Private.sendData(url, data);
+}

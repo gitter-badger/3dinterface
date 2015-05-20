@@ -155,6 +155,7 @@ PointerCamera.prototype.reset = function() {
     this.resetBobomb();
     this.moving = false;
     this.movingHermite = false;
+    (new BD.Event.ResetClicked()).send();
     // this.position.copy(new THREE.Vector3(-8.849933489419644, 9.050627639459208, 0.6192960680432451));
     // this.target.copy(new THREE.Vector3(17.945323228767702, -15.156828589982375, -16.585740412769756));
     // this.anglesFromVectors();
@@ -307,6 +308,7 @@ PointerCamera.prototype.onMouseDown = function(event) {
     this.mouse.y = - ( ( event.clientY - renderer.domElement.offsetTop ) / renderer.domElement.height ) * 2 + 1;
 
     this.dragging = true;
+    this.mouseMoved = false;
 }
 
 PointerCamera.prototype.onMouseMove = function(event) {
@@ -317,11 +319,20 @@ PointerCamera.prototype.onMouseMove = function(event) {
 
         this.mouseMove.x = this.mouse.x - mouse.x;
         this.mouseMove.y = this.mouse.y - mouse.y;
+        this.mouseMoved = true;
     }
 }
 
 PointerCamera.prototype.onMouseUp = function(event) {
     this.onMouseMove(event);
+
+    // Send log to DB
+    if (this.dragging && this.mouseMoved && !this.moving && !this.movingHermite) {
+        var event = new BD.Event.KeyboardEvent();
+        event.camera = this;
+        event.send();
+    }
+
     this.dragging = false;
 }
 

@@ -8,6 +8,7 @@ var _toto = new Audio();
 Coin.extension = _toto.canPlayType("audio/x-vorbis") === "" ? ".ogg" : ".mp3";
 
 Coin.prototype.init = function(x,y,z) {
+    Coin.nextSound = new Audio(static_path + 'data/music/redcoins/1' + Coin.extension);
     if (Coin.BASIC_MESH !== null) {
         this.mesh = Coin.BASIC_MESH.clone();
         this.mesh.position.x = x;
@@ -19,7 +20,6 @@ Coin.prototype.init = function(x,y,z) {
         (function(self,x,y,z) {
             setTimeout(function() {
                 self.init(x,y,z);
-                Coin.nextSound = new Audio(static_path + 'data/music/redcoins/1' + Coin.extension);
             },1000);
         })(this,x,y,z);
     }
@@ -41,7 +41,9 @@ Coin.prototype.update = function() {
 Coin.prototype.get = function() {
     if (!this.got) {
         this.got = true;
-        this.mesh.visible = false;
+        if (this.mesh) {
+            this.mesh.visible = false;
+        }
         Coin.total ++;
         Coin.nextSound.play();
         if (Coin.total === 9) {
