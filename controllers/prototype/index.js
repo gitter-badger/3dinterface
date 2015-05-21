@@ -170,7 +170,7 @@ var addPreviousNextFromId = function(client, req, res, callback, id) {
 
 var addHoveredFromId = function(client, req, res, callback, id) {
     client.query(
-        "SELECT start, time, arrow_id FROM hovered WHERE id = $1",
+        "SELECT start, time, arrow_id FROM hovered WHERE user_id = $1",
         [id],
         function(err, result) {
             res.locals.path = res.locals.path || [];
