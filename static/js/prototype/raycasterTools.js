@@ -10,8 +10,8 @@ var CameraSelecter = function(renderer, cameras, buttonManager) {
 CameraSelecter.prototype.pointedCamera = function() {
     var returnCamera;
 
-    var x = ( this.mouse.x / renderer.domElement.width ) * 2 - 1;
-    var y = - (this.mouse.y / renderer.domElement.height) * 2 + 1;
+    var x = ( this.mouse.x / this.renderer.domElement.width ) * 2 - 1;
+    var y = - (this.mouse.y / this.renderer.domElement.height) * 2 + 1;
 
     var camera = this.cameras.mainCamera();
 
@@ -52,6 +52,7 @@ CameraSelecter.prototype.pointedCamera = function() {
             // }
         }
     }
+    this.currentPointedCamera = null;
 }
 
 CameraSelecter.prototype.update = function(event) {

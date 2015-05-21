@@ -14,6 +14,11 @@ Previewer.prototype.render = function(prev, container_width, container_height) {
         if (!this.fixed) {
             left = Math.floor(prev.x - width/2);
             bottom = Math.floor(this.renderer.domElement.height - prev.y + height/5);
+            if (bottom + height > this.renderer.domElement.height) {
+                bottom -= 7 * height / 5;
+                console.log(bottom);
+            }
+            console.log(bottom, this.renderer.domElement.height);
         } else {
             left = 0;
             bottom = 0;
