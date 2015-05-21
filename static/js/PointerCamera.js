@@ -92,7 +92,7 @@ PointerCamera.prototype.hermiteMotion = function(time) {
     this.target = Tools.sum(this.position, this.hermiteAngles.eval(this.t));
 
     this.t += 0.01 * time / 20;
-
+fayt
     if (this.t > 1) {
         this.movingHermite = false;
         this.anglesFromVectors();

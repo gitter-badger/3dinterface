@@ -44,7 +44,7 @@ ReplayCamera.prototype.look = function() {
 ReplayCamera.prototype.update = function(time) {
     if (this.started) {
         if (this.event.type == 'camera') {
-            this.linearMotion(time);
+            this.cameraMotion(time);
         } else if (this.event.type == 'previousnext') {
             this.linearMotion(time / 5);
         } else if (this.event.type == 'arrow') {
@@ -62,8 +62,21 @@ ReplayCamera.prototype.linearMotion = function(time) {
     this.position.x = tmp.x;
     this.position.y = tmp.y;
     this.position.z = tmp.z;
-    this.target = Tools.sum(Tools.mul(this.old_target, 1-this.t), Tools.mul(this.new_target, this.t));
     this.t += 0.1 * time / 20;
+
+    if (this.t > 1) {
+        this.nextEvent();
+    }
+}
+
+ReplayCamera.prototype.cameraMotion = function(time) {
+
+    var tmp = Tools.sum(Tools.mul(this.old_position, 1-this.t), Tools.mul(this.new_position, this.t));
+    this.position.x = tmp.x;
+    this.position.y = tmp.y;
+    this.position.z = tmp.z;
+    this.target = Tools.sum(Tools.mul(this.old_target, 1-this.t), Tools.mul(this.new_target, this.t));
+    this.t += 1 / (((new Date(this.path[this.counter].time)).getTime() - (new Date(this.path[this.counter-1].time)).getTime()) / 20);
 
     if (this.t > 1) {
         this.nextEvent();
