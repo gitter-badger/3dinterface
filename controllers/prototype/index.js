@@ -140,8 +140,8 @@ var addPreviousNextFromId = function(client, req, res, callback, id) {
             "((camera).target).y   AS ty, " +
             "((camera).target).z   AS tz, " +
             "time                  AS time " +
-            "FROM previousnextclicked;",
-        [],
+            "FROM previousnextclicked WHERE user_id = $1;",
+        [id],
         function(err, result) {
             res.locals.path = res.locals.path || [];
             for (var i in result.rows) {
