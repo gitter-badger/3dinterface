@@ -66,12 +66,25 @@ CameraSelecter.prototype.update = function(event) {
 
     if (hovered !== undefined && !(hovered instanceof Coin)) {
         if (hovered !== previousCamera) {
+            // log it
+            var event = new BD.Event.Hovered();
+            event.start = true;
+            event.arrow_id = cameras.cameras.indexOf(this.currentPointedCamera);
+            event.send();
+
             this.prev.x = this.mouse.x;
             this.prev.y = this.mouse.y;
         }
         this.prev.camera = hovered;
         this.prev.go = true;
     } else {
+        if (this.prev.go) {
+        // Log if previous was not null
+            var event = new BD.Event.Hovered();
+            event.start = false;
+            event.arrow_id = null;
+            event.send();
+        }
         this.prev.go = false;
     }
 }

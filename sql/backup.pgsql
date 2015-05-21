@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS coinclicked CASCADE;
 DROP TABLE IF EXISTS keyboardevent CASCADE;
 DROP TABLE IF EXISTS resetclicked CASCADE;
 DROP TABLE IF EXISTS previousnextclicked CASCADE;
+DROP TABLE IF EXISTS hovered CASCADE;
 
 DROP TYPE IF EXISTS VECTOR3 CASCADE;
 DROP TYPE IF EXISTS CAMERA CASCADE;
@@ -62,4 +63,12 @@ CREATE TABLE previousnextclicked(
     previousnext PREVIOUSNEXT NOT NULL,
     time TIMESTAMP DEFAULT NOW(),
     camera CAMERA
+);
+
+CREATE TABLE hovered(
+    id SERIAL PRIMARY KEY,
+    user_id SERIAL REFERENCES users (id),
+    start BOOLEAN NOT NULL,
+    time TIMESTAMP DEFAULT NOW(),
+    arrow_id INT
 );

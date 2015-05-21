@@ -77,3 +77,14 @@ BD.Event.PreviousNextClicked.prototype.send = function() {
 
     BD.Private.sendData(url, data);
 }
+
+BD.Event.Hovered = function() {};
+BD.Event.Hovered.prototype.send = function() {
+    var url = "/hovered";
+    var data = {
+        start: this.start,
+        arrow_id: this.arrow_id
+    };
+
+    BD.Private.sendData(url, data);
+}
