@@ -15,7 +15,6 @@ module.exports.index = function(req, res) {
                 req.body.time
             ],
             function(err, result) {
-                console.log(err);
                 release();
             }
         );

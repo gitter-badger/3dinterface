@@ -47,8 +47,8 @@ CameraSelecter.prototype.pointedCamera = function() {
                         return coins[coin];
                     }
                 }
-
-                return this.cameras.getByObject(intersects[bestIndex].object);
+                this.currentPointedCamera = this.cameras.getByObject(intersects[bestIndex].object);
+                return this.currentPointedCamera;
             // }
         }
     }
@@ -60,11 +60,14 @@ CameraSelecter.prototype.update = function(event) {
         this.mouse.y = event.offsetY == undefined ? event.layerY : event.offsetY;
     }
 
+    var previousCamera = this.currentPointedCamera;
     var hovered = this.pointedCamera(event);
 
     if (hovered !== undefined && !(hovered instanceof Coin)) {
-        this.prev.x = this.mouse.x;
-        this.prev.y = this.mouse.y;
+        if (hovered !== previousCamera) {
+            this.prev.x = this.mouse.x;
+            this.prev.y = this.mouse.y;
+        }
         this.prev.camera = hovered;
         this.prev.go = true;
     } else {
