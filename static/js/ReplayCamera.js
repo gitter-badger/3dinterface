@@ -117,6 +117,8 @@ ReplayCamera.prototype.nextEvent = function() {
         })(this);
     } else if (this.event.type == 'previousnext') {
         this.move(this.event);
+    } else if (this.event.type == 'hovered') {
+        this.nextEvent();
     }
 }
 
