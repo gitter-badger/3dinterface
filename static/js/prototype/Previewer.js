@@ -1,3 +1,7 @@
+Math.clamp = Math.clamp || function(number, min, max) {
+    return Math.max(Math.min(number, max), min);
+}
+
 var Previewer = function(renderer) {
     this.domElement = document.createElement('canvas');
     this.ctx = this.domElement.getContext('2d');
@@ -14,11 +18,15 @@ Previewer.prototype.render = function(prev, container_width, container_height) {
         if (!this.fixed) {
             left = Math.floor(prev.x - width/2);
             bottom = Math.floor(this.renderer.domElement.height - prev.y + height/5);
+
+            // Translate box if too high
             if (bottom + height > this.renderer.domElement.height) {
                 bottom -= 7 * height / 5;
-                console.log(bottom);
             }
-            console.log(bottom, this.renderer.domElement.height);
+
+            // Translate box if too on the side
+            left = Math.clamp(left, width / 5, this.renderer.domElement.width - 6 * width / 5);
+
         } else {
             left = 0;
             bottom = 0;
