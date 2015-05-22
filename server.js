@@ -85,5 +85,5 @@ if ( app.get('env') === 'development' ) {
 }
 
 // Start server
-console.log("Server ready : " + server_ip_address + ":" + server_port);
+console.log("Server ready : now listening " + server_ip_address + ":" + server_port);
 app.listen(server_port, server_ip_address);

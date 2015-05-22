@@ -51,18 +51,14 @@ Coin.prototype.get = function() {
             var music = document.getElementById('music');
             var wasPlaying = !music.paused;
             music.pause();
-            (function(music, wasPlaying) {
+            setTimeout(function() {
+                Coin.lastSound.play();
                 setTimeout(function() {
-                    Coin.lastSound.play();
-                    (function(wasPlaying) {
-                        setTimeout(function() {
-                            if (wasPlaying) {
-                                music.play();
-                            }
-                        }, Coin.lastSound.duration*1000);
-                    })(wasPlaying);
-                }, Coin.nextSound.duration*1000);
-            })(music, wasPlaying);
+                    if (wasPlaying) {
+                        music.play();
+                    }
+                }, Coin.lastSound.duration*1000);
+            }, Coin.nextSound.duration*1000);
         } else {
             Coin.nextSound = new Audio('/static/data/music/redcoins/' + Coin.total + Coin.extension);
             Coin.nextSound.preload = "auto";
