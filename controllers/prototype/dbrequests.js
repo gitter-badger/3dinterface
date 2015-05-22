@@ -21,11 +21,11 @@ var Info = function(id, finishAction) {
     pg.connect(pgc.url, function(err, client, release) {
         self.client = client;
         self.release = release;
-        self.loadAll();
+        self.execute();
     });
 }
 
-Info.prototype.loadAll = function() {
+Info.prototype.execute = function() {
     this.loadCameras();
     this.loadCoins();
     this.loadArrows();

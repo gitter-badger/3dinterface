@@ -380,10 +380,6 @@ PointerCamera.prototype.redoable = function() {
     return this.history.redoable();
 }
 
-// Static members
-PointerCamera.DISTANCE_X = 1000;
-PointerCamera.DISTANCE_Z = 300;
-
 var History = function() {
     this.states = new Array();
     this.index = -1;

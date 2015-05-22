@@ -1,15 +1,11 @@
 var Tools = {version : "1.0" };
 
 Tools.sum = function(v1, v2) {
-    var ret = v1.clone();
-    ret.add(v2);
-    return ret;
+    return new THREE.Vector3(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
 }
 
 Tools.diff = function(v1, v2) {
-    var ret = v1.clone();
-    ret.sub(v2);
-    return ret;
+    return new THREE.Vector3(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
 }
 
 Tools.dot = function(v1, v2) {
@@ -17,15 +13,15 @@ Tools.dot = function(v1, v2) {
 }
 
 Tools.cross = function(v1, v2) {
-    var ret = v1.clone();
-    ret.cross(v2);
-    return ret;
+    return new THREE.Vector3(
+         v1.y * v2.z - v1.z * v2.y,
+         v1.z * v2.x - v1.x * v2.z,
+         v1.x * v2.y - v1.y * v2.x
+    );
 }
 
 Tools.mul = function(v1, lambda) {
-    var ret = v1.clone();
-    ret.multiplyScalar(lambda);
-    return ret;
+    return new THREE.Vector3(v1.x * lambda, v1.y * lambda, v1.z * lambda);
 }
 
 Tools.equals = function(v1, v2) {
