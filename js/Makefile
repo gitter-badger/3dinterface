@@ -75,4 +75,4 @@ PrototypeReplay:
 		--js_output_file ../static/js/replay.min.js
 
 clean:
-	rm -ri ../static/js/*
+	rm -rf ../static/js/*
