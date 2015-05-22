@@ -19,7 +19,6 @@ var Cube = function(size, style) {
     if (style === undefined) style = {};
 
     this.geometry = new THREE.BoxGeometry(size, size, size);
-    // this.geometry.computeVertexNormals();
 
     this.material = new THREE.MeshLambertMaterial(style);
 
