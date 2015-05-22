@@ -1,0 +1,14 @@
+extends ./prototype_interactive
+
+block title
+    title #{title} - Prototype - Arrows
+
+block configjs
+    script RecommendedCamera = FixedCamera;
+
+block preciseDescription
+    p
+        | Recommended views are displayed with a
+        | transparent blue arrow.  They disappear when you
+        | come closer to them, and shows the motion between
+        | your current position and the recommendation.

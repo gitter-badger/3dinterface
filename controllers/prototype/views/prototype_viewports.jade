@@ -1,0 +1,16 @@
+extends ./prototype_interactive
+
+block title
+    title #{title} - Prototype - Viewports
+
+block configjs
+    script RecommendedCamera = OldFixedCamera;
+
+block preciseDescription
+    p
+        | Recommended views are displayed with a
+        | transparent red rectangle and some lines.
+        | Basically, it represents the position of a camera
+        | (the point at the extramities of the lines
+        | represents the optical center, and the red
+        | rectangle represents the image plane).

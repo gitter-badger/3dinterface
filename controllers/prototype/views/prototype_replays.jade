@@ -1,0 +1,12 @@
+extends ./prototype
+
+block title
+    title #{title} - Prototype - Replay
+
+block configjs
+    script RecommendedCamera = FixedCamera;
+    script var params = params || {}; params.get = params.get || {}; params.get.id = #{id};
+    script(src="/static/js/ReplayCamera.js")
+
+block mainjs
+    script(src="/static/js/prototype/replay.js")
