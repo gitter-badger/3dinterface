@@ -30,7 +30,7 @@ is correct.
 
 This will generate lots of `*.min.js` in `static/js`.
 
-### Running a local server
+### Running the server
 As usual with NodeJS, it's quite easy to test. Just ensure you have `node`
 installed on your machine, clone this repo somewhere, and then, in the repo do
 
