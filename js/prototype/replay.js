@@ -18,13 +18,6 @@ var isFullscreen = false;
 var previousTime;
 
 var main_section = document.getElementById('main-section');
-var offset = function() {
-    return
-        document.getElementById('nav').offsetHeight
-        + document.getElementById('main-div').offsetHeight;
-}
-
-console.log(document.getElementById('main-div').offsetHeight);
 var container_size = {
     width: function() { if (!isFullscreen) return main_section.clientWidth; else return screen.width;},
     height: function() {
@@ -36,8 +29,6 @@ var container_size = {
             return screen.height;
     }
 };
-
-console.log(container_size.width(), container_size.height());
 
 init();
 animate();
@@ -81,6 +72,7 @@ function init() {
     // Initialize pointer camera
     var camera1 = new ReplayCamera(50, container_size.width() / container_size.height(), 0.01, 100000, container);
     scene.add(camera1);
+    camera1.reset();
 
     // Initialize recommendations
     var otherCams = createBobombCameras(container_size.width(), container_size.height());
