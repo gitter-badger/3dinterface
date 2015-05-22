@@ -51,26 +51,25 @@ Info.prototype.tryMerge = function() {
     this.finishAction(this.finalResult);
 }
 
+// Merges the results of every SQL requests done by the load... methods
 Info.prototype.merge = function() {
     this.finalResult = [];
 
     for (;;) {
         // Find next element
-        var nextElement = null;
         var nextIndex = null;
 
         for (var i in this.results) {
             // The next element is placed at the index 0 (since the elements
             // gotten from the database are sorted)
             if (this.results[i].length !== 0 &&
-                (nextElement === null || this.results[i][0].time < nextElement.time)) {
-                nextElement = this.results[i][0];
+                (nextIndex === null || this.results[i][0].time < this.results[nextIndex][0].time)) {
                 nextIndex = i;
             }
         }
 
         // If there is no next element, we're done
-        if (nextElement === null) {
+        if (nextIndex === null) {
             break;
         }
 
