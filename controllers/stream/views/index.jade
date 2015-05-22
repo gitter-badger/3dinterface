@@ -1,11 +1,13 @@
-extends ../../../views/withjs
+extends ../../../views/main
 
 block title
     title #{title} - Streaming simulator
 
 block extrajs
     script params = {}; params.get= {}; params.get.res = #{resolution}
-    script(src="/static/js/stream/main.js")
+    script(src="/static/js/three.min.js")
+    script(src="/static/js/threetools.min.js")
+    script(src="/static/js/streamingsimulator.min.js")
 
 block content
     h2 Streaming simulator

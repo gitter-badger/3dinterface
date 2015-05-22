@@ -1,10 +1,12 @@
-extends ../../../views/withjs
+extends ../../../views/main.jade
 
 block title
     title #{title} - Multi-sphere
 
 block extrajs
-    script(src="/static/js/multisphere/MultiSphere.js")
+    script(src="/static/js/three.min.js")
+    script(src="/static/js/threetools.min.js")
+    script(src="/static/js/multisphere.min.js")
 
 block content
     h2 Multiresolution sphere

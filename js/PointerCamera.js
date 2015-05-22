@@ -179,7 +179,6 @@ PointerCamera.prototype.vectorsFromAngles = function() {
 }
 
 PointerCamera.prototype.anglesFromVectors = function() {
-    // Update phi and theta so that return to reality does not hurt
     var forward = Tools.diff(this.target, this.position);
     forward.normalize();
 
