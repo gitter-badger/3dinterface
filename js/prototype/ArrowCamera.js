@@ -92,6 +92,37 @@ ArrowCamera.prototype.initExtremity = function() {
     return this.mesh;
 }
 
+ArrowCamera.prototype.updateExtremity = function() {
+    var direction = this.target.clone();
+    direction.sub(this.position);
+    direction.normalize();
+
+    var left = Tools.cross(direction, this.up);
+    var other = Tools.cross(direction, left);
+
+    left.normalize();
+    other.normalize();
+    left = Tools.mul(left, this.size);
+    other  = Tools.mul(other, this.size);
+
+    this.mesh.geometry.vertices = [
+        Tools.sum( Tools.sum( this.position, left),  other),
+        Tools.diff(Tools.sum( this.position, other), left),
+        Tools.diff(Tools.diff(this.position, left),  other),
+        Tools.sum( Tools.diff(this.position, other), left),
+        Tools.sum(this.position, direction)
+    ];
+
+    this.mesh.geometry.computeFaceNormals();
+    this.mesh.geometry.verticesNeedUpdate = true;
+
+}
+
+ArrowCamera.prototype.setSize = function(size) {
+    this.size = size;
+    this.updateExtremity();
+}
+
 // Update function
 ArrowCamera.prototype.update = function(mainCamera) {
     // Compute distance between center of camera and position

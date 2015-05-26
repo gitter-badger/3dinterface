@@ -7,3 +7,4 @@ module.exports.viewports = '/prototype/viewports/';
 module.exports.stream = '/stream/';
 module.exports.reverse = '/prototype/reverse/';
 module.exports.replay_index = '/prototype/replay/';
+module.exports.tutorial = '/prototype/tutorial';

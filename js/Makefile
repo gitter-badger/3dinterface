@@ -1,7 +1,7 @@
 OPT=--compilation_level SIMPLE_OPTIMIZATIONS
 CLOSURE=java -jar /usr/share/java/closure-compiler/closure-compiler.jar
 
-all: Three Stats ThreeTools Bouncing Multisphere StreamingSimulator PrototypeTools PrototypeReplay PrototypeInteractive
+all: Three Stats ThreeTools Bouncing Multisphere StreamingSimulator PrototypeTools PrototypeReplay PrototypeInteractive Tutorial
 
 Three:
 	cp three/three.min.js ../static/js/
@@ -73,6 +73,11 @@ PrototypeReplay:
 	$(CLOSURE) $(OPT) \
 		--js prototype/replay.js \
 		--js_output_file ../static/js/replay.min.js
+
+Tutorial:
+	$(CLOSURE) $(OPT) \
+		--js prototype/tutorial.js \
+		--js_output_file ../static/js/tutorial.min.js
 
 clean:
 	rm -rf ../static/js/*

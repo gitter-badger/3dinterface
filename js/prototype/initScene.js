@@ -63,6 +63,13 @@ function initPeachCastle(scene, collidableObjects, loader, static_path) {
     );
 }
 
+function resetPeachElements() {
+    return {
+        position: new THREE.Vector3(-0.18679773265763222,0.20096245470188506,0.19015771599529685),
+        target: new THREE.Vector3(-0.18679773265767263,0.20096245470190005,-39.8098422840047)
+    };
+}
+
 function initZeldaScene(scene, collidableObjects, loader, static_path) {
     // Create loader if not already done
     if (loader === undefined) {
@@ -251,6 +258,13 @@ function initBobombScene(scene, collidableObjects, loader, static_path) {
     //         });
     //     }
     //);
+}
+
+function resetBobombElements() {
+    return {
+        position: new THREE.Vector3(-8.849933489419644, 9.050627639459208, 0.6192960680432451),
+        target: new THREE.Vector3(17.945323228767702, -15.156828589982375, -16.585740412769756)
+    };
 }
 
 function createBobombCoins() {

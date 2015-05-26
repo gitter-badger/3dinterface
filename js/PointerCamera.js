@@ -54,6 +54,8 @@ var PointerCamera = function() {
     // listenerTarget.addEventListener('mouseout', onMouseUp, false);
 
     this.collisions = true;
+
+    this.resetElements = resetBobombElements();
 }
 PointerCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 PointerCamera.prototype.constructor = PointerCamera;
@@ -152,18 +154,15 @@ PointerCamera.prototype.normalMotion = function(time) {
 }
 
 PointerCamera.prototype.reset = function() {
-    this.resetBobomb();
+    this.resetPosition();
     this.moving = false;
     this.movingHermite = false;
     (new BD.Event.ResetClicked()).send();
-    // this.position.copy(new THREE.Vector3(-8.849933489419644, 9.050627639459208, 0.6192960680432451));
-    // this.target.copy(new THREE.Vector3(17.945323228767702, -15.156828589982375, -16.585740412769756));
-    // this.anglesFromVectors();
 }
 
-PointerCamera.prototype.resetBobomb = function() {
-    this.position.copy(new THREE.Vector3(34.51854618261728,10.038879540840306,-21.772598201888613));
-    this.target.copy(new THREE.Vector3(-2.593404107644737,8.039712770013185,-6.983870133675925));
+PointerCamera.prototype.resetPosition = function() {
+    this.position.copy(this.resetElements.position);
+    this.target.copy(this.resetElements.target);
     this.anglesFromVectors();
 }
 

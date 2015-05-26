@@ -1,21 +1,34 @@
 var BD = {};
 
 BD.Private = {};
+
 BD.Private.sendData = function(url, data) {
-    // Append time to data
-    data.time = Date.now() / 1000;
+    if (BD.Private.enabled) {
+        // Append time to data
+        data.time = Date.now() / 1000;
 
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", url, true);
-    xhr.setRequestHeader("Content-type", "application/json;charset=UTF-8");
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-type", "application/json;charset=UTF-8");
 
-    // xhr.onreadystatechange = function() {
-    //     if(xhr.readyState == 4 && xhr.status == 200) {
-    //         console.log(xhr.responseText);
-    //     }
-    // }
+        // xhr.onreadystatechange = function() {
+        //     if(xhr.readyState == 4 && xhr.status == 200) {
+        //         console.log(xhr.responseText);
+        //     }
+        // }
 
-    xhr.send(JSON.stringify(data));
+        xhr.send(JSON.stringify(data));
+    }
+}
+
+BD.Private.enabled = true;
+
+BD.enable = function() {
+    BD.Private.enabled = true;
+}
+
+BD.disable = function() {
+    BD.Private.enabled = false;
 }
 
 BD.Private.compactCamera = function(camera) {

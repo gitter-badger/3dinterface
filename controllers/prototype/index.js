@@ -68,3 +68,12 @@ module.exports.replay_index = function(req, res, next) {
         });
     });
 }
+
+module.exports.tutorial = function(req, res) {
+
+
+    res.setHeader('Content-Type', 'text/html');
+    res.render('tutorial.jade', res.lcals, function(err, result) {
+        res.send(result);
+    });
+}
