@@ -389,13 +389,11 @@ History.prototype.addState = function(state) {
     ++this.index;
     this.size = this.index + 1;
     this.states[this.size-1] = state;
-    console.log('New state ' + this.index + ' / ' + this.size);
 }
 
 History.prototype.undo = function() {
     if (this.undoable()) {
         this.index--;
-        console.log('New state ' + this.index + ' / ' + this.size);
         return this.currentState();
     }
 }
@@ -403,7 +401,6 @@ History.prototype.undo = function() {
 History.prototype.redo = function() {
     if (this.redoable()) {
         this.index++;
-        console.log('New state ' + this.index + ' / ' + this.size);
         return this.currentState();
     }
 }
