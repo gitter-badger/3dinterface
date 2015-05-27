@@ -27,6 +27,11 @@ function initPeachCastle(scene, collidableObjects, loader, static_path) {
                     object.raycastable = true;
                     if (object.material.name === 'Material.103_princess_peaches_cast') {
                         object.material.transparent = true;
+                    } else if (object.material.name === 'Material.136_princess_peaches_cast') {
+                        object.material.transparent = true;
+                        object.material.opacity = 0.5;
+                        object.raycastable = false;
+
                     }
                 }
             });
