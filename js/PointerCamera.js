@@ -243,7 +243,7 @@ PointerCamera.prototype.isColliding = function(direction) {
     var intersects = this.raycaster.intersectObjects(this.collidableObjects, true);
 
     for (var i in intersects) {
-        if (intersects[i].distance < Tools.norm(direction) + this.speed * 100) {
+        if (intersects[i].distance < Tools.norm(direction) + this.speed * 300) {
             return true;
         }
     }
