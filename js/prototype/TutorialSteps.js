@@ -17,7 +17,11 @@ var TutorialSteps = function(tutoCamera) {
             justclick: true
         },
         {
-            text:"Nice !",
+            text: "Here is a red coin, click on it !",
+            justclick: false
+        },
+        {
+            text:"Nice ! You can try to use the keyboard arrows to move the camera",
             justclick: true
         }
     ];
@@ -31,7 +35,15 @@ TutorialSteps.prototype.nextStep = function() {
             case 0: break;
             case 1: this.camera.allowed.mouseRotate       = true; break;
             case 2: this.camera.allowed.keyboardRotate    = true; break;
-            case 3: this.camera.allowed.keyboardTranslate = true; break;
+            case 3:
+                this.camera.allowed.keyboardRotate    = true;
+                var self = this;
+                coins.push(new Coin(0.4911245636058468,1.225621525492101,-5.11526684540265, function() {
+                    self.nextStep();
+                }));
+                coins[coins.length-1].addToScene(scene);
+                break;
+            case 4: this.camera.allowed.keyboardTranslate = true; break;
         }
         this.step++;
     }

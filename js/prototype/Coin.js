@@ -1,7 +1,8 @@
-var Coin = function(x,y,z) {
+var Coin = function(x,y,z, callback) {
     this.ready = false;
     this.got = false;
     this.init(x,y,z);
+    this.callback = callback;
 }
 
 var _toto = new Audio();
@@ -41,6 +42,7 @@ Coin.prototype.update = function() {
 Coin.prototype.get = function() {
     if (!this.got) {
         this.got = true;
+        this.callback();
         if (this.mesh) {
             this.mesh.visible = false;
         }

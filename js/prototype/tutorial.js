@@ -122,6 +122,8 @@ function init() {
 
     // Add listeners
     initListeners();
+
+    tutorial.nextStep();
 }
 
 function initListeners() {
