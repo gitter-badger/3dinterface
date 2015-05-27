@@ -262,8 +262,8 @@ function initBobombScene(scene, collidableObjects, loader, static_path) {
 
 function resetBobombElements() {
     return {
-        position: new THREE.Vector3(-8.849933489419644, 9.050627639459208, 0.6192960680432451),
-        target: new THREE.Vector3(17.945323228767702, -15.156828589982375, -16.585740412769756)
+        position: new THREE.Vector3(38.115627509754646,10.829803024792419,-19.862035691341315),
+        target: new THREE.Vector3(-1.4518898576752122,5.048214777643772,-18.869661407832535)
     };
 }
 

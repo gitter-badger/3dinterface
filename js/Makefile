@@ -1,5 +1,10 @@
 OPT=--compilation_level SIMPLE_OPTIMIZATIONS
-CLOSURE=java -jar /usr/share/java/closure-compiler/closure-compiler.jar
+
+ifeq ($(TYPE),RELEASE)
+	CLOSURE=java -jar /usr/share/java/closure-compiler/closure-compiler.jar
+else
+	CLOSURE=./compiler.sh
+endif
 
 all: Three Stats ThreeTools Bouncing Multisphere StreamingSimulator PrototypeTools PrototypeReplay PrototypeInteractive Tutorial
 
@@ -76,6 +81,8 @@ PrototypeReplay:
 
 Tutorial:
 	$(CLOSURE) $(OPT) \
+		--js TutoCamera.js \
+		--js prototype/TutorialSteps.js \
 		--js prototype/tutorial.js \
 		--js_output_file ../static/js/tutorial.min.js
 

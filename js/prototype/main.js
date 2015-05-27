@@ -90,7 +90,7 @@ function init() {
     // Initialize pointer camera
     var camera1 = new PointerCamera(50, container_size.width() / container_size.height(), 0.01, 100000, container);
     camera1.speed = 0.005;
-    camera1.resetBobomb();
+    camera1.reset();
     camera1.save();
     scene.add(camera1);
 

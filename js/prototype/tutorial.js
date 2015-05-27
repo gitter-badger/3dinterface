@@ -11,12 +11,12 @@ var spheres = new Array(mesh_number);
 var visible = 0;
 var stats;
 var previewer;
-
 var loader;
 var coins;
 var beenFullscreen = false;
 var isFullscreen = false;
 var previousTime;
+var tutorial;
 
 var main_section = document.getElementById('main-section');
 var offset = function() {
@@ -91,7 +91,8 @@ function init() {
     scene.add(ambient_light);
 
     // Initialize pointer camera
-    var camera1 = new PointerCamera(50, container_size.width() / container_size.height(), 0.01, 100000, container);
+    var camera1 = new TutoCamera(50, container_size.width() / container_size.height(), 0.01, 100000, container);
+    tutorial = camera1.tutorial;
     camera1.speed = 0.001;
     camera1.resetElements = resetPeachElements();
     camera1.reset();
@@ -230,7 +231,6 @@ function render() {
 
     // Update the recommendations
     cameras.update(cameras.mainCamera());
-
 
     // Set current position of camera
     cameras.look();
