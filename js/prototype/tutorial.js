@@ -116,6 +116,7 @@ function init() {
     initPeachCastle(scene, collidableObjects, loader, static_path);
     // initBobombScene(scene, collidableObjects, loader, static_path);
 
+    Coin.init(0.001);
     coins = [];
     // coins = createBobombCoins();
     // setTimeout(function() {coins.forEach(function(coin) { coin.addToScene(scene);})}, 1000);
@@ -224,7 +225,7 @@ function render() {
     });
 
     // Update coins
-    // coins.forEach(function(coin) { coin.update(); });
+    coins.forEach(function(coin) { coin.update(); });
 
     // Update main camera
     var currentTime = Date.now() - previousTime;

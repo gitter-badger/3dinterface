@@ -2,7 +2,10 @@ var Coin = function(x,y,z, callback) {
     this.ready = false;
     this.got = false;
     this.init(x,y,z);
-    this.callback = callback;
+    if (callback) {
+        this.callback = callback;
+        this.rotating = true;
+    }
 }
 
 var _toto = new Audio();
@@ -31,18 +34,19 @@ Coin.prototype.addToScene = function(scene) {
 }
 
 Coin.prototype.update = function() {
-    if (this.ready)
-        (function(self) {
-            self.update = function() {
-                // self.mesh.rotation.y += 0.1;
-            }
-        })(this);
+    var self = this;
+    if (this.ready && this.rotating)
+        this.mesh.rotation.y += 0.1
 }
 
 Coin.prototype.get = function() {
     if (!this.got) {
         this.got = true;
-        this.callback();
+
+        // Call the callback if any
+        if (this.callback)
+            this.callback();
+
         if (this.mesh) {
             this.mesh.visible = false;
         }
@@ -75,17 +79,24 @@ Coin.total = 1;
 Coin.BASIC_MESH = null;
 
 Coin._loader = new THREE.OBJLoader();
-Coin._loader.load(
-    static_path + 'data/coin/Coin.obj',
-    function(object) {
-        object.traverse(function (mesh) {
-            if (mesh instanceof THREE.Mesh) {
-                mesh.scale.set(0.005,0.005,0.005);
-                mesh.material.color.setHex(0xff0000);
-                mesh.geometry.computeVertexNormals();
-                mesh.raycastable = true;
-                Coin.BASIC_MESH = mesh
-            }
-        });
+
+Coin.init = function(scale) {
+    if (scale === undefined) {
+        scale = 0.005;
     }
-);
+
+    Coin._loader.load(
+        static_path + 'data/coin/Coin.obj',
+        function(object) {
+            object.traverse(function (mesh) {
+                if (mesh instanceof THREE.Mesh) {
+                    mesh.scale.set(scale,scale,scale);
+                    mesh.material.color.setHex(0xff0000);
+                    mesh.geometry.computeVertexNormals();
+                    mesh.raycastable = true;
+                    Coin.BASIC_MESH = mesh
+                }
+            });
+        }
+    );
+}

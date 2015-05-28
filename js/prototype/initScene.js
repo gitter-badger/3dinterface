@@ -70,8 +70,8 @@ function initPeachCastle(scene, collidableObjects, loader, static_path) {
 
 function resetPeachElements() {
     return {
-        position: new THREE.Vector3(-0.18679773265763222,0.20096245470188506,0.19015771599529685),
-        target: new THREE.Vector3(-0.18679773265767263,0.20096245470190005,-39.8098422840047)
+        position: new THREE.Vector3(0.24120226734236713,0.2009624547018851,-0.5998422840047036),
+        target: new THREE.Vector3(0.24120226734232672,0.20096245470190008,-40.5998422840047)
     };
 }
 

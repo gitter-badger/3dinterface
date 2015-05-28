@@ -147,7 +147,19 @@ TutoCamera.prototype.normalMotion = function(time) {
     if (this.motion.moveLeft)     {direction.add(Tools.mul(left,    speed)); this.changed = true;}
     if (this.motion.moveRight)    {direction.sub(Tools.mul(left,    speed)); this.changed = true;}
 
-    if (!this.collisions || !this.isColliding(direction)) {
+    var collide = this.isColliding(direction);
+    if (this.collisions && collide) {
+        var face = collide.face;
+        var vertices = collide.object.geometry.vertices;
+        var normal = Tools.cross(Tools.diff(vertices[face.b], vertices[face.a]), Tools.diff(vertices[face.c], vertices[face.a])).normalize();
+
+        if (Tools.dot(normal, direction) > 0) {
+            normal.multiplyScalar(-1);
+        }
+
+        normal.multiplyScalar(0.01);
+        this.position.add(normal);
+    } else {
         this.position.add(direction);
     }
 
@@ -248,11 +260,9 @@ TutoCamera.prototype.isColliding = function(direction) {
     for (var i in intersects) {
         if (intersects[i].distance < Tools.norm(direction) + this.speed * 300 &&
             intersects[i].object.raycastable) {
-            return true;
+            return intersects[i];
         }
     }
-
-    return false;
 }
 
 // Look function
@@ -269,6 +279,9 @@ TutoCamera.prototype.onKeyEvent = function(event, toSet) {
     var motionJsonCopy = JSON.stringify(this.motion);
 
     if (this.allowed.keyboardTranslate) {
+        if (this.tutorial.nextAction() ===  'translate-keyboard') {
+            this.tutorial.nextStep();
+        }
         switch ( event.keyCode ) {
             // Azerty keyboards
             case 38: case 90:  this.motion.moveForward   = toSet; break; // up / z

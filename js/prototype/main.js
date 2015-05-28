@@ -109,6 +109,7 @@ function init() {
     // Load scene
     // initPeachCastle(scene, collidableObjects, loader, static_path);
     initBobombScene(scene, collidableObjects, loader, static_path);
+    Coin.init();
     coins = createBobombCoins();
 
     setTimeout(function() {coins.forEach(function(coin) { coin.addToScene(scene);})}, 1000);
