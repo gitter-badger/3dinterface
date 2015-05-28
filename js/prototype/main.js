@@ -19,11 +19,6 @@ var isFullscreen = false;
 var previousTime;
 
 var main_section = document.getElementById('main-section');
-var offset = function() {
-    return
-        document.getElementById('nav').offsetHeight
-        + document.getElementById('main-div').offsetHeight;
-}
 
 console.log(document.getElementById('main-div').offsetHeight);
 var container_size = {

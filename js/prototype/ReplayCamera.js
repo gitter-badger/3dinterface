@@ -48,11 +48,12 @@ ReplayCamera.prototype.update = function(time) {
             this.linearMotion(time / 5);
         } else if (this.event.type == 'arrow') {
             this.hermiteMotion(time);
-        } else if (this.event.type == 'coin') {
-            // Nothing to do
-        } else if (this.event.type == 'reset') {
-            // Nothing to do
         }
+        // } else if (this.event.type == 'coin') {
+        //     // Nothing to do
+        // } else if (this.event.type == 'reset') {
+        //     // Nothing to do
+        // }
     }
 }
 
