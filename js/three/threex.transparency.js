@@ -13,7 +13,7 @@ THREEx.Transparency.objects = [];
  */
 THREEx.Transparency.init	= function(objects){
 	objects.forEach(function(object){
-        THREEx.Transpaency.objects.push(object);
+        THREEx.Transparency.objects.push(object);
 		object.material.transparent	= true
 		object.material.depthWrite	= false
 	});
