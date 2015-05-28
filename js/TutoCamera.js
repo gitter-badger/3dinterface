@@ -157,14 +157,8 @@ TutoCamera.prototype.normalMotion = function(time) {
             normal.multiplyScalar(-1);
         }
 
-        // This is quite ugly, but it allows smooth collisions (well, quite smooth)
-        this.position.add(direction);
-        var dir = direction.clone();
-        dir.normalize();
-        this.position.add(Tools.mul(dir, 300*this.speed));
-        var move = (Tools.mul(normal,Tools.diff(vertices[face.a], this.position).dot(normal)));
-        this.position.add(move);
-        this.position.sub(Tools.mul(dir, 300*this.speed));
+        normal.multiplyScalar(0.01);
+        this.position.add(normal);
     } else {
         this.position.add(direction);
     }
