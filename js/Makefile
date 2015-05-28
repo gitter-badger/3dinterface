@@ -10,6 +10,8 @@ all: Three Stats ThreeTools Bouncing Multisphere StreamingSimulator PrototypeToo
 
 Three:
 	cp three/three.min.js ../static/js/
+	$(CLOSURE) $(OPT) \
+		--js three/threex.transparency.js >> ../static/js/three.min.js
 
 Stats:
 	cp three/stats.min.js ../static/js/

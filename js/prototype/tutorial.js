@@ -237,6 +237,7 @@ function render() {
     renderer.setScissor(left, bottom, width, height);
     renderer.enableScissorTest(true);
     renderer.setViewport(left, bottom, width, height);
+    THREEx.Transparency.update(cameras.mainCamera());
     renderer.render(scene, cameras.mainCamera());
 
     // Remove borders of preview

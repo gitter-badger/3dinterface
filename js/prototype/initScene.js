@@ -26,12 +26,16 @@ function initPeachCastle(scene, collidableObjects, loader, static_path) {
                     object.material.side = THREE.DoubleSide;
                     object.raycastable = true;
                     if (object.material.name === 'Material.103_princess_peaches_cast') {
-                        object.material.transparent = true;
+                        THREEx.Transparency.push(object);
                     } else if (object.material.name === 'Material.136_princess_peaches_cast') {
-                        object.material.transparent = true;
+                        THREEx.Transparency.push(object);
                         object.material.opacity = 0.5;
+                        object.material.side = THREE.FrontSide;
                         object.raycastable = false;
-
+                        var newObj = object.clone();
+                        newObj.material = object.material.clone();
+                        newObj.material.side = THREE.BackSide;
+                        scene.add(newObj);
                     }
                 }
             });
@@ -60,7 +64,7 @@ function initPeachCastle(scene, collidableObjects, loader, static_path) {
                     object.raycastable = true;
                     if (object.material.name === 'Material.054_777F0E0B_c.bmp' ||
                         object.material.name === 'Material.061_5C3492AB_c.bmp'   ) {
-                        object.material.transparent = true;
+                        THREEx.Transparency.push(object);
                     }
                 }
             });
@@ -100,7 +104,7 @@ function initZeldaScene(scene, collidableObjects, loader, static_path) {
                     object.material.side = THREE.DoubleSide;
                     object.raycastable = true;
                     if (object.material.name === 'm0') {
-                        object.material.transparent = true;
+                        THREEx.Transparency.push(object);
                     }
                 }
             });
@@ -223,7 +227,7 @@ function initBobombScene(scene, collidableObjects, loader, static_path) {
                     object.geometry.computeVertexNormals();
                     if (object.material.name === 'Material.071_574B138E_c.bmp' ||
                         object.material.name === 'Material.070_41A41EE3_c.bmp') {
-                        object.material.transparent = true;
+                        THREEx.Transparency.push(object);
                     }
 
                 }

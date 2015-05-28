@@ -19,4 +19,8 @@ while [[ $# > 0 ]]; do
 
 done
 
-cat $args > $output
+if [ -z "$output" ]; then
+    cat $args
+else
+    cat $args > $output
+fi
