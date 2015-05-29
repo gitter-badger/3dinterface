@@ -12,7 +12,6 @@ var _toto = new Audio();
 Coin.extension = _toto.canPlayType("audio/x-vorbis") === "" ? ".ogg" : ".mp3";
 
 Coin.prototype.init = function(x,y,z) {
-    Coin.nextSound = new Audio(static_path + 'data/music/redcoins/1' + Coin.extension);
     if (Coin.BASIC_MESH !== null) {
         this.mesh = Coin.BASIC_MESH.clone();
         this.mesh.position.x = x;
@@ -81,22 +80,28 @@ Coin.BASIC_MESH = null;
 Coin._loader = new THREE.OBJLoader();
 
 Coin.init = function(scale) {
-    if (scale === undefined) {
-        scale = 0.005;
-    }
+    if (!Coin.initialized) {
+        Coin.initialized = true;
 
-    Coin._loader.load(
-        static_path + 'data/coin/Coin.obj',
-        function(object) {
-            object.traverse(function (mesh) {
-                if (mesh instanceof THREE.Mesh) {
-                    mesh.scale.set(scale,scale,scale);
-                    mesh.material.color.setHex(0xff0000);
-                    mesh.geometry.computeVertexNormals();
-                    mesh.raycastable = true;
-                    Coin.BASIC_MESH = mesh
-                }
-            });
+        if (scale === undefined) {
+            scale = 0.005;
         }
-    );
+
+        Coin._loader.load(
+            static_path + 'data/coin/Coin.obj',
+            function(object) {
+                object.traverse(function (mesh) {
+                    if (mesh instanceof THREE.Mesh) {
+                        mesh.scale.set(scale,scale,scale);
+                        mesh.material.color.setHex(0xff0000);
+                        mesh.geometry.computeVertexNormals();
+                        mesh.raycastable = true;
+                        Coin.BASIC_MESH = mesh
+                    }
+                });
+            }
+        );
+
+        Coin.nextSound = new Audio(static_path + 'data/music/redcoins/1' + Coin.extension);
+    }
 }

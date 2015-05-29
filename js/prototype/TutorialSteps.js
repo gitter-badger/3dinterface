@@ -47,7 +47,35 @@ var TutorialSteps = function(tutoCamera) {
             justclick: false
         },
         {
-            text: "You got it ! I think you're ready to play !",
+            text: "You got it ! Try to click on reset camera !",
+            justclick: false
+        },
+        {
+            text: "Nice ! Let me introduce you to <emp>recommendations</em>",
+            justclick: true
+        },
+        {
+            text: "This is a recommendation, by hovering it, you should see a preview, and by clicking on it, you should go to the recommended viewpoint",
+            justclick: false
+        },
+        {
+            text: "The recommendation will change color once you clicked on it, just like a web link",
+            justclick:true
+        },
+        {
+            text: "Here are some more recommendations, try to browse the scene and find the missing red coins (5/8)",
+            justclick:false
+        },
+        {
+            text:"6/8 : you can use the arrow buttons to go to the previous / next position",
+            justclick: false
+        },
+        {
+            text: "7/8 ! Only one more !",
+            justclick: false
+        },
+        {
+            text: "Congratulations ! You've successfully finished the tutorial !",
             justclick: false
         }
     ];
@@ -65,10 +93,7 @@ TutorialSteps.prototype.nextStep = function() {
             case 2: this.camera.allowed.keyboardRotate    = true; break;
             case 3:
                 this.camera.allowed.keyboardRotate    = true;
-                coins.push(new Coin(0.4911245636058468,1.225621525492101,-5.11526684540265, function() {
-                    self.nextStep();
-                    self.coins++;
-                }));
+                coins.push(new Coin(0.4911245636058468,1.225621525492101,-5.11526684540265, callback));
                 coins[coins.length-1].addToScene(scene);
                 break;
             case 4:
@@ -87,6 +112,28 @@ TutorialSteps.prototype.nextStep = function() {
                 coins.push(new Coin(2.7378029903574026,2.953347730618792,-11.550836282321221, callback));
                 coins[coins.length-1].addToScene(scene);
                 break;
+            case 12:
+                var cam = createPeachCameras(container_size.width(), container_size.height())[2];
+                cameras.push(cam);
+                cam.addToScene(scene);
+                this.camera.move({
+                    position: new THREE.Vector3(0.24120226734236713,0.2009624547018851,-0.5998422840047036),
+                    target:  new THREE.Vector3(24.021711452218575,7.072419314071788,-32.020702608601745)
+                });
+                break;
+            case 14:
+                var cams = createPeachCameras(container_size.width(), container_size.height());
+                for (var i = 0; i < cams.length; i == 1 ? i+=2 : i++) {
+                    cameras.push(cams[i]);
+                    cams[i].addToScene(scene);
+                }
+
+                coins.push(new Coin(3.701112872561801,-0.4620393514856378,-3.3373375945128085, callback));
+                coins[coins.length-1].addToScene(scene);
+                coins.push(new Coin(6.694675339780243,-1.2480369397526456,-1.992336719279164, callback));
+                coins[coins.length-1].addToScene(scene);
+                coins.push(new Coin(-2.458336118265302,-1.549510268763568,-11.186153614421212, callback));
+                coins[coins.length-1].addToScene(scene);
         }
         this.step++;
     }
@@ -97,6 +144,8 @@ TutorialSteps.prototype.nextAction = function() {
         case 2: return 'rotate-mouse';
         case 3: return 'rotate-keyboard';
         case 9: return 'translate-keyboard';
+        case 11: return 'reset-camera';
+        case 13: return 'recommendation';
     }
 }
 
@@ -113,15 +162,15 @@ TutorialSteps.prototype.alert = function(myString, justclicked) {
 
 TutorialSteps.prototype.notify = function(myString, justclick) {
     $('#alert-placeholder').html(
-        '<div class="alert alert-warning alert-dismissable">' +
+        '<div class="alert alert-' + (justclick ? 'warning' : 'info') + ' alert-dismissable">' +
             (justclick ?
             '<button type="button" class="close" aria-hidden="true"' +
                      'onclick="setTimeout(onWindowResize, 100); tutorial.nextStep();' + '">' +
                 '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>' +
             '</button>' : '') +
-            '<span>' +
+            '<span><strong>' +
                 myString +
-            '</span>' +
+            '</strong></span>' +
         '</div>'
     );
 }

@@ -169,6 +169,10 @@ TutoCamera.prototype.normalMotion = function(time) {
 }
 
 TutoCamera.prototype.reset = function() {
+    if (this.tutorial.nextAction() === 'reset-camera') {
+        this.tutorial.nextStep();
+    }
+
     this.resetPosition();
     this.moving = false;
     this.movingHermite = false;
@@ -226,6 +230,10 @@ TutoCamera.prototype.move = function(otherCamera, toSave) {
 }
 
 TutoCamera.prototype.moveHermite = function(otherCamera, toSave) {
+    if (this.tutorial.nextAction() === 'recommendation') {
+        this.tutorial.nextStep();
+    }
+
     if (toSave === undefined)
         toSave = true;
 
