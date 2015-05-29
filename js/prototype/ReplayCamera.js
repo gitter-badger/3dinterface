@@ -30,6 +30,7 @@ var ReplayCamera = function() {
     this.theta = Math.PI;
     this.phi = Math.PI;
 
+    this.resetElements = resetBobombElements();
 
 }
 ReplayCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
@@ -136,17 +137,14 @@ ReplayCamera.prototype.nextEvent = function() {
 }
 
 ReplayCamera.prototype.reset = function() {
-    this.resetBobomb();
+    this.resetPosition();
     this.moving = false;
     this.movingHermite = false;
-    // this.position.copy(new THREE.Vector3(-8.849933489419644, 9.050627639459208, 0.6192960680432451));
-    // this.target.copy(new THREE.Vector3(17.945323228767702, -15.156828589982375, -16.585740412769756));
-    // this.anglesFromVectors();
 }
 
-ReplayCamera.prototype.resetBobomb = function() {
-    this.position.copy(new THREE.Vector3(34.51854618261728,10.038879540840306,-21.772598201888613));
-    this.target.copy(new THREE.Vector3(-2.593404107644737,8.039712770013185,-6.983870133675925));
+ReplayCamera.prototype.resetPosition = function() {
+    this.position.copy(this.resetElements.position);
+    this.target.copy(this.resetElements.target);
     this.anglesFromVectors();
 }
 
