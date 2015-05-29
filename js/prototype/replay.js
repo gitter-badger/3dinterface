@@ -98,20 +98,20 @@ function initListeners() {
     window.addEventListener('resize', onWindowResize, false);
 
     // Transmit click event to camera selecter
-    container.addEventListener('mousedown', function(event) {
-        if (event.which == 1)
-            cameraSelecter.click(event);
-        }, false
-    );
+    // container.addEventListener('mousedown', function(event) {
+    //     if (event.which == 1)
+    //         cameraSelecter.click(event);
+    //     }, false
+    // );
 
     // Update camera selecter when mouse moved
-    container.addEventListener('mousemove', function(event) {
-            cameraSelecter.update(event);
-        }, false
-    );
+    // container.addEventListener('mousemove', function(event) {
+    //         cameraSelecter.update(event);
+    //     }, false
+    // );
 
     // Escape key to exit fullscreen mode
-    document.addEventListener('keydown', function(event) { if (event.keyCode == 27) { stopFullscreen();} }, false);
+    // document.addEventListener('keydown', function(event) { if (event.keyCode == 27) { stopFullscreen();} }, false);
 
     // HTML Bootstrap buttons
     buttonManager = new ButtonManager(cameras);
