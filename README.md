@@ -21,14 +21,30 @@ module.exports.url = ... // the url to connect to your database
 module.exports.secret = ... // A secret string used to hash stuff
 ```
 ### Compiling the static js files
-Once this is done, you have to generate the static javascript files. To do this, 
-you should go to the directory `js` at the root  and run `make`. You will need to 
-have[closure-compiler](https://github.com/google/closure-compiler) on your machine.
+There are two ways to compile the static js files :
+
+  - either you don't mind not minifying the code, and you can use `compiler.sh` to compile
+  - or you absolutely want to minify the code, and you'll need 
+    [closure-compiler](https://github.com/google/closure-compiler)
+
+#### Compiling without minifying
+To compile without minifying, simply run
+```
+make
+```
+in `static/js`.
+
+#### Compiling and minifying
+To compile and minify the js files, you have to run
+```
+make TYPE=RELEASE
+```
 
 If it doesn't work, check in the `Makefile` that the path to `closure-compiler.jar` 
 is correct.
 
-This will generate lots of `*.min.js` in `static/js`.
+#### Check if it worked
+If it worked, you should see lots of files in `*.min.js` in your `static/js` directory.
 
 ### Running the server
 As usual with NodeJS, it's quite easy to test. Just ensure you have `node`
