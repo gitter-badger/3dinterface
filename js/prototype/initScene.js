@@ -369,3 +369,96 @@ function createBobombCameras(width, height) {
     return cams;
 
 }
+
+function initWhompScene(scene, collidableObjects, loader, static_path) {
+    loader.load(
+        static_path + './data/whomp/Whomps Fortress.obj',
+        static_path + './data/whomp/Whomps Fortress.mtl',
+        function ( object ) {
+            object.rotation.x = -Math.PI/2;
+            object.rotation.z = Math.PI/2;
+            collidableObjects.push(object);
+            scene.add(object);
+            object.traverse(function (obj) {
+                if (obj instanceof THREE.Mesh) {
+                    obj.geometry.mergeVertices();
+                    obj.geometry.computeVertexNormals();
+                    obj.material.side = THREE.DoubleSide;
+                    obj.raycastable = true;
+
+                    if (obj.material.name === 'Shape_088' ||
+                        obj.material.name === 'Shape_089') {
+                        THREEx.Transparency.push(obj);
+                    } else if (obj.material.name === 'Shape_113') {
+                        THREEx.Transparency.push(obj);
+                        obj.material.opacity = 0.5;
+                    } else if (obj.material.name === 'Shape_076' ||
+                               obj.material.name === 'Shape_098' ||
+                               obj.material.name === 'Shape_092') {
+                        obj.visible = false;
+                    }
+                }
+            });
+        }
+    );
+}
+
+function createWhompCameras(width, height) {
+    return [];
+}
+
+function createWhompCoins() {
+    return [];
+}
+
+function resetWhompElements() {
+    return {
+        position : new THREE.Vector3(-67.25817925071645,14.993570618328055,-103.56480813212423),
+        target : new THREE.Vector3(-48.541705829784604,13.192268872752742,-68.25972443720941)
+    };
+}
+
+function initMountainScene(scene, collidableObjects, loader, static_path) {
+    loader.load(
+        static_path + './data/mountain/coocoolmountain.obj',
+        static_path + './data/mountain/coocoolmountain.mtl',
+        // static_path + './data/mountain2/untitled.obj',
+        // static_path + './data/mountain2/untitled.mtl',
+        function ( object ) {
+            // object.rotation.x = -Math.PI/2;
+            // object.rotation.z = Math.PI/2;
+            collidableObjects.push(object);
+            scene.add(object);
+            object.traverse(function (obj) {
+                if (obj instanceof THREE.Mesh) {
+                    obj.geometry.mergeVertices();
+                    obj.geometry.computeVertexNormals();
+                    obj.material.side = THREE.DoubleSide;
+                    obj.raycastable = true;
+                    if (obj.material.name === 'Material.070_13F025D5_c2.png' ||
+                        obj.material.name === 'Material.068_5972FC88_c.bmp' ||
+                        obj.material.name === 'Material.073_76F611AD_c.bmp' ||
+                        obj.material.name === 'Material.071_76F611AD_c.bmp' ||
+                        obj.material.name === 'Material.072_1723CCC7_c.bmp' ||
+                        obj.material.name === 'Material.069_78B64DC7_c.bmp' ||
+                        obj.material.name === 'Material.070_13F025D5_c.bmp' ||
+                        obj.material.name === 'Material.078_3165B23A_c.bmp' ||
+                        obj.material.name === 'Material.067_1723CCC7_c.bmp' ||
+                        obj.material.name === 'Material.066_36DB292F_c.bmp') {
+                        THREEx.Transparency.push(obj);
+                    } else if (obj.material.name === 'Material.082_6DAF90F6_c.bmp') {
+                        THREEx.Transparency.push(obj);
+                        obj.material.opacity = 0.5;
+                    }
+                }
+            });
+        }
+    );
+}
+
+function resetMountainElements() {
+    return {
+        position : new THREE.Vector3(-20.558328115300082,23.601312087942762,-10.220633604814038),
+        target : new THREE.Vector3(11.025356711105232,11.969889531789319,11.393733425161644)
+    }
+}
