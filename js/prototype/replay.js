@@ -1,3 +1,19 @@
+var isFullscreen = false;
+var beenFullscreen = false;
+
+var main_section = document.getElementById('main-section');
+var container_size = {
+    width: function() { if (!isFullscreen) return main_section.clientWidth; else return screen.width;},
+    height: function() {
+        if (!isFullscreen)
+            return main_section.clientHeight
+                - document.getElementById('nav').offsetHeight
+                - document.getElementById('main-div').offsetHeight;
+        else
+            return screen.height;
+    }
+};
+
 var onWindowResize = (function() {
 
 // Disable scrolling
@@ -15,22 +31,8 @@ var stats;
 
 var loader;
 var coins = [];
-var beenFullscreen = false;
-var isFullscreen = false;
 var previousTime;
 
-var main_section = document.getElementById('main-section');
-var container_size = {
-    width: function() { if (!isFullscreen) return main_section.clientWidth; else return screen.width;},
-    height: function() {
-        if (!isFullscreen)
-            return main_section.clientHeight
-                - document.getElementById('nav').offsetHeight
-                - document.getElementById('main-div').offsetHeight;
-        else
-            return screen.height;
-    }
-};
 
 init();
 animate();
