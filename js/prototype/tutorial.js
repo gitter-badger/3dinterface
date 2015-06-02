@@ -1,3 +1,20 @@
+var beenFullscreen = false;
+var isFullscreen = false;
+
+var main_section = document.getElementById('main-section');
+
+var container_size = {
+    width: function() { if (!isFullscreen) return main_section.clientWidth; else return screen.width;},
+    height: function() {
+        if (!isFullscreen)
+            return main_section.clientHeight
+                - document.getElementById('nav').offsetHeight
+                - document.getElementById('main-div').offsetHeight;
+        else
+            return screen.height;
+    }
+};
+
 var onWindowResize = (function() {
 
 // Disable scrolling
@@ -15,27 +32,8 @@ var stats;
 var previewer;
 var loader;
 var coins = [];
-var beenFullscreen = false;
-var isFullscreen = false;
 var previousTime;
 var tutorial;
-
-var main_section = document.getElementById('main-section');
-
-console.log(document.getElementById('main-div').offsetHeight);
-var container_size = {
-    width: function() { if (!isFullscreen) return main_section.clientWidth; else return screen.width;},
-    height: function() {
-        if (!isFullscreen)
-            return main_section.clientHeight
-                - document.getElementById('nav').offsetHeight
-                - document.getElementById('main-div').offsetHeight;
-        else
-            return screen.height;
-    }
-};
-
-console.log(container_size.width(), container_size.height());
 
 init();
 animate();
@@ -119,61 +117,6 @@ function initListeners() {
     cameraSelecter = new CameraSelecter(renderer, scene, cameras, buttonManager);
 }
 
-function fullscreen() {
-    isFullscreen = true;
-
-    if (!beenFullscreen) {
-        beenFullscreen = true;
-        alert('To quit fullscren mode, type ESC key');
-    }
-
-    container.style.position = "absolute";
-    container.style.cssFloat = "top-left";
-    container.style.top = "50px";
-    container.style.bottom = "0px";
-    container.style.left = "0px";
-    container.style.right = "0px";
-    container.style.width="";
-    container.style.height="";
-    container.style.overflow = "hidden";
-
-    // canvas.style.position = "absolute";
-    // canvas.style.cssFloat = "top-left";
-    // canvas.style.top = "0px";
-    // canvas.style.bottom = "0px";
-    // canvas.style.left = "0px";
-    // canvas.style.right = "0px";
-    // canvas.width=window.innerWidth;
-    // canvas.height=window.innerHeight;
-    // canvas.style.overflow = "hidden";
-
-    onWindowResize();
-}
-
-function stopFullscreen() {
-    isFullscreen = false;
-
-    container.style.position = "";
-    container.style.cssFloat = "";
-    container.style.top = "";
-    container.style.bottom = "";
-    container.style.left = "";
-    container.style.right = "";
-    container.style.width = container_size.width() + "px";
-    container.style.height = container_size.height() + "px";
-
-    // canvas.style.position = "";
-    // canvas.style.cssFloat = "";
-    // canvas.style.top = "";
-    // canvas.style.bottom = "";
-    // canvas.style.left = "";
-    // canvas.style.right = "";
-    // canvas.width = container_size.width();
-    // canvas.height = container_size.height();
-    // canvas.style.overflow = "";
-
-    onWindowResize();
-}
 
 function render() {
     cameraSelecter.update();
@@ -256,3 +199,39 @@ function show(object) {
 return onWindowResize;
 
 })();
+
+function fullscreen() {
+    isFullscreen = true;
+
+    if (!beenFullscreen) {
+        beenFullscreen = true;
+        alert('To quit fullscren mode, type ESC key');
+    }
+
+    container.style.position = "absolute";
+    container.style.cssFloat = "top-left";
+    container.style.top = "50px";
+    container.style.bottom = "0px";
+    container.style.left = "0px";
+    container.style.right = "0px";
+    container.style.width="";
+    container.style.height="";
+    container.style.overflow = "hidden";
+
+    onWindowResize();
+}
+
+function stopFullscreen() {
+    isFullscreen = false;
+
+    container.style.position = "";
+    container.style.cssFloat = "";
+    container.style.top = "";
+    container.style.bottom = "";
+    container.style.left = "";
+    container.style.right = "";
+    container.style.width = container_size.width() + "px";
+    container.style.height = container_size.height() + "px";
+
+    onWindowResize();
+}
