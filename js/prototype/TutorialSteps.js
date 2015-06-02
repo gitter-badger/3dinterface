@@ -4,7 +4,6 @@ var TutorialSteps = function(tutoCamera, scene, onWindowResize, container_size) 
     this.step = 0;
     this.coins = 0;
     this.camera.allowed = {};
-    this.camera.allowed.keyboardTranslate = true;
     this.onWindowResize = onWindowResize;
     this.container_size = container_size;
 
@@ -117,9 +116,9 @@ TutorialSteps.prototype.nextStep = function() {
                 break;
             case 7:
                 this.camera.move(this.camera.resetElements);
-                this.camera.allowed.keyboardTranslate = true;
                 break;
             case 8:
+                this.camera.allowed.keyboardTranslate = true;
                 coins.push(new Coin(2.7378029903574026,2.953347730618792,-11.550836282321221, callback));
                 coins[coins.length-1].addToScene(this.scene);
                 break;
