@@ -34,6 +34,7 @@ Coin.prototype.addToScene = function(scene) {
 
 Coin.prototype.update = function() {
     var self = this;
+    console.log(this.ready, this.rotating);
     if (this.ready && this.rotating)
         this.mesh.rotation.y += 0.1
 }

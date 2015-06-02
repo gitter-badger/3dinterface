@@ -107,7 +107,7 @@ TutorialSteps.prototype.nextStep = function() {
                 coins[coins.length-1].addToScene(this.scene);
                 break;
             case 4:
-                coins.push(new Coin(-0.670782299402527,1.847042640633274,1.562644363633795, callback));
+                coins.push(new Coin(1.4074130964382279,0.6458319586843252,-6.75244526999632, callback));
                 coins[coins.length-1].addToScene(this.scene);
                 coins.push(new Coin(-4.2701659473968965,0.6745750513698942,-0.484545726832743, callback));
                 coins[coins.length-1].addToScene(this.scene);

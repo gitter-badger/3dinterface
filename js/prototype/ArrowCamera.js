@@ -237,11 +237,11 @@ ArrowCamera.prototype.regenerateArrow = function(mainCamera) {
         var len = vertices.length;
         faces.push(new THREE.Face3(len-4,len-3,len-2), new THREE.Face3(len-4,len-2,len-1));
 
-        var max = 0;
-        for (var i = 0; i < faces.length; i++) {
-            max = Math.max(max, faces[i].a, faces[i].b, faces[i].c);
-        }
-        console.log(max + '/' + len);
+        // var max = 0;
+        // for (var i = 0; i < faces.length; i++) {
+        //     max = Math.max(max, faces[i].a, faces[i].b, faces[i].c);
+        // }
+        // console.log(max + '/' + len);
 
 
         this.arrow.geometry.faces = faces;
