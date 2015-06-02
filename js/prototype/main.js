@@ -23,7 +23,6 @@ var previousTime;
 
 var main_section = document.getElementById('main-section');
 
-console.log(document.getElementById('main-div').offsetHeight);
 var container_size = {
     width: function() { if (!isFullscreen) return main_section.clientWidth; else return screen.width;},
     height: function() {
@@ -35,8 +34,6 @@ var container_size = {
             return screen.height;
     }
 };
-
-console.log(container_size.width(), container_size.height());
 
 init();
 animate();
