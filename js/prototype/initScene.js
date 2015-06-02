@@ -400,7 +400,7 @@ function createBobombCameras(width, height) {
 
 }
 
-function initBobomb(camera, scene, static_path, container_size) {
+function initBobomb(camera, scene, static_path) {
     addLight(scene);
     var loader = new THREE.OBJMTLLoader();
 
@@ -477,7 +477,7 @@ function resetWhompElements() {
     };
 }
 
-function initWhomp(camera, scene, static_path, container_size) {
+function initWhomp(camera, scene, static_path) {
     addLight(scene);
     var loader = new THREE.OBJMTLLoader();
 
@@ -559,7 +559,7 @@ function resetMountainElements() {
     }
 }
 
-function initMountain(camera, scene, static_path, container_size) {
+function initMountain(camera, scene, static_path) {
     addLight(scene);
     var loader = new THREE.OBJMTLLoader();
 
