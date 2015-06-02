@@ -1,11 +1,17 @@
-extends ./prototype
+extends ../../../views/withjs
 
 block title
-    title #{title} - Prototype - Replay
+    title #{title} - Prototype
 
-block configjs
+block extrajs
+    script(src="/static/js/prototypetools.min.js")
     script RecommendedCamera = FixedCamera;
     script var params = params || {}; params.get = params.get || {}; params.get.id = #{id};
-
-block mainjs
     script(src="/static/js/replay.min.js")
+
+block extrahead
+    link(rel="stylesheet" href="/static/css/prototype.css")
+
+block content
+    #main-div.panel-group(style={'margin-top':'10px', 'margin-bottom':'10px'})
+        #container(style={'padding': '0px', 'margin': '0px'}, tabindex="1")

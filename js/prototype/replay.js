@@ -92,10 +92,10 @@ function initListeners() {
     // document.addEventListener('keydown', function(event) { if (event.keyCode == 27) { stopFullscreen();} }, false);
 
     // HTML Bootstrap buttons
-    buttonManager = new ButtonManager(cameras);
+    // buttonManager = new ButtonManager(cameras);
 
     // Camera selecter for hover and clicking recommendations
-    cameraSelecter = new CameraSelecter(renderer, scene, cameras, buttonManager);
+    // cameraSelecter = new CameraSelecter(renderer, scene, cameras, buttonManager);
 }
 
 function fullscreen() {
@@ -155,19 +155,19 @@ function stopFullscreen() {
 }
 
 function render() {
-    cameraSelecter.update();
+    // cameraSelecter.update();
 
     // Update recommendations (set raycastable if shown)
-    var transform = buttonManager.showArrows ? show : hide;
-    cameras.map(function(camera) {
-        if (camera instanceof RecommendedCamera) {
-            transform(camera);
+    // var transform = buttonManager.showArrows ? show : hide;
+    // cameras.map(function(camera) {
+    //     if (camera instanceof RecommendedCamera) {
+    //         transform(camera);
 
-            camera.traverse(function(elt) {
-                elt.raycastable = buttonManager.showArrows;
-            });
-        }
-    });
+    //         camera.traverse(function(elt) {
+    //             elt.raycastable = buttonManager.showArrows;
+    //         });
+    //     }
+    // });
 
     // Update coins
     coins.forEach(function(coin) { coin.update(); });
@@ -191,7 +191,7 @@ function render() {
     renderer.render(scene, cameras.mainCamera());
 
     // Hide arrows in recommendation
-    cameras.map(function(camera) { if (camera instanceof RecommendedCamera) hide(camera); });
+    // cameras.map(function(camera) { if (camera instanceof RecommendedCamera) hide(camera); });
 }
 
 function animate() {
