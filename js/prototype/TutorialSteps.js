@@ -1,9 +1,12 @@
-var TutorialSteps = function(tutoCamera) {
+var nextStep;
+var TutorialSteps = function(tutoCamera, scene, onWindowResize, container_size) {
     this.camera = tutoCamera;
     this.step = 0;
     this.coins = 0;
     this.camera.allowed = {};
     this.camera.allowed.keyboardTranslate = true;
+    this.onWindowResize = onWindowResize;
+    this.container_size = container_size;
 
     this.instructions = [
         {
@@ -80,6 +83,14 @@ var TutorialSteps = function(tutoCamera) {
         }
     ];
 
+    var self = this;
+    nextStep = function() {self.nextStep();};
+
+    this.scene = scene;
+}
+
+TutorialSteps.prototype.setCameras = function(cameras) {
+    this.cameras = cameras;
 }
 
 TutorialSteps.prototype.nextStep = function() {
@@ -94,15 +105,15 @@ TutorialSteps.prototype.nextStep = function() {
             case 3:
                 this.camera.allowed.keyboardRotate    = true;
                 coins.push(new Coin(0.4911245636058468,1.225621525492101,-5.11526684540265, callback));
-                coins[coins.length-1].addToScene(scene);
+                coins[coins.length-1].addToScene(this.scene);
                 break;
             case 4:
                 coins.push(new Coin(-0.670782299402527,1.847042640633274,1.562644363633795, callback));
-                coins[coins.length-1].addToScene(scene);
+                coins[coins.length-1].addToScene(this.scene);
                 coins.push(new Coin(-4.2701659473968965,0.6745750513698942,-0.484545726832743, callback));
-                coins[coins.length-1].addToScene(scene);
+                coins[coins.length-1].addToScene(this.scene);
                 coins.push(new Coin(-4.336597108439718,0.4203578350484251,-8.447211342176862, callback));
-                coins[coins.length-1].addToScene(scene);
+                coins[coins.length-1].addToScene(this.scene);
                 break;
             case 7:
                 this.camera.move(this.camera.resetElements);
@@ -110,30 +121,30 @@ TutorialSteps.prototype.nextStep = function() {
                 break;
             case 8:
                 coins.push(new Coin(2.7378029903574026,2.953347730618792,-11.550836282321221, callback));
-                coins[coins.length-1].addToScene(scene);
+                coins[coins.length-1].addToScene(this.scene);
                 break;
             case 12:
-                var cam = createPeachCameras(container_size.width(), container_size.height())[2];
-                cameras.push(cam);
-                cam.addToScene(scene);
+                var cam = createPeachCameras(this.container_size.width(), this.container_size.height())[2];
+                this.cameras.push(cam);
+                cam.addToScene(this.scene);
                 this.camera.move({
                     position: new THREE.Vector3(0.24120226734236713,0.2009624547018851,-0.5998422840047036),
                     target:  new THREE.Vector3(24.021711452218575,7.072419314071788,-32.020702608601745)
                 });
                 break;
             case 14:
-                var cams = createPeachCameras(container_size.width(), container_size.height());
+                var cams = createPeachCameras(this.container_size.width(), this.container_size.height());
                 for (var i = 0; i < cams.length; i == 1 ? i+=2 : i++) {
-                    cameras.push(cams[i]);
-                    cams[i].addToScene(scene);
+                    this.cameras.push(cams[i]);
+                    cams[i].addToScene(this.scene);
                 }
 
                 coins.push(new Coin(3.701112872561801,-0.4620393514856378,-3.3373375945128085, callback));
-                coins[coins.length-1].addToScene(scene);
+                coins[coins.length-1].addToScene(this.scene);
                 coins.push(new Coin(6.694675339780243,-1.2480369397526456,-1.992336719279164, callback));
-                coins[coins.length-1].addToScene(scene);
+                coins[coins.length-1].addToScene(this.scene);
                 coins.push(new Coin(-2.458336118265302,-1.549510268763568,-11.186153614421212, callback));
-                coins[coins.length-1].addToScene(scene);
+                coins[coins.length-1].addToScene(this.scene);
         }
         this.step++;
     }
@@ -157,7 +168,7 @@ TutorialSteps.prototype.tryFinish = function() {
 
 TutorialSteps.prototype.alert = function(myString, justclicked) {
     this.notify(myString, justclicked);
-    onWindowResize();
+    this.onWindowResize();
 }
 
 TutorialSteps.prototype.notify = function(myString, justclick) {
@@ -165,7 +176,7 @@ TutorialSteps.prototype.notify = function(myString, justclick) {
         '<div class="alert alert-' + (justclick ? 'warning' : 'info') + ' alert-dismissable">' +
             (justclick ?
             '<button type="button" class="close" aria-hidden="true"' +
-                     'onclick="setTimeout(onWindowResize, 100); tutorial.nextStep();' + '">' +
+                     'onclick="setTimeout(onWindowResize, 100); nextStep();' + '">' +
                 '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>' +
             '</button>' : '') +
             '<span><strong>' +

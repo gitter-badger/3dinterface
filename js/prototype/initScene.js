@@ -420,11 +420,13 @@ function initBobomb(camera, scene, static_path, container_size) {
     coins = createBobombCoins();
 
     var otherCams = createBobombCameras(container_size.width(), container_size.height());
-    cameras = new CameraContainer(camera, otherCams);
+    var cameras = new CameraContainer(camera, otherCams);
 
     otherCams.forEach(function(cam) {cam.addToScene(scene);});
 
     setTimeout(function() { coins.forEach(function(coin) { coin.addToScene(scene); })}, 1000);
+
+    return cameras;
 }
 
 function initWhompScene(scene, collidableObjects, loader, static_path) {
@@ -495,11 +497,13 @@ function initWhomp(camera, scene, static_path, container_size) {
     coins = createWhompCoins();
 
     var otherCams = createWhompCameras(container_size.width(), container_size.height());
-    cameras = new CameraContainer(camera, otherCams);
+    var cameras = new CameraContainer(camera, otherCams);
 
     otherCams.forEach(function(cam) {cam.addToScene(scene);});
 
     setTimeout(function() { coins.forEach(function(coin) { coin.addToScene(scene); })}, 1000);
+
+    return cameras;
 }
 
 function initMountainScene(scene, collidableObjects, loader, static_path) {
@@ -575,9 +579,10 @@ function initMountain(camera, scene, static_path, container_size) {
     coins = createMountainCoins();
 
     var otherCams = createMountainCameras(container_size.width(), container_size.height());
-    cameras = new CameraContainer(camera, otherCams);
+    var cameras = new CameraContainer(camera, otherCams);
 
     otherCams.forEach(function(cam) {cam.addToScene(scene);});
 
     setTimeout(function() { coins.forEach(function(coin) { coin.addToScene(scene); })}, 1000);
+    return cameras;
 }

@@ -2,6 +2,8 @@
 var ReplayCamera = function() {
     THREE.PerspectiveCamera.apply(this, arguments);
 
+    this.cameras = arguments[4];
+
     this.started = false;
     this.counter = 0;
 
@@ -121,7 +123,7 @@ ReplayCamera.prototype.nextEvent = function() {
             },500);
         })(this);
     } else if (this.event.type == 'arrow') {
-        this.moveHermite(cameras.cameras[this.event.id]);
+        this.moveHermite(this.cameras.cameras[this.event.id]);
     } else if (this.event.type == 'reset') {
         this.reset();
         (function (self) {
@@ -197,3 +199,5 @@ ReplayCamera.prototype.moveHermite = function(otherCamera) {
         new THREE.Vector3()
     );
 }
+
+ReplayCamera.prototype.save = function() {}

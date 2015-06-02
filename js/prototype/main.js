@@ -1,3 +1,6 @@
+// Let's be sure we avoid using global variables
+var onWindowResize = (function() {
+
 // Disable scrolling
 window.onscroll = function () { window.scrollTo(0, 0); };
 
@@ -13,7 +16,7 @@ var stats;
 var previewer;
 
 var loader;
-var coins;
+var coins = [];
 var beenFullscreen = false;
 var isFullscreen = false;
 var previousTime;
@@ -39,7 +42,9 @@ init();
 animate();
 
 function init() {
-    BD.disable();
+    // Initialize scene
+    scene = new THREE.Scene();
+    renderer = new THREE.WebGLRenderer({alpha:true, antialias:true});
 
     // Collidable objects to prevent camera from traversing objects
     var collidableObjects = new Array();
@@ -48,21 +53,17 @@ function init() {
     container = document.getElementById('container');
     container.style.height = container_size.height() + 'px';
     container.style.width = container_size.width() + 'px';
-    renderer = new THREE.WebGLRenderer({alpha:true, antialias:true});
     renderer.setSize(container_size.width(), container_size.height());
     // renderer.setSize(container_size.width(), container_size.height());
     renderer.shadowMapEnabled = true;
     renderer.setClearColor(0x87ceeb);
 
     // Initialize previewer
-    previewer = new Previewer(renderer);
+    previewer = new Previewer(renderer, scene);
     previewer.domElement.style.position ="absolute";
     previewer.domElement.style.cssFloat = 'top-left';
     previewer.domElement.width = container_size.width();
     previewer.domElement.height = container_size.height();
-
-    // Initialize scene
-    scene = new THREE.Scene();
 
     // Initialize stats counter
     stats = new Stats();
@@ -76,11 +77,11 @@ function init() {
     container.appendChild(renderer.domElement);
 
     // Initialize pointer camera
-    var camera1 = new PointerCamera(50, container_size.width() / container_size.height(), 0.01, 100000, container);
+    var camera1 = new PointerCamera(50, container_size.width() / container_size.height(), 0.01, 100000, renderer, container);
 
-    // initBobomb(camera1, scene, static_path, container_size);
-    // initWhomp(camera1, scene, static_path, container_size);
-    initMountain(camera1, scene, static_path, container_size);
+    cameras = initBobomb(camera1, scene, static_path, container_size);
+    // cameras = initWhomp(camera1, scene, static_path, container_size);
+    // cameras = initMountain(camera1, scene, static_path, container_size);
 
     // Add listeners
     initListeners();
@@ -109,7 +110,7 @@ function initListeners() {
     buttonManager = new ButtonManager(cameras, previewer);
 
     // Camera selecter for hover and clicking recommendations
-    cameraSelecter = new CameraSelecter(renderer, cameras, buttonManager);
+    cameraSelecter = new CameraSelecter(renderer, scene, cameras, buttonManager);
 }
 
 function fullscreen() {
@@ -246,3 +247,7 @@ function show(object) {
     object.traverse(function(object) {object.visible = true;});
 }
 
+// onWindowResize will be the only global function
+return onWindowResize;
+
+})();

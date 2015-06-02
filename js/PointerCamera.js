@@ -2,10 +2,12 @@
 var PointerCamera = function() {
     THREE.PerspectiveCamera.apply(this, arguments);
 
-    if (arguments[4] === undefined)
+    this.renderer = arguments[4];
+
+    if (arguments[5] === undefined)
         listenerTarget = document;
     else
-        listenerTarget = arguments[4];
+        listenerTarget = arguments[5];
 
     // Set Position
     this.theta = Math.PI;
@@ -303,8 +305,8 @@ PointerCamera.prototype.onKeyUp = function(event) {
 }
 
 PointerCamera.prototype.onMouseDown = function(event) {
-    this.mouse.x = ( ( event.clientX - renderer.domElement.offsetLeft ) / renderer.domElement.width ) * 2 - 1;
-    this.mouse.y = - ( ( event.clientY - renderer.domElement.offsetTop ) / renderer.domElement.height ) * 2 + 1;
+    this.mouse.x = ( ( event.clientX - this.renderer.domElement.offsetLeft ) / this.renderer.domElement.width ) * 2 - 1;
+    this.mouse.y = - ( ( event.clientY - this.renderer.domElement.offsetTop ) / this.renderer.domElement.height ) * 2 + 1;
 
     this.dragging = true;
     this.mouseMoved = false;
@@ -313,8 +315,8 @@ PointerCamera.prototype.onMouseDown = function(event) {
 PointerCamera.prototype.onMouseMove = function(event) {
     if (this.dragging) {
         var mouse = {x: this.mouse.x, y: this.mouse.y};
-        this.mouse.x = ( ( event.clientX - renderer.domElement.offsetLeft ) / renderer.domElement.width ) * 2 - 1;
-        this.mouse.y = - ( ( event.clientY - renderer.domElement.offsetTop ) / renderer.domElement.height ) * 2 + 1;
+        this.mouse.x = ( ( event.clientX - this.renderer.domElement.offsetLeft ) / this.renderer.domElement.width ) * 2 - 1;
+        this.mouse.y = - ( ( event.clientY - this.renderer.domElement.offsetTop ) / this.renderer.domElement.height ) * 2 + 1;
 
         this.mouseMove.x = this.mouse.x - mouse.x;
         this.mouseMove.y = this.mouse.y - mouse.y;

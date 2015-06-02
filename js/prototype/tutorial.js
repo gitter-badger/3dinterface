@@ -1,3 +1,5 @@
+var onWindowResize = (function() {
+
 // Disable scrolling
 window.onscroll = function () { window.scrollTo(0, 0); };
 
@@ -12,7 +14,7 @@ var visible = 0;
 var stats;
 var previewer;
 var loader;
-var coins;
+var coins = [];
 var beenFullscreen = false;
 var isFullscreen = false;
 var previousTime;
@@ -39,6 +41,9 @@ init();
 animate();
 
 function init() {
+    // Initialize scene
+    scene = new THREE.Scene();
+
     // Disable log for this time
     BD.disable();
 
@@ -56,14 +61,11 @@ function init() {
     renderer.setClearColor(0x87ceeb);
 
     // Initialize previewer
-    previewer = new Previewer(renderer);
+    previewer = new Previewer(renderer, scene);
     previewer.domElement.style.position ="absolute";
     previewer.domElement.style.cssFloat = 'top-left';
     previewer.domElement.width = container_size.width();
     previewer.domElement.height = container_size.height();
-
-    // Initialize scene
-    scene = new THREE.Scene();
 
     // Initialize stats counter
     stats = new Stats();
@@ -77,10 +79,11 @@ function init() {
     container.appendChild(renderer.domElement);
 
     // Initialize pointer camera
-    var camera1 = new TutoCamera(50, container_size.width() / container_size.height(), 0.01, 100000, container);
+    var camera1 = new TutoCamera(50, container_size.width() / container_size.height(), 0.01, 100000, renderer, scene, onWindowResize, container_size, container);
     tutorial = camera1.tutorial;
 
     cameras = new CameraContainer(camera1, []);
+    tutorial.setCameras(cameras);
 
     // Load peach scene
     initPeach(camera1, scene, static_path);
@@ -113,7 +116,7 @@ function initListeners() {
     buttonManager = new ButtonManager(cameras, previewer);
 
     // Camera selecter for hover and clicking recommendations
-    cameraSelecter = new CameraSelecter(renderer, cameras, buttonManager);
+    cameraSelecter = new CameraSelecter(renderer, scene, cameras, buttonManager);
 }
 
 function fullscreen() {
@@ -250,3 +253,6 @@ function show(object) {
     object.traverse(function(object) {object.visible = true;});
 }
 
+return onWindowResize;
+
+})();

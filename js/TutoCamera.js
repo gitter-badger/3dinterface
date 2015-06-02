@@ -2,10 +2,15 @@
 var TutoCamera = function() {
     THREE.PerspectiveCamera.apply(this, arguments);
 
-    if (arguments[4] === undefined)
+    this.renderer = arguments[4];
+    this.onWindowResize = arguments[6];
+    var scene = arguments[5];
+    var container_size = arguments[7];
+
+    if (arguments[8] === undefined)
         listenerTarget = document;
     else
-        listenerTarget = arguments[4];
+        listenerTarget = arguments[8];
 
     // Set Position
     this.theta = Math.PI;
@@ -58,7 +63,7 @@ var TutoCamera = function() {
     this.resetElements = resetBobombElements();
 
     // Create tutorial
-    this.tutorial = new TutorialSteps(this);
+    this.tutorial = new TutorialSteps(this, scene, this.onWindowResize, container_size);
 }
 TutoCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 TutoCamera.prototype.constructor = TutoCamera;
@@ -339,8 +344,8 @@ TutoCamera.prototype.onKeyUp = function(event) {
 }
 
 TutoCamera.prototype.onMouseDown = function(event) {
-    this.mouse.x = ( ( event.clientX - renderer.domElement.offsetLeft ) / renderer.domElement.width ) * 2 - 1;
-    this.mouse.y = - ( ( event.clientY - renderer.domElement.offsetTop ) / renderer.domElement.height ) * 2 + 1;
+    this.mouse.x = ( ( event.clientX - this.renderer.domElement.offsetLeft ) / this.renderer.domElement.width ) * 2 - 1;
+    this.mouse.y = - ( ( event.clientY - this.renderer.domElement.offsetTop ) / this.renderer.domElement.height ) * 2 + 1;
 
     if (this.allowed.mouseRotate) {
         this.dragging = true;
@@ -351,8 +356,8 @@ TutoCamera.prototype.onMouseDown = function(event) {
 TutoCamera.prototype.onMouseMove = function(event) {
     if (this.dragging) {
         var mouse = {x: this.mouse.x, y: this.mouse.y};
-        this.mouse.x = ( ( event.clientX - renderer.domElement.offsetLeft ) / renderer.domElement.width ) * 2 - 1;
-        this.mouse.y = - ( ( event.clientY - renderer.domElement.offsetTop ) / renderer.domElement.height ) * 2 + 1;
+        this.mouse.x = ( ( event.clientX - this.renderer.domElement.offsetLeft ) / this.renderer.domElement.width ) * 2 - 1;
+        this.mouse.y = - ( ( event.clientY - this.renderer.domElement.offsetTop ) / this.renderer.domElement.height ) * 2 + 1;
 
         this.mouseMove.x = this.mouse.x - mouse.x;
         this.mouseMove.y = this.mouse.y - mouse.y;

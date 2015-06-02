@@ -1,10 +1,11 @@
-var CameraSelecter = function(renderer, cameras, buttonManager) {
+var CameraSelecter = function(renderer, scene, cameras, buttonManager) {
     this.raycaster = new THREE.Raycaster();
     this.renderer = renderer;
     this.mouse = {};
     this.cameras = cameras;
     this.prev = {};
     this.buttonManager = buttonManager;
+    this.scene = scene;
 }
 
 CameraSelecter.prototype.pointedCamera = function() {
@@ -20,7 +21,7 @@ CameraSelecter.prototype.pointedCamera = function() {
 
     this.raycaster.set(camera.position, vector.sub(camera.position).normalize());
 
-    var intersects = this.raycaster.intersectObjects(scene.children, true);
+    var intersects = this.raycaster.intersectObjects(this.scene.children, true);
 
     if ( intersects.length > 0 ) {
         var minDistance;
@@ -69,7 +70,7 @@ CameraSelecter.prototype.update = function(event) {
             // log it
             var event = new BD.Event.Hovered();
             event.start = true;
-            event.arrow_id = cameras.cameras.indexOf(this.currentPointedCamera);
+            event.arrow_id = this.cameras.cameras.indexOf(this.currentPointedCamera);
             event.send();
 
             this.prev.x = this.mouse.x;
@@ -93,7 +94,7 @@ CameraSelecter.prototype.click = function(event) {
     var newCamera = this.pointedCamera(event);
     if (newCamera !== undefined && !(newCamera instanceof Coin)) {
         var event = new BD.Event.ArrowClicked();
-        event.arrow_id = cameras.cameras.indexOf(newCamera);
+        event.arrow_id = this.cameras.cameras.indexOf(newCamera);
         event.send();
 
         newCamera.check();

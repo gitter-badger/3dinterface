@@ -1,3 +1,5 @@
+var onWindowResize = (function() {
+
 // Disable scrolling
 window.onscroll = function () { window.scrollTo(0, 0); };
 
@@ -12,7 +14,7 @@ var visible = 0;
 var stats;
 
 var loader;
-var coins;
+var coins = [];
 var beenFullscreen = false;
 var isFullscreen = false;
 var previousTime;
@@ -34,6 +36,10 @@ init();
 animate();
 
 function init() {
+    // Initialize scene
+    scene = new THREE.Scene();
+    renderer = new THREE.WebGLRenderer({alpha:true, antialias:true});
+
     // Collidable objects to prevent camera from traversing objects
     var collidableObjects = new Array();
 
@@ -41,14 +47,11 @@ function init() {
     container = document.getElementById('container');
     container.style.height = container_size.height() + 'px';
     container.style.width = container_size.width() + 'px';
-    renderer = new THREE.WebGLRenderer({alpha:true, antialias:true});
     renderer.setSize(container_size.width(), container_size.height());
     // renderer.setSize(container_size.width(), container_size.height());
     renderer.shadowMapEnabled = true;
     renderer.setClearColor(0x87ceeb);
 
-    // Initialize scene
-    scene = new THREE.Scene();
 
     // Initialize stats counter
     stats = new Stats();
@@ -60,35 +63,10 @@ function init() {
     container.appendChild( stats.domElement );
     container.appendChild(renderer.domElement);
 
-    // init light
-    var directional_light = new THREE.DirectionalLight(0xdddddd);
-    directional_light.position.set(1, 2.5, 1).normalize();
-    directional_light.castShadow = false;
-    scene.add(directional_light);
-
-    var ambient_light = new THREE.AmbientLight(0x555555);
-    scene.add(ambient_light);
-
     // Initialize pointer camera
-    var camera1 = new ReplayCamera(50, container_size.width() / container_size.height(), 0.01, 100000, container);
-    scene.add(camera1);
-    camera1.reset();
-
-    // Initialize recommendations
-    var otherCams = createBobombCameras(container_size.width(), container_size.height());
-    cameras = new CameraContainer(camera1, otherCams);
-    otherCams.forEach(function(cam) { cam.addToScene(scene); });
-
-    // Initalize loader
-    var loader = new THREE.OBJMTLLoader();
-
-    // Load scene
-    // initPeachCastle(scene, collidableObjects, loader, static_path);
-    initBobombScene(scene, collidableObjects, loader, static_path);
-    Coin.init();
-    coins = createBobombCoins();
-
-    setTimeout(function() {coins.forEach(function(coin) { coin.addToScene(scene);})}, 1000);
+    var camera1 = new ReplayCamera(50, container_size.width() / container_size.height(), 0.01, 100000);
+    cameras = initBobomb(camera1, scene, static_path, container_size);
+    camera1.cameras = cameras;
 
     // Add listeners
     initListeners();
@@ -117,7 +95,7 @@ function initListeners() {
     buttonManager = new ButtonManager(cameras);
 
     // Camera selecter for hover and clicking recommendations
-    cameraSelecter = new CameraSelecter(renderer, cameras, buttonManager);
+    cameraSelecter = new CameraSelecter(renderer, scene, cameras, buttonManager);
 }
 
 function fullscreen() {
@@ -245,3 +223,6 @@ function show(object) {
     object.traverse(function(object) {object.visible = true;});
 }
 
+return onWindowResize;
+
+})();

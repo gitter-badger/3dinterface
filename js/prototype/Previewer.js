@@ -2,11 +2,12 @@ Math.clamp = Math.clamp || function(number, min, max) {
     return Math.max(Math.min(number, max), min);
 }
 
-var Previewer = function(renderer) {
+var Previewer = function(renderer, scene) {
     this.domElement = document.createElement('canvas');
     this.ctx = this.domElement.getContext('2d');
     this.renderer = renderer;
     this.fixed = false;
+    this.scene = scene;
 }
 
 Previewer.prototype.render = function(prev, container_width, container_height) {
@@ -57,7 +58,7 @@ Previewer.prototype.render = function(prev, container_width, container_height) {
         this.renderer.setScissor(left, bottom, width, height);
         this.renderer.enableScissorTest(true);
         this.renderer.setViewport(left, bottom, width, height);
-        this.renderer.render(scene, prev.camera);
+        this.renderer.render(this.scene, prev.camera);
 
         if (!this.fixed) {
             this.clearNeeded = true;
