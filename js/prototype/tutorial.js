@@ -76,47 +76,15 @@ function init() {
     container.appendChild(previewer.domElement);
     container.appendChild(renderer.domElement);
 
-    // init light
-    var directional_light = new THREE.DirectionalLight(0xdddddd);
-    directional_light.position.set(1, 2.5, 1).normalize();
-    directional_light.castShadow = false;
-    scene.add(directional_light);
-
-    var ambient_light = new THREE.AmbientLight(0x555555);
-    scene.add(ambient_light);
-
     // Initialize pointer camera
     var camera1 = new TutoCamera(50, container_size.width() / container_size.height(), 0.01, 100000, container);
     tutorial = camera1.tutorial;
-    camera1.speed = 0.001;
-    camera1.resetElements = resetPeachElements();
-    camera1.reset();
-    camera1.save();
-    scene.add(camera1);
 
-    // Collisions
-    camera1.collidableObjects = collidableObjects;
+    cameras = new CameraContainer(camera1, []);
 
+    // Load peach scene
+    initPeach(camera1, scene, static_path);
 
-    // Initialize recommendations
-    // var otherCams = createBobombCameras(container_size.width(), container_size.height());
-    var otherCams = []; // createPeachCameras(container_size.width(), container_size.height());
-    cameras = new CameraContainer(camera1, otherCams);
-    otherCams.forEach(function(cam) {cam.setSize(0.2); cam.addToScene(scene);});
-
-    // Initalize loader
-    var loader = new THREE.OBJMTLLoader();
-
-    // Load scene
-    initPeachCastle(scene, collidableObjects, loader, static_path);
-    // initBobombScene(scene, collidableObjects, loader, static_path);
-
-    Coin.init(0.001);
-    coins = [];
-    // coins = createBobombCoins();
-    // setTimeout(function() {coins.forEach(function(coin) { coin.addToScene(scene);})}, 1000);
-
-    // Add listeners
     initListeners();
 
     tutorial.nextStep();

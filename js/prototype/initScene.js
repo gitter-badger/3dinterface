@@ -1,6 +1,16 @@
 // Define RecommendedCamera if not defined
 var RecommendedCamera = RecommendedCamera || FixedCamera;
 
+function addLight(scene) {
+    var directional_light = new THREE.DirectionalLight(0xdddddd);
+    directional_light.position.set(1, 2.5, 1).normalize();
+    directional_light.castShadow = false;
+    scene.add(directional_light);
+
+    var ambient_light = new THREE.AmbientLight(0x555555);
+    scene.add(ambient_light);
+}
+
 function initPeachCastle(scene, collidableObjects, loader, static_path) {
     // Create loader if not already done
     if (loader === undefined) {
@@ -77,6 +87,26 @@ function resetPeachElements() {
         position: new THREE.Vector3(0.24120226734236713,0.2009624547018851,-0.5998422840047036),
         target: new THREE.Vector3(0.24120226734232672,0.20096245470190008,-40.5998422840047)
     };
+}
+
+function initPeach(camera, scene, static_path) {
+    addLight(scene);
+    var loader = new THREE.OBJMTLLoader();
+
+    var collidableObjects = [];
+    initPeachCastle(scene, collidableObjects, loader, static_path);
+
+    camera.resetElements = resetPeachElements();
+    camera.collidableObjects = collidableObjects;
+
+    camera.speed = 0.001;
+    camera.reset();
+    camera.save();
+
+    scene.add(camera);
+
+    Coin.init(0.001);
+    coins = [];
 }
 
 function initZeldaScene(scene, collidableObjects, loader, static_path) {
@@ -370,6 +400,33 @@ function createBobombCameras(width, height) {
 
 }
 
+function initBobomb(camera, scene, static_path, container_size) {
+    addLight(scene);
+    var loader = new THREE.OBJMTLLoader();
+
+    var collidableObjects = [];
+    initBobombScene(scene, collidableObjects, loader, static_path);
+
+    camera.resetElements = resetBobombElements();
+    camera.collidableObjects = collidableObjects;
+
+    camera.speed = 0.005;
+    camera.reset();
+    camera.save();
+
+    scene.add(camera);
+
+    Coin.init();
+    coins = createBobombCoins();
+
+    var otherCams = createBobombCameras(container_size.width(), container_size.height());
+    cameras = new CameraContainer(camera, otherCams);
+
+    otherCams.forEach(function(cam) {cam.addToScene(scene);});
+
+    setTimeout(function() { coins.forEach(function(coin) { coin.addToScene(scene); })}, 1000);
+}
+
 function initWhompScene(scene, collidableObjects, loader, static_path) {
     loader.load(
         static_path + './data/whomp/Whomps Fortress.obj',
@@ -418,6 +475,33 @@ function resetWhompElements() {
     };
 }
 
+function initWhomp(camera, scene, static_path, container_size) {
+    addLight(scene);
+    var loader = new THREE.OBJMTLLoader();
+
+    var collidableObjects = [];
+    initWhompScene(scene, collidableObjects, loader, static_path);
+
+    camera.resetElements = resetWhompElements();
+    camera.collidableObjects = collidableObjects;
+
+    camera.speed = 0.01;
+    camera.reset();
+    camera.save();
+
+    scene.add(camera);
+
+    Coin.init();
+    coins = createWhompCoins();
+
+    var otherCams = createWhompCameras(container_size.width(), container_size.height());
+    cameras = new CameraContainer(camera, otherCams);
+
+    otherCams.forEach(function(cam) {cam.addToScene(scene);});
+
+    setTimeout(function() { coins.forEach(function(coin) { coin.addToScene(scene); })}, 1000);
+}
+
 function initMountainScene(scene, collidableObjects, loader, static_path) {
     loader.load(
         static_path + './data/mountain/coocoolmountain.obj',
@@ -456,9 +540,44 @@ function initMountainScene(scene, collidableObjects, loader, static_path) {
     );
 }
 
+function createMountainCoins() {
+    return [];
+}
+
+function createMountainCameras(width, height) {
+    return [];
+}
+
 function resetMountainElements() {
     return {
         position : new THREE.Vector3(-20.558328115300082,23.601312087942762,-10.220633604814038),
         target : new THREE.Vector3(11.025356711105232,11.969889531789319,11.393733425161644)
     }
+}
+
+function initMountain(camera, scene, static_path, container_size) {
+    addLight(scene);
+    var loader = new THREE.OBJMTLLoader();
+
+    var collidableObjects = [];
+    initMountainScene(scene, collidableObjects, loader, static_path);
+
+    camera.resetElements = resetMountainElements();
+    camera.collidableObjects = collidableObjects;
+
+    camera.speed = 0.005;
+    camera.reset();
+    camera.save();
+
+    scene.add(camera);
+
+    Coin.init();
+    coins = createMountainCoins();
+
+    var otherCams = createMountainCameras(container_size.width(), container_size.height());
+    cameras = new CameraContainer(camera, otherCams);
+
+    otherCams.forEach(function(cam) {cam.addToScene(scene);});
+
+    setTimeout(function() { coins.forEach(function(coin) { coin.addToScene(scene); })}, 1000);
 }
