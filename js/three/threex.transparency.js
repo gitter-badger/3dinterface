@@ -14,8 +14,9 @@ THREEx.Transparency.objects = [];
 THREEx.Transparency.init	= function(objects){
 	objects.forEach(function(object){
         THREEx.Transparency.objects.push(object);
-		object.material.transparent	= true
-		object.material.depthWrite	= false
+		object.material.transparent	= true;
+		object.material.depthWrite	= false;
+        object.raycastable = false;
 	});
 }
 
@@ -24,6 +25,7 @@ THREEx.Transparency.push = function() {
         THREEx.Transparency.objects.push(arguments[i]);
         arguments[i].material.transparent = true;
         arguments[i].material.depthWrite = false;
+        arguments[i].raycastable = false;
     }
 }
 

@@ -447,6 +447,7 @@ function initWhompScene(scene, collidableObjects, loader, static_path) {
 
                     if (obj.material.name === 'Shape_088' ||
                         obj.material.name === 'Shape_089') {
+                        obj.raycastable = false;
                         THREEx.Transparency.push(obj);
                     } else if (obj.material.name === 'Shape_113') {
                         THREEx.Transparency.push(obj);
@@ -467,7 +468,16 @@ function createWhompCameras(width, height) {
 }
 
 function createWhompCoins() {
-    return [];
+    return [
+        new Coin(-55.29176900669821,28.86514571524507,41.27968972716147),
+        new Coin(-33.36263561768484,93.41710952326468,10.230063543998414),
+        new Coin(19.85057515492925,121.51756532082196,13.355674703297925),
+        new Coin(81.00383890535953,46.489182333624335,19.132972963126775),
+        new Coin(6.049016864458896,62.498603432959584,36.272087520336264),
+        new Coin(-14.497656612870164,62.63594147452652,-40.488101538390694),
+        new Coin(67.53883218882444,23.19245026490682,-70.01046531863012),
+        new Coin(34.354286209455246,34.87313067990168,-40.91947594995703)
+    ];
 }
 
 function resetWhompElements() {
@@ -493,7 +503,7 @@ function initWhomp(camera, scene, static_path) {
 
     scene.add(camera);
 
-    Coin.init();
+    Coin.init(0.01);
     coins = createWhompCoins();
 
     var otherCams = createWhompCameras(container_size.width(), container_size.height());
@@ -545,7 +555,16 @@ function initMountainScene(scene, collidableObjects, loader, static_path) {
 }
 
 function createMountainCoins() {
-    return [];
+    return [
+        new Coin(-18.766484229298513,-6.174512332611151,16.379061147364553),
+        new Coin(-22.48878786991581,-17.698282433679474,1.6030258853572397),
+        new Coin(-8.604868977581164,-17.3348862459467,-11.923191659094416),
+        new Coin(24.81563047462934,-12.174170400556296,5.612049952487652),
+        new Coin(-6.4854226987006305,0.34787283214634307,-17.2093293607182),
+        new Coin(-14.50190371481413,20.88721463986533,7.923724946536855),
+        new Coin(-13.980787439949077,-0.10719616576499978,22.24889144136683),
+        new Coin(4.491305202472262,3.6813420775366277,10.03229664467681)
+    ];
 }
 
 function createMountainCameras(width, height) {

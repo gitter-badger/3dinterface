@@ -385,7 +385,6 @@ var History = function() {
     this.states = new Array();
     this.index = -1;
     this.size = 0;
-    console.log('New state ' + this.index + ' / ' + this.size);
 }
 
 History.prototype.addState = function(state) {
