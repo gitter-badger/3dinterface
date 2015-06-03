@@ -49,15 +49,15 @@ var ButtonManager = function(cameras, previewer) {
 ButtonManager.prototype.updateElements = function() {
     // Update icon
     if (!this.cameras.mainCamera().undoable()) {
-        this.undoElement.className = "btn btn-default";
+        this.undoElement.className = "btn btn-default navbar-btn";
     } else {
-        this.undoElement.className = "btn btn-primary";
+        this.undoElement.className = "btn btn-primary navbar-btn";
     }
 
     if (!this.cameras.mainCamera().redoable()) {
-        this.redoElement.className = "btn btn-default";
+        this.redoElement.className = "btn btn-default navbar-btn";
     } else {
-        this.redoElement.className = "btn btn-primary";
+        this.redoElement.className = "btn btn-primary navbar-btn";
     }
 }
 
