@@ -29,7 +29,7 @@ CameraSelecter.prototype.pointedCamera = function() {
         var bestIndex;
 
         // Looking for cameras
-        for (i in intersects) {
+        for (var i in intersects) {
             if (intersects[i].object.raycastable && !(intersects[i].object instanceof THREE.Line)) {
                 if ((intersects[i].distance > 0.5 && minDistance === undefined) || (intersects[i].distance < minDistance )) {
                     if (!(intersects[i].object instanceof THREE.Mesh && intersects[i].object.material.opacity < 0.1)) {
