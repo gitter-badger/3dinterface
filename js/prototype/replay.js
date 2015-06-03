@@ -66,7 +66,7 @@ function init() {
     container.appendChild(renderer.domElement);
 
     // Initialize pointer camera
-    var camera1 = new ReplayCamera(50, container_size.width() / container_size.height(), 0.01, 100000);
+    var camera1 = new ReplayCamera(50, container_size.width() / container_size.height(), 0.01, 100000, coins);
     cameras = initBobomb(camera1, scene, static_path, coins);
     camera1.cameras = cameras;
 

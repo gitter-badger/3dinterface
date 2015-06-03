@@ -2,7 +2,7 @@
 var ReplayCamera = function() {
     THREE.PerspectiveCamera.apply(this, arguments);
 
-    this.cameras = arguments[4];
+    this.coins = arguments[4]
 
     this.started = false;
     this.counter = 0;
@@ -115,7 +115,7 @@ ReplayCamera.prototype.nextEvent = function() {
     if (this.event.type == 'camera') {
         this.move(this.event);
     } else if (this.event.type == 'coin') {
-        coins[this.event.id].get();
+        this.coins[this.event.id].get();
         // Wait a little before launching nextEvent
         (function(self) {
             setTimeout(function() {
