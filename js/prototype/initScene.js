@@ -89,7 +89,7 @@ function resetPeachElements() {
     };
 }
 
-function initPeach(camera, scene, static_path) {
+function initPeach(camera, scene, static_path, coins) {
     addLight(scene);
     var loader = new THREE.OBJMTLLoader();
 
@@ -106,7 +106,6 @@ function initPeach(camera, scene, static_path) {
     scene.add(camera);
 
     Coin.init(0.001);
-    coins = [];
 }
 
 function initZeldaScene(scene, collidableObjects, loader, static_path) {
@@ -400,7 +399,7 @@ function createBobombCameras(width, height) {
 
 }
 
-function initBobomb(camera, scene, static_path) {
+function initBobomb(camera, scene, static_path, coins) {
     addLight(scene);
     var loader = new THREE.OBJMTLLoader();
 
@@ -417,7 +416,11 @@ function initBobomb(camera, scene, static_path) {
     scene.add(camera);
 
     Coin.init();
-    coins = createBobombCoins();
+    var tmp = createBobombCoins();
+
+    for (var i in tmp) {
+        coins.push(tmp[i]);
+    }
 
     var otherCams = createBobombCameras(container_size.width(), container_size.height());
     var cameras = new CameraContainer(camera, otherCams);
@@ -487,7 +490,7 @@ function resetWhompElements() {
     };
 }
 
-function initWhomp(camera, scene, static_path) {
+function initWhomp(camera, scene, static_path, coins) {
     addLight(scene);
     var loader = new THREE.OBJMTLLoader();
 
@@ -504,7 +507,11 @@ function initWhomp(camera, scene, static_path) {
     scene.add(camera);
 
     Coin.init(0.01);
-    coins = createWhompCoins();
+    var tmp = createWhompCoins();
+
+    for (var i in tmp) {
+        coins.push(tmp[i]);
+    }
 
     var otherCams = createWhompCameras(container_size.width(), container_size.height());
     var cameras = new CameraContainer(camera, otherCams);
@@ -578,7 +585,7 @@ function resetMountainElements() {
     }
 }
 
-function initMountain(camera, scene, static_path) {
+function initMountain(camera, scene, static_path, coins) {
     addLight(scene);
     var loader = new THREE.OBJMTLLoader();
 
@@ -595,7 +602,11 @@ function initMountain(camera, scene, static_path) {
     scene.add(camera);
 
     Coin.init();
-    coins = createMountainCoins();
+    var tmp = createMountainCoins();
+
+    for (var i in tmp) {
+        coins.push(tmp[i]);
+    }
 
     var otherCams = createMountainCameras(container_size.width(), container_size.height());
     var cameras = new CameraContainer(camera, otherCams);

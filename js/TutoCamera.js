@@ -6,11 +6,12 @@ var TutoCamera = function() {
     this.onWindowResize = arguments[6];
     var scene = arguments[5];
     var container_size = arguments[7];
+    var coins = arguments[8];
 
-    if (arguments[8] === undefined)
+    if (arguments[9] === undefined)
         listenerTarget = document;
     else
-        listenerTarget = arguments[8];
+        listenerTarget = arguments[9];
 
     // Set Position
     this.theta = Math.PI;
@@ -63,7 +64,7 @@ var TutoCamera = function() {
     this.resetElements = resetBobombElements();
 
     // Create tutorial
-    this.tutorial = new TutorialSteps(this, scene, this.onWindowResize, container_size);
+    this.tutorial = new TutorialSteps(this, scene, coins, this.onWindowResize, container_size);
 }
 TutoCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 TutoCamera.prototype.constructor = TutoCamera;

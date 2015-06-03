@@ -1,4 +1,4 @@
-var CameraSelecter = function(renderer, scene, cameras, buttonManager) {
+var CameraSelecter = function(renderer, scene, cameras, coins, buttonManager) {
     this.raycaster = new THREE.Raycaster();
     this.renderer = renderer;
     this.mouse = {};
@@ -6,6 +6,7 @@ var CameraSelecter = function(renderer, scene, cameras, buttonManager) {
     this.prev = {};
     this.buttonManager = buttonManager;
     this.scene = scene;
+    this.coins = coins;
 }
 
 CameraSelecter.prototype.pointedCamera = function() {
@@ -43,9 +44,9 @@ CameraSelecter.prototype.pointedCamera = function() {
             // if (this.cameras.getById(intersects[bestIndex].object.parent.id) !== undefined) {
                 var obj = intersects[bestIndex].object;
 
-                for (var coin in coins) {
-                    if (obj === coins[coin].mesh) {
-                        return coins[coin];
+                for (var coin in this.coins) {
+                    if (obj === this.coins[coin].mesh) {
+                        return this.coins[coin];
                     }
                 }
                 this.currentPointedCamera = this.cameras.getByObject(intersects[bestIndex].object);
@@ -103,7 +104,7 @@ CameraSelecter.prototype.click = function(event) {
     } else if (newCamera instanceof Coin) {
         // Coin found, notify server
         var event = new BD.Event.CoinClicked();
-        event.coin_id = coins.indexOf(newCamera);
+        event.coin_id = this.coins.indexOf(newCamera);
         event.send();
         newCamera.get();
     }

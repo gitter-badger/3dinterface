@@ -77,7 +77,7 @@ function init() {
     container.appendChild(renderer.domElement);
 
     // Initialize pointer camera
-    var camera1 = new TutoCamera(50, container_size.width() / container_size.height(), 0.01, 100000, renderer, scene, onWindowResize, container_size, container);
+    var camera1 = new TutoCamera(50, container_size.width() / container_size.height(), 0.01, 100000, renderer, scene, onWindowResize, container_size, coins, container);
     tutorial = camera1.tutorial;
 
     cameras = new CameraContainer(camera1, []);
@@ -114,7 +114,7 @@ function initListeners() {
     buttonManager = new ButtonManager(cameras, previewer);
 
     // Camera selecter for hover and clicking recommendations
-    cameraSelecter = new CameraSelecter(renderer, scene, cameras, buttonManager);
+    cameraSelecter = new CameraSelecter(renderer, scene, cameras, coins, buttonManager);
 }
 
 

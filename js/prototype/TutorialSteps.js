@@ -1,11 +1,12 @@
 var nextStep;
-var TutorialSteps = function(tutoCamera, scene, onWindowResize, container_size) {
+var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container_size) {
     this.camera = tutoCamera;
     this.step = 0;
-    this.coins = 0;
+    this.coinNumber = 0;
     this.camera.allowed = {};
     this.onWindowResize = onWindowResize;
     this.container_size = container_size;
+    this.coins = coins;
 
     this.instructions = [
         {
@@ -95,7 +96,7 @@ TutorialSteps.prototype.setCameras = function(cameras) {
 TutorialSteps.prototype.nextStep = function() {
     if (this.step < this.instructions.length) {
         this.alert(this.instructions[this.step].text, this.instructions[this.step].justclick);
-        var callback = function() {self.coins++; self.nextStep();};
+        var callback = function() {self.coinNumber++; self.nextStep();};
         var self = this;
         switch (this.step) {
             case 0: break;
@@ -103,24 +104,24 @@ TutorialSteps.prototype.nextStep = function() {
             case 2: this.camera.allowed.keyboardRotate    = true; break;
             case 3:
                 this.camera.allowed.keyboardRotate    = true;
-                coins.push(new Coin(0.4911245636058468,1.225621525492101,-5.11526684540265, callback));
-                coins[coins.length-1].addToScene(this.scene);
+                this.coins.push(new Coin(0.4911245636058468,1.225621525492101,-5.11526684540265, callback));
+                this.coins[this.coins.length-1].addToScene(this.scene);
                 break;
             case 4:
-                coins.push(new Coin(1.4074130964382279,0.6458319586843252,-6.75244526999632, callback));
-                coins[coins.length-1].addToScene(this.scene);
-                coins.push(new Coin(-4.2701659473968965,0.6745750513698942,-0.484545726832743, callback));
-                coins[coins.length-1].addToScene(this.scene);
-                coins.push(new Coin(-4.336597108439718,0.4203578350484251,-8.447211342176862, callback));
-                coins[coins.length-1].addToScene(this.scene);
+                this.coins.push(new Coin(1.4074130964382279,0.6458319586843252,-6.75244526999632, callback));
+                this.coins[this.coins.length-1].addToScene(this.scene);
+                this.coins.push(new Coin(-4.2701659473968965,0.6745750513698942,-0.484545726832743, callback));
+                this.coins[this.coins.length-1].addToScene(this.scene);
+                this.coins.push(new Coin(-4.336597108439718,0.4203578350484251,-8.447211342176862, callback));
+                this.coins[this.coins.length-1].addToScene(this.scene);
                 break;
             case 7:
                 this.camera.move(this.camera.resetElements);
                 break;
             case 8:
                 this.camera.allowed.keyboardTranslate = true;
-                coins.push(new Coin(2.7378029903574026,2.953347730618792,-11.550836282321221, callback));
-                coins[coins.length-1].addToScene(this.scene);
+                this.coins.push(new Coin(2.7378029903574026,2.953347730618792,-11.550836282321221, callback));
+                this.coins[this.coins.length-1].addToScene(this.scene);
                 break;
             case 12:
                 var cam = createPeachCameras(this.container_size.width(), this.container_size.height())[2];
@@ -138,12 +139,12 @@ TutorialSteps.prototype.nextStep = function() {
                     cams[i].addToScene(this.scene);
                 }
 
-                coins.push(new Coin(3.701112872561801,-0.4620393514856378,-3.3373375945128085, callback));
-                coins[coins.length-1].addToScene(this.scene);
-                coins.push(new Coin(6.694675339780243,-1.2480369397526456,-1.992336719279164, callback));
-                coins[coins.length-1].addToScene(this.scene);
-                coins.push(new Coin(-2.458336118265302,-1.549510268763568,-11.186153614421212, callback));
-                coins[coins.length-1].addToScene(this.scene);
+                this.coins.push(new Coin(3.701112872561801,-0.4620393514856378,-3.3373375945128085, callback));
+                this.coins[this.coins.length-1].addToScene(this.scene);
+                this.coins.push(new Coin(6.694675339780243,-1.2480369397526456,-1.992336719279164, callback));
+                this.coins[this.coins.length-1].addToScene(this.scene);
+                this.coins.push(new Coin(-2.458336118265302,-1.549510268763568,-11.186153614421212, callback));
+                this.coins[this.coins.length-1].addToScene(this.scene);
         }
         this.step++;
     }
@@ -160,7 +161,7 @@ TutorialSteps.prototype.nextAction = function() {
 }
 
 TutorialSteps.prototype.tryFinish = function() {
-    if (this.coins === 8) {
+    if (this.coinNumber === 8) {
         console.log("Finished");
     }
 }
