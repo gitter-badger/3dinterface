@@ -53,7 +53,7 @@ var PointerCamera = function() {
     listenerTarget.addEventListener('mousemove', function(event) { if (event.which == 1) onMouseMove(event);}, false);
     listenerTarget.addEventListener('mouseup', onMouseUp, false);
     // listenerTarget.addEventListener('mouseup', function() { console.log("mouseup");}, false);
-    // listenerTarget.addEventListener('mouseout', onMouseUp, false);
+    listenerTarget.addEventListener('mouseout', onMouseUp, false);
 
     this.collisions = true;
 
