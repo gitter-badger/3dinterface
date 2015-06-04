@@ -8,6 +8,8 @@ var Previewer = function(renderer, scene) {
     this.renderer = renderer;
     this.fixed = false;
     this.scene = scene;
+    this.drawn = false;
+    this.drawnBefore = false;
 }
 
 Previewer.prototype.render = function(prev, container_width, container_height) {
@@ -60,10 +62,12 @@ Previewer.prototype.render = function(prev, container_width, container_height) {
         this.renderer.setViewport(left, bottom, width, height);
         this.renderer.render(this.scene, prev.camera);
 
-        if (!this.fixed) {
-            this.clearNeeded = true;
-        }
-    } else if (this.fixed) {
+        this.update(true);
+    } else {
+        this.update(false);
+    }
+
+    if (this.drawnBefore && !this.drawn) {
         this.clearNeeded = true;
     }
 }
@@ -77,4 +81,9 @@ Previewer.prototype.clear = function() {
 
 Previewer.prototype.fixedRecommendation = function(bool) {
     this.fixed = bool;
+}
+
+Previewer.prototype.update = function(arg) {
+    this.drawnBefore = this.drawn;
+    this.drawn = arg;
 }
