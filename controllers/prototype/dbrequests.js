@@ -295,8 +295,6 @@ ExpCreator.prototype.execute = function() {
         "INSERT INTO experiment(user_id, scene_id) VALUES(" + this.user_id + " , 1); SELECT currval('experiment_id_seq');",
         [],
         function(err, result) {
-            console.log(self.user_id);
-            console.log(err);
             self.finalResult = result.rows[0].currval;
             self.finish();
         }
@@ -392,13 +390,13 @@ ExpGetter.prototype.execute = function() {
         "SELECT  " +
             "experiment.id as exp_id, " +
             "users.name as username, " +
-            "scene.name as scenename " +
+            "scene.name as scenename, " +
+            "users.id as user_id " +
         "FROM experiment, users, scene " +
-        "WHERE experiment.user_id = user_id and scene.id = experiment.scene_id " +
+        "WHERE experiment.user_id = users.id and scene.id = experiment.scene_id " +
         "ORDER BY experiment.id;",
         [],
         function(err, result) {
-            console.log(err);
             self.finalResult = result.rows;
             self.finish();
         }
