@@ -616,3 +616,88 @@ function initMountain(camera, scene, static_path, coins) {
     setTimeout(function() { coins.forEach(function(coin) { coin.addToScene(scene); })}, 1000);
     return cameras;
 }
+
+function initSponzaScene(scene, collidableObjects, loader, static_path) {
+    var onProgress = function ( xhr ) {
+        if ( xhr.lengthComputable ) {
+            var percentComplete = xhr.loaded / xhr.total * 100;
+            console.log( Math.round(percentComplete, 2) + '% downloaded' );
+            console.log(xhr);
+        }
+    };
+
+    loader.load(
+        static_path + './data/sponza/sponza.json',
+        function (geometry, materials) {
+            console.log("OK");
+            geometry.mergeVertices();
+            var material = new THREE.MeshFaceMaterial(materials);
+            var object = new THREE.Mesh(geometry, material);
+            object.scale.set(0.01,0.01,0.01);
+            object.raycastable = true;
+            collidableObjects.push(object);
+            console.log(object);
+            scene.add(object);
+            // object.rotation.x = -Math.PI/2;
+            // object.rotation.z = Math.PI/2;
+            // collidableObjects.push(object);
+            // scene.add(object);
+            object.traverse(function (obj) {
+            //     if (obj instanceof THREE.Mesh) {
+            //         obj.geometry.mergeVertices();
+            //         obj.geometry.computeVertexNormals();
+            //         obj.material.side = THREE.DoubleSide;
+            //         obj.raycastable = true;
+            //     }
+            });
+        }
+    , onProgress, function(xhr) { console.log("error");});
+}
+
+function createSponzaCoins() {
+    return [];
+}
+
+function createSponzaCameras() {
+    return [];
+}
+
+function resetSponzaElements() {
+    return resetMountainElements();
+}
+
+function initSponza(camera, scene, static_path, coins) {
+
+    addLight(scene);
+    var loader = new THREE.JSONLoader();
+
+    var collidableObjects = [];
+    initSponzaScene(scene, collidableObjects, loader, static_path);
+
+    camera.resetElements = resetSponzaElements();
+    camera.collidableObjects = collidableObjects;
+
+    camera.speed = 0.005;
+    camera.reset();
+    camera.save();
+
+    scene.add(camera);
+
+    Coin.init();
+    var tmp = createSponzaCoins();
+
+    for (var i in tmp) {
+        coins.push(tmp[i]);
+    }
+
+    var otherCams = createSponzaCameras(container_size.width(), container_size.height());
+    var cameras = new CameraContainer(camera, otherCams);
+
+    otherCams.forEach(function(cam) {cam.addToScene(scene);});
+
+    setTimeout(function() { coins.forEach(function(coin) { coin.addToScene(scene); })}, 1000);
+
+
+    return cameras;
+
+}
