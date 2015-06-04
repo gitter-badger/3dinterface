@@ -88,7 +88,7 @@ Info.prototype.loadCameras = function() {
             "((camera).target).y   AS ty, " +
             "((camera).target).z   AS tz, " +
             "time                  AS time " +
-            "FROM keyboardevent WHERE user_id = $1 ORDER BY time;",
+            "FROM keyboardevent WHERE exp_id = $1 ORDER BY time;",
         [self.id],
         function(err, result) {
             self.results.cameras = [];
@@ -119,7 +119,7 @@ Info.prototype.loadCameras = function() {
 Info.prototype.loadCoins = function() {
     var self = this;
     this.client.query(
-        "SELECT coin_id, time FROM coinclicked WHERE user_id = $1 ORDER BY time;",
+        "SELECT coin_id, time FROM coinclicked WHERE exp_id = $1 ORDER BY time;",
         [self.id],
         function(err,result) {
             self.results.coins = [];
@@ -141,7 +141,7 @@ Info.prototype.loadCoins = function() {
 Info.prototype.loadArrows = function() {
     var self = this;
     this.client.query(
-        "SELECT arrow_id, time FROM arrowclicked WHERE user_id = $1 ORDER BY time;",
+        "SELECT arrow_id, time FROM arrowclicked WHERE exp_id = $1 ORDER BY time;",
         [self.id],
         function(err, result) {
             self.results.arrows = [];
@@ -163,7 +163,7 @@ Info.prototype.loadArrows = function() {
 Info.prototype.loadResets = function() {
     var self = this;
     this.client.query(
-        "SELECT time FROM resetclicked WHERE user_id = $1 ORDER BY time;",
+        "SELECT time FROM resetclicked WHERE exp_id = $1 ORDER BY time;",
         [self.id],
         function(err, result) {
             self.results.resets = [];
@@ -191,7 +191,7 @@ Info.prototype.loadPreviousNext = function () {
             "((camera).target).y   AS ty, " +
             "((camera).target).z   AS tz, " +
             "time                  AS time " +
-            "FROM previousnextclicked WHERE user_id = $1 ORDER BY time;",
+            "FROM previousnextclicked WHERE exp_id = $1 ORDER BY time;",
         [self.id],
         function(err, result) {
             self.results.previousNext = [];
@@ -223,7 +223,7 @@ Info.prototype.loadPreviousNext = function () {
 Info.prototype.loadHovered = function() {
     var self = this;
     this.client.query(
-        "SELECT start, time, arrow_id FROM hovered WHERE user_id = $1 ORDER BY time;",
+        "SELECT start, time, arrow_id FROM hovered WHERE exp_id = $1 ORDER BY time;",
         [self.id],
         function(err, result) {
             self.results.hovered = [];
@@ -243,7 +243,7 @@ Info.prototype.loadHovered = function() {
     );
 }
 
-var IdCreator = function(finishAction) {
+var UserCreator = function(finishAction) {
     this.finishAction = finishAction;
 
     // Connect to db
@@ -255,7 +255,7 @@ var IdCreator = function(finishAction) {
     });
 }
 
-IdCreator.prototype.execute = function() {
+UserCreator.prototype.execute = function() {
     var self = this;
     this.client.query(
         "INSERT INTO users(name) VALUES('anonymous'); SELECT currval('users_id_seq');",
@@ -267,7 +267,7 @@ IdCreator.prototype.execute = function() {
     );
 }
 
-IdCreator.prototype.finish = function() {
+UserCreator.prototype.finish = function() {
     this.release();
     this.client = null;
     this.release = null;
@@ -275,7 +275,43 @@ IdCreator.prototype.finish = function() {
     this.finishAction(this.finalResult);
 }
 
-var IdChecker = function(id, finishAction) {
+var ExpCreator = function(user_id, finishAction) {
+    this.finishAction = finishAction;
+    this.user_id = user_id;
+
+    // Connect to db
+    var self = this;
+    pg.connect(pgc.url, function(err, client, release) {
+        self.client = client;
+        self.release = release;
+        self.execute();
+    });
+}
+
+ExpCreator.prototype.execute = function() {
+    var self = this;
+    this.client.query(
+        // TODO this is ugly, we should not do that...
+        "INSERT INTO experiment(user_id, scene_id) VALUES(" + this.user_id + " , 1); SELECT currval('experiment_id_seq');",
+        [],
+        function(err, result) {
+            console.log(self.user_id);
+            console.log(err);
+            self.finalResult = result.rows[0].currval;
+            self.finish();
+        }
+    );
+}
+
+ExpCreator.prototype.finish = function() {
+    this.release();
+    this.client = null;
+    this.release = null;
+
+    this.finishAction(this.finalResult);
+}
+
+var UserIdChecker = function(id, finishAction) {
     this.id = id;
     this.finishAction = finishAction;
 
@@ -287,7 +323,7 @@ var IdChecker = function(id, finishAction) {
     });
 }
 
-IdChecker.prototype.execute = function() {
+UserIdChecker.prototype.execute = function() {
     var self = this;
     this.client.query(
         "SELECT count(id) > 0 AS answer FROM users WHERE id = $1;",
@@ -299,7 +335,7 @@ IdChecker.prototype.execute = function() {
     );
 }
 
-IdChecker.prototype.finish = function() {
+UserIdChecker.prototype.finish = function() {
     this.release();
     this.client = null;
     this.release = null;
@@ -307,7 +343,8 @@ IdChecker.prototype.finish = function() {
     this.finishAction(this.finalResult);
 }
 
-var UserGetter = function(finishAction) {
+var ExpIdChecker = function(id, finishAction) {
+    this.id = id;
     this.finishAction = finishAction;
 
     var self = this;
@@ -318,19 +355,19 @@ var UserGetter = function(finishAction) {
     });
 }
 
-UserGetter.prototype.execute = function() {
+ExpIdChecker.prototype.execute = function() {
     var self = this;
     this.client.query(
-        "SELECT id, name FROM users",
-        [],
+        "SELECT count(id) > 0 AS answer FROM experiment WHERE id = $1;",
+        [self.id],
         function(err, result) {
-            self.finalResult = result.rows;
+            self.finalResult = result.rows[0].answer;
             self.finish();
         }
     );
 }
 
-UserGetter.prototype.finish = function() {
+ExpIdChecker.prototype.finish = function() {
     this.release();
     this.client = null;
     this.release = null;
@@ -338,7 +375,62 @@ UserGetter.prototype.finish = function() {
     this.finishAction(this.finalResult);
 }
 
-module.exports.getInfo      = function(id, callback) { new Info(id, callback);      };
-module.exports.createId     = function(callback)     { new IdCreator(callback);     };
-module.exports.checkId      = function(id, callback) { new IdChecker(id, callback); };
-module.exports.getAllUsers  = function(callback)     { new UserGetter(callback);    };
+var ExpGetter = function(finishAction) {
+    this.finishAction = finishAction;
+
+    var self = this;
+    pg.connect(pgc.url, function(err, client, release) {
+        self.client = client;
+        self.release = release;
+        self.execute();
+    });
+}
+
+ExpGetter.prototype.execute = function() {
+    var self = this;
+    this.client.query(
+        "SELECT  " +
+            "experiment.id as exp_id, " +
+            "users.name as username, " +
+            "scene.name as scenename " +
+        "FROM experiment, users, scene " +
+        "WHERE experiment.user_id = user_id and scene.id = experiment.scene_id " +
+        "ORDER BY experiment.id;",
+        [],
+        function(err, result) {
+            console.log(err);
+            self.finalResult = result.rows;
+            self.finish();
+        }
+    );
+}
+
+ExpGetter.prototype.finish = function() {
+    this.release();
+    this.client = null;
+    this.release = null;
+
+    this.finishAction(this.finalResult);
+}
+
+var tryUser = function(id, callback) {
+    if (id !== undefined && id !== null) {
+        new UserIdChecker(id, function(clear) {
+            if (clear) {
+                callback(id);
+            } else {
+                new UserCreator(callback);
+            }
+        });
+    } else {
+        new UserCreator(callback);
+    }
+}
+
+module.exports.getInfo      = function(id, callback) { new Info(id, callback);          };
+module.exports.createUser   = function(callback)     { new UserCreator(callback);       };
+module.exports.createExp    = function(id, callback) { new ExpCreator(id, callback);    };
+module.exports.checkUserId  = function(id, callback) { new UserIdChecker(id, callback); };
+module.exports.checkExpId   = function(id, callback) { new ExpIdChecker(id, callback);  };
+module.exports.getAllExps   = function(callback)     { new ExpGetter(callback);         };
+module.exports.tryUser = tryUser;

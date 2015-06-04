@@ -13,13 +13,16 @@ module.exports.index = function(req, res) {
 
 var protoHelper = function(template) {
     return function(req, res) {
-        db.createId(function(id) {
-            req.session.user_id = id;
-            req.session.save();
+        db.tryUser(req.session.user_id, function(id) {
+            db.createExp(id, function(id) {
+                req.session.exp_id = id;
+                req.session.user_id = id;
+                req.session.save();
 
-            res.setHeader('Content-Type','text/html');
-            res.render(template, res.locals, function(err, result) {
-                res.send(result);
+                res.setHeader('Content-Type','text/html');
+                res.render(template, res.locals, function(err, result) {
+                    res.send(result);
+                });
             });
         });
     };
@@ -44,7 +47,7 @@ module.exports.replay = function(req, res, next) {
     // Get id parameter
     res.locals.id = tools.filterInt(req.params.id);
 
-    db.checkId(res.locals.id, function(idExist) {
+    db.checkExpId(res.locals.id, function(idExist) {
         if (!idExist) {
             var err = new Error("This replay does not exist");
             err.status = 404;
@@ -59,7 +62,7 @@ module.exports.replay = function(req, res, next) {
 }
 
 module.exports.replay_index = function(req, res, next) {
-    db.getAllUsers(function(result) {
+    db.getAllExps(function(result) {
         res.locals.users = result;
 
         res.setHeader('Content-Type', 'text/html');
