@@ -292,11 +292,14 @@ ExpCreator.prototype.execute = function() {
     var self = this;
     this.client.query(
         // TODO this is ugly, we should not do that...
-        "INSERT INTO experiment(user_id, scene_id) VALUES(" + this.user_id + " , 1); SELECT currval('experiment_id_seq');",
-        [],
+        "INSERT INTO experiment(user_id, scene_id) VALUES($1,1);",
+        [self.user_id],
         function(err, result) {
-            self.finalResult = result.rows[0].currval;
-            self.finish();
+            self.client.query("SELECT MAX(id) AS id FROM experiment;", function(err, result) {
+                self.finalResult = result.rows[0].id;
+                console.log(self.finalResult);
+                self.finish();
+            });
         }
     );
 }
