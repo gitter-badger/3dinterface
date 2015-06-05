@@ -361,8 +361,6 @@ ExpIdChecker.prototype.execute = function() {
         "SELECT scene_id FROM experiment WHERE id = $1;",
         [self.id],
         function(err, result) {
-            console.log(err);
-            console.log(result);
             if (result === undefined) {
                 self.finalResult = null;
             } else {

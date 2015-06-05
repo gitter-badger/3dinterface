@@ -46,10 +46,8 @@ var generateSceneNumber = function(req, res) {
     } else {
         req.session.scenes = randomArray();
         req.session.currentSceneIndex = 0;
-        console.log("Init : " + req.session.scenes);
     }
 
-    console.log("SceneIndex : " + req.session.currentSceneIndex);
     return req.session.scenes[req.session.currentSceneIndex];
 }
 
@@ -106,14 +104,12 @@ module.exports.replay = function(req, res, next) {
     res.locals.id = tools.filterInt(req.params.id);
 
     db.checkExpId(res.locals.id, function(scene_id) {
-        console.log("Scene_id = " + scene_id);
         if (scene_id === null) {
             var err = new Error("This replay does not exist");
             err.status = 404;
             next(err);
         } else {
             res.locals.initjs = sceneToFunction(scene_id);
-            console.log(scene_id + " " + res.locals.initjs);
             res.setHeader('Content-Type', 'text/html');
             res.render('prototype_replays.jade', res.locals, function(err, result) {
                 res.send(result);
