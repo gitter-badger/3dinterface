@@ -37,7 +37,8 @@ function initPeachCastle(scene, collidableObjects, loader, static_path) {
                     object.raycastable = true;
                     if (object.material.name === 'Material.103_princess_peaches_cast') {
                         THREEx.Transparency.push(object);
-                    } else if (object.material.name === 'Material.136_princess_peaches_cast') {
+                    } else if (object.material.name === 'Material.136_princess_peaches_cast' ||
+                        object.material.name === 'Material.135_princess_peaches_cast') {
                         THREEx.Transparency.push(object);
                         object.material.opacity = 0.5;
                         object.material.side = THREE.FrontSide;
