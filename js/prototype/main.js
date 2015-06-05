@@ -73,8 +73,8 @@ function init() {
     // Add elements to page
     container.appendChild( stats.domElement );
     container.appendChild(previewer.domElement);
-    container.appendChild(renderer.domElement);
     container.appendChild(Coin.domElement);
+    container.appendChild(renderer.domElement);
 
     // Initialize pointer camera
     var camera1 = new PointerCamera(50, container_size.width() / container_size.height(), 0.1, 100000, renderer, container);

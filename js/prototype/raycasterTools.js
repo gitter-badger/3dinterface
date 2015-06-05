@@ -64,7 +64,7 @@ CameraSelecter.prototype.update = function(event) {
     }
 
     var previousCamera = this.currentPointedCamera;
-    var hovered = this.pointedCamera(event);
+    var hovered = this.pointedCamera();
 
     if (hovered !== undefined && !(hovered instanceof Coin)) {
         if (hovered !== previousCamera) {
@@ -92,7 +92,7 @@ CameraSelecter.prototype.update = function(event) {
 }
 
 CameraSelecter.prototype.click = function(event) {
-    var newCamera = this.pointedCamera(event);
+    var newCamera = this.pointedCamera();
     if (newCamera !== undefined && !(newCamera instanceof Coin)) {
         var event = new BD.Event.ArrowClicked();
         event.arrow_id = this.cameras.cameras.indexOf(newCamera);

@@ -13,24 +13,44 @@ Coin.extension = _toto.canPlayType("audio/x-vorbis") === "" ? ".ogg" : ".mp3";
 
 Coin.domElement = document.createElement('canvas');
 Coin.domElement.style.position = 'absolute';
-// Coin.domElement.style.cssFloat = 'top-right';
+Coin.domElement.style.cssFloat = 'top-left';
 Coin.domElement.style.top = "0px";
-Coin.domElement.style.right = "0px";
+Coin.domElement.style.left = "0px";
 
 Coin.image = new Image();
 Coin.image.src = '/static/img/redcoin.png';
 
+Coin.initSize = function() {
+    try {
+        Coin.domElement.width = container_size.width();
+        Coin.domElement.height = container_size.height();
+    } catch (e) {
+        setTimeout(100, Coin.initSize);
+        return;
+    }
+}
+
 Coin.update = function() {
+
+    var x;
+    try {
+        x = container_size.width() * 4.25 / 5;
+        Coin.domElement.width = container_size.width();
+        Coin.domElement.height = container_size.height();
+    } catch (e) {
+        return;
+    }
+
     Coin.domElement.width = Coin.domElement.width;
 
-    Coin.ctx.drawImage(Coin.image,200,25,30,30);
+    Coin.ctx.drawImage(Coin.image, x + 75,25,30,30);
 
     Coin.ctx.fillStyle = 'red';
     Coin.ctx.strokeStyle = 'black';
 
     Coin.ctx.font = "30px Verdana";
-    Coin.ctx.fillText(Coin.total - 1 + " / " + 8, 125, 50);
-    Coin.ctx.strokeText(Coin.total - 1 + " / " + 8, 125, 50);
+    Coin.ctx.fillText(Coin.total - 1 + " / " + 8, x, 50);
+    Coin.ctx.strokeText(Coin.total - 1 + " / " + 8, x, 50);
 
     Coin.ctx.fill();
     Coin.ctx.stroke();
