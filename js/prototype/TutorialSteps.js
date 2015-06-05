@@ -106,6 +106,7 @@ TutorialSteps.prototype.nextStep = function() {
                 this.camera.allowed.keyboardRotate    = true;
                 this.coins.push(new Coin(0.4911245636058468,1.225621525492101,-5.11526684540265, callback));
                 this.coins[this.coins.length-1].addToScene(this.scene);
+                document.getElementById('container').appendChild(Coin.domElement);
                 break;
             case 4:
                 this.coins.push(new Coin(1.4074130964382279,0.6458319586843252,-6.75244526999632, callback));
