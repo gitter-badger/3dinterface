@@ -49,11 +49,12 @@ Coin.update = function() {
     Coin.ctx.strokeStyle = 'black';
 
     Coin.ctx.font = "30px Verdana";
-    Coin.ctx.fillText(Coin.total - 1 + " / " + 8, x, 50);
+    Coin.ctx.lineWidth = 5;
     Coin.ctx.strokeText(Coin.total - 1 + " / " + 8, x, 50);
+    Coin.ctx.fillText(Coin.total - 1 + " / " + 8, x, 50);
 
-    Coin.ctx.fill();
     Coin.ctx.stroke();
+    Coin.ctx.fill();
 
 }
 
