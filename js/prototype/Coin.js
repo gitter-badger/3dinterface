@@ -21,7 +21,6 @@ Coin.image = new Image();
 Coin.image.src = '/static/img/redcoin.png';
 
 Coin.update = function() {
-    console.log("ok");
     Coin.domElement.width = Coin.domElement.width;
 
     Coin.ctx.drawImage(Coin.image,200,25,30,30);
