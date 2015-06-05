@@ -106,6 +106,10 @@ function initPeach(camera, scene, static_path, coins) {
     scene.add(camera);
 
     Coin.init(0.001);
+    var otherCams = [];
+    var cameras = new CameraContainer(camera, otherCams);
+
+    return cameras;
 }
 
 function initZeldaScene(scene, collidableObjects, loader, static_path) {

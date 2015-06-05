@@ -3,6 +3,35 @@ var pg = require('pg');
 var pgc = require('../../private');
 var db = require('./dbrequests');
 
+// Shuffle array
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex ;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
+function randomArray() {
+    var arr = [];
+    for (var i = 2; i < 5; i++) {
+        arr.push(i);
+    }
+    arr = shuffle(arr);
+    return arr;
+}
+
 module.exports.index = function(req, res) {
     res.setHeader('Content-Type', 'text/html');
 
@@ -11,14 +40,43 @@ module.exports.index = function(req, res) {
     });
 }
 
+var generateSceneNumber = function(req, res) {
+    if (req.session.scenes !== undefined) {
+        req.session.currentSceneIndex++;
+    } else {
+        req.session.scenes = randomArray();
+        req.session.currentSceneIndex = 0;
+        console.log("Init : " + req.session.scenes);
+    }
+
+    console.log("SceneIndex : " + req.session.currentSceneIndex);
+    return req.session.scenes[req.session.currentSceneIndex];
+}
+
+var sceneToFunction = function(scene) {
+    switch (scene) {
+        case 2:
+            return 'initBobomb';
+        case 3:
+            return 'initMountain';
+        case 4:
+            return 'initWhomp';
+        default:
+            return 'initPeach';
+    }
+}
+
 var protoHelper = function(template) {
     return function(req, res) {
         db.tryUser(req.session.user_id, function(id) {
-            db.createExp(id, function(id) {
-                req.session.exp_id = id;
-                req.session.user_id = id;
-                req.session.save();
+            // Get random scene number
+            var scene = generateSceneNumber(req, res);
+            res.locals.scene = sceneToFunction(scene);
+            req.session.user_id = id;
 
+            db.createExp(id, req.session.scenes[req.session.currentSceneIndex], function(id) {
+                req.session.exp_id = id;
+                req.session.save();
                 res.setHeader('Content-Type','text/html');
                 res.render(template, res.locals, function(err, result) {
                     res.send(result);
@@ -47,12 +105,15 @@ module.exports.replay = function(req, res, next) {
     // Get id parameter
     res.locals.id = tools.filterInt(req.params.id);
 
-    db.checkExpId(res.locals.id, function(idExist) {
-        if (!idExist) {
+    db.checkExpId(res.locals.id, function(scene_id) {
+        console.log("Scene_id = " + scene_id);
+        if (scene_id === null) {
             var err = new Error("This replay does not exist");
             err.status = 404;
             next(err);
         } else {
+            res.locals.initjs = sceneToFunction(scene_id);
+            console.log(scene_id + " " + res.locals.initjs);
             res.setHeader('Content-Type', 'text/html');
             res.render('prototype_replays.jade', res.locals, function(err, result) {
                 res.send(result);

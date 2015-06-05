@@ -275,9 +275,10 @@ UserCreator.prototype.finish = function() {
     this.finishAction(this.finalResult);
 }
 
-var ExpCreator = function(user_id, finishAction) {
+var ExpCreator = function(user_id, scene_id, finishAction) {
     this.finishAction = finishAction;
     this.user_id = user_id;
+    this.scene_id = scene_id;
 
     // Connect to db
     var self = this;
@@ -291,13 +292,11 @@ var ExpCreator = function(user_id, finishAction) {
 ExpCreator.prototype.execute = function() {
     var self = this;
     this.client.query(
-        // TODO this is ugly, we should not do that...
-        "INSERT INTO experiment(user_id, scene_id) VALUES($1,1);",
-        [self.user_id],
+        "INSERT INTO experiment(user_id, scene_id) VALUES($1,$2);",
+        [self.user_id, self.scene_id],
         function(err, result) {
             self.client.query("SELECT MAX(id) AS id FROM experiment;", function(err, result) {
                 self.finalResult = result.rows[0].id;
-                console.log(self.finalResult);
                 self.finish();
             });
         }
@@ -359,10 +358,16 @@ var ExpIdChecker = function(id, finishAction) {
 ExpIdChecker.prototype.execute = function() {
     var self = this;
     this.client.query(
-        "SELECT count(id) > 0 AS answer FROM experiment WHERE id = $1;",
+        "SELECT scene_id FROM experiment WHERE id = $1;",
         [self.id],
         function(err, result) {
-            self.finalResult = result.rows[0].answer;
+            console.log(err);
+            console.log(result);
+            if (result === undefined) {
+                self.finalResult = null;
+            } else {
+                self.finalResult = result.rows[0].scene_id;
+            }
             self.finish();
         }
     );
@@ -428,10 +433,10 @@ var tryUser = function(id, callback) {
     }
 }
 
-module.exports.getInfo      = function(id, callback) { new Info(id, callback);          };
-module.exports.createUser   = function(callback)     { new UserCreator(callback);       };
-module.exports.createExp    = function(id, callback) { new ExpCreator(id, callback);    };
-module.exports.checkUserId  = function(id, callback) { new UserIdChecker(id, callback); };
-module.exports.checkExpId   = function(id, callback) { new ExpIdChecker(id, callback);  };
-module.exports.getAllExps   = function(callback)     { new ExpGetter(callback);         };
+module.exports.getInfo      = function(id, callback)           { new Info(id, callback);                 };
+module.exports.createUser   = function(callback)               { new UserCreator(callback);              };
+module.exports.createExp    = function(id, scene_id, callback) { new ExpCreator(id, scene_id, callback); };
+module.exports.checkUserId  = function(id, callback)           { new UserIdChecker(id, callback);        };
+module.exports.checkExpId   = function(id, callback)           { new ExpIdChecker(id, callback);         };
+module.exports.getAllExps   = function(callback)               { new ExpGetter(callback);                };
 module.exports.tryUser = tryUser;
