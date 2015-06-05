@@ -11,6 +11,39 @@ var Coin = function(x,y,z, callback) {
 var _toto = new Audio();
 Coin.extension = _toto.canPlayType("audio/x-vorbis") === "" ? ".ogg" : ".mp3";
 
+Coin.domElement = document.createElement('canvas');
+Coin.domElement.style.position = 'absolute';
+// Coin.domElement.style.cssFloat = 'top-right';
+Coin.domElement.style.top = "0px";
+Coin.domElement.style.right = "0px";
+
+Coin.image = new Image();
+Coin.image.src = '/static/img/redcoin.png';
+
+Coin.update = function() {
+    console.log("ok");
+    Coin.domElement.width = Coin.domElement.width;
+
+    Coin.ctx.drawImage(Coin.image,200,25,30,30);
+
+    Coin.ctx.fillStyle = 'red';
+    Coin.ctx.strokeStyle = 'black';
+
+    Coin.ctx.font = "30px Verdana";
+    Coin.ctx.fillText(Coin.total - 1 + " / " + 8, 125, 50);
+    Coin.ctx.strokeText(Coin.total - 1 + " / " + 8, 125, 50);
+
+    Coin.ctx.fill();
+    Coin.ctx.stroke();
+
+}
+
+Coin.image.onload = Coin.update;
+
+Coin.total = 1;
+Coin.ctx = Coin.domElement.getContext('2d');
+Coin.update();
+
 Coin.prototype.init = function(x,y,z) {
     if (Coin.BASIC_MESH !== null) {
         this.mesh = Coin.BASIC_MESH.clone();
@@ -70,6 +103,8 @@ Coin.prototype.get = function() {
             Coin.nextSound = new Audio('/static/data/music/redcoins/' + Coin.total + Coin.extension);
             Coin.nextSound.preload = "auto";
         }
+
+        Coin.update();
     }
 }
 
