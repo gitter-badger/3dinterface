@@ -1,3 +1,9 @@
+mixin button_link(href)
+    form.navbar-form.navbar-left(role="search", action="#{href}", method='GET')
+        button.btn.btn-default(type="submit")
+            block
+
+
 doctype html
 html(lang='fr')
     head
@@ -45,20 +51,28 @@ html(lang='fr')
                                     a(href="#{urls.tutorial}") Tutorial
                         li
                             a(href="#{urls.stream}") Streaming simulator
+                        li.divider
+                        if (session && session.user_id)
+                            li
+                                +button_link(urls.logout)
+                                    span.glyphicon.glyphicon-log-out(aria-hidden=true, style={"margin-right":"10px"})
+                                    span Log out
 
-                    ul.navbar-nav.navbar-right
-                        a.btn.btn-default.navbar-btn(type="button", href="https://github.com/tforgione/3dinterface", style={margin: "0px 5px"})
-                            img(src="/static/GitHub-Mark/PNG/GitHub-Mark-32px.png", width="17px")
-                            span(style={'margin-left':'5px'}) Github Repo
-                        a.btn.btn-default.navbar-btn(type="button", href="https://github.com/tforgione/3dinterface/wiki", style={margin: "0px 5px"})
-                            span.glyphicon.glyphicon-book(aria-hidden=true, style={"margin-right":"10px"})
-                            span Github wiki
 
-                        a.btn.btn-default.navbar-btn(type="button", href="mailto:thomas.forgione@gmail.com", style={'margin-right': "10px", 'margin-left': '5px'})
-                            span.glyphicon.glyphicon-envelope(aria-hidden=true)
-                            span(style={'margin-left':'5px'}) Contact
+                    ul.nav.navbar-nav.navbar-right
+                        li
+                            +button_link('https://github.com/tforgione/3dinterface')
+                                img(src="/static/GitHub-Mark/PNG/GitHub-Mark-32px.png", width="17px", style={align:vertical})
+                                span(style={'margin-left':'5px', align:vertical}) Github Repo
+                        li
+                            +button_link('https://github.com/tforgione/3dinterface/wiki')
+                                span.glyphicon.glyphicon-book(aria-hidden=true)
+                                span(style={'margin-left':'5px'}) Github wiki
 
-                        div
+                        li
+                            +button_link('mailto:thomas.forgione@gmail.com')
+                                span.glyphicon.glyphicon-envelope(aria-hidden=true)
+                                span(style={'margin-left':'5px'}) Contact
 
         section#main-section.container
             if alertCookie

@@ -27,6 +27,7 @@ app.use(bodyParser.json());
 app.use(function(req, res, next) {
     res.locals.title = "3DUI";
     res.locals.urls = urls;
+    res.locals.session = req.session;
     next();
 });
 
@@ -39,6 +40,11 @@ app.use(function(req, res, next) {
         res.locals.alertCookie = true;
         res.cookie('alreadyCame', true, {maxAge: 604800000}); // One week in ms
     }
+    next();
+});
+
+app.use(function(req, res, next) {
+    console.log(req.session.user_id);
     next();
 });
 
