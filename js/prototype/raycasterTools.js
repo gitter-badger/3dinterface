@@ -89,6 +89,8 @@ CameraSelecter.prototype.update = function(event) {
         }
         this.prev.go = false;
     }
+
+    document.getElementById('container').style.cursor = hovered ? "pointer" : "auto";
 }
 
 CameraSelecter.prototype.click = function(event) {

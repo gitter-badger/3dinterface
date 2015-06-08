@@ -101,6 +101,7 @@ Coin.prototype.get = function() {
 
         if (this.mesh) {
             this.mesh.visible = false;
+            this.mesh.raycastable = false;
         }
         Coin.total ++;
         Coin.nextSound.play();
