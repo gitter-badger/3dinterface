@@ -444,6 +444,7 @@ function initWhompScene(scene, collidableObjects, loader, static_path) {
         function ( object ) {
             object.rotation.x = -Math.PI/2;
             object.rotation.z = Math.PI/2;
+            object.scale.set(0.1,0.1,0.1);
             collidableObjects.push(object);
             scene.add(object);
             object.traverse(function (obj) {
@@ -472,26 +473,64 @@ function initWhompScene(scene, collidableObjects, loader, static_path) {
 }
 
 function createWhompCameras(width, height) {
-    return [];
+    var cams = [];
+
+    var createCamera = function(position, target) {
+        return new RecommendedCamera(
+            50,
+            width / height,
+            1,
+            100000,
+            position,
+            target
+        );
+    }
+
+    cams.push(
+        createCamera(
+            new THREE.Vector3(-5.4336754204569345,3.1392444908865986,-2.5523620854280967),
+            new THREE.Vector3(-5.284005453263061, 2.9591143163290674, 1.440776031533807)
+        ),
+        createCamera(
+            new THREE.Vector3(-6.1753139246999424,3.1460450777755153, 8.89776989593906),
+            new THREE.Vector3(-2.7026837603414037,3.365743354536376,  6.924809579871983)
+        ),
+        createCamera(
+            new THREE.Vector3(-5.4975217973818246,7.726911253355844,  2.805487210952553),
+            new THREE.Vector3(-2.262483559754942, 5.4847179687372005, 2.0933798626524435)
+        ),
+        createCamera(
+            new THREE.Vector3(767.5978415761134,  3.641765617950047, -6.734909128840316),
+            new THREE.Vector3(800.1643232028776,  2.192334600043356, -3.0210038861375168)
+        ),
+        createCamera(
+            new THREE.Vector3(-4.521868295112849, 4.598285007581405, -7.186164895937964),
+            new THREE.Vector3(-1.2890361546656827,2.964335244044779, -5.489401941978159)
+        )
+
+    );
+
+    cams.forEach(function(cam) {cam.setSize(0.2);});
+    return cams;
 }
 
 function createWhompCoins() {
     return [
-        new Coin(-55.29176900669821,28.86514571524507,41.27968972716147),
-        new Coin(-33.36263561768484,93.41710952326468,10.230063543998414),
-        new Coin(19.85057515492925,121.51756532082196,13.355674703297925),
-        new Coin(81.00383890535953,46.489182333624335,19.132972963126775),
-        new Coin(6.049016864458896,62.498603432959584,36.272087520336264),
-        new Coin(-14.497656612870164,62.63594147452652,-40.488101538390694),
-        new Coin(67.53883218882444,23.19245026490682,-70.01046531863012),
-        new Coin(34.354286209455246,34.87313067990168,-40.91947594995703)
+        new Coin(-5.529176900669821,2.886514571524507,4.127968972716147),
+        new Coin(-3.336263561768484,9.341710952326468,1.0230063543998414),
+        new Coin(1.985057515492925,12.151756532082196,1.3355674703297925),
+        new Coin(8.100383890535953,4.6489182333624335,1.9132972963126775),
+        new Coin(0.6049016864458896,6.2498603432959584,3.6272087520336264),
+        new Coin(-1.4497656612870164,6.263594147452652,-4.0488101538390694),
+        new Coin(6.753883218882444,2.019245026490682,-7.001046531863012),
+        new Coin(3.4354286209455246,3.487313067990168,-4.091947594995703)
     ];
 }
 
 function resetWhompElements() {
     return {
-        position : new THREE.Vector3(-67.25817925071645,14.993570618328055,-103.56480813212423),
-        target : new THREE.Vector3(-48.541705829784604,13.192268872752742,-68.25972443720941)
+        position : new THREE.Vector3(-6.725817925071645,1.4993570618328055,-10.356480813212423),
+        target : new THREE.Vector3(-4.8541705829784604,1.3192268872752742,-6.825972443720941)
     };
 }
 
@@ -505,13 +544,13 @@ function initWhomp(camera, scene, static_path, coins) {
     camera.resetElements = resetWhompElements();
     camera.collidableObjects = collidableObjects;
 
-    camera.speed = 0.01;
+    camera.speed = 0.002;
     camera.reset();
     camera.save();
 
     scene.add(camera);
 
-    Coin.init(0.01);
+    Coin.init(0.002);
     var tmp = createWhompCoins();
 
     for (var i in tmp) {
