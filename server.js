@@ -43,10 +43,10 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.use(function(req, res, next) {
-    console.log(req.session.user_id);
-    next();
-});
+// app.use(function(req, res, next) {
+//     console.log(req.session.user_id);
+//     next();
+// });
 
 // Load controllers
 console.log("Loading controllers :");
