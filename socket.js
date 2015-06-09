@@ -26,7 +26,7 @@ module.exports = function(io) {
                         (function (arr) {
                             setTimeout(function() {
                                 socket.emit('vertex', arr);
-                            }, i);
+                            }, i*100);
                         })(arr);
                     } else if (lines[i][0] === 'f') {
                         fIndex++;
@@ -44,7 +44,7 @@ module.exports = function(io) {
                         (function (arr) {
                             setTimeout(function() {
                                 socket.emit('face', arr);
-                            },i);
+                            },i*100);
                         })(arr);
 
                     }
