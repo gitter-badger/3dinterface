@@ -7,6 +7,12 @@ var pg = require('pg');
 var secret = require('./private');
 
 var app = express();
+
+// Socket.io initialization
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+require('./socket.js')(io);
+
 var bodyParser = require('body-parser');
 var session = require('cookie-session');
 var cookieParser = require('cookie-parser');
@@ -91,5 +97,6 @@ if ( app.get('env') === 'development' ) {
 }
 
 // Start server
-console.log("Server ready : now listening " + server_ip_address + ":" + server_port);
-app.listen(server_port, server_ip_address);
+http.listen(server_port, server_ip_address, function(){
+    console.log("Server ready : now listening " + server_ip_address + ":" + server_port);
+});

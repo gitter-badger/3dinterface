@@ -5,7 +5,7 @@ var raycaster;
 var objects = [];
 var spheres = new Array(mesh_number);
 var visible = 0;
-
+var previousTime;
 var loader;
 
 var container_size = {width: 1067, height: 600};
@@ -42,11 +42,10 @@ function init() {
     scene.add(camera);
 
     window.addEventListener('resize', onWindowResize, false);
-    container.addEventListener('mousedown', function() { } , false);
 
     // Load the scene
-    loader = new THREE.OBJLoader();
-    sphere = new ProgessiveSphere(loader, params.get.res);
+    // loader = new THREE.OBJLoader();
+    sphere = ProgressiveLoader(params.get.res, scene);
 
     plane = new Plane(1000,1000);
     plane.translate(0,0,-100);
@@ -58,10 +57,12 @@ function animate() {
     // on appelle la fonction animate() récursivement à chaque frame
     requestAnimationFrame(animate);
 
-    camera.update();
+    var currentTime = Date.now() - previousTime;
+    camera.update(isNaN(currentTime) ? 20 : currentTime);
+    previousTime = Date.now();
     camera.look();
 
-    sphere.addFace();
+    // sphere.addFace();
 
     renderer.render(scene, camera);
 }

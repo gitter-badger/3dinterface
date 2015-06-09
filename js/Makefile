@@ -6,7 +6,12 @@ else
 	CLOSURE=./compiler.sh
 endif
 
-all: Three Stats ThreeTools Bouncing Multisphere StreamingSimulator PrototypeTools PrototypeReplay PrototypeInteractive Tutorial
+all: Socket Three Stats ThreeTools Bouncing Multisphere StreamingSimulator PrototypeTools PrototypeReplay PrototypeInteractive Tutorial
+
+Socket:
+	cp socket.io/socket.io.min.js ../static/js
+	$(CLOSURE) $(OPT) \
+		--js ProgressiveLoader.js >> ../static/js/socket.io.min.js
 
 Three:
 	cp three/three.min.js ../static/js/
