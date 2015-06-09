@@ -9,7 +9,7 @@ var ProgressiveLoader = function(res, scene) {
     mesh.up = new THREE.Vector3(0,0,1);
     var added = false;
 
-    var socket = io();
+    var socket = io.connect('http://3dinterface.no-ip.org:8080');
 
     socket.emit('request', res);
 
