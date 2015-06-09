@@ -23,11 +23,11 @@ module.exports = function(io) {
                         arr[1] = parseFloat(arr[1]);
                         arr[2] = parseFloat(arr[2]);
                         arr[3] = parseFloat(arr[3]);
-                        // (function (arr) {
-                        //     setTimeout(function() {
+                        (function (arr) {
+                            setTimeout(function() {
                                 socket.emit('vertex', arr);
-                        //     }, i);
-                        // })(arr);
+                            }, i);
+                        })(arr);
                     } else if (lines[i][0] === 'f') {
                         fIndex++;
                         var arr = lines[i].split(" ");
@@ -41,11 +41,11 @@ module.exports = function(io) {
                             fIndex++;
                         }
 
-                        // (function (arr) {
-                        //     setTimeout(function() {
+                        (function (arr) {
+                            setTimeout(function() {
                                 socket.emit('face', arr);
-                        //     },i);
-                        // })(arr);
+                            },i);
+                        })(arr);
 
                     }
                 }
