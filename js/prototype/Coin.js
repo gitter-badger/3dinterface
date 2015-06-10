@@ -50,8 +50,8 @@ Coin.update = function() {
 
     Coin.ctx.font = "30px Verdana";
     Coin.ctx.lineWidth = 5;
-    Coin.ctx.strokeText(Coin.total - 1 + " / " + 8, x, 50);
-    Coin.ctx.fillText(Coin.total - 1 + " / " + 8, x, 50);
+    Coin.ctx.strokeText(Coin.total - 1 + " / " + Coin.max, x, 50);
+    Coin.ctx.fillText(Coin.total - 1 + " / " + Coin.max, x, 50);
 
     Coin.ctx.stroke();
     Coin.ctx.fill();
@@ -138,6 +138,7 @@ Coin.BASIC_MESH = null;
 Coin._loader = new THREE.OBJLoader();
 
 Coin.init = function(scale) {
+    Coin.max = 8;
     if (!Coin.initialized) {
         Coin.initialized = true;
 

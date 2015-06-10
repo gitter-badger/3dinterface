@@ -26,15 +26,15 @@ var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container
             justclick: false
         },
         {
-            text: "Nice, there are a 3 more red coins around you, try to get them ! 1/4",
+            text: "Nice, there are a 3 more red coins around you, try to get them ! Check the coin counter !",
             justclick: false
         },
         {
-            text: "2/4",
+            text: "Two more !",
             justclick: false
         },
         {
-            text: "3/4",
+            text: "On more !",
             justclick: false
         },
         {
@@ -70,11 +70,11 @@ var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container
             justclick:false
         },
         {
-            text:"6/8 : you can use the arrow buttons to go to the previous / next position",
+            text:"Tip : you can use the arrow buttons in the bar at the bottom of the screen to go to the previous / next position",
             justclick: false
         },
         {
-            text: "7/8 ! Only one more !",
+            text: "Tip : if you find that the previews take too much place, you can put them at the bottom of the screen (use the checkbox options below) !",
             justclick: false
         },
         {
@@ -103,12 +103,16 @@ TutorialSteps.prototype.nextStep = function() {
             case 1: this.camera.allowed.mouseRotate       = true; break;
             case 2: this.camera.allowed.keyboardRotate    = true; break;
             case 3:
+                Coin.max = 1;
+                Coin.update();
                 this.camera.allowed.keyboardRotate    = true;
                 this.coins.push(new Coin(0.4911245636058468,1.225621525492101,-5.11526684540265, callback));
                 this.coins[this.coins.length-1].addToScene(this.scene);
                 document.getElementById('container').appendChild(Coin.domElement);
                 break;
             case 4:
+                Coin.max = 4;
+                Coin.update();
                 this.coins.push(new Coin(1.4074130964382279,0.6458319586843252,-6.75244526999632, callback));
                 this.coins[this.coins.length-1].addToScene(this.scene);
                 this.coins.push(new Coin(-4.2701659473968965,0.6745750513698942,-0.484545726832743, callback));
@@ -123,6 +127,8 @@ TutorialSteps.prototype.nextStep = function() {
                 this.camera.allowed.keyboardTranslate = true;
                 break;
             case 9:
+                Coin.max = 5;
+                Coin.update();
                 this.coins.push(new Coin(2.7378029903574026,2.953347730618792,-11.550836282321221, callback));
                 this.coins[this.coins.length-1].addToScene(this.scene);
                 this.camera.move({
@@ -145,7 +151,8 @@ TutorialSteps.prototype.nextStep = function() {
                     this.cameras.push(cams[i]);
                     cams[i].addToScene(this.scene);
                 }
-
+                Coin.max = 8;
+                Coin.update();
                 this.coins.push(new Coin(3.701112872561801,-0.4620393514856378,-3.3373375945128085, callback));
                 this.coins[this.coins.length-1].addToScene(this.scene);
                 this.coins.push(new Coin(6.694675339780243,-1.2480369397526456,-1.992336719279164, callback));
