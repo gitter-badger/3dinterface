@@ -18,6 +18,75 @@ var ProgressiveLoader = function(res, scene) {
         socket.emit('next');
     });
 
+    socket.on('elements', function(arr) {
+
+        for (var i = 0; i < arr.length; i++) {
+
+            var line = arr[i];
+
+            // console.log(line);
+
+            if (line[0] === 'v') {
+
+                var elts = line.split(' ');
+
+                mesh.geometry.vertices.push(new THREE.Vector3(
+                    parseFloat(elts[1]),
+                    parseFloat(elts[2]),
+                    parseFloat(elts[3])
+                ));
+
+                mesh.geometry.verticesNeedUpdate = true;
+
+            } else if (line[0] === 'f') {
+
+                var elts = line.split(' ');
+
+                elts[1] = parseInt(elts[1]) - 1;
+                elts[2] = parseInt(elts[2]) - 1;
+                elts[3] = parseInt(elts[3]) - 1;
+
+                if (elts[4])
+                    elts[4] = parseInt(elts[4]) - 1;
+
+                mesh.geometry.faces.push(new THREE.Face3(
+                    parseInt(elts[1]),
+                    parseInt(elts[2]),
+                    parseInt(elts[3])
+                ));
+
+                if (elts[4]) {
+
+                    mesh.geometry.faces.push(new THREE.Face3(
+                        parseInt(elts[1]),
+                        parseInt(elts[3]),
+                        parseInt(elts[4])
+                    ));
+
+                }
+
+                if (!added) {
+                    scene.add(mesh);
+                    added = true;
+                }
+
+            }
+
+
+        }
+
+        mesh.geometry.computeFaceNormals();
+        mesh.geometry.groupsNeedUpdate = true;
+        mesh.geometry.elementsNeedUpdate = true;
+        mesh.geometry.normalsNeedUpdate = true;
+
+        if (!finished) {
+            socket.emit('next');
+        } else {
+            console.log("Finished");
+        }
+    });
+
     socket.on('vertex', function(arr) {
         // console.log('v(', arr[0], ')', arr[1], arr[2], arr[3]);
         mesh.geometry.vertices[arr[0]] = new THREE.Vector3(arr[1], arr[2], arr[3]);

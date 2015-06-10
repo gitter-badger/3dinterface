@@ -29,51 +29,25 @@ module.exports = function(io) {
             fs.readFile(path, function(err, data) {
                 var lines = data.toString('utf-8').split("\n");
                 var line = lines[index];
+                var toSend = [];
 
-                /// while (line && line.length === 0) {
-                ///     line = lines[++index];
-                /// }
-
-                if (!line) {
-                    socket.emit('finished');
-                    return;
-                }
-
-                if (line[0] === 'v') {
-
-                    var arr = line.split(" ");
-
-                    arr[0] = vIndex++;
-                    arr[1] = parseFloat(arr[1]);
-                    arr[2] = parseFloat(arr[2]);
-                    arr[3] = parseFloat(arr[3]);
-
-                    socket.emit('vertex', arr);
-                    index++;
-                    return;
-
-                } else if (line[0] === 'f') {
-
-                    fIndex++;
-                    var arr = line.split(" ");
-                    arr.shift();
-                    arr[0]--;
-                    arr[1]--;
-                    arr[2]--;
-
-                    if (arr[3]) {
-                        arr[3]--;
-                        fIndex++;
+                for (var i = 0; i < 50; i++) {
+                    while (line && line[0] !== 'f') {
+                        toSend.push(line);
+                        line = lines[++index];
                     }
 
-                    socket.emit('face', arr);
-                    index++;
-                    return;
-
+                    if (line && line[0] === 'f') {
+                        toSend.push(line);
+                        line = lines[++index];
+                    }
+                }
+                if (!line) {
+                    socket.emit('finished');
                 }
 
-                socket.emit('none');
-                // socket.disconnect();
+                socket.emit('elements', toSend);
+
             });
         });
     });
