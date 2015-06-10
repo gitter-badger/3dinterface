@@ -26,6 +26,10 @@ var ProgressiveLoader = function(res, scene) {
     // When receiving elements
     socket.on('elements', function(arr) {
 
+        if (!finished) {
+            socket.emit('next');
+        }
+
         // Launch this code in async
         setTimeout(function() {
 
@@ -78,34 +82,19 @@ var ProgressiveLoader = function(res, scene) {
 
             }
 
+
             mesh.geometry.computeFaceNormals();
             mesh.geometry.groupsNeedUpdate = true;
             mesh.geometry.elementsNeedUpdate = true;
             mesh.geometry.normalsNeedUpdate = true;
 
-            if (!finished) {
-                socket.emit('next');
-            } else {
-                console.log("Finished");
-            }
 
         },0);
     });
 
-    socket.on('finished', function(arg) {
+    socket.on('disconnect', function() {
+        console.log("Finished");
         finished = true;
-        mesh.faceNumber = arg;
-        //mesh.geometry.computeFaceNormals();
-        mesh.geometry.verticesNeedUpdate = true;
-        mesh.geometry.groupsNeedUpdate = true;
-        mesh.geometry.elementsNeedUpdate = true;
-        mesh.geometry.morphTargetsNeedUpdate = true;
-        mesh.geometry.uvsNeedUpdate = true;
-        mesh.geometry.normalsNeedUpdate = true;
-        mesh.geometry.colorsNeedUpdate = true;
-        mesh.geometry.tangentsNeedUpdate = true;
-
-        // scene.add(mesh);
     });
 
     return mesh;

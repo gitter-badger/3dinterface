@@ -39,9 +39,9 @@ module.exports = function(io) {
 
         // console.log(socket.conn.remoteAddress + " connected !");
 
-        // socket.on('disconnect', function() {
-        //     console.log(socket.conn.remoteAddress + " disconnected !");
-        // });
+        socket.on('disconnect', function() {
+            console.log(socket.conn.remoteAddress + " disconnected !");
+        });
 
         socket.on("request", function(res) {
             // console.log('Asking for static/data/spheres/' + res + '.obj');
@@ -70,11 +70,14 @@ module.exports = function(io) {
                         line = lines[++index];
                     }
                 }
-                if (!line) {
-                    socket.emit('finished');
-                }
 
                 socket.emit('elements', toSend);
+
+                if (!line) {
+                    // socket.emit('finished');
+                    socket.disconnect();
+                }
+
 
             });
         });
