@@ -2,24 +2,31 @@ var ProgressiveLoader = function(res, scene) {
     // Create mesh
     var geometry = new THREE.Geometry();
     geometry.dynamic = true;
+
     var material = new THREE.MeshLambertMaterial();
     material.color.setRGB(1,0,0);
     material.side = THREE.DoubleSide;
+
     var mesh = new THREE.Mesh(geometry, material);
     mesh.up = new THREE.Vector3(0,0,1);
+
     var added = false;
     var finished = false;
 
     var socket = io();
 
+    // Init streaming with socket
     socket.emit('request', res);
 
+    // When server's ready, start asking for the mesh
     socket.on('ok', function() {
         socket.emit('next');
     });
 
+    // When receiving elements
     socket.on('elements', function(arr) {
 
+        // We'll receive an array of string (obj)
         for (var i = 0; i < arr.length; i++) {
 
             var line = arr[i];
@@ -55,6 +62,7 @@ var ProgressiveLoader = function(res, scene) {
                     parseInt(elts[3])
                 ));
 
+                // If the face has 4 vertices, create second triangle
                 if (elts[4]) {
 
                     mesh.geometry.faces.push(new THREE.Face3(
@@ -65,13 +73,13 @@ var ProgressiveLoader = function(res, scene) {
 
                 }
 
+                // Add mesh to scene one there are a few faces in it
                 if (!added) {
                     scene.add(mesh);
                     added = true;
                 }
 
             }
-
 
         }
 
@@ -85,47 +93,6 @@ var ProgressiveLoader = function(res, scene) {
         } else {
             console.log("Finished");
         }
-    });
-
-    socket.on('vertex', function(arr) {
-        // console.log('v(', arr[0], ')', arr[1], arr[2], arr[3]);
-        mesh.geometry.vertices[arr[0]] = new THREE.Vector3(arr[1], arr[2], arr[3]);
-        mesh.geometry.verticesNeedUpdate = true;
-        socket.emit('next');
-    });
-
-    socket.on('face', function(arr) {
-        // console.log('f', arr[0], arr[1], arr[2]);
-        mesh.geometry.faces.push(new THREE.Face3(arr[0], arr[1], arr[2]));
-
-        // if (arr[0] >= mesh.geometry.vertices.length
-        //     || arr[1] >= mesh.geometry.vertices.length
-        //     || arr[2] >= mesh.geometry.vertices.length) {
-
-        //     console.log("Error");
-        // }
-
-        if (arr[3])
-            mesh.geometry.faces.push(new THREE.Face3(arr[0], arr[2], arr[3]));
-
-        if (!added) {
-            scene.add(mesh);
-            added = true;
-        }
-
-        // Compute the normal
-
-        mesh.geometry.verticesNeedUpdate = true;
-        mesh.geometry.groupsNeedUpdate = true;
-        mesh.geometry.elementsNeedUpdate = true;
-        mesh.geometry.normalsNeedUpdate = true;
-
-        if (finished) {
-            console.log("Finished");
-        } else {
-            socket.emit('next');
-        }
-        mesh.geometry.computeFaceNormals();
     });
 
     socket.on('finished', function(arg) {
@@ -142,10 +109,6 @@ var ProgressiveLoader = function(res, scene) {
         mesh.geometry.tangentsNeedUpdate = true;
 
         // scene.add(mesh);
-    });
-
-    socket.on('none', function() {
-        socket.emit('next');
     });
 
     return mesh;

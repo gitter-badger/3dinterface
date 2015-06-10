@@ -9,14 +9,14 @@ module.exports = function(io) {
         var vIndex = 0;
         var fIndex = 0;
 
-        console.log(socket.conn.remoteAddress + " connected !");
+        // console.log(socket.conn.remoteAddress + " connected !");
 
-        socket.on('disconnect', function() {
-            console.log(socket.conn.remoteAddress + " disconnected !");
-        });
+        // socket.on('disconnect', function() {
+        //     console.log(socket.conn.remoteAddress + " disconnected !");
+        // });
 
         socket.on("request", function(res) {
-            console.log('Asking for static/data/spheres/' + res + '.obj');
+            // console.log('Asking for static/data/spheres/' + res + '.obj');
 
             path = 'static/data/spheres/' + res + '.obj.obj';
 
