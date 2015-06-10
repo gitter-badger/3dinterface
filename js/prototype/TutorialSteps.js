@@ -42,11 +42,11 @@ var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container
             justclick: true
         },
         {
-            text: "Try pressing the up key to go forward !",
+            text: "Try pressing an arrow key on your keyboard to translate the camera !",
             justclick: false
         },
         {
-            text: "There is a red coin on the top of the castle ! Try to find it by targetting the place where you want to go with the mouse, and then using the arrow keys to go there",
+            text: "There is a red coin on the top of the castle, just if front of you ! Go and get it !",
             justclick: false
         },
         {
@@ -121,8 +121,14 @@ TutorialSteps.prototype.nextStep = function() {
                 break;
             case 8:
                 this.camera.allowed.keyboardTranslate = true;
+                break;
+            case 9:
                 this.coins.push(new Coin(2.7378029903574026,2.953347730618792,-11.550836282321221, callback));
                 this.coins[this.coins.length-1].addToScene(this.scene);
+                this.camera.move({
+                    position: new THREE.Vector3(-0.3528994281499122,-0.026355227893303856,-0.2766844454377826),
+                    target: new THREE.Vector3(13.645394042405439,12.337463485871524,-35.64876053273249)
+                });
                 break;
             case 12:
                 var cam = createPeachCameras(this.container_size.width(), this.container_size.height())[2];
@@ -146,6 +152,7 @@ TutorialSteps.prototype.nextStep = function() {
                 this.coins[this.coins.length-1].addToScene(this.scene);
                 this.coins.push(new Coin(-2.458336118265302,-1.549510268763568,-11.186153614421212, callback));
                 this.coins[this.coins.length-1].addToScene(this.scene);
+                break;
         }
         this.step++;
     }
@@ -173,9 +180,8 @@ TutorialSteps.prototype.alert = function(myString, justclicked) {
 }
 
 TutorialSteps.prototype.notify = function(myString, justclick) {
-    var alert = 'alert-' + (justclick ? 'warning' : 'info');
     $('#alert-placeholder').html(
-        '<div id="toto" class="alert alert-' + (justclick ? 'warning' : 'info') + ' alert-dismissable">' +
+        '<div id="toto" class="alert alert-warning alert-dismissable">' +
             (justclick ?
             '<button type="button" class="close" aria-hidden="true"' +
                      'onclick="setTimeout(onWindowResize, 100); nextStep();' + '">' +
@@ -189,11 +195,9 @@ TutorialSteps.prototype.notify = function(myString, justclick) {
         '</div>'
     )
 
-    $('#toto').removeClass(function (index, css) {
-            return (css.match (/(^|\s)alert-\S+/g) || []).join(' ');
-    }).addClass('alert-danger').addClass('alert-dismissable');
+    $('#toto').removeClass('alert-info').addClass('alert-danger');
 
     setTimeout(function() {
-        $('#toto').removeClass('alert-danger').addClass(alert);
+        $('#toto').removeClass('alert-danger').addClass('alert-warning');
     }, 500);
 }
