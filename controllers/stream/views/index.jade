@@ -1,7 +1,7 @@
 extends ../../../views/main
 
 block title
-    title #{title} - Streaming
+    title #{title} - Sphere streaming
 
 block extrajs
     script params = {}; params.get= {}; params.get.res = #{resolution}
@@ -11,7 +11,7 @@ block extrajs
     script(src="/static/js/streamingsimulator.min.js")
 
 block content
-    h2 Streaming simulator
+    h2 Sphere streaming
 
     p.
         <strike>In fact, it's not really streaming. The sphere is fully preloaded and then,
