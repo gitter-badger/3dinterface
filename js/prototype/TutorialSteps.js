@@ -10,7 +10,7 @@ var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container
 
     this.instructions = [
         {
-            text:"Welcome to this tutorial ! Click on the right arrow to go to the next instruction !",
+            text:"Welcome to this tutorial ! Click on <em>next</em> to go to the next instruction !",
             justclick:true
         },
         {
@@ -173,8 +173,9 @@ TutorialSteps.prototype.alert = function(myString, justclicked) {
 }
 
 TutorialSteps.prototype.notify = function(myString, justclick) {
+    var alert = 'alert-' + (justclick ? 'warning' : 'info');
     $('#alert-placeholder').html(
-        '<div class="alert alert-' + (justclick ? 'warning' : 'info') + ' alert-dismissable">' +
+        '<div id="toto" class="alert alert-' + (justclick ? 'warning' : 'info') + ' alert-dismissable">' +
             (justclick ?
             '<button type="button" class="close" aria-hidden="true"' +
                      'onclick="setTimeout(onWindowResize, 100); nextStep();' + '">' +
@@ -182,7 +183,17 @@ TutorialSteps.prototype.notify = function(myString, justclick) {
             '</button>' : '') +
             '<span><strong>' +
                 myString +
+                (justclick ?
+                 ' <a href="#" onclick="setTimeout(onWindowResize, 100); nextStep();"><em>(next)</em></span>' : '' ) +
             '</strong></span>' +
         '</div>'
-    );
+    )
+
+    $('#toto').removeClass(function (index, css) {
+            return (css.match (/(^|\s)alert-\S+/g) || []).join(' ');
+    }).addClass('alert-danger').addClass('alert-dismissable');
+
+    setTimeout(function() {
+        $('#toto').removeClass('alert-danger').addClass(alert);
+    }, 500);
 }

@@ -293,34 +293,94 @@ TutoCamera.prototype.onKeyEvent = function(event, toSet) {
     var motionJsonCopy = JSON.stringify(this.motion);
 
     if (this.allowed.keyboardTranslate) {
-        if (this.tutorial.nextAction() ===  'translate-keyboard') {
-            this.tutorial.nextStep();
-        }
+
         switch ( event.keyCode ) {
+            // yes... lots of duplication near there
+            // if fact, I gave up trying to have a tutorial well coded...
+
             // Azerty keyboards
-            case 38: case 90:  this.motion.moveForward   = toSet; break; // up / z
-            case 37: case 81:  this.motion.moveLeft      = toSet; break; // left / q
-            case 40: case 83:  this.motion.moveBackward  = toSet; break; // down / s
-            case 39: case 68:  this.motion.moveRight     = toSet; break; // right / d
-            case 32:           this.motion.boost         = toSet; break;
+            case 38: case 90: // up / z
+                this.motion.moveForward = toSet;
+                if (this.tutorial.nextAction() ===  'translate-keyboard')
+                    this.tutorial.nextStep();
+                break;
+
+            case 37: case 81: // left / q
+                this.motion.moveLeft = toSet;
+                if (this.tutorial.nextAction() ===  'translate-keyboard')
+                    this.tutorial.nextStep();
+                break;
+
+            case 40: case 83: // down / s
+                this.motion.moveBackward = toSet;
+                if (this.tutorial.nextAction() ===  'translate-keyboard')
+                    this.tutorial.nextStep();
+                break;
+
+            case 39: case 68: // right / d
+                this.motion.moveRight = toSet;
+                if (this.tutorial.nextAction() ===  'translate-keyboard')
+                    this.tutorial.nextStep();
+                break;
+
+            case 32:
+                this.motion.boost = toSet;
+                break;
 
             // Qwerty keyboards
-            case 38: case 87:  this.motion.moveForward   = toSet; break; // up / w
-            case 37: case 65:  this.motion.moveLeft      = toSet; break; // left / a
-            case 40: case 83:  this.motion.moveBackward  = toSet; break; // down / s
-            case 39: case 68:  this.motion.moveRight     = toSet; break; // right / d
+            case 38: case 87: // up / w
+                this.motion.moveForward   = toSet;
+                if (this.tutorial.nextAction() ===  'translate-keyboard')
+                    this.tutorial.nextStep();
+                break; // up / w
+
+            case 37: case 65: // left / a
+                this.motion.moveLeft      = toSet;
+                if (this.tutorial.nextAction() ===  'translate-keyboard')
+                    this.tutorial.nextStep();
+                break;
+
+            case 40: case 83: // down / s
+                this.motion.moveBackward  = toSet;
+                if (this.tutorial.nextAction() ===  'translate-keyboard')
+                    this.tutorial.nextStep();
+                break;
+
+            case 39: case 68: // right / d
+                this.motion.moveRight     = toSet;
+                if (this.tutorial.nextAction() ===  'translate-keyboard')
+                    this.tutorial.nextStep();
+                break;
+
         }
     }
 
     if (this.allowed.keyboardRotate) {
-        if (this.tutorial.nextAction() === 'rotate-keyboard') {
-            this.tutorial.nextStep();
-        }
+
         switch ( event.keyCode ) {
-            case 73: case 104: this.motion.increasePhi   = toSet; break; // 8 Up for angle
-            case 75: case 98:  this.motion.decreasePhi   = toSet; break; // 2 Down for angle
-            case 74: case 100: this.motion.increaseTheta = toSet; break; // 4 Left for angle
-            case 76: case 102: this.motion.decreaseTheta = toSet; break; // 6 Right for angle
+            case 73: case 104: // 8 / i Up for angle
+                this.motion.increasePhi = toSet;
+                if (this.tutorial.nextAction() === 'rotate-keyboard')
+                    this.tutorial.nextStep();
+                break;
+
+            case 75: case 98: // 2 / k Down for angle
+                this.motion.decreasePhi = toSet;
+                if (this.tutorial.nextAction() === 'rotate-keyboard')
+                    this.tutorial.nextStep();
+                break;
+
+            case 74: case 100: // 4 / j Left for angle
+                this.motion.increaseTheta = toSet;
+                if (this.tutorial.nextAction() === 'rotate-keyboard')
+                    this.tutorial.nextStep();
+                break;
+
+            case 76: case 102: // 6 / l Right for angle
+                this.motion.decreaseTheta = toSet;
+                if (this.tutorial.nextAction() === 'rotate-keyboard')
+                    this.tutorial.nextStep();
+                break;
         }
     }
 
