@@ -63,6 +63,12 @@ Previewer.prototype.render = function(prev, container_width, container_height) {
         this.renderer.render(this.scene, prev.camera);
 
         this.update(true);
+
+        if (this.prevCamera !== prev.camera) {
+            this.clearNeeded = true;
+        }
+
+        this.prevCamera = prev.camera;
     } else {
         this.update(false);
     }
@@ -70,12 +76,14 @@ Previewer.prototype.render = function(prev, container_width, container_height) {
     if (this.drawnBefore && !this.drawn) {
         this.clearNeeded = true;
     }
+
 }
 
 Previewer.prototype.clear = function() {
     if (this.clearNeeded) {
         this.domElement.width = this.domElement.width;
         this.clearNeeded = false;
+        console.log("Clear");
     }
 }
 
