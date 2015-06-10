@@ -26,7 +26,7 @@ var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container
             justclick: false
         },
         {
-            text: "Nice, there are a few coins around you, try to get them ! 1/4",
+            text: "Nice, there are a 3 more red coins around you, try to get them ! 1/4",
             justclick: false
         },
         {
