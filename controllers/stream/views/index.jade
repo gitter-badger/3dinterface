@@ -1,7 +1,7 @@
 extends ../../../views/main
 
 block title
-    title #{title} - Streaming simulator
+    title #{title} - Streaming
 
 block extrajs
     script params = {}; params.get= {}; params.get.res = #{resolution}
@@ -14,8 +14,14 @@ block content
     h2 Streaming simulator
 
     p.
-        In fact, it's not really streaming. The sphere is fully preloaded and then,
+        <strike>In fact, it's not really streaming. The sphere is fully preloaded and then,
         a mesh is created and vertices and faces are dynamically added to this mesh
-        as time goes by.
+        as time goes by.</strike>
+
+    p.
+        | In fact, it is acutally streaming. If you web browser supports
+        | WebSocket, you'll connect to the server and the mesh will be streamed
+        | onto the socket and the faces will be displayed as soon as you
+        | receive them.
 
     #container
