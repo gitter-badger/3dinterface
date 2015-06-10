@@ -26,73 +26,78 @@ var ProgressiveLoader = function(res, scene) {
     // When receiving elements
     socket.on('elements', function(arr) {
 
-        // We'll receive an array of string (obj)
-        for (var i = 0; i < arr.length; i++) {
+        // Launch this code in async
+        setTimeout(function() {
 
-            var line = arr[i];
+            // We'll receive an array of string (obj)
+            for (var i = 0; i < arr.length; i++) {
 
-            // console.log(line);
+                var line = arr[i];
 
-            if (line[0] === 'v') {
+                // console.log(line);
 
-                var elts = line.split(' ');
+                if (line[0] === 'v') {
 
-                mesh.geometry.vertices.push(new THREE.Vector3(
-                    parseFloat(elts[1]),
-                    parseFloat(elts[2]),
-                    parseFloat(elts[3])
-                ));
+                    var elts = line.split(' ');
 
-                mesh.geometry.verticesNeedUpdate = true;
+                    mesh.geometry.vertices.push(new THREE.Vector3(
+                        parseFloat(elts[1]),
+                        parseFloat(elts[2]),
+                        parseFloat(elts[3])
+                    ));
 
-            } else if (line[0] === 'f') {
+                    mesh.geometry.verticesNeedUpdate = true;
 
-                var elts = line.split(' ');
+                } else if (line[0] === 'f') {
 
-                elts[1] = parseInt(elts[1]) - 1;
-                elts[2] = parseInt(elts[2]) - 1;
-                elts[3] = parseInt(elts[3]) - 1;
+                    var elts = line.split(' ');
 
-                if (elts[4])
-                    elts[4] = parseInt(elts[4]) - 1;
+                    elts[1] = parseInt(elts[1]) - 1;
+                    elts[2] = parseInt(elts[2]) - 1;
+                    elts[3] = parseInt(elts[3]) - 1;
 
-                mesh.geometry.faces.push(new THREE.Face3(
-                    parseInt(elts[1]),
-                    parseInt(elts[2]),
-                    parseInt(elts[3])
-                ));
-
-                // If the face has 4 vertices, create second triangle
-                if (elts[4]) {
+                    if (elts[4])
+                        elts[4] = parseInt(elts[4]) - 1;
 
                     mesh.geometry.faces.push(new THREE.Face3(
                         parseInt(elts[1]),
-                        parseInt(elts[3]),
-                        parseInt(elts[4])
+                        parseInt(elts[2]),
+                        parseInt(elts[3])
                     ));
 
-                }
+                    // If the face has 4 vertices, create second triangle
+                    if (elts[4]) {
 
-                // Add mesh to scene one there are a few faces in it
-                if (!added) {
-                    scene.add(mesh);
-                    added = true;
+                        mesh.geometry.faces.push(new THREE.Face3(
+                            parseInt(elts[1]),
+                            parseInt(elts[3]),
+                            parseInt(elts[4])
+                        ));
+
+                    }
+
+                    // Add mesh to scene one there are a few faces in it
+                    if (!added) {
+                        scene.add(mesh);
+                        added = true;
+                    }
+
                 }
 
             }
 
-        }
+            mesh.geometry.computeFaceNormals();
+            mesh.geometry.groupsNeedUpdate = true;
+            mesh.geometry.elementsNeedUpdate = true;
+            mesh.geometry.normalsNeedUpdate = true;
 
-        mesh.geometry.computeFaceNormals();
-        mesh.geometry.groupsNeedUpdate = true;
-        mesh.geometry.elementsNeedUpdate = true;
-        mesh.geometry.normalsNeedUpdate = true;
+            if (!finished) {
+                socket.emit('next');
+            } else {
+                console.log("Finished");
+            }
 
-        if (!finished) {
-            socket.emit('next');
-        } else {
-            console.log("Finished");
-        }
+        },0);
     });
 
     socket.on('finished', function(arg) {
