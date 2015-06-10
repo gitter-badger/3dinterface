@@ -32,46 +32,38 @@ var ProgressiveLoader = function(res, scene) {
             // We'll receive an array of string (obj)
             for (var i = 0; i < arr.length; i++) {
 
-                var line = arr[i];
+                var elts = arr[i];
 
                 // console.log(line);
 
-                if (line[0] === 'v') {
-
-                    var elts = line.split(' ');
+                if (elts[0] === 'v') {
 
                     mesh.geometry.vertices.push(new THREE.Vector3(
-                        parseFloat(elts[1]),
-                        parseFloat(elts[2]),
-                        parseFloat(elts[3])
+                        elts[1],
+                        elts[2],
+                        elts[3]
                     ));
 
                     mesh.geometry.verticesNeedUpdate = true;
 
-                } else if (line[0] === 'f') {
-
-                    var elts = line.split(' ');
-
-                    elts[1] = parseInt(elts[1]) - 1;
-                    elts[2] = parseInt(elts[2]) - 1;
-                    elts[3] = parseInt(elts[3]) - 1;
+                } else if (elts[0] === 'f') {
 
                     if (elts[4])
-                        elts[4] = parseInt(elts[4]) - 1;
+                        elts[4] = parseInt(elts[4]);
 
                     mesh.geometry.faces.push(new THREE.Face3(
-                        parseInt(elts[1]),
-                        parseInt(elts[2]),
-                        parseInt(elts[3])
+                        elts[1],
+                        elts[2],
+                        elts[3]
                     ));
 
                     // If the face has 4 vertices, create second triangle
                     if (elts[4]) {
 
                         mesh.geometry.faces.push(new THREE.Face3(
-                            parseInt(elts[1]),
-                            parseInt(elts[3]),
-                            parseInt(elts[4])
+                            elts[1],
+                            elts[3],
+                            elts[4]
                         ));
 
                     }

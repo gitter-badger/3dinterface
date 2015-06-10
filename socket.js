@@ -1,6 +1,34 @@
 var fs = require('fs');
 var sleep = require('sleep');
 
+function parseLine(line) {
+    var elts = line.split(' ');
+    if (elts[0] === 'v') {
+
+        return [
+            'v',
+            parseFloat(elts[1]),
+            parseFloat(elts[2]),
+            parseFloat(elts[3])
+        ];
+
+    } else if (elts[0] === 'f') {
+
+        var tmp = [
+            'f',
+            parseInt(elts[1]) - 1,
+            parseInt(elts[2]) - 1,
+            parseInt(elts[3]) - 1
+        ];
+
+        if (elts[4]) {
+            tmp.push(parseInt(elts[4]) - 1);
+        }
+
+        return tmp;
+    }
+}
+
 module.exports = function(io) {
     io.on('connection', function(socket) {
 
@@ -33,12 +61,12 @@ module.exports = function(io) {
 
                 for (var i = 0; i < 50; i++) {
                     while (line && line[0] !== 'f') {
-                        toSend.push(line);
+                        toSend.push(parseLine(line));
                         line = lines[++index];
                     }
 
                     if (line && line[0] === 'f') {
-                        toSend.push(line);
+                        toSend.push(parseLine(line));
                         line = lines[++index];
                     }
                 }
