@@ -105,10 +105,10 @@ PointerCamera.prototype.hermiteMotion = function(time) {
 
 PointerCamera.prototype.normalMotion = function(time) {
     // Update angles
-    if (this.motion.increasePhi)   {this.phi   += this.sensitivity; this.changed = true; }
-    if (this.motion.decreasePhi)   {this.phi   -= this.sensitivity; this.changed = true; }
-    if (this.motion.increaseTheta) {this.theta += this.sensitivity; this.changed = true; }
-    if (this.motion.decreaseTheta) {this.theta -= this.sensitivity; this.changed = true; }
+    if (this.motion.increasePhi)   {this.phi   += this.sensitivity * time / 20; this.changed = true; }
+    if (this.motion.decreasePhi)   {this.phi   -= this.sensitivity * time / 20; this.changed = true; }
+    if (this.motion.increaseTheta) {this.theta += this.sensitivity * time / 20; this.changed = true; }
+    if (this.motion.decreaseTheta) {this.theta -= this.sensitivity * time / 20; this.changed = true; }
 
     if (this.dragging) {
         this.theta += this.mouseMove.x;
