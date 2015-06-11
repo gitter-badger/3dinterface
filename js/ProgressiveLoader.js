@@ -82,12 +82,10 @@ var ProgressiveLoader = function(res, scene) {
 
             }
 
-
             mesh.geometry.computeFaceNormals();
             mesh.geometry.groupsNeedUpdate = true;
             mesh.geometry.elementsNeedUpdate = true;
             mesh.geometry.normalsNeedUpdate = true;
-
 
         },0);
     });

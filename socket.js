@@ -1,5 +1,6 @@
 var fs = require('fs');
 var sleep = require('sleep');
+var geo = require('./geo/Mesh.js');
 
 function parseLine(line) {
     var elts = line.split(' ');
@@ -33,9 +34,9 @@ module.exports = function(io) {
     io.on('connection', function(socket) {
 
         var index = 0;
-        var path;
         var vIndex = 0;
         var fIndex = 0;
+        var mesh;
 
         // console.log(socket.conn.remoteAddress + " connected !");
 
@@ -46,40 +47,34 @@ module.exports = function(io) {
         socket.on("request", function(res) {
             // console.log('Asking for static/data/spheres/' + res + '.obj');
 
-            path = 'static/data/spheres/' + res + '.obj.obj';
+            var path = 'static/data/spheres/' + res + '.obj';
 
-            socket.emit('ok');
-
+            mesh = new geo.MeshStreamer(path, function() {
+                socket.emit('ok');
+            });
         });
 
         socket.on('next', function() {
+            var toSend = [];
+            var elt;
+            for (var i = mesh.index, limit = mesh.index + 200; i < limit; i++) {
+                elt = mesh.orderedElements[i];
 
-            fs.readFile(path, function(err, data) {
-                var lines = data.toString('utf-8').split("\n");
-                var line = lines[index];
-                var toSend = [];
-
-                for (var i = 0; i < 50; i++) {
-                    while (line && line[0] !== 'f') {
-                        toSend.push(parseLine(line));
-                        line = lines[++index];
-                    }
-
-                    if (line && line[0] === 'f') {
-                        toSend.push(parseLine(line));
-                        line = lines[++index];
-                    }
+                if (elt) {
+                    toSend.push(elt.toList());
+                    mesh.index ++;
+                } else {
+                    break;
                 }
+            }
 
-                socket.emit('elements', toSend);
+            console.log(toSend.length);
+            socket.emit('elements', toSend);
 
-                if (!line) {
-                    // socket.emit('finished');
-                    socket.disconnect();
-                }
+            if (!elt) {
+                socket.disconnect();
+            }
 
-
-            });
         });
     });
 }
