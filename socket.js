@@ -40,9 +40,9 @@ module.exports = function(io) {
 
         // console.log(socket.conn.remoteAddress + " connected !");
 
-        socket.on('disconnect', function() {
-            console.log(socket.conn.remoteAddress + " disconnected !");
-        });
+        // socket.on('disconnect', function() {
+        //     console.log(socket.conn.remoteAddress + " disconnected !");
+        // });
 
         socket.on("request", function(res) {
             // console.log('Asking for static/data/spheres/' + res + '.obj');
@@ -51,7 +51,14 @@ module.exports = function(io) {
 
             mesh = new geo.MeshStreamer(path, function() {
                 socket.emit('ok');
+
+                // console.log("Display mesh !");
+                // for (var i = 0; i < mesh.orderedElements.length; i++) {
+                //     console.log(mesh.orderedElements[i].toString());
+                // }
+
             });
+
         });
 
         socket.on('next', function() {
