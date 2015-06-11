@@ -71,7 +71,6 @@ module.exports = function(io) {
 
             }
 
-            console.log(toSend.length);
             socket.emit('elements', toSend);
 
             if (!elt) {
