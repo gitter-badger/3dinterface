@@ -768,20 +768,26 @@ function initSponzaScene(scene, collidableObjects, loader, static_path) {
             object.scale.set(0.01,0.01,0.01);
             object.raycastable = true;
             collidableObjects.push(object);
-            console.log(object);
-            scene.add(object);
             // object.rotation.x = -Math.PI/2;
             // object.rotation.z = Math.PI/2;
             // collidableObjects.push(object);
             // scene.add(object);
             object.traverse(function (obj) {
-            //     if (obj instanceof THREE.Mesh) {
+                if (obj instanceof THREE.Mesh) {
+                    for (var i in obj.material.materials) {
+                        var m = obj.material.materials[i].map;
+                        if (m)
+                            m.wrapS = m.wrapT = THREE.RepeatWrapping;
+                    }
+                    // obj.material.map.wrapS = obj.material.map.wrapT = THREE.RepeatWrapping;
+                }
             //         obj.geometry.mergeVertices();
             //         obj.geometry.computeVertexNormals();
             //         obj.material.side = THREE.DoubleSide;
             //         obj.raycastable = true;
             //     }
             });
+            scene.add(object);
         }
     , onProgress, function(xhr) { console.log("error");});
 }
