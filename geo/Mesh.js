@@ -40,11 +40,13 @@ geo.MeshStreamer.prototype.loadFromFile = function(path, callback) {
 
                     // Texture coord
                     var texCoord = self.textureCoords[self.textureCoords.push(new geo.TextureCoord(line)) - 1];
+                    self.orderedElements.push(texCoord);
 
                 } else {
 
                     // Just a simple vertex
                     var vertex = self.vertices[self.vertices.push(new geo.Vertex(line)) - 1];
+                    self.orderedElements.push(vertex);
 
                 }
 
@@ -52,6 +54,7 @@ geo.MeshStreamer.prototype.loadFromFile = function(path, callback) {
 
                 // Create face
                 var face = self.faces[self.faces.push(new geo.Face(line)) - 1];
+                self.orderedElements.push(face);
 
             }
 
@@ -65,7 +68,7 @@ geo.MeshStreamer.prototype.loadFromFile = function(path, callback) {
 
 geo.MeshStreamer.prototype.tryMerge = function() {
     if (this.faces[0].aTexture) {
-        return;
+        return this.orderedElements;
     } else {
         return this.merge();
     }
