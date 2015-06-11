@@ -88,6 +88,14 @@ module.exports.arrows = protoHelper('prototype_arrows.jade');
 module.exports.viewports = protoHelper('prototype_viewports.jade');
 module.exports.reverse = protoHelper('prototype_reverse.jade');
 
+module.exports.sponza = function(req, res) {
+    res.setHeader('Content-Type', 'text/html');
+
+    res.render('sponza.jade', res.locals, function(err, result) {
+        res.send(result);
+    });
+}
+
 module.exports.replay_info = function(req, res) {
     res.setHeader('Content-Type', 'text/plain');
 
