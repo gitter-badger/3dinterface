@@ -801,7 +801,10 @@ function createSponzaCameras() {
 }
 
 function resetSponzaElements() {
-    return resetMountainElements();
+    return {
+        position : new THREE.Vector3(-9.672189882510748,5.415297558602296,-1.5456794717808657),
+        target : new THREE.Vector3(27.18799151966882,-5.736834637451716,9.26898531637373)
+    };
 }
 
 function initSponza(camera, scene, static_path, coins) {
