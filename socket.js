@@ -57,15 +57,18 @@ module.exports = function(io) {
         socket.on('next', function() {
             var toSend = [];
             var elt;
-            for (var i = mesh.index, limit = mesh.index + 200; i < limit; i++) {
-                elt = mesh.orderedElements[i];
+
+            for (var limit = mesh.index + 200; mesh.index < limit; mesh.index++) {
+
+                elt = mesh.orderedElements[mesh.index];
 
                 if (elt) {
+                    elt.sent = true;
                     toSend.push(elt.toList());
-                    mesh.index ++;
                 } else {
                     break;
                 }
+
             }
 
             console.log(toSend.length);
