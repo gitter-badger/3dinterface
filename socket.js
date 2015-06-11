@@ -2,34 +2,6 @@ var fs = require('fs');
 var sleep = require('sleep');
 var geo = require('./geo/Mesh.js');
 
-function parseLine(line) {
-    var elts = line.split(' ');
-    if (elts[0] === 'v') {
-
-        return [
-            'v',
-            parseFloat(elts[1]),
-            parseFloat(elts[2]),
-            parseFloat(elts[3])
-        ];
-
-    } else if (elts[0] === 'f') {
-
-        var tmp = [
-            'f',
-            parseInt(elts[1]) - 1,
-            parseInt(elts[2]) - 1,
-            parseInt(elts[3]) - 1
-        ];
-
-        if (elts[4]) {
-            tmp.push(parseInt(elts[4]) - 1);
-        }
-
-        return tmp;
-    }
-}
-
 module.exports = function(io) {
     io.on('connection', function(socket) {
 
@@ -44,10 +16,15 @@ module.exports = function(io) {
         //     console.log(socket.conn.remoteAddress + " disconnected !");
         // });
 
-        socket.on("request", function(res) {
+        socket.on("request", function(path) {
             // console.log('Asking for static/data/spheres/' + res + '.obj');
 
-            var path = 'static/data/spheres/' + res + '.obj';
+            var regex = /.*\.\..*/;
+
+            if (regex.test(path)) {
+                socket.emit('error');
+                socket.disconnect();
+            }
 
             mesh = new geo.MeshStreamer(path, function() {
                 socket.emit('ok');
@@ -57,15 +34,25 @@ module.exports = function(io) {
                 //     console.log(mesh.orderedElements[i].toString());
                 // }
 
+                // var counter = 0;
+                // for (var i = 0; i < mesh.orderedElements.length; i++) {
+                //     if (mesh.orderedElements[i] instanceof geo.Usemtl) {
+                //         counter++;
+                //     }
+                // }
+                // console.log(counter);
+
             });
 
         });
 
         socket.on('next', function() {
+
+            var bound = 100;
             var toSend = [];
             var elt;
 
-            for (var limit = mesh.index + 200; mesh.index < limit; mesh.index++) {
+            for (var limit = mesh.index + bound; mesh.index < limit; mesh.index++) {
 
                 elt = mesh.orderedElements[mesh.index];
 

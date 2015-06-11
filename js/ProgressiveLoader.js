@@ -1,22 +1,24 @@
-var ProgressiveLoader = function(res, scene) {
+var ProgressiveLoader = function(path, scene, materialCreator) {
     // Create mesh
-    var geometry = new THREE.Geometry();
-    geometry.dynamic = true;
+    var obj = new THREE.Object3D();
+    obj.up = new THREE.Vector3(0,0,1);
+    glob = obj;
 
-    var material = new THREE.MeshLambertMaterial();
-    material.color.setRGB(1,0,0);
-    material.side = THREE.DoubleSide;
-
-    var mesh = new THREE.Mesh(geometry, material);
-    mesh.up = new THREE.Vector3(0,0,1);
+    var currentMesh;
+    var currentMaterial;
 
     var added = false;
     var finished = false;
 
     var socket = io();
 
+    var vertices = [];
+    var textCoords = [];
+    var uvs = [];
+    var faces = [];
+
     // Init streaming with socket
-    socket.emit('request', res);
+    socket.emit('request', path);
 
     // When server's ready, start asking for the mesh
     socket.on('ok', function() {
@@ -42,29 +44,33 @@ var ProgressiveLoader = function(res, scene) {
 
                 if (elts[0] === 'v') {
 
-                    mesh.geometry.vertices.push(new THREE.Vector3(
+                    vertices.push(new THREE.Vector3(
                         elts[1],
                         elts[2],
                         elts[3]
                     ));
 
-                    mesh.geometry.verticesNeedUpdate = true;
+                    verticesNeedUpdate = true;
+
+                } else if (elts[0] === 'vt') {
+
+                    textCoords.push(new THREE.Vector2(
+                        elts[1],
+                        elts[2]
+                    ));
 
                 } else if (elts[0] === 'f') {
 
-                    if (elts[4])
-                        elts[4] = parseInt(elts[4]);
-
-                    mesh.geometry.faces.push(new THREE.Face3(
+                    faces.push(new THREE.Face3(
                         elts[1],
                         elts[2],
                         elts[3]
                     ));
 
                     // If the face has 4 vertices, create second triangle
-                    if (elts[4]) {
+                    if (elts.length === 5 || elts.length === 9) {
 
-                        mesh.geometry.faces.push(new THREE.Face3(
+                        faces.push(new THREE.Face3(
                             elts[1],
                             elts[3],
                             elts[4]
@@ -72,20 +78,79 @@ var ProgressiveLoader = function(res, scene) {
 
                     }
 
-                    // Add mesh to scene one there are a few faces in it
+                    // Add texture
+                    if (elts.length === 7 || elts.length === 9) {
+                        uvs.push([
+                            textCoords[elts[4]],
+                            textCoords[elts[5]],
+                            textCoords[elts[6]]
+                        ]);
+                    }
+
+                    if (elts.length === 9) {
+                        uvs.push([
+                            textCoords[elts[5]],
+                            textCoords[elts[7]],
+                            textCoords[elts[8]]
+                        ]);
+                    }
+
+                    // Add currentMesh to scene one there are a few faces in it
                     if (!added) {
-                        scene.add(mesh);
+                        scene.add(obj);
                         added = true;
                     }
+
+                    if (!currentMesh) {
+                        var geo = new THREE.Geometry();
+                        geo.vertices = vertices;
+                        geo.faces = faces;
+
+                        var material;
+                        if (currentMaterial === undefined || currentMaterial === null) {
+                            material = new THREE.MeshLambertMaterial({color: 'red'});
+                        } else {
+                            material = materialCreator.create(currentMaterial);
+                            currentMaterial = null;
+                        }
+                        currentMesh = new THREE.Mesh(geo, material);
+                    }
+                    obj.add(currentMesh);
+
+                } else if (elts[0] === 'u') {
+
+                    // Add current mesh
+                    // if (currentMesh) {
+                    //     obj.add(currentMesh);
+                    // }
+
+                    // Prepare new mesh
+                    faces = [];
+                    uvs = [];
+                    // currentMesh.geometry.computeFaceNormals();
+                    if (currentMesh) {
+                        currentMesh.geometry.groupsNeedUpdate = true;
+                        currentMesh.geometry.elementsNeedUpdate = true;
+                        currentMesh.geometry.normalsNeedUpdate = true;
+                        currentMesh.geometry.uvsNeedUpdate = true;
+                    }
+                    currentMaterial = elts[1];
+                    currentMesh = null;
+
+                    // console.log(material.map);
+                    // currentMesh = new THREE.Mesh(geo, material);
 
                 }
 
             }
 
-            mesh.geometry.computeFaceNormals();
-            mesh.geometry.groupsNeedUpdate = true;
-            mesh.geometry.elementsNeedUpdate = true;
-            mesh.geometry.normalsNeedUpdate = true;
+            if (currentMesh) {
+                currentMesh.geometry.computeFaceNormals();
+                currentMesh.geometry.groupsNeedUpdate = true;
+                currentMesh.geometry.elementsNeedUpdate = true;
+                currentMesh.geometry.normalsNeedUpdate = true;
+                currentMesh.geometry.uvsNeedUpdate = true;
+            }
 
         },0);
     });
@@ -95,5 +160,5 @@ var ProgressiveLoader = function(res, scene) {
         finished = true;
     });
 
-    return mesh;
+    return obj;
 }

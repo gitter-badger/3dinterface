@@ -56,6 +56,11 @@ geo.MeshStreamer.prototype.loadFromFile = function(path, callback) {
                 var face = self.faces[self.faces.push(new geo.Face(line)) - 1];
                 self.orderedElements.push(face);
 
+            } else if (line[0] === 'u') {
+
+                // usemtl
+                self.orderedElements.push(new geo.Usemtl(line));
+
             }
 
         }
@@ -67,7 +72,7 @@ geo.MeshStreamer.prototype.loadFromFile = function(path, callback) {
 }
 
 geo.MeshStreamer.prototype.tryMerge = function() {
-    if (this.faces[0].aTexture) {
+    if (this.faces[0].aTexture !== undefined) {
         return this.orderedElements;
     } else {
         return this.merge();
@@ -88,7 +93,6 @@ geo.MeshStreamer.prototype.merge = function(callback) {
         vertexFace.push([]);
 
     }
-
 
     // For each face
     for (var i = 0; i < this.faces.length; i++) {
@@ -175,11 +179,11 @@ geo.TextureCoord = function() {
 }
 
 geo.TextureCoord.prototype.toList = function() {
-    return ['v', this.x, this.y];
+    return ['vt', this.x, this.y];
 }
 
 geo.TextureCoord.prototype.toString = function() {
-    return 'v ' + this.x + ' ' + this.y;
+    return 'vt ' + this.x + ' ' + this.y;
 }
 
 geo.Face = function() {
@@ -192,7 +196,7 @@ geo.Face = function() {
             this.c = parseInt(split[3]) - 1;
         } else {
             // There might be textures coords
-            var split = arugments[0].split(' ');
+            var split = arguments[0].split(' ');
 
             // Split elements
             var split1 = split[1].split('/');
@@ -202,9 +206,15 @@ geo.Face = function() {
             var vIndex = 0;
             var tIndex = split1.length === 2 ? 1 : 2;
 
-            this.a = split1[vIndex]; this.aTexture = split1[tIndex];
-            this.b = split2[vIndex]; this.bTexture = split2[tIndex];
-            this.c = split3[vIndex]; this.cTexture = split3[tIndex];
+            this.a = split1[vIndex] - 1; this.aTexture = split1[tIndex] - 1;
+            this.b = split2[vIndex] - 1; this.bTexture = split2[tIndex] - 1;
+            this.c = split3[vIndex] - 1; this.cTexture = split3[tIndex] - 1;
+
+            if (split.length === 5) {
+                var split4 = split[4].split('/');
+
+                this.d = split3[vIndex] - 1; this.dTexture = split3[tIndex] - 1;
+            }
         }
 
         if (split.length === 5)
@@ -233,11 +243,33 @@ geo.Face.prototype.toList = function() {
     var l = ['f', this.a, this.b, this.c];
     if (this.d)
         l.push(this.d);
+
+    if (this.aTexture) {
+        l.push(this.aTexture);
+        l.push(this.bTexture);
+        l.push(this.cTexture);
+    }
+
+    if (this.dTexture)
+        l.push(this.aTexture);
     return l;
 }
 
 geo.Face.prototype.toString = function() {
     return 'f ' + this.a + ' ' + this.b + ' ' + this.c + (this.d ? ' ' + this.d : '');
+}
+
+geo.Usemtl = function() {
+    var split = arguments[0].split(' ');
+    this.name = split[1];
+}
+
+geo.Usemtl.prototype.toString = function() {
+    return 'usemtl ' + this.name;
+}
+
+geo.Usemtl.prototype.toList = function() {
+    return ['u', this.name];
 }
 
 module.exports = geo;

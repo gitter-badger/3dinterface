@@ -22,6 +22,14 @@ function initPeachCastle(scene, collidableObjects, loader, static_path) {
         static_path = "/static/";
     }
 
+    // var loader = new THREE.MTLLoader('/static/data/castle/');
+    // loader.load('/static/data/castle/princess peaches castle (outside).mtl', function(materialCreator) {
+
+    //     materialCreator.preload();
+
+    //     var mesh = ProgressiveLoader('static/data/castle/princess peaches castle (outside).obj', scene, materialCreator);
+    // });
+
     loader.load(
         static_path + 'data/castle/princess peaches castle (outside).obj',
         static_path + 'data/castle/princess peaches castle (outside).mtl',
@@ -53,34 +61,34 @@ function initPeachCastle(scene, collidableObjects, loader, static_path) {
         }
     );
 
-    loader.load(
-        static_path + 'data/first/Floor 1.obj',
-        static_path + 'data/first/Floor 1.mtl',
-        function ( object ) {
-            object.position.z -= 10.9;
-            object.position.y += 0.555;
-            object.position.x += 3.23;
+    // loader.load(
+    //     static_path + 'data/first/Floor 1.obj',
+    //     static_path + 'data/first/Floor 1.mtl',
+    //     function ( object ) {
+    //         object.position.z -= 10.9;
+    //         object.position.y += 0.555;
+    //         object.position.x += 3.23;
 
-            var theta = 0.27;
-            object.rotation.y = Math.PI - theta;
+    //         var theta = 0.27;
+    //         object.rotation.y = Math.PI - theta;
 
-            object.up = new THREE.Vector3(0,0,1);
-            scene.add(object);
-            collidableObjects.push(object);
-            object.traverse(function (object) {
-                if (object instanceof THREE.Mesh) {
-                    object.material.side = THREE.DoubleSide;
-                    object.geometry.mergeVertices();
-                    object.geometry.computeVertexNormals();
-                    object.raycastable = true;
-                    if (object.material.name === 'Material.054_777F0E0B_c.bmp' ||
-                        object.material.name === 'Material.061_5C3492AB_c.bmp'   ) {
-                        THREEx.Transparency.push(object);
-                    }
-                }
-            });
-        }
-    );
+    //         object.up = new THREE.Vector3(0,0,1);
+    //         scene.add(object);
+    //         collidableObjects.push(object);
+    //         object.traverse(function (object) {
+    //             if (object instanceof THREE.Mesh) {
+    //                 object.material.side = THREE.DoubleSide;
+    //                 object.geometry.mergeVertices();
+    //                 object.geometry.computeVertexNormals();
+    //                 object.raycastable = true;
+    //                 if (object.material.name === 'Material.054_777F0E0B_c.bmp' ||
+    //                     object.material.name === 'Material.061_5C3492AB_c.bmp'   ) {
+    //                     THREEx.Transparency.push(object);
+    //                 }
+    //             }
+    //         });
+    //     }
+    // );
 }
 
 function resetPeachElements() {
@@ -265,6 +273,7 @@ function initBobombScene(scene, collidableObjects, loader, static_path) {
             object.up = new THREE.Vector3(0,0,1);
             collidableObjects.push(object);
             scene.add(object);
+            glob = object;
             object.traverse(function (object) {
                 if (object instanceof THREE.Mesh) {
                     object.raycastable = true;
