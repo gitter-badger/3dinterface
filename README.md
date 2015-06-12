@@ -56,3 +56,5 @@ node server.js
 ```
 
 You should be able to go to [localhost:4000](http://localhost:4000) and see the result.
+
+Please note that some static files (some meshes / textures) are not on this repository (especially the heavy ones).
