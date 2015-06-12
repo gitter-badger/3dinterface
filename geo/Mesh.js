@@ -194,6 +194,10 @@ geo.Face = function() {
             this.a = parseInt(split[1]) - 1;
             this.b = parseInt(split[2]) - 1;
             this.c = parseInt(split[3]) - 1;
+
+            if (split.length === 5)
+                this.d = parseInt(split[4]) - 1;
+
         } else {
             // There might be textures coords
             var split = arguments[0].split(' ');
@@ -206,19 +210,15 @@ geo.Face = function() {
             var vIndex = 0;
             var tIndex = split1.length === 2 ? 1 : 2;
 
-            this.a = split1[vIndex] - 1; this.aTexture = split1[tIndex] - 1;
-            this.b = split2[vIndex] - 1; this.bTexture = split2[tIndex] - 1;
-            this.c = split3[vIndex] - 1; this.cTexture = split3[tIndex] - 1;
+            this.a = parseInt(split1[vIndex]) - 1; this.aTexture = parseInt(split1[tIndex]) - 1;
+            this.b = parseInt(split2[vIndex]) - 1; this.bTexture = parseInt(split2[tIndex]) - 1;
+            this.c = parseInt(split3[vIndex]) - 1; this.cTexture = parseInt(split3[tIndex]) - 1;
 
             if (split.length === 5) {
                 var split4 = split[4].split('/');
-
-                this.d = split3[vIndex] - 1; this.dTexture = split3[tIndex] - 1;
+                this.d = parseInt(split4[vIndex]) - 1; this.cTexture = parseInt(split4[tIndex]) - 1;
             }
         }
-
-        if (split.length === 5)
-            this.d = parseInt(split[4]) - 1;
 
     } else if (arguments.length === 3) {
         this.a = arguments[0] - 1;
@@ -244,7 +244,7 @@ geo.Face.prototype.toList = function() {
     if (this.d)
         l.push(this.d);
 
-    if (this.aTexture) {
+    if (this.aTexture !== undefined) {
         l.push(this.aTexture);
         l.push(this.bTexture);
         l.push(this.cTexture);
@@ -252,6 +252,7 @@ geo.Face.prototype.toList = function() {
 
     if (this.dTexture)
         l.push(this.aTexture);
+
     return l;
 }
 

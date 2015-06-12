@@ -34,6 +34,7 @@ function initPeachCastle(scene, collidableObjects, loader, static_path) {
         static_path + 'data/castle/princess peaches castle (outside).obj',
         static_path + 'data/castle/princess peaches castle (outside).mtl',
         function ( object ) {
+            glob = object;
             object.up = new THREE.Vector3(0,0,1);
             scene.add(object);
             collidableObjects.push(object);
@@ -249,6 +250,27 @@ function createPeachCameras(width, height) {
 }
 
 function initBobombScene(scene, collidableObjects, loader, static_path) {
+
+    // var loader = new THREE.MTLLoader('/static/data/bobomb/');
+    // loader.load('/static/data/bobomb/bobomb battlefeild.mtl', function(materialCreator) {
+
+    //     materialCreator.preload();
+    //     var mesh = ProgressiveLoader('static/data/bobomb/bobomb battlefeild.obj', scene, materialCreator, [
+    //         'Material.071_574B138E_c.bmp',
+    //         'Material.070_41A41EE3_c.bmp'
+    //     ]);
+
+    //     // object.position.z -= 10.9;
+    //     // object.position.y += 0.555;
+    //     // object.position.x += 3.23;
+
+    //     var theta = 0.27;
+    //     mesh.rotation.y = Math.PI - theta;
+    //     mesh.up = new THREE.Vector3(0,0,1);
+    //     collidableObjects.push(mesh);
+    // });
+
+
     // Create loader if not already done
     if (loader === undefined) {
         loader = new THREE.OBJMTLLoader();
@@ -763,7 +785,6 @@ function initSponzaScene(scene, collidableObjects, loader, static_path) {
         if ( xhr.lengthComputable ) {
             var percentComplete = xhr.loaded / xhr.total * 100;
             console.log( Math.round(percentComplete, 2) + '% downloaded' );
-            console.log(xhr);
         }
     };
 

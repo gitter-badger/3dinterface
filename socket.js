@@ -48,7 +48,7 @@ module.exports = function(io) {
 
         socket.on('next', function() {
 
-            var bound = 100;
+            var bound = 1;
             var toSend = [];
             var elt;
 

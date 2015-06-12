@@ -79,9 +79,9 @@ function init() {
     // Initialize pointer camera
     var camera1 = new PointerCamera(50, container_size.width() / container_size.height(), 0.1, 100000, renderer, container);
 
-    cameras = initMainScene(camera1, scene, static_path, coins);
+    // cameras = initMainScene(camera1, scene, static_path, coins);
     // cameras = initPeach(camera1, scene, static_path, coins);
-    // cameras = initBobomb(camera1, scene, static_path, coins);
+    cameras = initBobomb(camera1, scene, static_path, coins);
     // cameras = initWhomp(camera1, scene, static_path, coins);
     // cameras = initMountain(camera1, scene, static_path, coins);
     // cameras = initSponza(camera1, scene, static_path, coins);

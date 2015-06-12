@@ -83,7 +83,6 @@ Previewer.prototype.clear = function() {
     if (this.clearNeeded) {
         this.domElement.width = this.domElement.width;
         this.clearNeeded = false;
-        console.log("Clear");
     }
 }
 

@@ -133,7 +133,7 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 	setMaterials: function( materialsInfo ) {
 
 		this.materialsInfo = this.convert( materialsInfo );
-		this.materials = {};
+        this.materials = {};
 		this.materialsArray = [];
 		this.nameLookup = {};
 
@@ -254,6 +254,8 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 	},
 
 	create: function ( materialName ) {
+
+        // console.log(materialName.indexOf(' ') === -1);
 
 		if ( this.materials[ materialName ] === undefined ) {
 

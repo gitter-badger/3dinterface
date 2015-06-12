@@ -1,4 +1,8 @@
-var ProgressiveLoader = function(path, scene, materialCreator) {
+var ProgressiveLoader = function(path, scene, materialCreator, transparentElements) {
+    if (transparentElements === undefined) {
+        transparentElements = [];
+    }
+
     // Create mesh
     var obj = new THREE.Object3D();
     obj.up = new THREE.Vector3(0,0,1);
@@ -105,16 +109,29 @@ var ProgressiveLoader = function(path, scene, materialCreator) {
                         var geo = new THREE.Geometry();
                         geo.vertices = vertices;
                         geo.faces = faces;
+                        geo.faceVertexUvs = [uvs];
 
-                        var material;
+
+                        var material, tmp = currentMaterial;
                         if (currentMaterial === undefined || currentMaterial === null) {
                             material = new THREE.MeshLambertMaterial({color: 'red'});
                         } else {
-                            material = materialCreator.create(currentMaterial);
+                            material = materialCreator.materials[currentMaterial.trim()];
+                            material.side = THREE.DoubleSide;
+                            material.map.wrapS = material.map.wrapT = THREE.RepeatWrapping;
+
                             currentMaterial = null;
                         }
                         currentMesh = new THREE.Mesh(geo, material);
+
+                        if (transparentElements.indexOf(tmp.trim()) !== -1) {
+                            THREEx.Transparency.push(currentMesh);
+                        } else {
+                            currentMesh.raycastable = true;
+                        }
+
                     }
+                    currentMesh.geometry.computeFaceNormals();
                     obj.add(currentMesh);
 
                 } else if (elts[0] === 'u') {
@@ -129,6 +146,8 @@ var ProgressiveLoader = function(path, scene, materialCreator) {
                     uvs = [];
                     // currentMesh.geometry.computeFaceNormals();
                     if (currentMesh) {
+                        currentMesh.geometry.computeFaceNormals();
+                        currentMesh.geometry.computeBoundingSphere();
                         currentMesh.geometry.groupsNeedUpdate = true;
                         currentMesh.geometry.elementsNeedUpdate = true;
                         currentMesh.geometry.normalsNeedUpdate = true;
@@ -146,6 +165,7 @@ var ProgressiveLoader = function(path, scene, materialCreator) {
 
             if (currentMesh) {
                 currentMesh.geometry.computeFaceNormals();
+                currentMesh.geometry.computeBoundingSphere();
                 currentMesh.geometry.groupsNeedUpdate = true;
                 currentMesh.geometry.elementsNeedUpdate = true;
                 currentMesh.geometry.normalsNeedUpdate = true;
