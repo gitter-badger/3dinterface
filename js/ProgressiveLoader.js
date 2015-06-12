@@ -124,7 +124,7 @@ var ProgressiveLoader = function(path, scene, materialCreator, transparentElemen
                         }
                         currentMesh = new THREE.Mesh(geo, material);
 
-                        if (transparentElements.indexOf(tmp.trim()) !== -1) {
+                        if (tmp && transparentElements.indexOf(tmp.trim()) !== -1) {
                             THREEx.Transparency.push(currentMesh);
                         } else {
                             currentMesh.raycastable = true;
@@ -164,6 +164,7 @@ var ProgressiveLoader = function(path, scene, materialCreator, transparentElemen
             }
 
             if (currentMesh) {
+                currentMesh.material.side = THREE.DoubleSide;
                 currentMesh.geometry.computeFaceNormals();
                 currentMesh.geometry.computeBoundingSphere();
                 currentMesh.geometry.groupsNeedUpdate = true;
