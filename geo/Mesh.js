@@ -42,6 +42,10 @@ geo.MeshStreamer.prototype.loadFromFile = function(path, callback) {
                     var texCoord = self.textureCoords[self.textureCoords.push(new geo.TextureCoord(line)) - 1];
                     self.orderedElements.push(texCoord);
 
+                } else if (line[1] === 'n') {
+
+                    // Ignore normals
+
                 } else {
 
                     // Just a simple vertex
@@ -55,6 +59,11 @@ geo.MeshStreamer.prototype.loadFromFile = function(path, callback) {
                 // Create face
                 var face = self.faces[self.faces.push(new geo.Face(line)) - 1];
                 self.orderedElements.push(face);
+
+                // Check
+                // if (face.max() >= self.vertices.length || face.maxTexture() >= self.textureCoords.length) {
+                //     console.log("Error");
+                // }
 
             } else if (line[0] === 'u') {
 
@@ -139,18 +148,10 @@ geo.MeshStreamer.prototype.merge = function(callback) {
 
 geo.Vertex = function() {
     if (typeof arguments[0] === 'string' || arguments[0] instanceof String) {
-        var split = arguments[0].split(' ');
+        var split = arguments[0].replace(/\s+/g, " ").split(' ');
         this.x = parseFloat(split[1]);
         this.y = parseFloat(split[2]);
         this.z = parseFloat(split[3]);
-    } else if (arguments.length === 3) {
-        this.x = arguments[0];
-        this.y = arguments[1];
-        this.z = arguments[2];
-    } else {
-        this.x = 0;
-        this.y = 0;
-        this.z = 0;
     }
     this.sent = false;
 }
@@ -165,15 +166,9 @@ geo.Vertex.prototype.toString = function() {
 
 geo.TextureCoord = function() {
     if (typeof arguments[0] === 'string' || arguments[0] instanceof String) {
-        var split = arguments[0].split(' ');
+        var split = arguments[0].replace(/\s+/g, " ").split(' ');
         this.x = parseFloat(split[1]);
         this.y = parseFloat(split[2]);
-    } else if (arguments.length === 3) {
-        this.x = arguments[0];
-        this.y = arguments[1];
-    } else {
-        this.x = 0;
-        this.y = 0;
     }
     this.sent = false;
 }
@@ -190,7 +185,7 @@ geo.Face = function() {
     if (typeof arguments[0] === 'string' || arguments[0] instanceof String) {
         if (arguments[0].indexOf('/') === -1) {
             // No / : easy win : "f 1 2 3"  or "f 1 2 3 4"
-            var split = arguments[0].split(' ');
+            var split = arguments[0].replace(/\s+/g, ' ').split(' ');
             this.a = parseInt(split[1]) - 1;
             this.b = parseInt(split[2]) - 1;
             this.c = parseInt(split[3]) - 1;
@@ -200,7 +195,7 @@ geo.Face = function() {
 
         } else {
             // There might be textures coords
-            var split = arguments[0].split(' ');
+            var split = arguments[0].replace(/\s+/g, ' ').trim().split(' ');
 
             // Split elements
             var split1 = split[1].split('/');
@@ -208,7 +203,8 @@ geo.Face = function() {
             var split3 = split[3].split('/');
 
             var vIndex = 0;
-            var tIndex = split1.length === 2 ? 1 : 2;
+            // var tIndex = split1.length === 2 ? 1 : 2;
+            var tIndex = 1;
 
             this.a = parseInt(split1[vIndex]) - 1; this.aTexture = parseInt(split1[tIndex]) - 1;
             this.b = parseInt(split2[vIndex]) - 1; this.bTexture = parseInt(split2[tIndex]) - 1;
@@ -216,18 +212,12 @@ geo.Face = function() {
 
             if (split.length === 5) {
                 var split4 = split[4].split('/');
-                this.d = parseInt(split4[vIndex]) - 1; this.cTexture = parseInt(split4[tIndex]) - 1;
+                this.d = parseInt(split4[vIndex]) - 1; this.dTexture = parseInt(split4[tIndex]) - 1;
             }
         }
 
-    } else if (arguments.length === 3) {
-        this.a = arguments[0] - 1;
-        this.b = arguments[1] - 1;
-        this.c = arguments[2] - 1;
-
-        if (arguments.length === 4)
-            this.d = arguments[3] - 1;
     }
+
     this.sent = false;
 }
 
@@ -236,6 +226,14 @@ geo.Face.prototype.max = function() {
         return Math.max(this.a, this.b, this.c, this.d);
     } else {
         return Math.max(this.a, this.b, this.c);
+    }
+}
+
+geo.Face.prototype.maxTexture = function() {
+    if (this.dTexture) {
+        return Math.max(this.aTexture, this.bTexture, this.cTexture, this.dTexture);
+    } else {
+        return Math.max(this.aTexture, this.bTexture, this.cTexture);
     }
 }
 
@@ -251,7 +249,7 @@ geo.Face.prototype.toList = function() {
     }
 
     if (this.dTexture)
-        l.push(this.aTexture);
+        l.push(this.dTexture);
 
     return l;
 }
@@ -261,7 +259,7 @@ geo.Face.prototype.toString = function() {
 }
 
 geo.Usemtl = function() {
-    var split = arguments[0].split(' ');
+    var split = arguments[0].replace(/\s+/g, ' ').split(' ');
     this.name = split[1];
 }
 

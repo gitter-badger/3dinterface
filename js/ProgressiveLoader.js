@@ -54,8 +54,6 @@ var ProgressiveLoader = function(path, scene, materialCreator, transparentElemen
                         elts[3]
                     ));
 
-                    verticesNeedUpdate = true;
-
                 } else if (elts[0] === 'vt') {
 
                     textCoords.push(new THREE.Vector2(
@@ -83,11 +81,19 @@ var ProgressiveLoader = function(path, scene, materialCreator, transparentElemen
                     }
 
                     // Add texture
-                    if (elts.length === 7 || elts.length === 9) {
+                    if (elts.length === 7) {
                         uvs.push([
                             textCoords[elts[4]],
                             textCoords[elts[5]],
                             textCoords[elts[6]]
+                        ]);
+                    }
+
+                    if (elts.length === 9) {
+                        uvs.push([
+                            textCoords[elts[5]],
+                            textCoords[elts[6]],
+                            textCoords[elts[7]]
                         ]);
                     }
 
@@ -118,7 +124,8 @@ var ProgressiveLoader = function(path, scene, materialCreator, transparentElemen
                         } else {
                             material = materialCreator.materials[currentMaterial.trim()];
                             material.side = THREE.DoubleSide;
-                            material.map.wrapS = material.map.wrapT = THREE.RepeatWrapping;
+                            if (material.map)
+                                material.map.wrapS = material.map.wrapT = THREE.RepeatWrapping;
 
                             currentMaterial = null;
                         }
@@ -130,8 +137,8 @@ var ProgressiveLoader = function(path, scene, materialCreator, transparentElemen
                             currentMesh.raycastable = true;
                         }
 
+                        currentMesh.geometry.computeFaceNormals();
                     }
-                    currentMesh.geometry.computeFaceNormals();
                     obj.add(currentMesh);
 
                 } else if (elts[0] === 'u') {

@@ -781,45 +781,66 @@ function initMountain(camera, scene, static_path, coins) {
 }
 
 function initSponzaScene(scene, collidableObjects, loader, static_path) {
-    var onProgress = function ( xhr ) {
-        if ( xhr.lengthComputable ) {
-            var percentComplete = xhr.loaded / xhr.total * 100;
-            console.log( Math.round(percentComplete, 2) + '% downloaded' );
-        }
-    };
 
-    loader.load(
-        static_path + './data/sponza/sponza.json',
-        function (geometry, materials) {
-            console.log("OK");
-            geometry.mergeVertices();
-            var material = new THREE.MeshFaceMaterial(materials);
-            var object = new THREE.Mesh(geometry, material);
-            object.scale.set(0.01,0.01,0.01);
-            object.raycastable = true;
-            collidableObjects.push(object);
-            // object.rotation.x = -Math.PI/2;
-            // object.rotation.z = Math.PI/2;
-            // collidableObjects.push(object);
-            // scene.add(object);
-            object.traverse(function (obj) {
-                if (obj instanceof THREE.Mesh) {
-                    for (var i in obj.material.materials) {
-                        var m = obj.material.materials[i].map;
-                        if (m)
-                            m.wrapS = m.wrapT = THREE.RepeatWrapping;
-                    }
-                    // obj.material.map.wrapS = obj.material.map.wrapT = THREE.RepeatWrapping;
-                }
-            //         obj.geometry.mergeVertices();
-            //         obj.geometry.computeVertexNormals();
-            //         obj.material.side = THREE.DoubleSide;
-            //         obj.raycastable = true;
-            //     }
-            });
-            scene.add(object);
-        }
-    , onProgress, function(xhr) { console.log("error");});
+    var loader = new THREE.MTLLoader('/static/data/sponza/');
+    loader.load('/static/data/sponza/sponza.mtl', function(materialCreator) {
+
+        materialCreator.preload();
+
+        console.log("Starting loading...");
+        var mesh = ProgressiveLoader('static/data/sponza/sponza.obj', scene, materialCreator, [
+            'chain',
+            'leaf'
+        ]);
+
+        // object.position.z -= 10.9;
+        // object.position.y += 0.555;
+        // object.position.x += 3.23;
+        mesh.scale.set(0.01,0.01,0.01);
+        mesh.raycastable = true;
+        collidableObjects.push(mesh);
+    });
+
+
+    // var onProgress = function ( xhr ) {
+    //     if ( xhr.lengthComputable ) {
+    //         var percentComplete = xhr.loaded / xhr.total * 100;
+    //         console.log( Math.round(percentComplete, 2) + '% downloaded' );
+    //     }
+    // };
+
+    // loader.load(
+    //     static_path + './data/sponza/sponza.json',
+    //     function (geometry, materials) {
+    //         console.log("OK");
+    //         geometry.mergeVertices();
+    //         var material = new THREE.MeshFaceMaterial(materials);
+    //         var object = new THREE.Mesh(geometry, material);
+    //         object.scale.set(0.01,0.01,0.01);
+    //         object.raycastable = true;
+    //         collidableObjects.push(object);
+    //         // object.rotation.x = -Math.PI/2;
+    //         // object.rotation.z = Math.PI/2;
+    //         // collidableObjects.push(object);
+    //         // scene.add(object);
+    //         object.traverse(function (obj) {
+    //             if (obj instanceof THREE.Mesh) {
+    //                 for (var i in obj.material.materials) {
+    //                     var m = obj.material.materials[i].map;
+    //                     if (m)
+    //                         m.wrapS = m.wrapT = THREE.RepeatWrapping;
+    //                 }
+    //                 // obj.material.map.wrapS = obj.material.map.wrapT = THREE.RepeatWrapping;
+    //             }
+    //         //         obj.geometry.mergeVertices();
+    //         //         obj.geometry.computeVertexNormals();
+    //         //         obj.material.side = THREE.DoubleSide;
+    //         //         obj.raycastable = true;
+    //         //     }
+    //         });
+    //         scene.add(object);
+    //     }
+    // , onProgress, function(xhr) { console.log("error");});
 }
 
 function createSponzaCoins() {
