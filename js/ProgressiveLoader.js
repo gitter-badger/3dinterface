@@ -32,6 +32,8 @@ var ProgressiveLoader = function(path, scene, materialCreator, transparentElemen
     // When receiving elements
     socket.on('elements', function(arr) {
 
+        console.log("Got stuff");
+
         if (!finished) {
             socket.emit('next');
         }
