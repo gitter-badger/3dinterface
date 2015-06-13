@@ -790,7 +790,8 @@ function initSponzaScene(scene, collidableObjects, loader, static_path) {
         console.log("Starting loading...");
         var mesh = ProgressiveLoader('static/data/sponza/sponza.obj', scene, materialCreator, [
             'chain',
-            'leaf'
+            'leaf',
+            'Material__57'
         ]);
 
         // object.position.z -= 10.9;
