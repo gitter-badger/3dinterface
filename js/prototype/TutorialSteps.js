@@ -34,7 +34,7 @@ var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container
             justclick: false
         },
         {
-            text: "On more !",
+            text: "One more !",
             justclick: false
         },
         {
