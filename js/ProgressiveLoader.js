@@ -1,194 +1,194 @@
-var ProgressiveLoader = function(path, scene, materialCreator, transparentElements) {
-    if (transparentElements === undefined) {
-        transparentElements = [];
-    }
+var ProgressiveLoader = function(path, scene, callback) {
+    // Create MTLLoader
+    var loader = new THREE.MTLLoader(path.substring(0, path.lastIndexOf('/')) + '/');
+    loader.load(path.replace('.obj', '.mtl'), function(materialCreator) {
 
-    // Create mesh
-    var obj = new THREE.Object3D();
-    obj.up = new THREE.Vector3(0,0,1);
-    glob = obj;
+        materialCreator.preload();
 
-    var currentMesh;
-    var currentMaterial;
+        // Create mesh
+        var obj = new THREE.Object3D();
+        obj.up = new THREE.Vector3(0,0,1);
+        glob = obj;
 
-    var added = false;
-    var finished = false;
+        var currentMesh;
+        var currentMaterial;
 
-    var socket = io();
+        var added = false;
+        var finished = false;
 
-    var vertices = [];
-    var textCoords = [];
-    var uvs = [];
-    var faces = [];
+        var socket = io();
 
-    // Init streaming with socket
-    socket.emit('request', path);
+        var vertices = [];
+        var textCoords = [];
+        var uvs = [];
+        var faces = [];
 
-    // When server's ready, start asking for the mesh
-    socket.on('ok', function() {
-        socket.emit('next');
-    });
+        // Init streaming with socket
+        socket.emit('request', path.substring(1, path.length));
 
-    // When receiving elements
-    socket.on('elements', function(arr) {
-
-        console.log("Got stuff");
-
-        if (!finished) {
+        // When server's ready, start asking for the mesh
+        socket.on('ok', function() {
             socket.emit('next');
-        }
+        });
 
-        // Launch this code in async
-        setTimeout(function() {
+        // When receiving elements
+        socket.on('elements', function(arr) {
 
-            // We'll receive an array of string (obj)
-            for (var i = 0; i < arr.length; i++) {
+            console.log("Got stuff");
 
-                var elts = arr[i];
+            if (!finished) {
+                socket.emit('next');
+            }
 
-                // console.log(line);
+            // Launch this code in async
+            setTimeout(function() {
 
-                if (elts[0] === 'v') {
+                // We'll receive an array of string (obj)
+                for (var i = 0; i < arr.length; i++) {
 
-                    vertices.push(new THREE.Vector3(
-                        elts[1],
-                        elts[2],
-                        elts[3]
-                    ));
+                    var elts = arr[i];
 
-                } else if (elts[0] === 'vt') {
+                    // console.log(line);
 
-                    textCoords.push(new THREE.Vector2(
-                        elts[1],
-                        elts[2]
-                    ));
+                    if (elts[0] === 'v') {
 
-                } else if (elts[0] === 'f') {
+                        vertices.push(new THREE.Vector3(
+                            elts[1],
+                            elts[2],
+                            elts[3]
+                        ));
 
-                    faces.push(new THREE.Face3(
-                        elts[1],
-                        elts[2],
-                        elts[3]
-                    ));
+                    } else if (elts[0] === 'vt') {
 
-                    // If the face has 4 vertices, create second triangle
-                    if (elts.length === 5 || elts.length === 9) {
+                        textCoords.push(new THREE.Vector2(
+                            elts[1],
+                            elts[2]
+                        ));
+
+                    } else if (elts[0] === 'f') {
 
                         faces.push(new THREE.Face3(
                             elts[1],
-                            elts[3],
-                            elts[4]
+                            elts[2],
+                            elts[3]
                         ));
 
-                    }
+                        // If the face has 4 vertices, create second triangle
+                        if (elts.length === 5 || elts.length === 9) {
 
-                    // Add texture
-                    if (elts.length === 7) {
-                        uvs.push([
-                            textCoords[elts[4]],
-                            textCoords[elts[5]],
-                            textCoords[elts[6]]
-                        ]);
-                    }
+                            faces.push(new THREE.Face3(
+                                elts[1],
+                                elts[3],
+                                elts[4]
+                            ));
 
-                    if (elts.length === 9) {
-                        uvs.push([
-                            textCoords[elts[5]],
-                            textCoords[elts[6]],
-                            textCoords[elts[7]]
-                        ]);
-                    }
-
-                    if (elts.length === 9) {
-                        uvs.push([
-                            textCoords[elts[5]],
-                            textCoords[elts[7]],
-                            textCoords[elts[8]]
-                        ]);
-                    }
-
-                    // Add currentMesh to scene one there are a few faces in it
-                    if (!added) {
-                        scene.add(obj);
-                        added = true;
-                    }
-
-                    if (!currentMesh) {
-                        var geo = new THREE.Geometry();
-                        geo.vertices = vertices;
-                        geo.faces = faces;
-                        geo.faceVertexUvs = [uvs];
-
-
-                        var material, tmp = currentMaterial;
-                        if (currentMaterial === undefined || currentMaterial === null) {
-                            material = new THREE.MeshLambertMaterial({color: 'red'});
-                        } else {
-                            material = materialCreator.materials[currentMaterial.trim()];
-                            material.side = THREE.DoubleSide;
-                            if (material.map)
-                                material.map.wrapS = material.map.wrapT = THREE.RepeatWrapping;
-
-                            currentMaterial = null;
-                        }
-                        currentMesh = new THREE.Mesh(geo, material);
-
-                        if (tmp && transparentElements.indexOf(tmp.trim()) !== -1) {
-                            THREEx.Transparency.push(currentMesh);
-                        } else {
-                            currentMesh.raycastable = true;
                         }
 
-                        currentMesh.geometry.computeFaceNormals();
+                        // Add texture
+                        if (elts.length === 7) {
+                            uvs.push([
+                                textCoords[elts[4]],
+                                textCoords[elts[5]],
+                                textCoords[elts[6]]
+                            ]);
+                        }
+
+                        if (elts.length === 9) {
+                            uvs.push([
+                                textCoords[elts[5]],
+                                textCoords[elts[6]],
+                                textCoords[elts[7]]
+                            ]);
+                        }
+
+                        if (elts.length === 9) {
+                            uvs.push([
+                                textCoords[elts[5]],
+                                textCoords[elts[7]],
+                                textCoords[elts[8]]
+                            ]);
+                        }
+
+                        // Add currentMesh to scene one there are a few faces in it
+                        if (!added) {
+                            scene.add(obj);
+                            added = true;
+                        }
+
+                        if (!currentMesh) {
+                            var geo = new THREE.Geometry();
+                            geo.vertices = vertices;
+                            geo.faces = faces;
+                            geo.faceVertexUvs = [uvs];
+
+
+                            var material, tmp = currentMaterial;
+                            if (currentMaterial === undefined || currentMaterial === null) {
+                                material = new THREE.MeshLambertMaterial({color: 'red'});
+                            } else {
+                                material = materialCreator.materials[currentMaterial.trim()];
+                                material.side = THREE.DoubleSide;
+                                if (material.map)
+                                    material.map.wrapS = material.map.wrapT = THREE.RepeatWrapping;
+
+                                currentMaterial = null;
+                            }
+                            currentMesh = new THREE.Mesh(geo, material);
+
+                            if (typeof callback === 'function') {
+                                callback(currentMesh, obj);
+                            }
+
+                            currentMesh.geometry.computeFaceNormals();
+                        }
+                        obj.add(currentMesh);
+
+                    } else if (elts[0] === 'u') {
+
+                        // Add current mesh
+                        // if (currentMesh) {
+                        //     obj.add(currentMesh);
+                        // }
+
+                        // Prepare new mesh
+                        faces = [];
+                        uvs = [];
+                        // currentMesh.geometry.computeFaceNormals();
+                        if (currentMesh) {
+                            currentMesh.geometry.computeFaceNormals();
+                            currentMesh.geometry.computeBoundingSphere();
+                            currentMesh.geometry.groupsNeedUpdate = true;
+                            currentMesh.geometry.elementsNeedUpdate = true;
+                            currentMesh.geometry.normalsNeedUpdate = true;
+                            currentMesh.geometry.uvsNeedUpdate = true;
+                        }
+                        currentMaterial = elts[1];
+                        currentMesh = null;
+
+                        // console.log(material.map);
+                        // currentMesh = new THREE.Mesh(geo, material);
+
                     }
-                    obj.add(currentMesh);
-
-                } else if (elts[0] === 'u') {
-
-                    // Add current mesh
-                    // if (currentMesh) {
-                    //     obj.add(currentMesh);
-                    // }
-
-                    // Prepare new mesh
-                    faces = [];
-                    uvs = [];
-                    // currentMesh.geometry.computeFaceNormals();
-                    if (currentMesh) {
-                        currentMesh.geometry.computeFaceNormals();
-                        currentMesh.geometry.computeBoundingSphere();
-                        currentMesh.geometry.groupsNeedUpdate = true;
-                        currentMesh.geometry.elementsNeedUpdate = true;
-                        currentMesh.geometry.normalsNeedUpdate = true;
-                        currentMesh.geometry.uvsNeedUpdate = true;
-                    }
-                    currentMaterial = elts[1];
-                    currentMesh = null;
-
-                    // console.log(material.map);
-                    // currentMesh = new THREE.Mesh(geo, material);
 
                 }
 
-            }
+                if (currentMesh) {
+                    currentMesh.material.side = THREE.DoubleSide;
+                    currentMesh.geometry.computeFaceNormals();
+                    currentMesh.geometry.computeBoundingSphere();
+                    currentMesh.geometry.groupsNeedUpdate = true;
+                    currentMesh.geometry.elementsNeedUpdate = true;
+                    currentMesh.geometry.normalsNeedUpdate = true;
+                    currentMesh.geometry.uvsNeedUpdate = true;
+                }
 
-            if (currentMesh) {
-                currentMesh.material.side = THREE.DoubleSide;
-                currentMesh.geometry.computeFaceNormals();
-                currentMesh.geometry.computeBoundingSphere();
-                currentMesh.geometry.groupsNeedUpdate = true;
-                currentMesh.geometry.elementsNeedUpdate = true;
-                currentMesh.geometry.normalsNeedUpdate = true;
-                currentMesh.geometry.uvsNeedUpdate = true;
-            }
+            },0);
+        });
 
-        },0);
+        socket.on('disconnect', function() {
+            console.log("Finished");
+            finished = true;
+        });
+
     });
-
-    socket.on('disconnect', function() {
-        console.log("Finished");
-        finished = true;
-    });
-
-    return obj;
 }

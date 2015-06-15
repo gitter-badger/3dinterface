@@ -12,84 +12,25 @@ function addLight(scene) {
 }
 
 function initPeachCastle(scene, collidableObjects, loader, static_path) {
-    // Create loader if not already done
-    if (loader === undefined) {
-        loader = new THREE.OBJMTLLoader();
-    }
 
-    // Try to guess the path to static files
-    if (static_path === undefined) {
-        static_path = "/static/";
-    }
-
-    // var loader = new THREE.MTLLoader('/static/data/castle/');
-    // loader.load('/static/data/castle/princess peaches castle (outside).mtl', function(materialCreator) {
-
-    //     materialCreator.preload();
-
-    //     var mesh = ProgressiveLoader('static/data/castle/princess peaches castle (outside).obj', scene, materialCreator);
-    // });
-
-    loader.load(
-        static_path + 'data/castle/princess peaches castle (outside).obj',
-        static_path + 'data/castle/princess peaches castle (outside).mtl',
-        function ( object ) {
-            glob = object;
-            object.up = new THREE.Vector3(0,0,1);
-            scene.add(object);
+    ProgressiveLoader(
+        '/static/data/castle/princess peaches castle (outside).obj',
+        scene,
+        function(object, container) {
             collidableObjects.push(object);
-            object.traverse(function (object) {
-                if (object instanceof THREE.Mesh) {
-                    object.geometry.mergeVertices();
-                    object.geometry.computeVertexNormals();
-                    object.material.side = THREE.DoubleSide;
-                    object.raycastable = true;
-                    if (object.material.name === 'Material.103_princess_peaches_cast') {
-                        THREEx.Transparency.push(object);
-                    } else if (object.material.name === 'Material.136_princess_peaches_cast' ||
-                        object.material.name === 'Material.135_princess_peaches_cast') {
-                        THREEx.Transparency.push(object);
-                        object.material.opacity = 0.5;
-                        object.material.side = THREE.FrontSide;
-                        object.raycastable = false;
-                        var newObj = object.clone();
-                        newObj.material = object.material.clone();
-                        newObj.material.side = THREE.BackSide;
-                        scene.add(newObj);
-                    }
-                }
-            });
+            object.raycastable = true;
+            if (object.material.name === 'Material.103_princess_peaches_cast') {
+                THREEx.Transparency.push(object);
+            } else if (object.material.name === 'Material.136_princess_peaches_cast' ||
+                       object.material.name === 'Material.135_princess_peaches_cast') {
+                THREEx.Transparency.push(object);
+                object.material.opacity = 0.5;
+                object.raycastable = false;
+                object.material.side = THREE.FrontSide;
+            }
         }
     );
 
-    // loader.load(
-    //     static_path + 'data/first/Floor 1.obj',
-    //     static_path + 'data/first/Floor 1.mtl',
-    //     function ( object ) {
-    //         object.position.z -= 10.9;
-    //         object.position.y += 0.555;
-    //         object.position.x += 3.23;
-
-    //         var theta = 0.27;
-    //         object.rotation.y = Math.PI - theta;
-
-    //         object.up = new THREE.Vector3(0,0,1);
-    //         scene.add(object);
-    //         collidableObjects.push(object);
-    //         object.traverse(function (object) {
-    //             if (object instanceof THREE.Mesh) {
-    //                 object.material.side = THREE.DoubleSide;
-    //                 object.geometry.mergeVertices();
-    //                 object.geometry.computeVertexNormals();
-    //                 object.raycastable = true;
-    //                 if (object.material.name === 'Material.054_777F0E0B_c.bmp' ||
-    //                     object.material.name === 'Material.061_5C3492AB_c.bmp'   ) {
-    //                     THREEx.Transparency.push(object);
-    //                 }
-    //             }
-    //         });
-    //     }
-    // );
 }
 
 function resetPeachElements() {
@@ -154,39 +95,6 @@ function initZeldaScene(scene, collidableObjects, loader, static_path) {
         }
     );
 
-    // loader.load(
-    //     static_path + 'data/zelda/Sea.obj',
-    //     static_path + 'data/zelda/Sea.mtl',
-    //     function ( object ) {
-    //         scene.add(object);
-    //         collidableObjects.push(object);
-    //         object.scale.set(0.01,0.01,0.01);
-    //         object.traverse(function (object) {
-    //             if (object instanceof THREE.Mesh) {
-    //                 object.geometry.mergeVertices();
-    //                 object.geometry.computeVertexNormals();
-    //                 object.raycastable = true;
-    //             }
-    //         });
-    //     }
-    // );
-
-    // loader.load(
-    //     static_path + 'data/zelda/Window Lights.obj',
-    //     static_path + 'data/zelda/Window Lights.mtl',
-    //     function ( object ) {
-    //         scene.add(object);
-    //         collidableObjects.push(object);
-    //         object.scale.set(0.01,0.01,0.01);
-    //         object.traverse(function (object) {
-    //             if (object instanceof THREE.Mesh) {
-    //                 object.geometry.mergeVertices();
-    //                 object.geometry.computeVertexNormals();
-    //                 object.raycastable = true;
-    //             }
-    //         });
-    //     }
-    // );
 }
 
 
@@ -217,7 +125,8 @@ function createPeachCameras(width, height) {
     cams.push(createCamera(
             new THREE.Vector3(2.625389073616235, 1.2252620948239699, -4.818718135555419),
             new THREE.Vector3(-19.756833131355208, -16.20027570329664, -33.02132017177813)
-    ));
+    ));ader = new THREE.MTLLoader('/static/data/bobomb/');
+    // loader.
 
     // cams.push(createCamera(
     //         new THREE.Vector3(1.3304975149911331, 0.4836093721106701, -8.60618907952783),
@@ -251,99 +160,23 @@ function createPeachCameras(width, height) {
 
 function initBobombScene(scene, collidableObjects, loader, static_path) {
 
-    // var loader = new THREE.MTLLoader('/static/data/bobomb/');
-    // loader.load('/static/data/bobomb/bobomb battlefeild.mtl', function(materialCreator) {
-
-    //     materialCreator.preload();
-    //     var mesh = ProgressiveLoader('static/data/bobomb/bobomb battlefeild.obj', scene, materialCreator, [
-    //         'Material.071_574B138E_c.bmp',
-    //         'Material.070_41A41EE3_c.bmp'
-    //     ]);
-
-    //     // object.position.z -= 10.9;
-    //     // object.position.y += 0.555;
-    //     // object.position.x += 3.23;
-
-    //     var theta = 0.27;
-    //     mesh.rotation.y = Math.PI - theta;
-    //     mesh.up = new THREE.Vector3(0,0,1);
-    //     collidableObjects.push(mesh);
-    // });
-
-
-    // Create loader if not already done
-    if (loader === undefined) {
-        loader = new THREE.OBJMTLLoader();
-    }
-
-    // Try to guess the path to static files
-    if (static_path === undefined) {
-        static_path = "/static/";
-    }
-
-    loader.load(
+    ProgressiveLoader(
         static_path + 'data/bobomb/bobomb battlefeild.obj',
-        static_path + 'data/bobomb/bobomb battlefeild.mtl',
-        function ( object ) {
-            // object.position.z -= 10.9;
-            // object.position.y += 0.555;
-            // object.position.x += 3.23;
-
+        scene,
+        function(object) {
             var theta = 0.27;
             object.rotation.y = Math.PI - theta;
 
             object.up = new THREE.Vector3(0,0,1);
             collidableObjects.push(object);
-            scene.add(object);
-            glob = object;
-            object.traverse(function (object) {
-                if (object instanceof THREE.Mesh) {
-                    object.raycastable = true;
-                    object.material.side = THREE.DoubleSide;
-                    object.geometry.mergeVertices();
-                    object.geometry.computeVertexNormals();
-                    if (object.material.name === 'Material.071_574B138E_c.bmp' ||
-                        object.material.name === 'Material.070_41A41EE3_c.bmp') {
-                        THREEx.Transparency.push(object);
-                    }
-
-                }
-            });
+            object.raycastable = true;
+            if (object.material.name === 'Material.071_574B138E_c.bmp' ||
+                object.material.name === 'Material.070_41A41EE3_c.bmp') {
+                THREEx.Transparency.push(object);
+            }
         }
     );
 
-    // loader.load(
-    //     static_path + 'data/star/GrandStar.obj',
-    //     static_path + 'data/star/GrandStar.mtl',
-    //     function ( object ) {
-    //         object.position.z -= 10.9;
-    //         object.position.y += 0.555;
-    //         object.position.x += 3.23;
-
-    //         var theta = 0.27;
-    //         object.rotation.y = Math.PI - theta;
-
-    //         object.up = new THREE.Vector3(0,0,1);
-    //         scene.add(object);
-    //         collidableObjects.push(object);
-    //         object.traverse(function (object) {
-    //             if (object instanceof THREE.Mesh) {
-    //                 object.scale.set(0.005,0.005,0.005);
-    //                 object.position.x = 13;
-    //                 object.position.z = -35;
-    //                 object.position.y = 30;
-
-    //                 object.rotation.z = Math.PI/2;
-    //                 object.rotation.x = Math.PI/2;
-    //                 object.rotation.y = Math.PI;
-    //                 object.material.side = THREE.DoubleSide;
-    //                 object.geometry.mergeVertices();
-    //                 object.geometry.computeVertexNormals();
-    //                 object.raycastable = true;
-    //             }
-    //         });
-    //     }
-    //);
 }
 
 function resetBobombElements() {
@@ -469,36 +302,29 @@ function initBobomb(camera, scene, static_path, coins) {
 }
 
 function initWhompScene(scene, collidableObjects, loader, static_path) {
-    loader.load(
-        static_path + './data/whomp/Whomps Fortress.obj',
-        static_path + './data/whomp/Whomps Fortress.mtl',
-        function ( object ) {
+
+    ProgressiveLoader(
+        static_path + 'data/whomp/Whomps Fortress.obj',
+        scene,
+        function(object) {
             object.rotation.x = -Math.PI/2;
             object.rotation.z = Math.PI/2;
             object.scale.set(0.1,0.1,0.1);
             collidableObjects.push(object);
-            scene.add(object);
-            object.traverse(function (obj) {
-                if (obj instanceof THREE.Mesh) {
-                    obj.geometry.mergeVertices();
-                    obj.geometry.computeVertexNormals();
-                    obj.material.side = THREE.DoubleSide;
-                    obj.raycastable = true;
+            object.raycastable = true;
+            if (object.material.name === 'Shape_088' ||
+                object.material.name === 'Shape_089') {
+                object.raycastable = false;
+            THREEx.Transparency.push(object);
+            } else if (object.material.name === 'Shape_113') {
+                THREEx.Transparency.push(object);
+                object.material.opacity = 0.5;
+            } else if (object.material.name === 'Shape_076' ||
+                       object.material.name === 'Shape_098' ||
+                       object.material.name === 'Shape_092') {
+                object.visible = false;
+            }
 
-                    if (obj.material.name === 'Shape_088' ||
-                        obj.material.name === 'Shape_089') {
-                        obj.raycastable = false;
-                        THREEx.Transparency.push(obj);
-                    } else if (obj.material.name === 'Shape_113') {
-                        THREEx.Transparency.push(obj);
-                        obj.material.opacity = 0.5;
-                    } else if (obj.material.name === 'Shape_076' ||
-                               obj.material.name === 'Shape_098' ||
-                               obj.material.name === 'Shape_092') {
-                        obj.visible = false;
-                    }
-                }
-            });
         }
     );
 }
@@ -623,39 +449,31 @@ function initWhomp(camera, scene, static_path, coins) {
 }
 
 function initMountainScene(scene, collidableObjects, loader, static_path) {
-    loader.load(
-        static_path + './data/mountain/coocoolmountain.obj',
-        static_path + './data/mountain/coocoolmountain.mtl',
-        // static_path + './data/mountain2/untitled.obj',
-        // static_path + './data/mountain2/untitled.mtl',
-        function ( object ) {
+
+    ProgressiveLoader(
+        static_path + 'data/mountain/coocoolmountain.obj',
+        scene,
+        function(object) {
             // object.rotation.x = -Math.PI/2;
             // object.rotation.z = Math.PI/2;
             collidableObjects.push(object);
             scene.add(object);
-            object.traverse(function (obj) {
-                if (obj instanceof THREE.Mesh) {
-                    obj.geometry.mergeVertices();
-                    obj.geometry.computeVertexNormals();
-                    obj.material.side = THREE.DoubleSide;
-                    obj.raycastable = true;
-                    if (obj.material.name === 'Material.070_13F025D5_c2.png' ||
-                        obj.material.name === 'Material.068_5972FC88_c.bmp' ||
-                        obj.material.name === 'Material.073_76F611AD_c.bmp' ||
-                        obj.material.name === 'Material.071_76F611AD_c.bmp' ||
-                        obj.material.name === 'Material.072_1723CCC7_c.bmp' ||
-                        obj.material.name === 'Material.069_78B64DC7_c.bmp' ||
-                        obj.material.name === 'Material.070_13F025D5_c.bmp' ||
-                        obj.material.name === 'Material.078_3165B23A_c.bmp' ||
-                        obj.material.name === 'Material.067_1723CCC7_c.bmp' ||
-                        obj.material.name === 'Material.066_36DB292F_c.bmp') {
-                        THREEx.Transparency.push(obj);
-                    } else if (obj.material.name === 'Material.082_6DAF90F6_c.bmp') {
-                        THREEx.Transparency.push(obj);
-                        obj.material.opacity = 0.5;
-                    }
-                }
-            });
+            object.raycastable = true;
+            if (object.material.name === 'Material.070_13F025D5_c2.png' ||
+                object.material.name === 'Material.068_5972FC88_c.bmp' ||
+                object.material.name === 'Material.073_76F611AD_c.bmp' ||
+                object.material.name === 'Material.071_76F611AD_c.bmp' ||
+                object.material.name === 'Material.072_1723CCC7_c.bmp' ||
+                object.material.name === 'Material.069_78B64DC7_c.bmp' ||
+                object.material.name === 'Material.070_13F025D5_c.bmp' ||
+                object.material.name === 'Material.078_3165B23A_c.bmp' ||
+                object.material.name === 'Material.067_1723CCC7_c.bmp' ||
+                object.material.name === 'Material.066_36DB292F_c.bmp') {
+                THREEx.Transparency.push(object);
+            } else if (object.material.name === 'Material.082_6DAF90F6_c.bmp') {
+                THREEx.Transparency.push(object);
+                object.material.opacity = 0.5;
+            }
         }
     );
 }
@@ -782,66 +600,22 @@ function initMountain(camera, scene, static_path, coins) {
 
 function initSponzaScene(scene, collidableObjects, loader, static_path) {
 
-    var loader = new THREE.MTLLoader('/static/data/sponza/');
-    loader.load('/static/data/sponza/sponza.mtl', function(materialCreator) {
+    ProgressiveLoader('/static/data/sponza/sponza.obj', scene,
+        function(obj) {
+            obj.scale.set(0.1,0.1,0.1);
+            collidableObjects.push(obj);
+            obj.raycastable = true;
 
-        materialCreator.preload();
+            if (obj.material.name === 'chain' ||
+                obj.material.name === 'leaf'  ||
+                obj.material.name === 'Material__57') {
 
-        console.log("Starting loading...");
-        var mesh = ProgressiveLoader('static/data/sponza/sponza.obj', scene, materialCreator, [
-            'chain',
-            'leaf',
-            'Material__57'
-        ]);
+                THREEx.Transparency.push(obj);
+            }
 
-        // object.position.z -= 10.9;
-        // object.position.y += 0.555;
-        // object.position.x += 3.23;
-        mesh.scale.set(0.01,0.01,0.01);
-        mesh.raycastable = true;
-        collidableObjects.push(mesh);
-    });
+        }
+    );
 
-
-    // var onProgress = function ( xhr ) {
-    //     if ( xhr.lengthComputable ) {
-    //         var percentComplete = xhr.loaded / xhr.total * 100;
-    //         console.log( Math.round(percentComplete, 2) + '% downloaded' );
-    //     }
-    // };
-
-    // loader.load(
-    //     static_path + './data/sponza/sponza.json',
-    //     function (geometry, materials) {
-    //         console.log("OK");
-    //         geometry.mergeVertices();
-    //         var material = new THREE.MeshFaceMaterial(materials);
-    //         var object = new THREE.Mesh(geometry, material);
-    //         object.scale.set(0.01,0.01,0.01);
-    //         object.raycastable = true;
-    //         collidableObjects.push(object);
-    //         // object.rotation.x = -Math.PI/2;
-    //         // object.rotation.z = Math.PI/2;
-    //         // collidableObjects.push(object);
-    //         // scene.add(object);
-    //         object.traverse(function (obj) {
-    //             if (obj instanceof THREE.Mesh) {
-    //                 for (var i in obj.material.materials) {
-    //                     var m = obj.material.materials[i].map;
-    //                     if (m)
-    //                         m.wrapS = m.wrapT = THREE.RepeatWrapping;
-    //                 }
-    //                 // obj.material.map.wrapS = obj.material.map.wrapT = THREE.RepeatWrapping;
-    //             }
-    //         //         obj.geometry.mergeVertices();
-    //         //         obj.geometry.computeVertexNormals();
-    //         //         obj.material.side = THREE.DoubleSide;
-    //         //         obj.raycastable = true;
-    //         //     }
-    //         });
-    //         scene.add(object);
-    //     }
-    // , onProgress, function(xhr) { console.log("error");});
 }
 
 function createSponzaCoins() {
@@ -854,8 +628,8 @@ function createSponzaCameras() {
 
 function resetSponzaElements() {
     return {
-        position : new THREE.Vector3(-9.672189882510748,5.415297558602296,-1.5456794717808657),
-        target : new THREE.Vector3(27.18799151966882,-5.736834637451716,9.26898531637373)
+        position: new THREE.Vector3(92.98373669520107,60.8877777990862,11.130138641670737),
+        target: new THREE.Vector3(53.76696417668598,56.09739213575453,4.877382575136091)
     };
 }
 
@@ -870,7 +644,7 @@ function initSponza(camera, scene, static_path, coins) {
     camera.resetElements = resetSponzaElements();
     camera.collidableObjects = collidableObjects;
 
-    camera.speed = 0.005;
+    camera.speed = 0.05;
     camera.reset();
     camera.save();
 
