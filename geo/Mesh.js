@@ -1,6 +1,6 @@
 var fs = require('fs');
 
-var geo = geo || {};
+var geo = {};
 
 geo.MeshStreamer = function(path, callback) {
     this.vertices = [];

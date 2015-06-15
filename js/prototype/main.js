@@ -116,22 +116,22 @@ function initListeners() {
 }
 
 function render() {
-    cameraSelecter.update();
+    // cameraSelecter.update();
 
-    // Update recommendations (set raycastable if shown)
-    var transform = buttonManager.showArrows ? show : hide;
-    cameras.map(function(camera) {
-        if (camera instanceof RecommendedCamera) {
-            transform(camera);
+    // // Update recommendations (set raycastable if shown)
+    // var transform = buttonManager.showArrows ? show : hide;
+    // cameras.map(function(camera) {
+    //     if (camera instanceof RecommendedCamera) {
+    //         transform(camera);
 
-            camera.traverse(function(elt) {
-                elt.raycastable = buttonManager.showArrows;
-            });
-        }
-    });
+    //         camera.traverse(function(elt) {
+    //             elt.raycastable = buttonManager.showArrows;
+    //         });
+    //     }
+    // });
 
     // Update coins
-    coins.forEach(function(coin) { coin.update(); });
+    // coins.forEach(function(coin) { coin.update(); });
 
     // Update main camera
     var currentTime = Date.now() - previousTime;
@@ -139,29 +139,29 @@ function render() {
     previousTime = Date.now();
 
     // Update the recommendations
-    cameras.update(cameras.mainCamera());
+    // cameras.update(cameras.mainCamera());
 
 
     // Set current position of camera
-    cameras.look();
+    // cameras.look();
 
-    var left = 0, bottom = 0, width = container_size.width(), height = container_size.height();
-    renderer.setScissor(left, bottom, width, height);
-    renderer.enableScissorTest(true);
-    renderer.setViewport(left, bottom, width, height);
+    // var left = 0, bottom = 0, width = container_size.width(), height = container_size.height();
+    // renderer.setScissor(left, bottom, width, height);
+    // renderer.enableScissorTest(true);
+    // renderer.setViewport(left, bottom, width, height);
     renderer.render(scene, cameras.mainCamera());
 
     // Remove borders of preview
-    previewer.clear();
+    // previewer.clear();
 
     // Hide arrows in recommendation
-    cameras.map(function(camera) { if (camera instanceof RecommendedCamera) hide(camera); });
+    // cameras.map(function(camera) { if (camera instanceof RecommendedCamera) hide(camera); });
 
     // Update transparent elements
     // THREEx.Transparency.update(cameras.mainCamera());
 
     // Render preview
-    previewer.render(cameraSelecter.prev, container_size.width(), container_size.height());
+    // previewer.render(cameraSelecter.prev, container_size.width(), container_size.height());
 }
 
 function animate() {
