@@ -2,6 +2,7 @@ var renderer, scene, camera, controls, cube, container, plane, mouse= {x:0, y:0}
 var raycaster;
 var objects = [];
 var container_size = new Object();
+var previousTime;
 container_size.width = 1067;
 container_size.height = 600;
 
@@ -57,7 +58,9 @@ function animate() {
 
     cube.update();
 
-    camera.update();
+    var currentTime = Date.now() - previousTime;
+    camera.update(isNaN(currentTime) ? 20 : currentTime);
+    previousTime = Date.now();
     camera.look();
 
     renderer.render(scene, camera);

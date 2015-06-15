@@ -5,7 +5,7 @@ var objects = [];
 var spheres = new Array(mesh_number);
 var visible = 0;
 
-var loader;
+var loader, previousTime;
 
 var container_size = new Object();
 container_size.width = 1067;
@@ -79,7 +79,10 @@ function animate() {
     // on appelle la fonction animate() récursivement à chaque frame
     requestAnimationFrame(animate);
 
-    camera.update();
+    var currentTime = Date.now() - previousTime;
+    camera.update(isNaN(currentTime) ? 20 : currentTime);
+    previousTime = Date.now();
+
     camera.look();
 
     renderer.render(scene, camera);
