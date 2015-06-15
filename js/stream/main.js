@@ -1,5 +1,5 @@
 var mesh_number = 25;
-var renderer, scene, controls, cube, container, plane, mouse= {x:0, y:0}, sphere;
+var renderer, scene, controls, cube, container, plane, mouse= {x:0, y:0}, sphere, sphereLoader;
 var bigmesh;
 var raycaster;
 var objects = [];
@@ -45,7 +45,9 @@ function init() {
 
     // Load the scene
     // loader = new THREE.OBJLoader();
-    sphere = ProgressiveLoader('static/data/spheres/' + params.get.res + '.obj', scene);
+    sphereLoader = new ProgressiveLoader('static/data/spheres/' + params.get.res + '.obj', scene);
+    sphereLoader.load();
+    sphere = sphereLoader.obj;
 
     plane = new Plane(1000,1000);
     plane.translate(0,0,-100);
@@ -54,7 +56,6 @@ function init() {
 }
 
 function animate() {
-    // on appelle la fonction animate() récursivement à chaque frame
     requestAnimationFrame(animate);
 
     var currentTime = Date.now() - previousTime;
