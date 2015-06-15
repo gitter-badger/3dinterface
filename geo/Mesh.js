@@ -222,7 +222,7 @@ geo.Face = function() {
 }
 
 geo.Face.prototype.max = function() {
-    if (this.d) {
+    if (this.d !== undefined) {
         return Math.max(this.a, this.b, this.c, this.d);
     } else {
         return Math.max(this.a, this.b, this.c);
@@ -239,7 +239,7 @@ geo.Face.prototype.maxTexture = function() {
 
 geo.Face.prototype.toList = function() {
     var l = ['f', this.a, this.b, this.c];
-    if (this.d)
+    if (this.d !== undefined)
         l.push(this.d);
 
     if (this.aTexture !== undefined) {
@@ -248,14 +248,14 @@ geo.Face.prototype.toList = function() {
         l.push(this.cTexture);
     }
 
-    if (this.dTexture)
+    if (this.dTexture !== undefined)
         l.push(this.dTexture);
 
     return l;
 }
 
 geo.Face.prototype.toString = function() {
-    return 'f ' + this.a + ' ' + this.b + ' ' + this.c + (this.d ? ' ' + this.d : '');
+    return 'f ' + this.a + ' ' + this.b + ' ' + this.c + (this.d !== undefined ? ' ' + this.d : '');
 }
 
 geo.Usemtl = function() {

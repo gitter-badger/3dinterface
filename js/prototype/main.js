@@ -54,7 +54,6 @@ function init() {
     container.style.width = container_size.width() + 'px';
     renderer.setSize(container_size.width(), container_size.height());
     // renderer.setSize(container_size.width(), container_size.height());
-    renderer.shadowMapEnabled = true;
     renderer.setClearColor(0x87ceeb);
 
     // Initialize previewer
@@ -159,7 +158,7 @@ function render() {
     cameras.map(function(camera) { if (camera instanceof RecommendedCamera) hide(camera); });
 
     // Update transparent elements
-    THREEx.Transparency.update(cameras.mainCamera());
+    // THREEx.Transparency.update(cameras.mainCamera());
 
     // Render preview
     previewer.render(cameraSelecter.prev, container_size.width(), container_size.height());
