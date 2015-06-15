@@ -13,6 +13,9 @@ Camera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 
 // Update function
 Camera.prototype.update = function(time) {
+    if (time === undefined) {
+        time = 20;
+    }
     this.theta += 0.01 * time / 20;
     this.position.x = Camera.DISTANCE_X*Math.cos(this.theta);
     this.position.y = Camera.DISTANCE_X*Math.sin(this.theta);
