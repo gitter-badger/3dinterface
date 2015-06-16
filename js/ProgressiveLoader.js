@@ -47,6 +47,17 @@ var _parseList = function(arr) {
         ret.y = arr[3];
         ret.z = arr[4];
 
+    } else if (arr[0] === 'u') {
+
+        // usemtl
+        ret.index = -1;
+        ret.type = 'usemtl';
+        ret.materialName = arr[1];
+        ret.vLength = arr[2];
+        ret.fLength = arr[3];
+        ret.texCoordsExist = arr[4];
+        ret.normalsExist = arr[5];
+
     }
 
     return ret;
@@ -97,84 +108,6 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
 
     var self = this;
 
-    this.socket.on('usemtl', function(materialName, verticesNumber, facesNumber, texCoordsExist, normalsExist) {
-
-        // console.log("New mesh arrived : " + materialName);
-        if (self.currentMesh !== undefined && self.currentMesh.visible === false) {
-            self.currentMesh.geometry.computeBoundingSphere();
-
-            if (self.currentMesh.geometry.attributes.normal === undefined) {
-                self.currentMesh.geometry.computeVertexNormals();
-            }
-
-            self.currentMesh.visible = true;
-        }
-
-        // Create mesh material
-        var material;
-
-        if (materialName === null) {
-
-            // If no material, create a default material
-            material = new THREE.MeshLambertMaterial({color: 'red'});
-
-        } else {
-
-            // If material name exists, load if from material, and do a couple of settings
-            material = self.materialCreator.materials[materialName.trim()];
-
-            material.side = THREE.DoubleSide;
-
-            if (material.map)
-                material.map.wrapS = material.map.wrapT = THREE.RepeatWrapping;
-        }
-
-        // Create mesh geometry
-        var geometry = new THREE.BufferGeometry();
-        geometry.dynamic = true;
-
-        var positionArray = new Float32Array(facesNumber * 3 * 3);
-        var positionAttribute = new THREE.BufferAttribute(positionArray, 3);
-
-        geometry.addAttribute('position', positionAttribute);
-
-        // Add other attributes if necessary
-        if (texCoordsExist) {
-
-            // console.log("Mesh with textures");
-
-            var uvArray = new Float32Array(facesNumber * 3 * 2);
-            var uvAttribute = new THREE.BufferAttribute(uvArray, 2);
-
-            geometry.addAttribute('uv', uvAttribute);
-        }
-
-        if (normalsExist) {
-
-            // console.log("Mesh with normals");
-
-            var normalArray = new Float32Array(facesNumber * 3 * 3);
-            var normalAttribute = new THREE.BufferAttribute(normalArray, 3);
-
-            geometry.addAttribute('normal', normalAttribute);
-
-        }
-
-        // Create mesh
-        var mesh = new THREE.Mesh(geometry, material);
-
-        self.currentMesh = mesh;
-        self.obj.add(mesh);
-        mesh.visible = false;
-
-        if (typeof self.callback === 'function') {
-            self.callback(mesh);
-        }
-
-        // Ask for next
-        self.socket.emit('next');
-    });
-
     this.socket.on('ok', function() {
         console.log('ok');
         self.socket.emit('next');
@@ -183,7 +116,6 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
     this.socket.on('elements', function(arr) {
 
         // console.log("Received elements for the " + (++self.counter) + "th time !");
-
         for (var i = 0; i < arr.length; i++) {
 
             var elt = _parseList(arr[i]);
@@ -203,6 +135,83 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
 
                 // New normal arrived
                 self.normals[elt.index] = [elt.x, elt.y, elt.z];
+
+            } else if (elt.type === 'usemtl') {
+
+                if (self.currentMesh !== undefined) {
+
+                    self.currentMesh.geometry.computeBoundingSphere();
+
+                    if (self.currentMesh.geometry.attributes.normal === undefined) {
+
+                        self.currentMesh.geometry.computeVertexNormals();
+
+                    }
+
+                }
+
+                // Must create new mesh
+                // console.log("New mesh arrived : " + elt.materialName);
+
+                // Create mesh material
+                var material;
+
+                if (elt.materialName === null) {
+
+                    // If no material, create a default material
+                    material = new THREE.MeshLambertMaterial({color: 'red'});
+
+                } else {
+
+                    // If material name exists, load if from material, and do a couple of settings
+                    material = self.materialCreator.materials[elt.materialName.trim()];
+
+                    material.side = THREE.DoubleSide;
+
+                    if (material.map)
+                        material.map.wrapS = material.map.wrapT = THREE.RepeatWrapping;
+                }
+
+                // Create mesh geometry
+                var geometry = new THREE.BufferGeometry();
+                geometry.dynamic = true;
+
+                var positionArray = new Float32Array(elt.fLength * 3 * 3);
+                var positionAttribute = new THREE.BufferAttribute(positionArray, 3);
+
+                geometry.addAttribute('position', positionAttribute);
+
+                // Add other attributes if necessary
+                if (elt.texCoordsExist) {
+
+                    // console.log("Mesh with textures");
+
+                    var uvArray = new Float32Array(elt.fLength * 3 * 2);
+                    var uvAttribute = new THREE.BufferAttribute(uvArray, 2);
+
+                    geometry.addAttribute('uv', uvAttribute);
+                }
+
+                if (elt.normalsExist) {
+
+                    // console.log("Mesh with normals");
+
+                    var normalArray = new Float32Array(elt.fLength * 3 * 3);
+                    var normalAttribute = new THREE.BufferAttribute(normalArray, 3);
+
+                    geometry.addAttribute('normal', normalAttribute);
+
+                }
+
+                // Create mesh
+                var mesh = new THREE.Mesh(geometry, material);
+
+                self.currentMesh = mesh;
+                self.obj.add(mesh);
+
+                if (typeof self.callback === 'function') {
+                    self.callback(mesh);
+                }
 
             } else if (elt.type === 'face') {
 
@@ -269,7 +278,6 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
         if (self.currentMesh.geometry.attributes.normal === undefined) {
             self.currentMesh.geometry.computeVertexNormals();
         }
-        self.currentMesh.visible = true;
         self.finished = true;
     });
 }

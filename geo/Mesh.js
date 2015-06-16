@@ -6,7 +6,7 @@ mesh.Mesh = function() {
     this.faces = [];
     this.texCoords = [];
     this.normals = [];
-    this.faceIndex = 0;
+    this.faceIndex = -1;
     this.material = null;
 }
 
@@ -79,7 +79,7 @@ mesh.Mesh.prototype.addNormal = function(normal) {
 }
 
 mesh.Mesh.prototype.isFinished = function() {
-    return this.faces.length === this.faceIndex;
+    return this.faces.length < this.faceIndex;
 }
 
 // Vertex

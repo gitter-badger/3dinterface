@@ -616,11 +616,15 @@ function initSponzaScene(scene, collidableObjects, loader, static_path) {
 
         }
 
+        obj.raycastable = true;
+
     });
 
     loader.load();
-    glob = loader.obj;
     loader.obj.scale.set(0.1,0.1,0.1);
+
+    collidableObjects.push(loader.obj);
+    loader.obj.raycastable = true;
 
     // ProgressiveLoader('/static/data/sponza/sponza.obj', scene,
     //     function(obj) {

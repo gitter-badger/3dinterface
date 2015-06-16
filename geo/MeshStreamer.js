@@ -117,7 +117,7 @@ geo.MeshStreamer.prototype.loadFromFile = function(path, callback) {
 
 geo.MeshStreamer.prototype.start = function(socket) {
 
-    this.meshIndex = -1;
+    this.meshIndex = 0;
 
     var self = this;
 
@@ -142,68 +142,85 @@ geo.MeshStreamer.prototype.start = function(socket) {
 
         // Send next elements
         var currentMesh = self.meshes[self.meshIndex];
+        var currentFace;
 
-        if (currentMesh === undefined || currentMesh.isFinished()) {
-            currentMesh = self.meshes[++self.meshIndex];
+        var data = [];
 
-            if (currentMesh === undefined) {
-                socket.emit('finished');
-                socket.disconnect();
-                return;
+        var sent = 0;
+
+        while (sent < 500) {
+
+            if (currentMesh.faceIndex === -1) {
+
+                // Must give usemtl
+                data.push(['u', currentMesh.material, currentMesh.vertices.length, currentMesh.faces.length, self.texCoords.length > 0, self.normals.length > 0]);
+                sent++;
+                currentFace = currentMesh.faces[++currentMesh.faceIndex];
+
+            } else if (currentMesh.isFinished()) {
+
+                // Must switch to next mesh
+                currentMesh = self.meshes[++self.meshIndex];
+
+                // If not other mesh, we finished
+                if (currentMesh === undefined) {
+
+                    socket.emit('elements', data);
+                    socket.disconnect();
+                    return;
+
+                }
+
+                data.push(['u', currentMesh.material, currentMesh.vertices.length, currentMesh.faces.length, self.texCoords.length > 0, self.normals.length > 0]);
+                sent++;
+                continue;
+
+            } else {
+
+                currentFace = currentMesh.faces[++currentMesh.faceIndex];
+
+                if (currentFace === undefined) {
+
+                    continue;
+
+                }
+
             }
 
-            socket.emit(
-                'usemtl',
-                currentMesh.material,
-                currentMesh.vertices.length,
-                currentMesh.faces.length,
-                self.texCoords.length > 0,
-                self.normals.length > 0
-            );
+            var vertex1 = self.vertices[currentFace.a];
+            var vertex2 = self.vertices[currentFace.b];
+            var vertex3 = self.vertices[currentFace.c];
 
-        } else {
+            if (!vertex1.sent) { data.push(vertex1.toList()); vertex1.sent = true; sent++;}
+            if (!vertex2.sent) { data.push(vertex2.toList()); vertex2.sent = true; sent++;}
+            if (!vertex3.sent) { data.push(vertex3.toList()); vertex3.sent = true; sent++;}
 
-            var data = [];
+            var normal1 = self.normals[currentFace.aNormal];
+            var normal2 = self.normals[currentFace.bNormal];
+            var normal3 = self.normals[currentFace.cNormal];
 
-            for (var limit = Math.min(currentMesh.faceIndex + self.chunk, currentMesh.faces.length);
-                 currentMesh.faceIndex < limit;
-                 currentMesh.faceIndex++)
-            {
+            if (normal1 !== undefined && !normal1.sent) { data.push(normal1.toList()); normal1.sent = true; sent++;}
+            if (normal2 !== undefined && !normal2.sent) { data.push(normal2.toList()); normal2.sent = true; sent++;}
+            if (normal3 !== undefined && !normal3.sent) { data.push(normal3.toList()); normal3.sent = true; sent++;}
 
-                var currentFace = currentMesh.faces[currentMesh.faceIndex];
-                var vertex1 = self.vertices[currentFace.a];
-                var vertex2 = self.vertices[currentFace.b];
-                var vertex3 = self.vertices[currentFace.c];
+            var tex1 = self.texCoords[currentFace.aTexture];
+            var tex2 = self.texCoords[currentFace.bTexture];
+            var tex3 = self.texCoords[currentFace.cTexture];
 
-                if (!vertex1.sent) { data.push(vertex1.toList()); vertex1.sent = true;}
-                if (!vertex2.sent) { data.push(vertex2.toList()); vertex2.sent = true;}
-                if (!vertex3.sent) { data.push(vertex3.toList()); vertex3.sent = true;}
+            if (tex1 !== undefined && !tex1.sent) { data.push(tex1.toList()); tex1.sent = true; sent++;}
+            if (tex2 !== undefined && !tex2.sent) { data.push(tex2.toList()); tex2.sent = true; sent++;}
+            if (tex3 !== undefined && !tex3.sent) { data.push(tex3.toList()); tex3.sent = true; sent++;}
 
-                var normal1 = self.normals[currentFace.aNormal];
-                var normal2 = self.normals[currentFace.bNormal];
-                var normal3 = self.normals[currentFace.cNormal];
+            currentFace.index = currentMesh.faceIndex;
 
-                if (normal1 !== undefined && !normal1.sent) { data.push(normal1.toList()); normal1.sent = true;}
-                if (normal2 !== undefined && !normal2.sent) { data.push(normal2.toList()); normal2.sent = true;}
-                if (normal3 !== undefined && !normal3.sent) { data.push(normal3.toList()); normal3.sent = true;}
-
-                var tex1 = self.texCoords[currentFace.aTexture];
-                var tex2 = self.texCoords[currentFace.bTexture];
-                var tex3 = self.texCoords[currentFace.cTexture];
-
-                if (tex1 !== undefined && !tex1.sent) { data.push(tex1.toList()); tex1.sent = true;}
-                if (tex2 !== undefined && !tex2.sent) { data.push(tex2.toList()); tex2.sent = true;}
-                if (tex3 !== undefined && !tex3.sent) { data.push(tex3.toList()); tex3.sent = true;}
-
-                currentFace.index = currentMesh.faceIndex;
-
-                data.push(currentFace.toList()); currentFace.sent = true;
-            }
-
-            // Emit self.chunk faces (and the corresponding vertices if not emitted)
-            socket.emit('elements', data);
+            data.push(currentFace.toList()); currentFace.sent = true;
+            sent++;
 
         }
+
+        // Emit self.chunk faces (and the corresponding vertices if not emitted)
+        socket.emit('elements', data);
+
     });
 }
 

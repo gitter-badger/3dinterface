@@ -45,7 +45,7 @@ function init() {
 
     // Load the scene
     // loader = new THREE.OBJLoader();
-    sphereLoader = new ProgressiveLoader('static/data/spheres/' + params.get.res + '.obj', scene);
+    sphereLoader = new ProgressiveLoader('/static/data/spheres/' + params.get.res + '.obj', scene);
     sphereLoader.load();
     sphere = sphereLoader.obj;
 
