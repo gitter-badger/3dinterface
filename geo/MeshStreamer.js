@@ -10,6 +10,7 @@ geo.MeshStreamer = function(path, callback) {
     // In meshes, vertices and texture coords are shared
     this.vertices = [];
     this.faces = [];
+    this.normals = [];
     this.texCoords = [];
 
     // Chunk size
@@ -45,21 +46,28 @@ geo.MeshStreamer.prototype.loadFromFile = function(path, callback) {
                 if (line[1] === 't') {
 
                     // Texture coord
-                    self.texCoords.push(new mesh.TexCoord(line));
+                    var texCoord = new mesh.TexCoord(line);
+                    texCoord.index = self.texCoords.length;
+                    self.texCoords.push(texCoord);
 
                 } else if (line[1] === 'n') {
 
-                    // Ignore normals
+                    var normal = new mesh.Normal(line);
+                    normal.index = self.normals.length;
+                    self.normals.push(normal);
 
                 } else {
 
                     // Just a simple vertex
-                    if (currentMesh === undefined) {
-                        // Chances are that we won't use any material in this case
-                        currentMesh = new mesh.Mesh();
-                        self.meshes.push(currentMesh);
-                    }
-                    var vertex = currentMesh.addVertex(line);
+                    // if (currentMesh === undefined) {
+
+                    //     // Chances are that we won't use any material in this case
+                    //     currentMesh = new mesh.Mesh();
+                    //     self.meshes.push(currentMesh);
+
+                    // }
+
+                    var vertex = new mesh.Vertex(line);
                     vertex.index = self.vertices.length;
                     self.vertices.push(vertex);
 
@@ -67,25 +75,35 @@ geo.MeshStreamer.prototype.loadFromFile = function(path, callback) {
 
             } else if (line[0] === 'f') {
 
+                // Create mesh if it doesn't exist
+                if (currentMesh === undefined) {
+                    currentMesh = new mesh.Mesh();
+                    self.meshes.push(currentMesh);
+                }
+
                 // Create faces (two if Face4)
                 var faces = currentMesh.addFaces(line);
 
                 faces[0].index = self.faces.length;
                 self.faces.push(faces[0]);
+
                 if (faces.length === 2) {
+
                     faces[1].index = self.faces.length;
                     self.faces.push(faces[1]);
+
                 }
 
             } else if (line[0] === 'u') {
 
                 // usemtl
+                // If a current mesh exists, finish it
 
                 // Create a new mesh
                 currentMesh = new mesh.Mesh();
                 self.meshes.push(currentMesh);
-                currentMesh.material = mesh.Material(line);
-                self.orderedElements.push(new mesh.Usemtl(line));
+                currentMesh.material = (new mesh.Material(line)).name;
+                // console.log(currentMesh.material);
 
             }
 
@@ -139,7 +157,8 @@ geo.MeshStreamer.prototype.start = function(socket) {
                 currentMesh.material,
                 currentMesh.vertices.length,
                 currentMesh.faces.length,
-                currentMesh.texCoords.length
+                self.texCoords.length > 0,
+                self.normals.length > 0
             );
 
         } else {
@@ -159,6 +178,24 @@ geo.MeshStreamer.prototype.start = function(socket) {
                 if (!vertex1.sent) { data.push(vertex1.toList()); vertex1.sent = true;}
                 if (!vertex2.sent) { data.push(vertex2.toList()); vertex2.sent = true;}
                 if (!vertex3.sent) { data.push(vertex3.toList()); vertex3.sent = true;}
+
+                var normal1 = self.normals[currentFace.aNormal];
+                var normal2 = self.normals[currentFace.bNormal];
+                var normal3 = self.normals[currentFace.cNormal];
+
+                if (normal1 !== undefined && !normal1.sent) { data.push(normal1.toList()); normal1.sent = true;}
+                if (normal2 !== undefined && !normal2.sent) { data.push(normal2.toList()); normal2.sent = true;}
+                if (normal3 !== undefined && !normal3.sent) { data.push(normal3.toList()); normal3.sent = true;}
+
+                var tex1 = self.texCoords[currentFace.aTexture];
+                var tex2 = self.texCoords[currentFace.bTexture];
+                var tex3 = self.texCoords[currentFace.cTexture];
+
+                if (tex1 !== undefined && !tex1.sent) { data.push(tex1.toList()); tex1.sent = true;}
+                if (tex2 !== undefined && !tex2.sent) { data.push(tex2.toList()); tex2.sent = true;}
+                if (tex3 !== undefined && !tex3.sent) { data.push(tex3.toList()); tex3.sent = true;}
+
+                currentFace.index = currentMesh.faceIndex;
 
                 data.push(currentFace.toList()); currentFace.sent = true;
             }

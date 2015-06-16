@@ -5,8 +5,17 @@ mesh.Mesh = function() {
     this.vertices = [];
     this.faces = [];
     this.texCoords = [];
+    this.normals = [];
     this.faceIndex = 0;
     this.material = null;
+}
+
+mesh.Mesh.prototype.hasNormals = function() {
+    return this.normals.length > 0;
+}
+
+mesh.Mesh.prototype.hasTexCoords = function() {
+    return this.texCoords.length > 0;
 }
 
 mesh.Mesh.prototype.addVertex = function(vertex) {
@@ -24,8 +33,6 @@ mesh.Mesh.prototype.addVertex = function(vertex) {
 }
 
 mesh.Mesh.prototype.addFaces = function(face) {
-    this.index = this.faces.length;
-
     var faces;
 
     if (face instanceof mesh.Face) {
@@ -46,8 +53,6 @@ mesh.Mesh.prototype.addFaces = function(face) {
 }
 
 mesh.Mesh.prototype.addTexCoord = function(texCoord) {
-    this.index = this.texCoords.length;
-
     if (texCoord instanceof mesh.TexCoord) {
         this.texCoords.push(texCoord);
     } else if (typeof texCoord === 'string' || texCoord instanceof String) {
@@ -58,6 +63,19 @@ mesh.Mesh.prototype.addTexCoord = function(texCoord) {
     }
 
     return this.texCoords[this.texCoords.length - 1];
+}
+
+mesh.Mesh.prototype.addNormal = function(normal) {
+    if (normal instanceof mesh.Normal) {
+        this.normals.push(normal);
+    } else if (typeof normal === 'string' || normal instanceof String) {
+        this.normals.push(new mesh.Normal(normal));
+    } else {
+        console.error("Cann only add normal from mesh.Normal of string");
+        return;
+    }
+
+    return this.normals[this.normals.length - 1];
 }
 
 mesh.Mesh.prototype.isFinished = function() {
@@ -83,6 +101,25 @@ mesh.Vertex.prototype.toString = function() {
     return 'v ' + this.x + ' ' + this.y + ' ' + this.z;
 }
 
+// Normal is the same as a vertex, except for toList and toString
+mesh.Normal = function() {
+    mesh.Vertex.apply(this, arguments);
+}
+
+mesh.Normal.prototype = Object.create(mesh.Vertex.prototype);
+mesh.Normal.prototype.constructor = mesh.Normal;
+
+mesh.Normal.prototype.toList = function() {
+    var superObject = mesh.Vertex.prototype.toList.call(this);
+    superObject[0] = 'vn';
+    return superObject;
+}
+
+mesh.Normal.toString = function() {
+    var superObject = mesh.Vertex.prototype.toString.call(this);
+    superObject.replace('v', 'vn');
+    return superObject;
+}
 
 // TexCoord : texture coordinates
 mesh.TexCoord = function() {
@@ -123,12 +160,20 @@ mesh.Face = function() {
             var split3 = split[3].split('/');
 
             var vIndex = 0;
-            // var tIndex = split1.length === 2 ? 1 : 2;
             var tIndex = 1;
+            var nIndex = 2;
 
-            this.a = parseInt(split1[vIndex]) - 1; this.aTexture = parseInt(split1[tIndex]) - 1;
-            this.b = parseInt(split2[vIndex]) - 1; this.bTexture = parseInt(split2[tIndex]) - 1;
-            this.c = parseInt(split3[vIndex]) - 1; this.cTexture = parseInt(split3[tIndex]) - 1;
+            this.a = parseInt(split1[vIndex]) - 1;
+            this.b = parseInt(split2[vIndex]) - 1;
+            this.c = parseInt(split3[vIndex]) - 1;
+
+            this.aTexture = parseInt(split1[tIndex]) - 1;
+            this.bTexture = parseInt(split2[tIndex]) - 1;
+            this.cTexture = parseInt(split3[tIndex]) - 1;
+
+            this.aNormal = parseInt(split1[nIndex]) - 1;
+            this.bNormal = parseInt(split2[nIndex]) - 1;
+            this.cNormal = parseInt(split3[nIndex]) - 1;
 
         }
     }
@@ -137,9 +182,9 @@ mesh.Face = function() {
 
 }
 
-
 var parseFace = function(arg) {
-    var split = arg.split(' ');
+
+    var split = arg.trim().split(' ');
     var ret = [];
 
     // Face3
@@ -147,6 +192,7 @@ var parseFace = function(arg) {
         ret.push(new mesh.Face(arg));
     }
 
+    // Face3 == 2 * Face3
     if (split.length >= 5) {
         ret.push(new mesh.Face(
             [
@@ -178,7 +224,11 @@ mesh.Face.prototype.maxTexture = function() {
 }
 
 mesh.Face.prototype.toList = function() {
-    var l = ['f', this.index, this.a, this.b, this.c];
+    var l = ['f', this.index,
+                                         [this.a,        this.b,        this.c       ],
+             isNaN(this.aTexture) ? [] : [this.aTexture, this.bTexture, this.cTexture],
+             isNaN(this.aNormal ) ? [] : [this.aNormal,  this.bNormal,  this.cNormal ]
+    ];
 
     // if (this.d !== undefined)
     //     l.push(this.d);
@@ -201,8 +251,9 @@ mesh.Face.prototype.toString = function() {
 
 // Material
 mesh.Material = function() {
-    var split = arguments[0].replace(/\s+/g, ' ').split(' ');
+    var split = arguments[0].replace(/\s+/g, ' ').trim().split(' ');
     this.name = split[1];
+    console.log(this.name);
 }
 
 mesh.Material.prototype.toString = function() {

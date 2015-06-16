@@ -19,21 +19,38 @@ var _parseList = function(arr) {
     } else if (arr[0] === 'f') {
         ret.type = 'face';
 
-        if (arr.length === 5 ) {
+        // Only Face3 are allowed
+        vertexIndices  = arr[2];
+        textureIndices = arr[3];
+        normalIndices  = arr[4];
 
-            // Simple Face3
-            ret.a = arr[2];
-            ret.b = arr[3];
-            ret.c = arr[4];
+        // Vertex indices
+        ret.a = vertexIndices[0];
+        ret.b = vertexIndices[1];
+        ret.c = vertexIndices[2];
 
-        } else if (arr.length === 8) {
-
-            // Face3 with textures and maybe normals
-            ret.a = arr[2];
-            ret.b = arr[3];
-            ret.c = arr[4];
-
+        // Texutre indices (if they exist)
+        if (textureIndices.length > 0) {
+            ret.aTexture = textureIndices[0];
+            ret.bTexture = textureIndices[1];
+            ret.cTexture = textureIndices[2];
         }
+
+        // Normal indices (if they exist)
+        if (normalIndices.length > 0) {
+            ret.aNormal = normalIndices[0];
+            ret.bNormal = normalIndices[1];
+            ret.cNormal = normalIndices[2];
+        }
+
+    } else if (arr[0] === 'vn') {
+
+        // Normal
+        ret.type = "normal";
+        ret.x = arr[2];
+        ret.y = arr[3];
+        ret.z = arr[4];
+
     }
 
     return ret;
@@ -42,8 +59,8 @@ var _parseList = function(arr) {
 var ProgressiveLoader = function(path, scene, callback) {
     // Init attributes
     this.objPath = path;
-    this.texturesPath = path.substring(0, path.lastIndexOf('/')) + '/';
-    this.mtlPath = path.replace('.obj', '.mtl');
+    this.texturesPath = '/' + path.substring(0, path.lastIndexOf('/')) + '/';
+    this.mtlPath = '/' + path.replace('.obj', '.mtl');
     this.scene = scene;
     this.callback = callback;
     this.counter = 0;
@@ -54,6 +71,7 @@ var ProgressiveLoader = function(path, scene, callback) {
 
     this.vertices = [];
     this.texCoords = [];
+    this.normals = [];
 
     // Init MTLLoader
     this.loader = new THREE.MTLLoader(this.texturesPath);
@@ -70,6 +88,8 @@ ProgressiveLoader.prototype.load = function() {
 
     this.loader.load(self.mtlPath, function(materialCreator) {
 
+        self.materialCreator = materialCreator;
+
         materialCreator.preload();
 
         self.start();
@@ -81,7 +101,9 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
 
     var self = this;
 
-    this.socket.on('usemtl', function(materialName, verticesNumber, facesNumber, texCoordsNumber) {
+    this.socket.on('usemtl', function(materialName, verticesNumber, facesNumber, texCoordsExist, normalsExist) {
+
+        // console.log("New mesh arrived : " + materialName);
 
         // Create mesh material
         var material;
@@ -94,7 +116,7 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
         } else {
 
             // If material name exists, load if from material, and do a couple of settings
-            material = materialCreator.materials[currentMaterial.trim()];
+            material = self.materialCreator.materials[materialName.trim()];
 
             material.side = THREE.DoubleSide;
 
@@ -111,12 +133,37 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
 
         geometry.addAttribute('position', positionAttribute);
 
+        // Add other attributes if necessary
+        if (texCoordsExist) {
+
+            // console.log("Mesh with textures");
+
+            var uvArray = new Float32Array(facesNumber * 3 * 2);
+            var uvAttribute = new THREE.BufferAttribute(uvArray, 2);
+
+            geometry.addAttribute('uv', uvAttribute);
+        }
+
+        if (normalsExist) {
+
+            // console.log("Mesh with normals");
+
+            var normalArray = new Float32Array(facesNumber * 3 * 3);
+            var normalAttribute = new THREE.BufferAttribute(normalArray, 3);
+
+            geometry.addAttribute('normal', normalAttribute);
+
+        }
+
         // Create mesh
         var mesh = new THREE.Mesh(geometry, material);
 
-        // Add mesh to obj
         self.currentMesh = mesh;
         self.obj.add(mesh);
+
+        if (typeof self.callback === 'function') {
+            self.callback(mesh);
+        }
 
         // Ask for next
         self.socket.emit('next');
@@ -129,7 +176,7 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
 
     this.socket.on('elements', function(arr) {
 
-        console.log("Received elements for the " + (++self.counter) + "th time !");
+        // console.log("Received elements for the " + (++self.counter) + "th time !");
 
         for (var i = 0; i < arr.length; i++) {
 
@@ -144,7 +191,12 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
             } else if (elt.type === 'texCoord') {
 
                 // New texCoord arrived
-                self.texCoords[elt.index] = [elt.x, elt.y, elt.z];
+                self.texCoords[elt.index] = [elt.x, elt.y];
+
+            } else if (elt.type === 'normal') {
+
+                // New normal arrived
+                self.normals[elt.index] = [elt.x, elt.y, elt.z];
 
             } else if (elt.type === 'face') {
 
@@ -163,7 +215,41 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
 
                 self.currentMesh.geometry.attributes.position.needsUpdate = true;
 
+                // If normals
+                if (elt.aNormal !== undefined) {
+
+                    self.currentMesh.geometry.attributes.normal.array[elt.index * 9    ] =  self.normals[elt.aNormal][0];
+                    self.currentMesh.geometry.attributes.normal.array[elt.index * 9 + 1] =  self.normals[elt.aNormal][1];
+                    self.currentMesh.geometry.attributes.normal.array[elt.index * 9 + 2] =  self.normals[elt.aNormal][2];
+
+                    self.currentMesh.geometry.attributes.normal.array[elt.index * 9 + 3] =  self.normals[elt.bNormal][0];
+                    self.currentMesh.geometry.attributes.normal.array[elt.index * 9 + 4] =  self.normals[elt.bNormal][1];
+                    self.currentMesh.geometry.attributes.normal.array[elt.index * 9 + 5] =  self.normals[elt.bNormal][2];
+
+                    self.currentMesh.geometry.attributes.normal.array[elt.index * 9 + 6] =  self.normals[elt.cNormal][0];
+                    self.currentMesh.geometry.attributes.normal.array[elt.index * 9 + 7] =  self.normals[elt.cNormal][1];
+                    self.currentMesh.geometry.attributes.normal.array[elt.index * 9 + 8] =  self.normals[elt.cNormal][2];
+
+                    self.currentMesh.geometry.attributes.normal.needsUpdate = true;
+
+                }
+
+                if (elt.aTexture !== undefined) {
+
+                    self.currentMesh.geometry.attributes.uv.array[elt.index * 9    ] =  self.texCoords[elt.aTexture][0];
+                    self.currentMesh.geometry.attributes.uv.array[elt.index * 9 + 1] =  self.texCoords[elt.aTexture][1];
+
+                    self.currentMesh.geometry.attributes.uv.array[elt.index * 9 + 2] =  self.texCoords[elt.bTexture][0];
+                    self.currentMesh.geometry.attributes.uv.array[elt.index * 9 + 3] =  self.texCoords[elt.bTexture][1];
+
+                    self.currentMesh.geometry.attributes.uv.array[elt.index * 9 + 4] =  self.texCoords[elt.cTexture][0];
+                    self.currentMesh.geometry.attributes.uv.array[elt.index * 9 + 5] =  self.texCoords[elt.cTexture][1];
+
+                    self.currentMesh.geometry.attributes.uv.needsUpdate = true;
+                }
+
             }
+
         }
 
         // Ask for next elements

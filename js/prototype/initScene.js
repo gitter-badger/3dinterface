@@ -600,21 +600,26 @@ function initMountain(camera, scene, static_path, coins) {
 
 function initSponzaScene(scene, collidableObjects, loader, static_path) {
 
-    ProgressiveLoader('/static/data/sponza/sponza.obj', scene,
-        function(obj) {
-            obj.scale.set(0.1,0.1,0.1);
-            collidableObjects.push(obj);
-            obj.raycastable = true;
+    var loader = new ProgressiveLoader('static/data/sponza/sponza.obj', scene);
+    loader.load();
+    glob = loader.obj;
+    loader.obj.scale.set(0.1,0.1,0.1);
 
-            if (obj.material.name === 'chain' ||
-                obj.material.name === 'leaf'  ||
-                obj.material.name === 'Material__57') {
+    // ProgressiveLoader('/static/data/sponza/sponza.obj', scene,
+    //     function(obj) {
+    //         obj.scale.set(0.1,0.1,0.1);
+    //         collidableObjects.push(obj);
+    //         obj.raycastable = true;
 
-                THREEx.Transparency.push(obj);
-            }
+    //         if (obj.material.name === 'chain' ||
+    //             obj.material.name === 'leaf'  ||
+    //             obj.material.name === 'Material__57') {
 
-        }
-    );
+    //             THREEx.Transparency.push(obj);
+    //         }
+
+    //     }
+    // );
 
 }
 

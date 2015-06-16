@@ -76,7 +76,7 @@ function init() {
     container.appendChild(renderer.domElement);
 
     // Initialize pointer camera
-    var camera1 = new PointerCamera(50, container_size.width() / container_size.height(), 0.1, 100000, renderer, container);
+    var camera1 = new PointerCamera(50, container_size.width() / container_size.height(), 0.01, 100000, renderer, container);
 
     cameras = initMainScene(camera1, scene, static_path, coins);
     // cameras = initPeach(camera1, scene, static_path, coins);
@@ -143,7 +143,7 @@ function render() {
 
 
     // Set current position of camera
-    // cameras.look();
+    cameras.look();
 
     // var left = 0, bottom = 0, width = container_size.width(), height = container_size.height();
     // renderer.setScissor(left, bottom, width, height);
