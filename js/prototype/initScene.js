@@ -13,10 +13,10 @@ function addLight(scene) {
 
 function initPeachCastle(scene, collidableObjects, loader, static_path) {
 
-    ProgressiveLoader(
-        '/static/data/castle/princess peaches castle (outside).obj',
+    var loader = new ProgressiveLoader(
+        'static/data/castle/princess peaches castle (outside).obj',
         scene,
-        function(object, container) {
+        function(object) {
             collidableObjects.push(object);
             object.raycastable = true;
             if (object.material.name === 'Material.103_princess_peaches_cast') {
@@ -30,6 +30,7 @@ function initPeachCastle(scene, collidableObjects, loader, static_path) {
             }
         }
     );
+    loader.load();
 
 }
 
@@ -600,7 +601,17 @@ function initMountain(camera, scene, static_path, coins) {
 
 function initSponzaScene(scene, collidableObjects, loader, static_path) {
 
-    var loader = new ProgressiveLoader('static/data/sponza/sponza.obj', scene);
+    var loader = new ProgressiveLoader('static/data/sponza/sponza.obj', scene, function(obj) {
+        if (obj.material.name === 'chain' ||
+            obj.material.name === 'leaf'  ||
+            obj.material.name === 'Material__57') {
+
+            THREEx.Transparency.push(obj);
+
+        }
+
+    });
+
     loader.load();
     glob = loader.obj;
     loader.obj.scale.set(0.1,0.1,0.1);

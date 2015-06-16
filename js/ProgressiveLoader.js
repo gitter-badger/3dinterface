@@ -1,9 +1,5 @@
 var _parseList = function(arr) {
 
-    // For example
-    // arr = [  'f',    0,    0,     1,    2];
-    //        type  index first second third
-
     var ret = {};
     ret.index = arr[1];
 
@@ -104,6 +100,10 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
     this.socket.on('usemtl', function(materialName, verticesNumber, facesNumber, texCoordsExist, normalsExist) {
 
         // console.log("New mesh arrived : " + materialName);
+        if (self.currentMesh !== undefined && self.currentMesh.visible === false) {
+            self.currentMesh.geometry.computeBoundingSphere();
+            self.currentMesh.visible = true;
+        }
 
         // Create mesh material
         var material;
@@ -160,6 +160,7 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
 
         self.currentMesh = mesh;
         self.obj.add(mesh);
+        mesh.visible = false;
 
         if (typeof self.callback === 'function') {
             self.callback(mesh);
@@ -236,16 +237,17 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
 
                 if (elt.aTexture !== undefined) {
 
-                    self.currentMesh.geometry.attributes.uv.array[elt.index * 9    ] =  self.texCoords[elt.aTexture][0];
-                    self.currentMesh.geometry.attributes.uv.array[elt.index * 9 + 1] =  self.texCoords[elt.aTexture][1];
+                    self.currentMesh.geometry.attributes.uv.array[elt.index * 6    ] =  self.texCoords[elt.aTexture][0];
+                    self.currentMesh.geometry.attributes.uv.array[elt.index * 6 + 1] =  self.texCoords[elt.aTexture][1];
 
-                    self.currentMesh.geometry.attributes.uv.array[elt.index * 9 + 2] =  self.texCoords[elt.bTexture][0];
-                    self.currentMesh.geometry.attributes.uv.array[elt.index * 9 + 3] =  self.texCoords[elt.bTexture][1];
+                    self.currentMesh.geometry.attributes.uv.array[elt.index * 6 + 2] =  self.texCoords[elt.bTexture][0];
+                    self.currentMesh.geometry.attributes.uv.array[elt.index * 6 + 3] =  self.texCoords[elt.bTexture][1];
 
-                    self.currentMesh.geometry.attributes.uv.array[elt.index * 9 + 4] =  self.texCoords[elt.cTexture][0];
-                    self.currentMesh.geometry.attributes.uv.array[elt.index * 9 + 5] =  self.texCoords[elt.cTexture][1];
+                    self.currentMesh.geometry.attributes.uv.array[elt.index * 6 + 4] =  self.texCoords[elt.cTexture][0];
+                    self.currentMesh.geometry.attributes.uv.array[elt.index * 6 + 5] =  self.texCoords[elt.cTexture][1];
 
                     self.currentMesh.geometry.attributes.uv.needsUpdate = true;
+
                 }
 
             }

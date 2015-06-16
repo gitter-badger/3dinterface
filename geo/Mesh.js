@@ -253,7 +253,6 @@ mesh.Face.prototype.toString = function() {
 mesh.Material = function() {
     var split = arguments[0].replace(/\s+/g, ' ').trim().split(' ');
     this.name = split[1];
-    console.log(this.name);
 }
 
 mesh.Material.prototype.toString = function() {
