@@ -45,7 +45,7 @@ function init() {
 
     // Initialize scene
     scene = new THREE.Scene();
-    renderer = new THREE.WebGLRenderer({alpha:true, antialias:true});
+    renderer = new THREE.WebGLRenderer({alpha:true});
 
     // Collidable objects to prevent camera from traversing objects
     var collidableObjects = new Array();
@@ -56,7 +56,7 @@ function init() {
     container.style.width = container_size.width() + 'px';
     renderer.setSize(container_size.width(), container_size.height());
     // renderer.setSize(container_size.width(), container_size.height());
-    renderer.shadowMapEnabled = true;
+    renderer.shadowMapEnabled = false;
     renderer.setClearColor(0x87ceeb);
 
     // Initialize previewer
@@ -79,7 +79,7 @@ function init() {
     container.appendChild(renderer.domElement);
 
     // Initialize pointer camera
-    var camera1 = new PointerCamera(50, container_size.width() / container_size.height(), 0.1, 100000, renderer, container);
+    var camera1 = new PointerCamera(50, container_size.width() / container_size.height(), 0.1, 1000, renderer, container);
 
     // cameras = initMainScene(camera1, scene, static_path, coins);
     // cameras = initPeach(camera1, scene, static_path, coins);

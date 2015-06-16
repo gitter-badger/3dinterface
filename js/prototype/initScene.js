@@ -14,10 +14,9 @@ function addLight(scene) {
 function initPeachCastle(scene, collidableObjects, loader, static_path) {
 
     var loader = new ProgressiveLoader(
-        'static/data/castle/princess peaches castle (outside).obj',
+        '/static/data/castle/princess peaches castle (outside).obj',
         scene,
         function(object) {
-            collidableObjects.push(object);
             object.raycastable = true;
             if (object.material.name === 'Material.103_princess_peaches_cast') {
                 THREEx.Transparency.push(object);
@@ -32,6 +31,8 @@ function initPeachCastle(scene, collidableObjects, loader, static_path) {
     );
     loader.load();
 
+    collidableObjects.push(loader.obj);
+    loader.obj.raycastable = true;
 }
 
 function resetPeachElements() {
@@ -79,7 +80,6 @@ function initZeldaScene(scene, collidableObjects, loader, static_path) {
         static_path + 'data/zelda/Island.obj',
         static_path + 'data/zelda/Island.mtl',
         function ( object ) {
-            scene.add(object);
             collidableObjects.push(object);
             object.scale.set(0.01,0.01,0.01);
             object.traverse(function (object) {
@@ -161,15 +161,10 @@ function createPeachCameras(width, height) {
 
 function initBobombScene(scene, collidableObjects, loader, static_path) {
 
-    ProgressiveLoader(
+    var loader = new ProgressiveLoader(
         static_path + 'data/bobomb/bobomb battlefeild.obj',
         scene,
         function(object) {
-            var theta = 0.27;
-            object.rotation.y = Math.PI - theta;
-
-            object.up = new THREE.Vector3(0,0,1);
-            collidableObjects.push(object);
             object.raycastable = true;
             if (object.material.name === 'Material.071_574B138E_c.bmp' ||
                 object.material.name === 'Material.070_41A41EE3_c.bmp') {
@@ -177,6 +172,13 @@ function initBobombScene(scene, collidableObjects, loader, static_path) {
             }
         }
     );
+
+    loader.load();
+    var theta = 0.27;
+    loader.obj.rotation.y = Math.PI - theta;
+
+    loader.obj.up = new THREE.Vector3(0,0,1);
+    collidableObjects.push(loader.obj);
 
 }
 
@@ -304,15 +306,10 @@ function initBobomb(camera, scene, static_path, coins) {
 
 function initWhompScene(scene, collidableObjects, loader, static_path) {
 
-    ProgressiveLoader(
+    var loader = new ProgressiveLoader(
         static_path + 'data/whomp/Whomps Fortress.obj',
         scene,
         function(object) {
-            object.rotation.x = -Math.PI/2;
-            object.rotation.z = Math.PI/2;
-            object.scale.set(0.1,0.1,0.1);
-            collidableObjects.push(object);
-            object.raycastable = true;
             if (object.material.name === 'Shape_088' ||
                 object.material.name === 'Shape_089') {
                 object.raycastable = false;
@@ -328,6 +325,14 @@ function initWhompScene(scene, collidableObjects, loader, static_path) {
 
         }
     );
+
+    loader.load();
+
+    loader.obj.rotation.x = -Math.PI/2;
+    loader.obj.rotation.z = Math.PI/2;
+    loader.obj.scale.set(0.1,0.1,0.1);
+    collidableObjects.push(loader.obj);
+    loader.obj.raycastable = true;
 }
 
 function createWhompCameras(width, height) {
@@ -451,14 +456,12 @@ function initWhomp(camera, scene, static_path, coins) {
 
 function initMountainScene(scene, collidableObjects, loader, static_path) {
 
-    ProgressiveLoader(
+    var loader = new ProgressiveLoader(
         static_path + 'data/mountain/coocoolmountain.obj',
         scene,
         function(object) {
             // object.rotation.x = -Math.PI/2;
             // object.rotation.z = Math.PI/2;
-            collidableObjects.push(object);
-            scene.add(object);
             object.raycastable = true;
             if (object.material.name === 'Material.070_13F025D5_c2.png' ||
                 object.material.name === 'Material.068_5972FC88_c.bmp' ||
@@ -477,6 +480,9 @@ function initMountainScene(scene, collidableObjects, loader, static_path) {
             }
         }
     );
+
+    loader.load();
+    collidableObjects.push(loader.obj);
 }
 
 function createMountainCoins() {
@@ -601,7 +607,7 @@ function initMountain(camera, scene, static_path, coins) {
 
 function initSponzaScene(scene, collidableObjects, loader, static_path) {
 
-    var loader = new ProgressiveLoader('static/data/sponza/sponza.obj', scene, function(obj) {
+    var loader = new ProgressiveLoader('/static/data/sponza/sponza.obj', scene, function(obj) {
         if (obj.material.name === 'chain' ||
             obj.material.name === 'leaf'  ||
             obj.material.name === 'Material__57') {

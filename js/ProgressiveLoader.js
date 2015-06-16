@@ -54,9 +54,9 @@ var _parseList = function(arr) {
 
 var ProgressiveLoader = function(path, scene, callback) {
     // Init attributes
-    this.objPath = path;
-    this.texturesPath = '/' + path.substring(0, path.lastIndexOf('/')) + '/';
-    this.mtlPath = '/' + path.replace('.obj', '.mtl');
+    this.objPath = path.substring(1, path.length);
+    this.texturesPath = path.substring(0, path.lastIndexOf('/')) + '/';
+    this.mtlPath = path.replace('.obj', '.mtl');
     this.scene = scene;
     this.callback = callback;
     this.counter = 0;
@@ -102,6 +102,11 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
         // console.log("New mesh arrived : " + materialName);
         if (self.currentMesh !== undefined && self.currentMesh.visible === false) {
             self.currentMesh.geometry.computeBoundingSphere();
+
+            if (self.currentMesh.geometry.attributes.normal === undefined) {
+                self.currentMesh.geometry.computeVertexNormals();
+            }
+
             self.currentMesh.visible = true;
         }
 
@@ -260,6 +265,11 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
 
     this.socket.on('disconnect', function() {
         console.log('Finished !');
+        self.currentMesh.geometry.computeBoundingSphere();
+        if (self.currentMesh.geometry.attributes.normal === undefined) {
+            self.currentMesh.geometry.computeVertexNormals();
+        }
+        self.currentMesh.visible = true;
         self.finished = true;
     });
 }

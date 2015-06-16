@@ -241,15 +241,15 @@ PointerCamera.prototype.moveHermite = function(otherCamera, toSave) {
 }
 
 PointerCamera.prototype.isColliding = function(direction) {
-    // this.raycaster.set(this.position, direction.clone().normalize());
-    // var intersects = this.raycaster.intersectObjects(this.collidableObjects, true);
+    this.raycaster.set(this.position, direction.clone().normalize());
+    var intersects = this.raycaster.intersectObjects(this.collidableObjects, true);
 
-    /// for (var i in intersects) {
-    ///     if (intersects[i].distance < Tools.norm(direction) + this.speed * 300 &&
-    ///         intersects[i].object.raycastable) {
-    ///         return true;
-    ///     }
-    /// }
+    for (var i in intersects) {
+        if (intersects[i].distance < Tools.norm(direction) + this.speed * 300 &&
+            intersects[i].object.raycastable) {
+            return true;
+        }
+    }
 
     return false;
 }

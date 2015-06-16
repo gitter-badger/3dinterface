@@ -94,13 +94,6 @@ geo.MeshStreamer.prototype.loadFromFile = function(path, callback) {
 
                 }
 
-                if (currentMesh.faces.length * 3 * 3 > 60000) {
-                    var previousMesh = currentMesh;
-                    currentMesh = new mesh.Mesh();
-                    self.meshes.push(currentMesh);
-                    currentMesh.material = previousMesh.material;
-                }
-
             } else if (line[0] === 'u') {
 
                 // usemtl
