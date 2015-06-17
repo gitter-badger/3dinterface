@@ -11,6 +11,7 @@ all: List ListTest Socket Three Stats ThreeTools Bouncing Multisphere StreamingS
 Socket:
 	cp socket.io/socket.io.min.js ../static/js
 	$(CLOSURE) $(OPT) \
+		--js ProgressiveLoaderGeometry.js \
 		--js ProgressiveLoader.js >> ../static/js/socket.io.min.js
 
 List:

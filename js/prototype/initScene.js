@@ -607,7 +607,7 @@ function initMountain(camera, scene, static_path, coins) {
 
 function initSponzaScene(scene, collidableObjects, loader, static_path) {
 
-    var loader = new ProgressiveLoader('/static/data/sponza/sponza.obj', scene, function(obj) {
+    var loader = new ProgressiveLoaderGeometry('/static/data/sponza/sponza.obj', scene, function(obj) {
         if (obj.material.name === 'chain' ||
             obj.material.name === 'leaf'  ||
             obj.material.name === 'Material__57') {
