@@ -63,7 +63,7 @@ var _parseList = function(arr) {
     return ret;
 }
 
-var ProgressiveLoader = function(path, scene, callback) {
+var ProgressiveLoader = function(path, scene, camera, callback) {
     // Init attributes
     this.objPath = path.substring(1, path.length);
     this.texturesPath = path.substring(0, path.lastIndexOf('/')) + '/';
@@ -86,6 +86,8 @@ var ProgressiveLoader = function(path, scene, callback) {
     // Init io stuff
     this.socket = io();
     this.initIOCallbacks();
+
+    this.camera = camera;
 
 }
 

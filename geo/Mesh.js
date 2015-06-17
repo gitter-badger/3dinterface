@@ -223,8 +223,8 @@ mesh.Face.prototype.maxTexture = function() {
     }
 }
 
-mesh.Face.prototype.toList = function() {
-    var l = ['f', this.index,
+mesh.Face.prototype.toList = function(parameter) {
+    var l = ['f', this.index, parameter,
                                          [this.a,        this.b,        this.c       ],
              isNaN(this.aTexture) ? [] : [this.aTexture, this.bTexture, this.cTexture],
              isNaN(this.aNormal ) ? [] : [this.aNormal,  this.bNormal,  this.cNormal ]

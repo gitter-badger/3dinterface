@@ -11,11 +11,12 @@ function addLight(scene) {
     scene.add(ambient_light);
 }
 
-function initPeachCastle(scene, collidableObjects, loader, static_path) {
+function initPeachCastle(scene, collidableObjects, loader, camera) {
 
     var loader = new ProgressiveLoader(
         '/static/data/castle/princess peaches castle (outside).obj',
         scene,
+        camera,
         function(object) {
             object.raycastable = true;
             if (object.material.name === 'Material.103_princess_peaches_cast') {
@@ -47,7 +48,7 @@ function initPeach(camera, scene, static_path, coins) {
     var loader = new THREE.OBJMTLLoader();
 
     var collidableObjects = [];
-    initPeachCastle(scene, collidableObjects, loader, static_path);
+    initPeachCastle(scene, collidableObjects, loader, camera);
 
     camera.resetElements = resetPeachElements();
     camera.collidableObjects = collidableObjects;
@@ -159,11 +160,12 @@ function createPeachCameras(width, height) {
     return cams;
 }
 
-function initBobombScene(scene, collidableObjects, loader, static_path) {
+function initBobombScene(scene, collidableObjects, loader, camera) {
 
     var loader = new ProgressiveLoader(
         static_path + 'data/bobomb/bobomb battlefeild.obj',
         scene,
+        camera,
         function(object) {
             object.raycastable = true;
             if (object.material.name === 'Material.071_574B138E_c.bmp' ||
@@ -276,7 +278,7 @@ function initBobomb(camera, scene, static_path, coins) {
     var loader = new THREE.OBJMTLLoader();
 
     var collidableObjects = [];
-    initBobombScene(scene, collidableObjects, loader, static_path);
+    initBobombScene(scene, collidableObjects, loader, camera);
 
     camera.resetElements = resetBobombElements();
     camera.collidableObjects = collidableObjects;
@@ -304,11 +306,12 @@ function initBobomb(camera, scene, static_path, coins) {
     return cameras;
 }
 
-function initWhompScene(scene, collidableObjects, loader, static_path) {
+function initWhompScene(scene, collidableObjects, loader, camera) {
 
     var loader = new ProgressiveLoader(
         static_path + 'data/whomp/Whomps Fortress.obj',
         scene,
+        camera,
         function(object) {
             if (object.material.name === 'Shape_088' ||
                 object.material.name === 'Shape_089') {
@@ -426,7 +429,7 @@ function initWhomp(camera, scene, static_path, coins) {
     var loader = new THREE.OBJMTLLoader();
 
     var collidableObjects = [];
-    initWhompScene(scene, collidableObjects, loader, static_path);
+    initWhompScene(scene, collidableObjects, loader, camera);
 
     camera.resetElements = resetWhompElements();
     camera.collidableObjects = collidableObjects;
@@ -454,11 +457,12 @@ function initWhomp(camera, scene, static_path, coins) {
     return cameras;
 }
 
-function initMountainScene(scene, collidableObjects, loader, static_path) {
+function initMountainScene(scene, collidableObjects, loader, camera) {
 
     var loader = new ProgressiveLoader(
         static_path + 'data/mountain/coocoolmountain.obj',
         scene,
+        camera,
         function(object) {
             // object.rotation.x = -Math.PI/2;
             // object.rotation.z = Math.PI/2;
@@ -578,7 +582,7 @@ function initMountain(camera, scene, static_path, coins) {
     var loader = new THREE.OBJMTLLoader();
 
     var collidableObjects = [];
-    initMountainScene(scene, collidableObjects, loader, static_path);
+    initMountainScene(scene, collidableObjects, loader, camera);
 
     camera.resetElements = resetMountainElements();
     camera.collidableObjects = collidableObjects;
@@ -605,9 +609,9 @@ function initMountain(camera, scene, static_path, coins) {
     return cameras;
 }
 
-function initSponzaScene(scene, collidableObjects, loader, static_path) {
+function initSponzaScene(scene, collidableObjects, loader, camera) {
 
-    var loader = new ProgressiveLoaderGeometry('/static/data/sponza/sponza.obj', scene, function(obj) {
+    var loader = new ProgressiveLoaderGeometry('/static/data/sponza/sponza.obj', scene, camera, function(obj) {
         if (obj.material.name === 'chain' ||
             obj.material.name === 'leaf'  ||
             obj.material.name === 'Material__57') {
@@ -620,6 +624,7 @@ function initSponzaScene(scene, collidableObjects, loader, static_path) {
 
     });
 
+    l = loader;
     loader.load();
     loader.obj.scale.set(0.1,0.1,0.1);
 
@@ -665,7 +670,7 @@ function initSponza(camera, scene, static_path, coins) {
     var loader = new THREE.JSONLoader();
 
     var collidableObjects = [];
-    initSponzaScene(scene, collidableObjects, loader, static_path);
+    initSponzaScene(scene, collidableObjects, loader, camera);
 
     camera.resetElements = resetSponzaElements();
     camera.collidableObjects = collidableObjects;

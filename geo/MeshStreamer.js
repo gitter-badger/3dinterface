@@ -112,6 +112,7 @@ geo.MeshStreamer.prototype.loadFromFile = function(path, callback) {
         if (typeof callback === 'function') {
             callback();
         }
+
     });
 }
 
@@ -138,7 +139,31 @@ geo.MeshStreamer.prototype.start = function(socket) {
 
     });
 
-    socket.on('next', function() {
+    socket.on('next', function(_camera) {
+
+        var camera = {
+            position: {
+                x: _camera[0]*10,
+                y: _camera[1]*10,
+                z: _camera[2]*10
+            },
+            target: {
+                x: _camera[3]*10,
+                y: _camera[4]*10,
+                z: _camera[5]*10
+            }
+        }
+
+        var direction = {
+            x: camera.target.x - camera.position.x,
+            y: camera.target.y - camera.position.y,
+            z: camera.target.z - camera.position.z
+        }
+
+        var norm = direction.x * direction.x + direction.y * direction.y + direction.z * direction.z;
+        direction.x /= norm;
+        direction.y /= norm;
+        direction.z /= norm;
 
         // Send next elements
         var currentMesh = self.meshes[self.meshIndex];
@@ -148,7 +173,8 @@ geo.MeshStreamer.prototype.start = function(socket) {
 
         var sent = 0;
 
-        while (sent < 500) {
+        while (sent < 100) {
+
 
             if (currentMesh.faceIndex === -1) {
 
@@ -172,6 +198,7 @@ geo.MeshStreamer.prototype.start = function(socket) {
                 }
 
                 data.push(['u', currentMesh.material, currentMesh.vertices.length, currentMesh.faces.length, self.texCoords.length > 0, self.normals.length > 0]);
+                currentMesh.faceIndex++;
                 sent++;
                 continue;
 
@@ -181,6 +208,14 @@ geo.MeshStreamer.prototype.start = function(socket) {
 
                 if (currentFace === undefined) {
 
+                    currentMesh = self.meshes[++self.meshIndex];
+
+                    if (currentMesh === undefined) {
+                        socket.emit('elements', data);
+                        socket.disconnect();
+                        return;
+
+                    }
                     continue;
 
                 }
@@ -190,6 +225,50 @@ geo.MeshStreamer.prototype.start = function(socket) {
             var vertex1 = self.vertices[currentFace.a];
             var vertex2 = self.vertices[currentFace.b];
             var vertex3 = self.vertices[currentFace.c];
+
+            var v1 = {
+                x: vertex1.x - camera.position.x,
+                y: vertex1.y - camera.position.y,
+                z: vertex1.z - camera.position.z
+            };
+
+            var v2 = {
+                x: vertex2.x - camera.position.x,
+                y: vertex2.y - camera.position.y,
+                z: vertex2.z - camera.position.z
+            };
+
+            var v3 = {
+                x: vertex3.x - camera.position.x,
+                y: vertex3.y - camera.position.y,
+                z: vertex3.z - camera.position.z
+            };
+
+            norm = v1.x * v1.x + v1.y * v1.y + v1.z * v1.z;
+            v1.x /= norm;
+            v1.y /= norm;
+            v1.z /= norm;
+
+            norm = v2.x * v2.x + v2.y * v2.y + v2.z * v2.z;
+            v2.x /= norm;
+            v2.y /= norm;
+            v2.z /= norm;
+
+            norm = v3.x * v3.x + v3.y * v3.y + v3.z * v3.z;
+            v3.x /= norm;
+            v3.y /= norm;
+            v3.z /= norm;
+
+            if (
+                direction.x * v1.x + direction.y * v1.y + direction.z * v1.z < 0 &&
+                direction.x * v2.x + direction.y * v2.y + direction.z * v2.z < 0 &&
+                direction.x * v3.x + direction.y * v3.y + direction.z * v3.z < 0
+            ) {
+
+                currentFace.sent = false;
+                continue;
+
+            }
 
             if (!vertex1.sent) { data.push(vertex1.toList()); vertex1.sent = true; sent++;}
             if (!vertex2.sent) { data.push(vertex2.toList()); vertex2.sent = true; sent++;}
@@ -213,10 +292,13 @@ geo.MeshStreamer.prototype.start = function(socket) {
 
             currentFace.index = currentMesh.faceIndex;
 
-            data.push(currentFace.toList()); currentFace.sent = true;
+
+            data.push(currentFace.toList(self.meshIndex)); currentFace.sent = true;
             sent++;
 
         }
+            // console.log(self.meshIndex);
+            // console.log(data);
 
         // Emit self.chunk faces (and the corresponding vertices if not emitted)
         socket.emit('elements', data);
