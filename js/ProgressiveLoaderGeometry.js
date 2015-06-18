@@ -111,9 +111,11 @@ ProgressiveLoaderGeometry.prototype.load = function() {
 }
 
 ProgressiveLoaderGeometry.prototype.getCamera = function() {
-
-    return [this.camera.position.x, this.camera.position.y, this.camera.position.z,
-            this.camera.target.x,   this.camera.target.y,   this.camera.target.z];
+    if (this.camera !== null)
+        return [this.camera.position.x, this.camera.position.y, this.camera.position.z,
+                this.camera.target.x,   this.camera.target.y,   this.camera.target.z];
+    else
+       return null;
 
 }
 

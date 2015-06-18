@@ -16,7 +16,7 @@ function initPeachCastle(scene, collidableObjects, loader, camera) {
     var loader = new ProgressiveLoaderGeometry(
         '/static/data/castle/princess peaches castle (outside).obj',
         scene,
-        camera,
+        null,
         function(object) {
             object.raycastable = true;
             if (object.material.name === 'Material.103_princess_peaches_cast') {
@@ -38,10 +38,8 @@ function initPeachCastle(scene, collidableObjects, loader, camera) {
 
 function resetPeachElements() {
     return {
-        // position: new THREE.Vector3(0.24120226734236713,0.2009624547018851,-0.5998422840047036),
-        // target: new THREE.Vector3(0.24120226734232672,0.20096245470190008,-40.5998422840047)
-        position: new THREE.Vector3(1.4172594473140818,0.7422266244449804,-6.745110400697304),
-        target: new THREE.Vector3(1.217322777130804,-0.25766921214350846,-46.732111209008615)
+        position: new THREE.Vector3(0.24120226734236713,0.2009624547018851,-0.5998422840047036),
+        target: new THREE.Vector3(0.24120226734232672,0.20096245470190008,-40.5998422840047)
     };
 }
 
@@ -337,16 +335,16 @@ function initWhompScene(scene, collidableObjects, loader, camera) {
     loader.obj.rotation.z = Math.PI/2;
     loader.obj.scale.set(0.1,0.1,0.1);
 
-    loader.getCamera = function() {
-        return [
-            loader.camera.position.z * 10,
-            loader.camera.position.x * 10,
-            loader.camera.position.y * 10,
-            loader.camera.target.z * 10,
-            loader.camera.target.x * 10,
-            loader.camera.target.y * 10
-        ];
-    }
+    // loader.getCamera = function() {
+    //     return [
+    //         loader.camera.position.z * 10,
+    //         loader.camera.position.x * 10,
+    //         loader.camera.position.y * 10,
+    //         loader.camera.target.z * 10,
+    //         loader.camera.target.x * 10,
+    //         loader.camera.target.y * 10
+    //     ];
+    // }
 
     collidableObjects.push(loader.obj);
     loader.obj.raycastable = true;

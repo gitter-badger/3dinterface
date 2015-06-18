@@ -3,6 +3,38 @@ var mesh = require('./Mesh.js');
 
 var geo = {};
 
+function bisect(items, x, lo, hi) {
+    var mid;
+    if (typeof(lo) == 'undefined') lo = 0;
+    if (typeof(hi) == 'undefined') hi = items.length;
+    while (lo < hi) {
+        mid = Math.floor((lo + hi) / 2);
+        if (x < items[mid]) hi = mid;
+        else lo = mid + 1;
+    }
+    return lo;
+}
+
+function insort(items, x) {
+    items.splice(bisect(items, x), 0, x);
+}
+
+function partialSort(items, k, comparator) {
+    var smallest = items.slice(0, k).sort(),
+        max = smallest[k-1];
+
+    for (var i = k, len = items.length; i < len; ++i) {
+        var item = items[i];
+        var cond = comparator === undefined ? item < max : comparator(item, max) < 0;
+        if (cond) {
+            insort(smallest, item);
+            smallest.length = k;
+            max = smallest[k-1];
+        }
+    }
+    return smallest;
+}
+
 geo.MeshStreamer = function(path, callback) {
     // Different parts of a obj (a mesh per material)
     this.meshes = [];
@@ -12,6 +44,7 @@ geo.MeshStreamer = function(path, callback) {
     this.faces = [];
     this.normals = [];
     this.texCoords = [];
+    this.orderedFaces = [];
 
     // Chunk size
     this.chunk = 1000;
@@ -23,6 +56,76 @@ geo.MeshStreamer = function(path, callback) {
                 callback();
 
         });
+    }
+}
+
+// Returns the function that compares two faces
+geo.MeshStreamer.prototype.faceComparator = function(camera) {
+
+    var direction = {
+        x: camera.target.x - camera.position.x,
+        y: camera.target.y - camera.position.y,
+        z: camera.target.z - camera.position.z
+    };
+
+    var norm = Math.sqrt(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
+
+    direction.x /= norm;
+    direction.y /= norm;
+    direction.z /= norm;
+
+    return function(face1, face2) {
+
+        var center1 = {
+            x: (self.vertices[face1.a].x + self.vertices[face1.b].x + self.vertices[face1.b].x) / 3,
+            y: (self.vertices[face1.a].y + self.vertices[face1.b].y + self.vertices[face1.b].y) / 3,
+            z: (self.vertices[face1.a].z + self.vertices[face1.b].z + self.vertices[face1.b].z) / 3
+
+        };
+
+        var dir1 = {
+            x: center1.x - camera.position.x,
+            y: center1.y - camera.position.y,
+            z: center1.z - camera.position.z
+        };
+
+        var norm1 = Math.sqrt(dir1.x * dir1.x + dir1.y * dir1.y + dir1.z + dir1.z);
+
+        dir1.x /= norm1;
+        dir1.y /= norm1;
+        dir1.z /= norm1;
+
+        var dot1 = direction.x * dir1.x + direction.y * dir1.y + direction.z * dir1.z;
+
+        var center2 = {
+            x: (self.vertices[face2.a].x + self.vertices[face2.b].x + self.vertices[face2.b].x) / 3,
+            y: (self.vertices[face2.a].y + self.vertices[face2.b].y + self.vertices[face2.b].y) / 3,
+            z: (self.vertices[face2.a].z + self.vertices[face2.b].z + self.vertices[face2.b].z) / 3
+        }
+
+        var dir2 = {
+            x: center2.x - camera.position.x,
+            y: center2.y - camera.position.y,
+            z: center2.z - camera.position.z
+        };
+
+        var norm2 = Math.sqrt(dir2.x * dir2.x + dir2.y * dir2.y + dir2.z + dir2.z);
+
+        dir2.x /= norm2;
+        dir2.y /= norm2;
+        dir2.z /= norm2;
+
+        var dot2 = direction.x * dir2.x + direction.y * dir2.y + direction.z * dir2.z;
+
+        // Decreasing order
+        if (dot1 > dot2) {
+            return -1;
+        }
+        if (dot1 < dot2) {
+            return 1;
+        }
+        return 0;
+
     }
 }
 
@@ -88,12 +191,14 @@ geo.MeshStreamer.prototype.loadFromFile = function(path, callback) {
                 faces[0].index = self.faces.length;
                 faces[0].meshIndex = self.meshes.length - 1;
                 self.faces.push(faces[0]);
+                self.orderedFaces.push(faces[0]);
 
                 if (faces.length === 2) {
 
                     faces[1].index = self.faces.length;
                     faces[1].meshIndex = self.meshes.length - 1;
                     self.faces.push(faces[1]);
+                    self.orderedFaces.push(faces[1]);
 
                 }
 
@@ -151,10 +256,6 @@ geo.MeshStreamer.prototype.start = function(socket) {
         // Send next elements
         var next = self.nextElements(camera);
 
-        // console.log(self.meshIndex);
-        // console.log(data);
-
-        // Emit self.chunk faces (and the corresponding vertices if not emitted)
         socket.emit('elements', next.data);
 
         if (next.finished) {
