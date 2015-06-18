@@ -13,7 +13,7 @@ function addLight(scene) {
 
 function initPeachCastle(scene, collidableObjects, loader, camera) {
 
-    var loader = new ProgressiveLoader(
+    var loader = new ProgressiveLoaderGeometry(
         '/static/data/castle/princess peaches castle (outside).obj',
         scene,
         camera,
@@ -164,10 +164,10 @@ function createPeachCameras(width, height) {
 
 function initBobombScene(scene, collidableObjects, loader, camera) {
 
-    var loader = new ProgressiveLoader(
+    var loader = new ProgressiveLoaderGeometry(
         static_path + 'data/bobomb/bobomb battlefeild.obj',
         scene,
-        camera,
+        null,
         function(object) {
             object.raycastable = true;
             if (object.material.name === 'Material.071_574B138E_c.bmp' ||
@@ -310,10 +310,10 @@ function initBobomb(camera, scene, static_path, coins) {
 
 function initWhompScene(scene, collidableObjects, loader, camera) {
 
-    var loader = new ProgressiveLoader(
+    var loader = new ProgressiveLoaderGeometry(
         static_path + 'data/whomp/Whomps Fortress.obj',
         scene,
-        camera,
+        null,
         function(object) {
             if (object.material.name === 'Shape_088' ||
                 object.material.name === 'Shape_089') {
@@ -336,6 +336,18 @@ function initWhompScene(scene, collidableObjects, loader, camera) {
     loader.obj.rotation.x = -Math.PI/2;
     loader.obj.rotation.z = Math.PI/2;
     loader.obj.scale.set(0.1,0.1,0.1);
+
+    loader.getCamera = function() {
+        return [
+            loader.camera.position.z * 10,
+            loader.camera.position.x * 10,
+            loader.camera.position.y * 10,
+            loader.camera.target.z * 10,
+            loader.camera.target.x * 10,
+            loader.camera.target.y * 10
+        ];
+    }
+
     collidableObjects.push(loader.obj);
     loader.obj.raycastable = true;
 }
@@ -461,10 +473,10 @@ function initWhomp(camera, scene, static_path, coins) {
 
 function initMountainScene(scene, collidableObjects, loader, camera) {
 
-    var loader = new ProgressiveLoader(
+    var loader = new ProgressiveLoaderGeometry(
         static_path + 'data/mountain/coocoolmountain.obj',
         scene,
-        camera,
+        null,
         function(object) {
             // object.rotation.x = -Math.PI/2;
             // object.rotation.z = Math.PI/2;
@@ -628,10 +640,24 @@ function initSponzaScene(scene, collidableObjects, loader, camera) {
 
     l = loader;
     loader.load();
+
+
+    loader.getCamera = function() {
+        return [
+            loader.camera.position.x * 10,
+            loader.camera.position.y * 10,
+            loader.camera.position.z * 10,
+            loader.camera.target.x * 10,
+            loader.camera.target.y * 10,
+            loader.camera.target.z * 10
+        ];
+    }
     loader.obj.scale.set(0.1,0.1,0.1);
 
     collidableObjects.push(loader.obj);
     loader.obj.raycastable = true;
+
+
 
     // ProgressiveLoader('/static/data/sponza/sponza.obj', scene,
     //     function(obj) {

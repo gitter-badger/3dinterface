@@ -169,24 +169,30 @@ geo.MeshStreamer.prototype.start = function(socket) {
 geo.MeshStreamer.prototype.nextElements = function(_camera) {
 
     // Prepare camera (and scale to model)
-    var camera = {
-        position: {
-            x: _camera[0]*10,
-            y: _camera[1]*10,
-            z: _camera[2]*10
-        },
-        target: {
-            x: _camera[3]*10,
-            y: _camera[4]*10,
-            z: _camera[5]*10
-        }
-    }
+    var camera = null;
 
-    // Compute camera direction
-    var direction = {
-        x: camera.target.x - camera.position.x,
-        y: camera.target.y - camera.position.y,
-        z: camera.target.z - camera.position.z
+    if (_camera !== null) {
+
+        var camera = {
+            position: {
+                x: _camera[0],
+                y: _camera[1],
+                z: _camera[2]
+            },
+            target: {
+                x: _camera[3],
+                y: _camera[4],
+                z: _camera[5]
+            }
+        }
+
+        // Compute camera direction
+        var direction = {
+            x: camera.target.x - camera.position.x,
+            y: camera.target.y - camera.position.y,
+            z: camera.target.z - camera.position.z
+        }
+
     }
 
     var sent = 0;
@@ -239,31 +245,35 @@ geo.MeshStreamer.prototype.nextElements = function(_camera) {
             var vertex2 = this.vertices[currentFace.b];
             var vertex3 = this.vertices[currentFace.c];
 
-            var v1 = {
-                x: vertex1.x - camera.position.x,
-                y: vertex1.y - camera.position.y,
-                z: vertex1.z - camera.position.z
-            };
+            if (camera !== null) {
 
-            var v2 = {
-                x: vertex2.x - camera.position.x,
-                y: vertex2.y - camera.position.y,
-                z: vertex2.z - camera.position.z
-            };
+                var v1 = {
+                    x: vertex1.x - camera.position.x,
+                    y: vertex1.y - camera.position.y,
+                    z: vertex1.z - camera.position.z
+                };
 
-            var v3 = {
-                x: vertex3.x - camera.position.x,
-                y: vertex3.y - camera.position.y,
-                z: vertex3.z - camera.position.z
-            };
+                var v2 = {
+                    x: vertex2.x - camera.position.x,
+                    y: vertex2.y - camera.position.y,
+                    z: vertex2.z - camera.position.z
+                };
 
-            if (
-                direction.x * v1.x + direction.y * v1.y + direction.z * v1.z < 0 &&
-                direction.x * v2.x + direction.y * v2.y + direction.z * v2.z < 0 &&
+                var v3 = {
+                    x: vertex3.x - camera.position.x,
+                    y: vertex3.y - camera.position.y,
+                    z: vertex3.z - camera.position.z
+                };
+
+                if (
+                    direction.x * v1.x + direction.y * v1.y + direction.z * v1.z < 0 &&
+                    direction.x * v2.x + direction.y * v2.y + direction.z * v2.z < 0 &&
                 direction.x * v3.x + direction.y * v3.y + direction.z * v3.z < 0
-            ) {
+                ) {
 
-                continue;
+                    continue;
+
+                }
 
             }
 
