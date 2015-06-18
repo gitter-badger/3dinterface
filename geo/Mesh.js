@@ -6,8 +6,10 @@ mesh.Mesh = function() {
     this.faces = [];
     this.texCoords = [];
     this.normals = [];
-    this.faceIndex = -1;
+    this.faceIndex = 0;
     this.material = null;
+    this.started = false;
+    this.finished = false;
 }
 
 mesh.Mesh.prototype.hasNormals = function() {
@@ -71,7 +73,7 @@ mesh.Mesh.prototype.addNormal = function(normal) {
     } else if (typeof normal === 'string' || normal instanceof String) {
         this.normals.push(new mesh.Normal(normal));
     } else {
-        console.error("Cann only add normal from mesh.Normal of string");
+        console.error("Can only add normal from mesh.Normal of string");
         return;
     }
 
@@ -79,7 +81,19 @@ mesh.Mesh.prototype.addNormal = function(normal) {
 }
 
 mesh.Mesh.prototype.isFinished = function() {
-    return this.faces.length < this.faceIndex;
+    // return this.faceIndex === this.faces.length;
+
+    for (var i = 0; i < this.faces.length; i++) {
+
+        if (!(this.faces[i].sent)) {
+
+            return false;
+
+        }
+
+    }
+
+    return true;
 }
 
 // Vertex
@@ -223,8 +237,8 @@ mesh.Face.prototype.maxTexture = function() {
     }
 }
 
-mesh.Face.prototype.toList = function(parameter) {
-    var l = ['f', this.index, parameter,
+mesh.Face.prototype.toList = function() {
+    var l = ['f', this.index, this.meshIndex,
                                          [this.a,        this.b,        this.c       ],
              isNaN(this.aTexture) ? [] : [this.aTexture, this.bTexture, this.cTexture],
              isNaN(this.aNormal ) ? [] : [this.aNormal,  this.bNormal,  this.cNormal ]

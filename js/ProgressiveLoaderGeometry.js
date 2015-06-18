@@ -126,10 +126,22 @@ ProgressiveLoaderGeometry.prototype.initIOCallbacks = function() {
 
     this.socket.on('elements', function(arr) {
 
+        if (arr.length === 0) {
+
+            console.log("Empty array");
+
+        } else {
+
+            console.log("Stuff received");
+
+        }
+
+
         // console.log("Received elements for the " + (++self.counter) + "th time !");
         for (var i = 0; i < arr.length; i++) {
 
             var elt = _parseList2(arr[i]);
+            // console.log(arr[i]);
 
             // console.log(elts);
             if (elt.type === 'vertex') {
