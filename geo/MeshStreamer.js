@@ -62,6 +62,8 @@ geo.MeshStreamer = function(path, callback) {
 // Returns the function that compares two faces
 geo.MeshStreamer.prototype.faceComparator = function(camera) {
 
+    var self = this;
+
     var direction = {
         x: camera.target.x - camera.position.x,
         y: camera.target.y - camera.position.y,
@@ -250,6 +252,14 @@ geo.MeshStreamer.prototype.start = function(socket) {
 
     });
 
+    socket.on('materials', function() {
+
+        var data = self.nextMaterials();
+
+        socket.emit('elements', data);
+
+    });
+
     socket.on('next', function(camera) {
 
 
@@ -265,6 +275,30 @@ geo.MeshStreamer.prototype.start = function(socket) {
         }
 
     });
+}
+
+geo.MeshStreamer.prototype.nextMaterials = function() {
+
+    var data = [];
+
+    for (var i = 0; i < this.meshes.length; i++) {
+
+        var currentMesh = this.meshes[i];
+
+        // Send usemtl
+        data.push([
+            'u',
+            currentMesh.material,
+            currentMesh.vertices.length,
+            currentMesh.faces.length,
+            this.texCoords.length > 0,
+            this.normals.length > 0
+        ]);
+
+    }
+
+    return data;
+
 }
 
 geo.MeshStreamer.prototype.nextElements = function(_camera) {
@@ -299,14 +333,17 @@ geo.MeshStreamer.prototype.nextElements = function(_camera) {
     var sent = 0;
     var data = [];
 
+    // Sort faces
+    this.orderedFaces.sort(this.faceComparator(camera));
 
     var mightBeCompletetlyFinished = true;
 
-    for (var meshIndex = 0; meshIndex < this.meshes.length; meshIndex++) {
+    for (var faceIndex = 0; faceIndex < this.orderedFaces.length; faceIndex++) {
 
-        var currentMesh = this.meshes[meshIndex];
+        var currentFace = this.orderedFaces[faceIndex];
+        var currentMesh = this.meshes[currentFace.meshIndex];
 
-        if (currentMesh.isFinished()) {
+        if (currentFace.sent) {
 
             continue;
 
@@ -316,161 +353,133 @@ geo.MeshStreamer.prototype.nextElements = function(_camera) {
 
         }
 
-        for (var faceIndex = 0; faceIndex < currentMesh.faces.length; faceIndex++) {
+        var vertex1 = this.vertices[currentFace.a];
+        var vertex2 = this.vertices[currentFace.b];
+        var vertex3 = this.vertices[currentFace.c];
 
-            var currentFace = currentMesh.faces[faceIndex];
+        if (camera !== null) {
 
-            if (currentFace.sent) {
+            var v1 = {
+                x: vertex1.x - camera.position.x,
+                y: vertex1.y - camera.position.y,
+                z: vertex1.z - camera.position.z
+            };
+
+            var v2 = {
+                x: vertex2.x - camera.position.x,
+                y: vertex2.y - camera.position.y,
+                z: vertex2.z - camera.position.z
+            };
+
+            var v3 = {
+                x: vertex3.x - camera.position.x,
+                y: vertex3.y - camera.position.y,
+                z: vertex3.z - camera.position.z
+            };
+
+            if (
+                direction.x * v1.x + direction.y * v1.y + direction.z * v1.z < 0 &&
+                direction.x * v2.x + direction.y * v2.y + direction.z * v2.z < 0 &&
+            direction.x * v3.x + direction.y * v3.y + direction.z * v3.z < 0
+            ) {
 
                 continue;
 
             }
 
-            if (!currentMesh.started) {
-
-                // Send usemtl
-                data.push([
-                    'u',
-                    currentMesh.material,
-                    currentMesh.vertices.length,
-                    currentMesh.faces.length,
-                    this.texCoords.length > 0,
-                    this.normals.length > 0
-                ]);
-                sent++;
-                currentMesh.started = true;
-
-            }
-
-            var vertex1 = this.vertices[currentFace.a];
-            var vertex2 = this.vertices[currentFace.b];
-            var vertex3 = this.vertices[currentFace.c];
-
-            if (camera !== null) {
-
-                var v1 = {
-                    x: vertex1.x - camera.position.x,
-                    y: vertex1.y - camera.position.y,
-                    z: vertex1.z - camera.position.z
-                };
-
-                var v2 = {
-                    x: vertex2.x - camera.position.x,
-                    y: vertex2.y - camera.position.y,
-                    z: vertex2.z - camera.position.z
-                };
-
-                var v3 = {
-                    x: vertex3.x - camera.position.x,
-                    y: vertex3.y - camera.position.y,
-                    z: vertex3.z - camera.position.z
-                };
-
-                if (
-                    direction.x * v1.x + direction.y * v1.y + direction.z * v1.z < 0 &&
-                    direction.x * v2.x + direction.y * v2.y + direction.z * v2.z < 0 &&
-                direction.x * v3.x + direction.y * v3.y + direction.z * v3.z < 0
-                ) {
-
-                    continue;
-
-                }
-
-            }
-
-            if (!vertex1.sent) {
-
-                data.push(vertex1.toList());
-                vertex1.sent = true;
-                sent++;
-
-            }
-
-            if (!vertex2.sent) {
-
-                data.push(vertex2.toList());
-                vertex2.sent = true;
-                sent++;
-
-            }
-
-            if (!vertex3.sent) {
-
-                data.push(vertex3.toList());
-                vertex3.sent = true;
-                sent++;
-
-            }
-
-            var normal1 = this.normals[currentFace.aNormal];
-            var normal2 = this.normals[currentFace.bNormal];
-            var normal3 = this.normals[currentFace.cNormal];
-
-            if (normal1 !== undefined && !normal1.sent) {
-
-                data.push(normal1.toList());
-                normal1.sent = true;
-                sent++;
-
-            }
-
-            if (normal2 !== undefined && !normal2.sent) {
-
-                data.push(normal2.toList());
-                normal2.sent = true;
-                sent++;
-
-            }
-
-            if (normal3 !== undefined && !normal3.sent) {
-
-                data.push(normal3.toList());
-                normal3.sent = true;
-                sent++;
-
-            }
-
-            var tex1 = this.texCoords[currentFace.aTexture];
-            var tex2 = this.texCoords[currentFace.bTexture];
-            var tex3 = this.texCoords[currentFace.cTexture];
-
-            if (tex1 !== undefined && !tex1.sent) {
-
-                data.push(tex1.toList());
-                tex1.sent = true;
-                sent++;
-
-            }
-
-            if (tex2 !== undefined && !tex2.sent) {
-
-                data.push(tex2.toList());
-                tex2.sent = true;
-                sent++;
-
-            }
-
-            if (tex3 !== undefined && !tex3.sent) {
-
-                data.push(tex3.toList());
-                tex3.sent = true;
-                sent++;
-
-            }
-
-            data.push(currentFace.toList());
-            currentFace.sent = true;
-            currentMesh.faceIndex++;
-
-            sent++;
-
-            if (sent > 500) {
-
-                return {data: data, finished: false};
-
-            }
         }
 
+        if (!vertex1.sent) {
+
+            data.push(vertex1.toList());
+            vertex1.sent = true;
+            sent++;
+
+        }
+
+        if (!vertex2.sent) {
+
+            data.push(vertex2.toList());
+            vertex2.sent = true;
+            sent++;
+
+        }
+
+        if (!vertex3.sent) {
+
+            data.push(vertex3.toList());
+            vertex3.sent = true;
+            sent++;
+
+        }
+
+        var normal1 = this.normals[currentFace.aNormal];
+        var normal2 = this.normals[currentFace.bNormal];
+        var normal3 = this.normals[currentFace.cNormal];
+
+        if (normal1 !== undefined && !normal1.sent) {
+
+            data.push(normal1.toList());
+            normal1.sent = true;
+            sent++;
+
+        }
+
+        if (normal2 !== undefined && !normal2.sent) {
+
+            data.push(normal2.toList());
+            normal2.sent = true;
+            sent++;
+
+        }
+
+        if (normal3 !== undefined && !normal3.sent) {
+
+            data.push(normal3.toList());
+            normal3.sent = true;
+            sent++;
+
+        }
+
+        var tex1 = this.texCoords[currentFace.aTexture];
+        var tex2 = this.texCoords[currentFace.bTexture];
+        var tex3 = this.texCoords[currentFace.cTexture];
+
+        if (tex1 !== undefined && !tex1.sent) {
+
+            data.push(tex1.toList());
+            tex1.sent = true;
+            sent++;
+
+        }
+
+        if (tex2 !== undefined && !tex2.sent) {
+
+            data.push(tex2.toList());
+            tex2.sent = true;
+            sent++;
+
+        }
+
+        if (tex3 !== undefined && !tex3.sent) {
+
+            data.push(tex3.toList());
+            tex3.sent = true;
+            sent++;
+
+        }
+
+        data.push(currentFace.toList());
+        currentFace.sent = true;
+        currentMesh.faceIndex++;
+
+        sent++;
+
+        if (sent > 500) {
+
+            return {data: data, finished: false};
+
+        }
     }
 
     return {data: data, finished: mightBeCompletetlyFinished};

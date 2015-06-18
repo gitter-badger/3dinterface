@@ -121,7 +121,7 @@ ProgressiveLoaderGeometry.prototype.initIOCallbacks = function() {
 
     this.socket.on('ok', function() {
         console.log('ok');
-        self.socket.emit('next', self.getCamera());
+        self.socket.emit('materials');
     });
 
     this.socket.on('elements', function(arr) {
