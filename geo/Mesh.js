@@ -81,19 +81,7 @@ mesh.Mesh.prototype.addNormal = function(normal) {
 }
 
 mesh.Mesh.prototype.isFinished = function() {
-    // return this.faceIndex === this.faces.length;
-
-    for (var i = 0; i < this.faces.length; i++) {
-
-        if (!(this.faces[i].sent)) {
-
-            return false;
-
-        }
-
-    }
-
-    return true;
+    return this.faceIndex === this.faces.length;
 }
 
 // Vertex

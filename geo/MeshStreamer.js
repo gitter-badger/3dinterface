@@ -85,13 +85,13 @@ geo.MeshStreamer.prototype.loadFromFile = function(path, callback) {
                 // Create faces (two if Face4)
                 var faces = currentMesh.addFaces(line);
 
-                faces[0].index = currentMesh.faces.length - (faces.length === 2 ? 1 : 2);
+                faces[0].index = self.faces.length;
                 faces[0].meshIndex = self.meshes.length - 1;
                 self.faces.push(faces[0]);
 
                 if (faces.length === 2) {
 
-                    faces[1].index = currentMesh.faces.length - 1;
+                    faces[1].index = self.faces.length;
                     faces[1].meshIndex = self.meshes.length - 1;
                     self.faces.push(faces[1]);
 
@@ -189,8 +189,9 @@ geo.MeshStreamer.prototype.nextElements = function(_camera) {
         z: camera.target.z - camera.position.z
     }
 
-    var sent = 0;;
+    var sent = 0;
     var data = [];
+
 
     var mightBeCompletetlyFinished = true;
 

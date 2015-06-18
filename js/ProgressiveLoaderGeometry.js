@@ -65,6 +65,7 @@ var _parseList2 = function(arr) {
 }
 
 var ProgressiveLoaderGeometry = function(path, scene, camera, callback) {
+
     // Init attributes
     this.objPath = path.substring(1, path.length);
     this.texturesPath = path.substring(0, path.lastIndexOf('/')) + '/';
@@ -81,6 +82,7 @@ var ProgressiveLoaderGeometry = function(path, scene, camera, callback) {
     this.texCoords = [];
     this.normals = [];
     this.uvs = [];
+    this.meshes = [];
 
     // Init MTLLoader
     this.loader = new THREE.MTLLoader(this.texturesPath);
@@ -141,7 +143,6 @@ ProgressiveLoaderGeometry.prototype.initIOCallbacks = function() {
         for (var i = 0; i < arr.length; i++) {
 
             var elt = _parseList2(arr[i]);
-            // console.log(arr[i]);
 
             // console.log(elts);
             if (elt.type === 'vertex') {
@@ -216,9 +217,9 @@ ProgressiveLoaderGeometry.prototype.initIOCallbacks = function() {
 
                 // Create mesh
                 var mesh = new THREE.Mesh(geometry, material);
+                self.meshes.push(mesh);
 
                 self.currentMesh = mesh;
-                self.obj.add(mesh);
 
                 if (typeof self.callback === 'function') {
                     self.callback(mesh);
@@ -226,18 +227,31 @@ ProgressiveLoaderGeometry.prototype.initIOCallbacks = function() {
 
             } else if (elt.type === 'face') {
 
-                self.obj.children[elt.mesh].geometry.faces.push(new THREE.Face3(elt.a, elt.b, elt.c, [self.normals[elt.aNormal], self.normals[elt.bNormal], self.normals[elt.cNormal]]));
+                if (!self.meshes[elt.mesh].added) {
 
-                if (elt.aTexture !== undefined) {
-
-                    self.obj.children[elt.mesh].geometry.faceVertexUvs[0].push([self.texCoords[elt.aTexture], self.texCoords[elt.bTexture], self.texCoords[elt.cTexture]]);
+                    self.meshes[elt.mesh].added = true;
+                    self.obj.add(self.meshes[elt.mesh]);
 
                 }
 
-                self.obj.children[elt.mesh].geometry.verticesNeedUpdate = true;
-                self.obj.children[elt.mesh].geometry.uvsNeedUpdate = true;
-                self.obj.children[elt.mesh].geometry.normalsNeedUpdate = true;
-                self.obj.children[elt.mesh].geometry.groupsNeedUpdate = true;
+                if (elt.aNormal !== undefined) {
+                    self.meshes[elt.mesh].geometry.faces.push(new THREE.Face3(elt.a, elt.b, elt.c, [self.normals[elt.aNormal], self.normals[elt.bNormal], self.normals[elt.cNormal]]));
+                } else {
+                    self.meshes[elt.mesh].geometry.faces.push(new THREE.Face3(elt.a, elt.b, elt.c));
+                    self.meshes[elt.mesh].geometry.computeFaceNormals();
+                    self.meshes[elt.mesh].geometry.computeVertexNormals();
+                }
+
+                if (elt.aTexture !== undefined) {
+
+                    self.meshes[elt.mesh].geometry.faceVertexUvs[0].push([self.texCoords[elt.aTexture], self.texCoords[elt.bTexture], self.texCoords[elt.cTexture]]);
+
+                }
+
+                self.meshes[elt.mesh].geometry.verticesNeedUpdate = true;
+                self.meshes[elt.mesh].geometry.uvsNeedUpdate = true;
+                self.meshes[elt.mesh].geometry.normalsNeedUpdate = true;
+                self.meshes[elt.mesh].geometry.groupsNeedUpdate = true;
 
             }
 
@@ -249,10 +263,6 @@ ProgressiveLoaderGeometry.prototype.initIOCallbacks = function() {
 
     this.socket.on('disconnect', function() {
         console.log('Finished !');
-        self.currentMesh.geometry.computeBoundingSphere();
-        // if (self.currentMesh.geometry.attributes.normal === undefined) {
-        //     self.currentMesh.geometry.computeVertexNormals();
-        // }
         self.finished = true;
     });
 }
