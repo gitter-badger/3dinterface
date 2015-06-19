@@ -11,7 +11,7 @@ var ButtonManager = function(cameras, previewer) {
     this.undoElement = document.getElementById('undo');
     this.redoElement = document.getElementById('redo');
 
-    this.pointerLockElement = document.getElementById('lock');
+    this.collisionElement = document.getElementById('collisions');
     this.showarrowsElement = document.getElementById('showarrows');
 
     this.recommendationElement = document.getElementById('recommendation');
@@ -19,11 +19,6 @@ var ButtonManager = function(cameras, previewer) {
     this.fullscreenElement.onclick = function() {fullscreen();};
 
     (function(self) {
-
-        self.pointerLockElement.onchange = function() {
-            self.cameras.mainCamera().shouldLock = self.pointerLockElement.checked;
-        }
-
         self.undoElement.onclick = function() {self.cameras.mainCamera().undo(); self.updateElements();}
         self.redoElement.onclick = function() {self.cameras.mainCamera().redo(); self.updateElements();}
 
@@ -36,6 +31,7 @@ var ButtonManager = function(cameras, previewer) {
 
         };
 
+        self.collisionElement.onchange = function() {self.cameras.mainCamera().collisions = self.collisionElement.checked;}
         self.showarrowsElement.onchange = function() {self.showArrows = self.showarrowsElement.checked;}
 
         self.resetElement.onclick = function() {
