@@ -2,17 +2,22 @@ var isFullscreen = false;
 var beenFullscreen = false;
 
 var main_section = document.getElementById('main-section');
+// var container_size = {
+//     width: function() { if (!isFullscreen) return main_section.clientWidth; else return screen.width;},
+//     height: function() {
+//         if (!isFullscreen)
+//             return main_section.clientHeight
+//                 - document.getElementById('nav').offsetHeight
+//                 - document.getElementById('main-div').offsetHeight;
+//         else
+//             return screen.height;
+//     }
+// };
+
 var container_size = {
-    width: function() { if (!isFullscreen) return main_section.clientWidth; else return screen.width;},
-    height: function() {
-        if (!isFullscreen)
-            return main_section.clientHeight
-                - document.getElementById('nav').offsetHeight
-                - document.getElementById('main-div').offsetHeight;
-        else
-            return screen.height;
-    }
-};
+    width: function() { return 1024; },
+    height: function() { return 768; }
+}
 
 // Let's be sure we avoid using global variables
 var onWindowResize = (function() {
