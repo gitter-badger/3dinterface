@@ -35,7 +35,7 @@ var spheres = new Array(mesh_number);
 var visible = 0;
 var stats;
 var previewer;
-
+var camera1;
 var loader;
 var coins = [];
 var previousTime;
@@ -61,6 +61,9 @@ function init() {
     // renderer.setSize(container_size.width(), container_size.height());
     renderer.setClearColor(0x87ceeb);
 
+    // Initialize pointer camera
+    camera1 = new PointerCamera(50, container_size.width() / container_size.height(), 0.01, 100000, renderer, container);
+
     // Initialize previewer
     previewer = new Previewer(renderer, scene);
     previewer.domElement.style.position ="absolute";
@@ -74,14 +77,17 @@ function init() {
     stats.domElement.style.position = 'absolute';
     stats.domElement.style.cssFloat = "top-left";
 
+    // Initialize pointer for pointer lock
+    var pointer = new MousePointer(camera1);
+    pointer.domElement.width = container_size.width();
+    pointer.domElement.height = container_size.height();
+
     // Add elements to page
     container.appendChild( stats.domElement );
+    container.appendChild(pointer.domElement);
     container.appendChild(previewer.domElement);
     container.appendChild(Coin.domElement);
     container.appendChild(renderer.domElement);
-
-    // Initialize pointer camera
-    var camera1 = new PointerCamera(50, container_size.width() / container_size.height(), 0.01, 100000, renderer, container);
 
     cameras = initMainScene(camera1, scene, static_path, coins);
     // cameras = initPeach(camera1, scene, static_path, coins);
@@ -98,6 +104,13 @@ function initListeners() {
     window.addEventListener('resize', onWindowResize, false);
 
     // Transmit click event to camera selecter
+    document.addEventListener('mousedown', function(event) {
+        if (event.which == 1)
+            cameraSelecter.clickPointer(event);
+        }, false
+    );
+
+    // Transmit click event to camera selecter
     container.addEventListener('mousedown', function(event) {
         if (event.which == 1)
             cameraSelecter.click(event);
@@ -106,9 +119,8 @@ function initListeners() {
 
     // Update camera selecter when mouse moved
     container.addEventListener('mousemove', function(event) {
-            cameraSelecter.update(event);
-        }, false
-    );
+        cameraSelecter.update(event);
+    });
 
     // Escape key to exit fullscreen mode
     document.addEventListener('keydown', function(event) { if (event.keyCode == 27) { stopFullscreen();} }, false);

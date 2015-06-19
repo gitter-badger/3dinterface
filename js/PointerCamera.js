@@ -85,7 +85,10 @@ PointerCamera.prototype.lockPointer = function() {
 
             document.documentElement.requestPointerLock();
             this.pointerLocked = true;
+            this.mousePointer.render();
 
+            this.mouse.x = this.renderer.domElement.width/2;
+            this.mouse.y = this.renderer.domElement.height/2;
         }
 
     }
@@ -103,6 +106,7 @@ PointerCamera.prototype.onPointerLockChange = function() {
 
         this.dragging = false;
         this.pointerLocked = false;
+        this.mousePointer.clear();
 
         this.mouseMove.x = 0;
         this.mouseMove.y = 0;
@@ -132,7 +136,7 @@ PointerCamera.prototype.linearMotion = function(time) {
     if (Tools.norm2(Tools.diff(this.position, this.new_position)) < 0.01 &&
         Tools.norm2(Tools.diff(this.target, this.new_target))  < 0.01) {
         this.moving = false;
-    this.anglesFromVectors();
+        this.anglesFromVectors();
     }
 }
 
@@ -354,15 +358,17 @@ PointerCamera.prototype.onKeyUp = function(event) {
 }
 
 PointerCamera.prototype.onMouseDown = function(event) {
-    this.mouse.x = ( ( event.clientX - this.renderer.domElement.offsetLeft ) / this.renderer.domElement.width ) * 2 - 1;
-    this.mouse.y = - ( ( event.clientY - this.renderer.domElement.offsetTop ) / this.renderer.domElement.height ) * 2 + 1;
+    if (!this.shouldLock) {
+        this.mouse.x = ( ( event.clientX - this.renderer.domElement.offsetLeft ) / this.renderer.domElement.width ) * 2 - 1;
+        this.mouse.y = - ( ( event.clientY - this.renderer.domElement.offsetTop ) / this.renderer.domElement.height ) * 2 + 1;
 
-    this.dragging = true;
-    this.mouseMoved = false;
+        this.dragging = true;
+        this.mouseMoved = false;
+    }
 }
 
 PointerCamera.prototype.onMouseMove = function(event) {
-    if (this.dragging) {
+    if (!this.shouldLock && this.dragging) {
         var mouse = {x: this.mouse.x, y: this.mouse.y};
         this.mouse.x = ( ( event.clientX - this.renderer.domElement.offsetLeft ) / this.renderer.domElement.width ) * 2 - 1;
         this.mouse.y = - ( ( event.clientY - this.renderer.domElement.offsetTop ) / this.renderer.domElement.height ) * 2 + 1;

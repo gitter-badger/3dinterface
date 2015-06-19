@@ -75,6 +75,7 @@ PrototypeTools:
 		--js Camera.js \
 		--js PointerCamera.js \
 		--js CameraContainer.js \
+		--js MousePointer.js \
 		--js prototype/ArrowCamera.js \
 		--js prototype/FixedCamera.js \
 		--js prototype/OldFixedCamera.js \

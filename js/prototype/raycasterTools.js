@@ -17,6 +17,15 @@ CameraSelecter.prototype.pointedCamera = function() {
 
     var camera = this.cameras.mainCamera();
 
+    if (camera.pointerLocked) {
+
+        this.mouse.x = this.renderer.domElement.width/2 ;
+        this.mouse.y = this.renderer.domElement.height/2 ;
+        x = 0;
+        y = 0;
+
+    }
+
     var vector = new THREE.Vector3(x, y, 0.5);
     vector.unproject(camera);
 
@@ -57,10 +66,15 @@ CameraSelecter.prototype.pointedCamera = function() {
     this.currentPointedCamera = null;
 }
 
-CameraSelecter.prototype.update = function(event) {
+CameraSelecter.prototype.update = function(event, y) {
     if (event !== undefined) {
         this.mouse.x = event.offsetX == undefined ? event.layerX : event.offsetX;
         this.mouse.y = event.offsetY == undefined ? event.layerY : event.offsetY;
+    }
+
+    if (y !== undefined) {
+        this.mouse.x = this.renderer.domElement.width/2;
+        this.mouse.y = this.renderer.domElement.height/2;
     }
 
     var previousCamera = this.currentPointedCamera;
@@ -109,5 +123,26 @@ CameraSelecter.prototype.click = function(event) {
         event.coin_id = this.coins.indexOf(newCamera);
         event.send();
         newCamera.get();
+    }
+}
+
+CameraSelecter.prototype.clickPointer = function(event) {
+    if (this.cameras.mainCamera().pointerLocked) {
+        var newCamera = this.pointedCamera();
+        if (newCamera !== undefined && !(newCamera instanceof Coin)) {
+            var event = new BD.Event.ArrowClicked();
+            event.arrow_id = this.cameras.cameras.indexOf(newCamera);
+            event.send();
+
+            newCamera.check();
+            this.cameras.mainCamera().moveHermite(newCamera);
+            buttonManager.updateElements();
+        } else if (newCamera instanceof Coin) {
+            // Coin found, notify server
+            var event = new BD.Event.CoinClicked();
+            event.coin_id = this.coins.indexOf(newCamera);
+            event.send();
+            newCamera.get();
+        }
     }
 }
