@@ -39,18 +39,29 @@ var PointerCamera = function() {
     // Create history object
     this.history = new History();
 
+    // Variable for lock pointer
+    this.shouldLock = true;
+    this.pointerLocked = false;
+
     // Set events from the document
     var self = this;
     var onKeyDown = function(event) {self.onKeyDown(event);};
     var onKeyUp = function(event) {self.onKeyUp(event);};
-    var onMouseDown = function(event) {self.onMouseDown(event); };
+    var onMouseDown = function(event) {if (event.which === 1) self.onMouseDown(event); };
+    var onMouseUp = function(event) {if (event.which === 1) self.onMouseUp(event); };
     var onMouseMove = function(event) {self.onMouseMove(event); };
-    var onMouseUp = function(event) {self.onMouseUp(event); };
 
     document.addEventListener('keydown', onKeyDown, false);
     document.addEventListener('keyup', onKeyUp, false);
-    listenerTarget.addEventListener('mousedown', function(event) { if (event.which == 1) onMouseDown(event);}, false);
-    listenerTarget.addEventListener('mousemove', function(event) { if (event.which == 1) onMouseMove(event);}, false);
+    document.addEventListener('mousemove', function(event) {self.onMouseMovePointer(event);}, false);
+
+    document.addEventListener('pointerlockchange', function(event) { self.onPointerLockChange(event); }, false);
+    document.addEventListener('mozpointerlockchange', function(event) { self.onPointerLockChange(event); }, false);
+    document.addEventListener('webkitpointerlockchange', function(event) { self.onPointerLockChange(event); }, false);
+
+    listenerTarget.addEventListener('mousedown', function() {self.lockPointer();}, false);
+    listenerTarget.addEventListener('mousedown', onMouseDown, false);
+    listenerTarget.addEventListener('mousemove', onMouseMove, false);
     listenerTarget.addEventListener('mouseup', onMouseUp, false);
     // listenerTarget.addEventListener('mouseup', function() { console.log("mouseup");}, false);
     listenerTarget.addEventListener('mouseout', onMouseUp, false);
@@ -61,6 +72,44 @@ var PointerCamera = function() {
 }
 PointerCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 PointerCamera.prototype.constructor = PointerCamera;
+
+PointerCamera.prototype.lockPointer = function() {
+
+    if (this.shouldLock) {
+        document.documentElement.requestPointerLock =
+            document.documentElement.requestPointerLock ||
+            document.documentElement.mozRequestPointerLock ||
+            document.documentElement.webkitRequestPointerLock;
+
+        if (document.documentElement.requestPointerLock) {
+
+            document.documentElement.requestPointerLock();
+            this.pointerLocked = true;
+
+        }
+
+    }
+
+}
+
+PointerCamera.prototype.onPointerLockChange = function() {
+
+    document.pointerLockElement =
+        document.pointerLockElement ||
+        document.mozPointerLockElement ||
+        document.webkitPointerLockElement;
+
+    if (!document.pointerLockElement) {
+
+        this.dragging = false;
+        this.pointerLocked = false;
+
+        this.mouseMove.x = 0;
+        this.mouseMove.y = 0;
+
+    }
+
+}
 
 // Update function
 PointerCamera.prototype.update = function(time) {
@@ -110,7 +159,7 @@ PointerCamera.prototype.normalMotion = function(time) {
     if (this.motion.increaseTheta) {this.theta += this.sensitivity * time / 20; this.changed = true; }
     if (this.motion.decreaseTheta) {this.theta -= this.sensitivity * time / 20; this.changed = true; }
 
-    if (this.dragging) {
+    if ( this.pointerLocked || this.dragging) {
         this.theta += this.mouseMove.x;
         this.phi   -= this.mouseMove.y;
 
@@ -322,6 +371,21 @@ PointerCamera.prototype.onMouseMove = function(event) {
         this.mouseMove.y = this.mouse.y - mouse.y;
         this.mouseMoved = true;
     }
+}
+
+PointerCamera.prototype.onMouseMovePointer = function(e) {
+
+    if (this.pointerLocked) {
+
+        this.mouseMove.x = e.movementX || e.mozMovementX || e.webkitMovementX || 0;
+        this.mouseMove.y = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
+
+        this.mouseMove.x /= -200;
+        this.mouseMove.y /= 200;
+        this.mouseMoved = true;
+
+    }
+
 }
 
 PointerCamera.prototype.onMouseUp = function(event) {
