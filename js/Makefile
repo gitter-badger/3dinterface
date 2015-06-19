@@ -74,6 +74,7 @@ PrototypeTools:
 		--js Hermite.js \
 		--js Camera.js \
 		--js PointerCamera.js \
+		--js PointerLockCamera.js \
 		--js CameraContainer.js \
 		--js prototype/ArrowCamera.js \
 		--js prototype/FixedCamera.js \
