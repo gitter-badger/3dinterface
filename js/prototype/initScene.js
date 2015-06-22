@@ -313,6 +313,7 @@ function initWhompScene(scene, collidableObjects, loader, camera) {
         scene,
         null,
         function(object) {
+            object.raycastable = true;
             if (object.material.name === 'Shape_088' ||
                 object.material.name === 'Shape_089') {
                 object.raycastable = false;
