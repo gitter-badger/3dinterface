@@ -11,11 +11,11 @@ BD.Private.sendData = function(url, data) {
         xhr.open("POST", url, true);
         xhr.setRequestHeader("Content-type", "application/json;charset=UTF-8");
 
-        xhr.onreadystatechange = function() {
-            if(xhr.readyState == 4 && xhr.status == 200) {
-                console.log("Done : " + xhr.responseText);
-            }
-        }
+        // xhr.onreadystatechange = function() {
+        //     if(xhr.readyState == 4 && xhr.status == 200) {
+        //         console.log("Done : " + xhr.responseText);
+        //     }
+        // }
 
         xhr.send(JSON.stringify(data));
     }

@@ -105,6 +105,10 @@ CameraSelecter.prototype.update = function(event, y) {
     }
 
     document.getElementById('container').style.cursor = hovered ? "pointer" : "auto";
+
+    if (this.cameras.mainCamera().pointerLocked)
+        this.cameras.mainCamera().mousePointer.render(hovered ? MousePointer.RED : MousePointer.BLACK);
+
 }
 
 CameraSelecter.prototype.click = function(event) {

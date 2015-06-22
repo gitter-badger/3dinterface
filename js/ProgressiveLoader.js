@@ -276,10 +276,6 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
 
     this.socket.on('disconnect', function() {
         console.log('Finished !');
-        self.currentMesh.geometry.computeBoundingSphere();
-        if (self.currentMesh.geometry.attributes.normal === undefined) {
-            self.currentMesh.geometry.computeVertexNormals();
-        }
         self.finished = true;
     });
 }
