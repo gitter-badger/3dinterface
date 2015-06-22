@@ -1,8 +1,12 @@
+/**
+ * @namespace
+ */
 var mesh = {};
 
 /**
  * Reprensents a mesh
  * @constructor
+ * @memberOf mesh
  */
 mesh.Mesh = function() {
     this.vertices = [];
@@ -114,6 +118,7 @@ mesh.Mesh.prototype.isFinished = function() {
 /**
  * Represent a 3D vertex
  * @constructor
+ * @memberOf mesh
  */
 mesh.Vertex = function() {
     if (typeof arguments[0] === 'string' || arguments[0] instanceof String) {
@@ -164,7 +169,7 @@ mesh.Vertex.prototype.toList = function() {
  *
  * @example
  * var vertex = new mesh.Vertex('v 3.5 3.6 3.7');
- * console.log(vertex.toList()); // Prints v 3.5 3.6 3.7
+ * console.log(vertex.toString()); // Prints v 3.5 3.6 3.7
  */
 mesh.Vertex.prototype.toString = function() {
     return 'v ' + this.x + ' ' + this.y + ' ' + this.z;
@@ -173,6 +178,7 @@ mesh.Vertex.prototype.toString = function() {
 /**
  * Represent a 3D normal
  * @constructor
+ * @memberOf mesh
  */
 mesh.Normal = function() {
     mesh.Vertex.apply(this, arguments);
@@ -202,7 +208,7 @@ mesh.Normal.prototype.toList = function() {
  *
  * @example
  * var normal = new mesh.Normal('vn 3.5 3.6 3.7');
- * console.log(normal.toList()); // Prints vn 3.5 3.6 3.7
+ * console.log(normal.toString()); // Prints vn 3.5 3.6 3.7
  */
 mesh.Normal.toString = function() {
     var superObject = mesh.Vertex.prototype.toString.call(this);
@@ -213,6 +219,7 @@ mesh.Normal.toString = function() {
 /**
  * Represent a texture coordinate element
  * @constructor
+ * @memberOf mesh
  */
 mesh.TexCoord = function() {
     if (typeof arguments[0] === 'string' || arguments[0] instanceof String) {
@@ -257,7 +264,7 @@ mesh.TexCoord.prototype.toList = function() {
  *
  * @example
  * var texCoord = new mesh.TexCoord('vt 3.5 3.6');
- * console.log(texCoord.toList()); // Prints vt 3.5 3.6
+ * console.log(texCoord.toString()); // Prints vt 3.5 3.6
  */
 mesh.TexCoord.prototype.toString = function() {
     return 'vt ' + this.x + ' ' + this.y;
@@ -267,6 +274,7 @@ mesh.TexCoord.prototype.toString = function() {
 /**
  * Represents a face
  * @constructor
+ * @memberOf mesh
  */
 mesh.Face = function() {
     if (typeof arguments[0] === 'string' || arguments[0] instanceof String) {
@@ -449,6 +457,15 @@ mesh.Face.prototype.toList = function() {
     return l;
 }
 
+/**
+ * Gives a string representation of the face
+ * @returns {string} A string representing the face
+ *
+ * @example
+ * var face = new mesh.Face('f 3 5 6');
+ * console.log(face.toString()); // Prints f 3 5 6
+ */
+mesh.TexCoord.prototype.toString = function() {
 mesh.Face.prototype.toString = function() {
     return 'f ' + this.a + ' ' + this.b + ' ' + this.c + (this.d !== undefined ? ' ' + this.d : '');
 }
@@ -457,6 +474,7 @@ mesh.Face.prototype.toString = function() {
  * Represents a material name
  * @constructor
  * @param {string} line the string representing the material
+ * @memberOf mesh
  */
 mesh.Material = function() {
     var split = arguments[0].replace(/\s+/g, ' ').trim().split(' ');
