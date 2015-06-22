@@ -164,13 +164,27 @@ PointerCamera.prototype.normalMotion = function(time) {
     if (this.motion.decreaseTheta) {this.theta -= this.sensitivity * time / 20; this.changed = true; }
 
     if ( this.pointerLocked || this.dragging) {
-        this.theta += this.mouseMove.x;
-        this.phi   -= this.mouseMove.y;
+        this.theta += this.mouseMove.x * time / 20;
+        this.phi   -= this.mouseMove.y * time / 20;
 
         this.mouseMove.x = 0;
         this.mouseMove.y = 0;
 
         this.changed = true;
+
+        if (this.shouldLogCameraAngles) {
+
+            this.shouldLogCameraAngles = false;
+
+            var self = this;
+            setTimeout(function() {
+                self.shouldLogCameraAngles = true;
+            }, 500);
+
+            var event = new BD.KeyboardEvent();
+            event.camera = this;
+
+        }
     }
 
     // Clamp phi and theta
@@ -386,8 +400,8 @@ PointerCamera.prototype.onMouseMovePointer = function(e) {
         this.mouseMove.x = e.movementX || e.mozMovementX || e.webkitMovementX || 0;
         this.mouseMove.y = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
 
-        this.mouseMove.x /= -200;
-        this.mouseMove.y /= 200;
+        this.mouseMove.x *= -(this.sensitivity/5);
+        this.mouseMove.y *=  (this.sensitivity/5);
         this.mouseMoved = true;
 
     }

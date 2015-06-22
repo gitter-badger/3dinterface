@@ -95,3 +95,9 @@ CREATE TABLE hovered(
     time TIMESTAMP DEFAULT NOW(),
     arrow_id INTEGER
 );
+
+CREATE TABLE fpscounter(
+    id SERIAL PRIMARY KEY,
+    exp_id SERIAL REFERENCES experiment (id),
+    fps REAL
+);

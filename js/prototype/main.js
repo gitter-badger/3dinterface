@@ -19,6 +19,8 @@ var container_size = {
     height: function() { return 768; }
 }
 
+var stats;
+
 // Let's be sure we avoid using global variables
 var onWindowResize = (function() {
 
@@ -33,7 +35,7 @@ var objects = [];
 var cameras, cameraSelecter;
 var spheres = new Array(mesh_number);
 var visible = 0;
-var stats;
+// stats;
 var previewer;
 var camera1;
 var loader;
@@ -43,7 +45,24 @@ var previousTime;
 
 
 init();
+if (initMainScene !== initPeach && initMainScene !== initSponza)
+    logfps();
 animate();
+
+function logfps() {
+
+    // Log fps
+    if (stats !== undefined) {
+
+        var event = new BD.Event.Fps();
+        event.fps = stats.getFps();
+        event.send();
+
+    }
+
+    setTimeout(logfps, 1000);
+
+}
 
 function init() {
     // Initialize scene

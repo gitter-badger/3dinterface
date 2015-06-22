@@ -6,7 +6,7 @@ else
 	CLOSURE=./compiler.sh
 endif
 
-all: List ListTest Socket Three Stats ThreeTools Bouncing Multisphere StreamingSimulator PrototypeTools PrototypeReplay PrototypeInteractive Tutorial Sponza
+all: List ListTest Socket Three Stats ThreeTools Bouncing Multisphere StreamingSimulator PrototypeTools PrototypeReplay PrototypeInteractive Tutorial
 
 Socket:
 	cp socket.io/socket.io.min.js ../static/js

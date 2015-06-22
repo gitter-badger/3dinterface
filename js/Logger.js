@@ -11,11 +11,11 @@ BD.Private.sendData = function(url, data) {
         xhr.open("POST", url, true);
         xhr.setRequestHeader("Content-type", "application/json;charset=UTF-8");
 
-        // xhr.onreadystatechange = function() {
-        //     if(xhr.readyState == 4 && xhr.status == 200) {
-        //         console.log("Done : " + xhr.responseText);
-        //     }
-        // }
+        xhr.onreadystatechange = function() {
+            if(xhr.readyState == 4 && xhr.status == 200) {
+                console.log("Done : " + xhr.responseText);
+            }
+        }
 
         xhr.send(JSON.stringify(data));
     }
@@ -33,16 +33,16 @@ BD.disable = function() {
 
 BD.Private.compactCamera = function(camera) {
     return {
-            position: {
-                x: camera.position.x,
-                y: camera.position.y,
-                z: camera.position.z
-            },
-            target: {
-                x: camera.target.x,
-                y: camera.target.y,
-                z: camera.target.z
-            }
+        position: {
+            x: camera.position.x,
+            y: camera.position.y,
+            z: camera.position.z
+        },
+        target: {
+            x: camera.target.x,
+            y: camera.target.y,
+            z: camera.target.z
+        }
     };
 }
 
@@ -101,4 +101,16 @@ BD.Event.Hovered.prototype.send = function() {
     };
 
     BD.Private.sendData(url, data);
+}
+
+BD.Event.Fps = function() {};
+BD.Event.Fps.prototype.send = function() {
+
+    var url = "/fps";
+    var data = {
+        fps: this.fps
+    }
+
+    BD.Private.sendData(url, data);
+
 }
