@@ -179,6 +179,7 @@ mesh.Vertex.prototype.toString = function() {
  * Represent a 3D normal
  * @constructor
  * @memberOf mesh
+ * @augments mesh.Vertex
  */
 mesh.Normal = function() {
     mesh.Vertex.apply(this, arguments);
@@ -210,7 +211,7 @@ mesh.Normal.prototype.toList = function() {
  * var normal = new mesh.Normal('vn 3.5 3.6 3.7');
  * console.log(normal.toString()); // Prints vn 3.5 3.6 3.7
  */
-mesh.Normal.toString = function() {
+mesh.Normal.prototype.toString = function() {
     var superObject = mesh.Vertex.prototype.toString.call(this);
     superObject.replace('v', 'vn');
     return superObject;
