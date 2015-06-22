@@ -366,6 +366,7 @@ mesh.Face = function() {
 /**
  * Parse a face line and returns an array of faces
  *
+ * @access private
  * @param {String} a string representing a face
  * @returns {Face[]} a single 3-vertices face or two 3-vertices face if it was
  * a 4-vertices face
@@ -465,7 +466,6 @@ mesh.Face.prototype.toList = function() {
  * var face = new mesh.Face('f 3 5 6');
  * console.log(face.toString()); // Prints f 3 5 6
  */
-mesh.TexCoord.prototype.toString = function() {
 mesh.Face.prototype.toString = function() {
     return 'f ' + this.a + ' ' + this.b + ' ' + this.c + (this.d !== undefined ? ' ' + this.d : '');
 }
