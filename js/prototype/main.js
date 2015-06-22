@@ -42,6 +42,15 @@ var loader;
 var coins = [];
 var previousTime;
 
+window.onbeforeunload = function() {
+
+    if (initMainScene !== initPeach && initMainScene !== initSponza && Coin.total !== 9) {
+
+        return 'Warning : you are going to leave the page and abort the current test !';
+
+    }
+
+}
 
 
 init();
