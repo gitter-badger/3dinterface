@@ -68,6 +68,8 @@ var PointerCamera = function() {
 
     this.collisions = true;
 
+    this.shouldLogCameraAngles = true;
+
     this.resetElements = resetBobombElements();
 }
 PointerCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
@@ -179,9 +181,9 @@ PointerCamera.prototype.normalMotion = function(time) {
             var self = this;
             setTimeout(function() {
                 self.shouldLogCameraAngles = true;
-            }, 500);
+            }, 100);
 
-            var event = new BD.KeyboardEvent();
+            var event = new BD.Event.KeyboardEvent();
             event.camera = this;
 
         }
