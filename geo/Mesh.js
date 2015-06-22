@@ -366,7 +366,7 @@ mesh.Face = function() {
 /**
  * Parse a face line and returns an array of faces
  *
- * @access private
+ * @private
  * @param {String} a string representing a face
  * @returns {Face[]} a single 3-vertices face or two 3-vertices face if it was
  * a 4-vertices face
