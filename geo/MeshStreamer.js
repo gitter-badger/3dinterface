@@ -1,8 +1,14 @@
 var fs = require('fs');
 var mesh = require('./Mesh.js');
 
+/**
+ * @namespace
+ */
 var geo = {};
 
+/**
+ * @private
+ */
 function bisect(items, x, lo, hi) {
     var mid;
     if (typeof(lo) == 'undefined') lo = 0;
@@ -15,10 +21,16 @@ function bisect(items, x, lo, hi) {
     return lo;
 }
 
+/**
+ * @private
+ */
 function insort(items, x) {
     items.splice(bisect(items, x), 0, x);
 }
 
+/**
+ * @private
+ */
 function partialSort(items, k, comparator) {
     var smallest = items.slice(0, k).sort(),
         max = smallest[k-1];
@@ -35,18 +47,54 @@ function partialSort(items, k, comparator) {
     return smallest;
 }
 
+/**
+ * A class that streams easily a mesh via socket.io
+ * @memberOf geo
+ * @constructor
+ * @param {string} path to the mesh
+ * @param {function} callback to execute when the mesh streamer is loaded
+ */
 geo.MeshStreamer = function(path, callback) {
-    // Different parts of a obj (a mesh per material)
+    /**
+     * array of each part of the mesh
+     * @type {mesh.Mesh[]}
+     */
     this.meshes = [];
 
-    // In meshes, vertices and texture coords are shared
+    /**
+     * array of the vertices of the meshes (all merged)
+     * @type {mesh.Vertex[]}
+     */
     this.vertices = [];
+
+    /**
+     * array of the faces of the meshes (all merged)
+     * @type {mesh.Face[]}
+     */
     this.faces = [];
+
+    /**
+     * array of the normals of the meshes (all merged)
+     * @type {mesh.Normal[]}
+     */
     this.normals = [];
+
+    /**
+     * array of the texture coordinates (all merged)
+     * @type {mesh.TexCoord[]}
+     */
     this.texCoords = [];
+
+    /**
+     * array of the faces in a nice order for sending
+     * @type {mesh.Face[]}
+     */
     this.orderedFaces = [];
 
-    // Chunk size
+    /**
+     * Number of element to send by packet
+     * @type {Number}
+     */
     this.chunk = 1000;
 
     if (path !== undefined) {
@@ -59,7 +107,11 @@ geo.MeshStreamer = function(path, callback) {
     }
 }
 
-// Returns the function that compares two faces
+/**
+ * Compute a function that can compare two faces
+ * @param {Camera} camera a camera seeing or not face
+ * @returns the function that compares two faces : the higher face is the most interesting for the camera
+ */
 geo.MeshStreamer.prototype.faceComparator = function(camera) {
 
     var self = this;
@@ -131,6 +183,11 @@ geo.MeshStreamer.prototype.faceComparator = function(camera) {
     }
 }
 
+/**
+ * Loads a obj file
+ * @param {string} path the path to the file
+ * @param {function} callback the callback to call when the mesh is loaded
+ */
 geo.MeshStreamer.prototype.loadFromFile = function(path, callback) {
     var self = this;
     fs.readFile(path, function(err, data) {
@@ -228,6 +285,10 @@ geo.MeshStreamer.prototype.loadFromFile = function(path, callback) {
     });
 }
 
+/**
+ * Initialize the socket.io callback
+ * @param {socket} socket the socket to initialize
+ */
 geo.MeshStreamer.prototype.start = function(socket) {
 
     this.meshIndex = 0;
@@ -278,6 +339,10 @@ geo.MeshStreamer.prototype.start = function(socket) {
     });
 }
 
+/**
+ * Prepare the array of materials
+ * @return array the array to send with all materials of the current mesh
+ */
 geo.MeshStreamer.prototype.nextMaterials = function() {
 
     var data = [];
@@ -302,6 +367,12 @@ geo.MeshStreamer.prototype.nextMaterials = function() {
 
 }
 
+/**
+ * Prepare the next elements
+ * @param {camera} _camera a camera that can be usefull to do smart streaming (stream
+ * only interesting parts according to the camera
+ * @returns {array} an array of elements ready to send
+ */
 geo.MeshStreamer.prototype.nextElements = function(_camera) {
 
     // Prepare camera (and scale to model)
@@ -388,7 +459,7 @@ geo.MeshStreamer.prototype.nextElements = function(_camera) {
                 if (
                     direction.x * v1.x + direction.y * v1.y + direction.z * v1.z < 0 &&
                     direction.x * v2.x + direction.y * v2.y + direction.z * v2.z < 0 &&
-                direction.x * v3.x + direction.y * v3.y + direction.z * v3.z < 0
+                    direction.x * v3.x + direction.y * v3.y + direction.z * v3.z < 0
                 ) {
 
                     continue;

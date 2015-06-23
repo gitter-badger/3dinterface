@@ -1,7 +1,15 @@
-// class camera extends THREE.PerspectiveCamera
+/**
+ * Represents a camera that can be used easily
+ * @constructor
+ * @augments THREE.PerspectiveCamera
+ */
 var PointerCamera = function() {
     THREE.PerspectiveCamera.apply(this, arguments);
 
+    /**
+     * A reference to the renderer
+     * @type {THREE.Renderer}
+     */
     this.renderer = arguments[4];
 
     if (arguments[5] === undefined)
@@ -9,38 +17,118 @@ var PointerCamera = function() {
     else
         listenerTarget = arguments[5];
 
-    // Set Position
+    /**
+     * Theta angle of the camera
+     * @type {Number}
+     */
     this.theta = Math.PI;
+
+    /**
+     * Phi angle of the camera
+     * @type {Number}
+     */
     this.phi = Math.PI;
 
-    // this.keyboard = undefined;
+    /**
+     * Indicates if the camera is following a linear motion
+     * @type {Boolean}
+     */
     this.moving = false;
 
+    /**
+     * Indicates if the user is dragging the camera
+     * @type {Boolean}
+     */
     this.dragging = false;
+
+    /**
+     * Current position of the cursor
+     * @type {Object}
+     */
     this.mouse = {x: 0, y: 0};
+
+    /**
+     * Current movement of the cursor
+     * @type {Object}
+     */
     this.mouseMove = {x: 0, y: 0};
 
-
-    // Stuff for rendering
+    /**
+     * Current position of the camera (optical center)
+     * @type {THREE.Vector}
+     */
     this.position = new THREE.Vector3();
+
+    /**
+     * Current direction of the camera
+     * @type {THREE.Vector}
+     */
     this.forward = new THREE.Vector3();
+
+    /**
+     * Vector pointing to the left of the camera
+     * @type {THREE.Vector}
+     */
     this.left = new THREE.Vector3();
+
+    /**
+     * Point that the camera is targeting
+     * @type {THREE.Vector}
+     */
     this.target = new THREE.Vector3(0,1,0);
 
-    // Stuff for events
+    /**
+     * Indicates the different motions that the camera should have according to the keyboard events
+     * @type {Object}
+     * @description Contains the following booleans
+     * <ul>
+     *     <li>increasePhi</li>
+     *     <li>decreasePhi</li>
+     *     <li>increaseTheta</li>
+     *     <li>decreaseTheta</li>
+     *     <li>boost</li>
+     *     <li>moveForward</li>
+     *     <li>moveBackward</li>
+     *     <li>moveLeft</li>
+     *     <li>moveRight</li>
+     * </ul>
+     */
     this.motion = {};
 
+    /**
+     * Sentitivity of the mouse
+     * @type {Number}
+     */
     this.sensitivity = 0.05;
+
+    /**
+     * Speed of the camera
+     * @type {Number}
+     */
     this.speed = 1;
 
-    // Raycaster for collisions
+    /**
+     * Raycaster used to compute collisions
+     * @type {THREE.Raycaster}
+     */
     this.raycaster = new THREE.Raycaster();
 
-    // Create history object
+    /**
+     * History of the moves of the camera
+     * @type {History}
+     */
     this.history = new History();
 
-    // Variable for lock pointer
+    /**
+     * Option to enable or disable the pointer lock
+     * @type {Boolean}
+     */
     this.shouldLock = true;
+
+    /**
+     * Current state of the pointer (locked or not)
+     * @type {Boolean}
+     */
     this.pointerLocked = false;
 
     // Set events from the document
@@ -66,15 +154,32 @@ var PointerCamera = function() {
     // listenerTarget.addEventListener('mouseup', function() { console.log("mouseup");}, false);
     listenerTarget.addEventListener('mouseout', onMouseUp, false);
 
+    /**
+     * Option to enable or disable the collisions
+     * @type {Boolean}
+     */
     this.collisions = true;
 
+    /**
+     * Is true when we should log the camera angles. It will be set to false
+     * once is done, and reset to true after a certain period of time
+     * @param {Boolean}
+     */
     this.shouldLogCameraAngles = true;
 
+    /**
+     * The camera we will move to when we'll reset the camera
+     * @param {Object}
+     */
     this.resetElements = resetBobombElements();
 }
 PointerCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 PointerCamera.prototype.constructor = PointerCamera;
 
+/**
+ * Locks the pointer inside the canvas, and displays a gun sight at the middle of the renderer
+ * This method works only if the browser supports requestPointerLock
+ */
 PointerCamera.prototype.lockPointer = function() {
 
     if (this.shouldLock) {
@@ -97,6 +202,9 @@ PointerCamera.prototype.lockPointer = function() {
 
 }
 
+/**
+ * Update the camera when the pointer lock changes state
+ */
 PointerCamera.prototype.onPointerLockChange = function() {
 
     document.pointerLockElement =
@@ -117,7 +225,10 @@ PointerCamera.prototype.onPointerLockChange = function() {
 
 }
 
-// Update function
+/**
+ * Update the position of the camera
+ * @param {Number} time number of milliseconds between the previous and the next frame
+ */
 PointerCamera.prototype.update = function(time) {
     if (this.moving) {
         this.linearMotion(time);
@@ -128,6 +239,10 @@ PointerCamera.prototype.update = function(time) {
     }
 }
 
+/**
+ * Update the camera according to its linear motion
+ * @param {Number} time number of milliseconds between the previous and the next frame
+ */
 PointerCamera.prototype.linearMotion = function(time) {
     var position_direction = Tools.diff(this.new_position, this.position);
     var target_direction = Tools.diff(this.new_target, this.target);
@@ -142,6 +257,10 @@ PointerCamera.prototype.linearMotion = function(time) {
     }
 }
 
+/**
+ * Update the camera according to its hermite motion
+ * @param {Number} time number of milliseconds between the previous and the next frame
+ */
 PointerCamera.prototype.hermiteMotion = function(time) {
     var eval = this.hermitePosition.eval(this.t);
     this.position.x = eval.x;
@@ -158,6 +277,10 @@ PointerCamera.prototype.hermiteMotion = function(time) {
     }
 }
 
+/**
+ * Update the camera according to the user's input
+ * @param {Number} time number of milliseconds between the previous and the next frame
+ */
 PointerCamera.prototype.normalMotion = function(time) {
     // Update angles
     if (this.motion.increasePhi)   {this.phi   += this.sensitivity * time / 20; this.changed = true; }
@@ -224,6 +347,9 @@ PointerCamera.prototype.normalMotion = function(time) {
     this.target.add(forward);
 }
 
+/**
+ * Reset the camera to its resetElements, and finishes any motion
+ */
 PointerCamera.prototype.reset = function() {
     this.resetPosition();
     this.moving = false;
@@ -231,12 +357,18 @@ PointerCamera.prototype.reset = function() {
     (new BD.Event.ResetClicked()).send();
 }
 
+/**
+ * Reset the position of th camera
+ */
 PointerCamera.prototype.resetPosition = function() {
     this.position.copy(this.resetElements.position);
     this.target.copy(this.resetElements.target);
     this.anglesFromVectors();
 }
 
+/**
+ * Computes the vectors (forward, left, ...) according to theta and phi
+ */
 PointerCamera.prototype.vectorsFromAngles = function() {
     // Update direction
     this.forward.y = Math.sin(this.phi);
@@ -248,6 +380,9 @@ PointerCamera.prototype.vectorsFromAngles = function() {
 
 }
 
+/**
+ * Computes theta and phi according to the vectors (forward, left, ...)
+ */
 PointerCamera.prototype.anglesFromVectors = function() {
     var forward = Tools.diff(this.target, this.position);
     forward.normalize();
@@ -259,6 +394,11 @@ PointerCamera.prototype.anglesFromVectors = function() {
     this.theta = Math.atan2(forward.x, forward.z);
 }
 
+/**
+ * Creates a linear motion to another camera
+ * @param {Camera} camera Camera to move to
+ * @param {Boolean} [toSave=true] true if you want to save the current state of the camera
+ */
 PointerCamera.prototype.move = function(otherCamera, toSave) {
     if (toSave === undefined)
         toSave = true;
@@ -281,6 +421,11 @@ PointerCamera.prototype.move = function(otherCamera, toSave) {
     }
 }
 
+/**
+ * Creates a hermite motion to another camera
+ * @param {Camera} camera Camera to move to
+ * @param {Boolean} [toSave=true] true if you want to save the current state of the camera
+ */
 PointerCamera.prototype.moveHermite = function(otherCamera, toSave) {
     if (toSave === undefined)
         toSave = true;
@@ -309,6 +454,11 @@ PointerCamera.prototype.moveHermite = function(otherCamera, toSave) {
     }
 }
 
+/**
+ * Checks the collisions between the collidables objects and the camera
+ * @param {THREE.Vector3} direction the direction of the camera
+ * @returns {Boolean} true if there is a collision, false otherwise
+ */
 PointerCamera.prototype.isColliding = function(direction) {
     this.raycaster.set(this.position, direction.clone().normalize());
     var intersects = this.raycaster.intersectObjects(this.collidableObjects, true);
@@ -323,15 +473,25 @@ PointerCamera.prototype.isColliding = function(direction) {
     return false;
 }
 
-// Look function
+/**
+ * Look method. Equivalent to gluLookAt for the current camera
+ */
 PointerCamera.prototype.look = function() {
     this.lookAt(this.target);
 }
 
+/**
+ * Adds the camera to the scene
+ */
 PointerCamera.prototype.addToScene = function(scene) {
     scene.add(this);
 }
 
+/**
+ * Manages keyboard events
+ * @param {event} event the event that happened
+ * @param {Booelean} toSet true if the key was pressed, false if released
+ */
 PointerCamera.prototype.onKeyEvent = function(event, toSet) {
     // Create copy of state
     var motionJsonCopy = JSON.stringify(this.motion);
@@ -365,14 +525,26 @@ PointerCamera.prototype.onKeyEvent = function(event, toSet) {
     }
 }
 
+/**
+ * Manages the key pressed events
+ * @param {event} event the event to manage
+ */
 PointerCamera.prototype.onKeyDown = function(event) {
     this.onKeyEvent(event, true);
 }
 
+/**
+ * Manages the key released events
+ * @param {event} event the event to manage
+ */
 PointerCamera.prototype.onKeyUp = function(event) {
     this.onKeyEvent(event, false);
 }
 
+/**
+ * Manages the mouse down events. Start drag'n'dropping if the options are set to drag'n'drop
+ * @param {event} event the event to manage
+ */
 PointerCamera.prototype.onMouseDown = function(event) {
     if (!this.shouldLock) {
         this.mouse.x = ( ( event.clientX - this.renderer.domElement.offsetLeft ) / this.renderer.domElement.width ) * 2 - 1;
@@ -383,6 +555,10 @@ PointerCamera.prototype.onMouseDown = function(event) {
     }
 }
 
+/**
+ * Manages the mouse move events. Modifies the target of the camera according to the drag'n'drop motion
+ * @param {event} event the event to manage
+ */
 PointerCamera.prototype.onMouseMove = function(event) {
     if (!this.shouldLock && this.dragging) {
         var mouse = {x: this.mouse.x, y: this.mouse.y};
@@ -395,6 +571,10 @@ PointerCamera.prototype.onMouseMove = function(event) {
     }
 }
 
+/**
+ * Manages the mouse move envent in case of pointer lock
+ * @param {event} event the event to manage
+ */
 PointerCamera.prototype.onMouseMovePointer = function(e) {
 
     if (this.pointerLocked) {
@@ -410,6 +590,10 @@ PointerCamera.prototype.onMouseMovePointer = function(e) {
 
 }
 
+/**
+ * Manages the mouse up event. Stops the dragging
+ * @param {event} event the event to manage
+ */
 PointerCamera.prototype.onMouseUp = function(event) {
     this.onMouseMove(event);
 
@@ -423,11 +607,17 @@ PointerCamera.prototype.onMouseUp = function(event) {
     this.dragging = false;
 }
 
+/**
+ * Logs the camera to the terminal (pratical to create recommended views)
+ */
 PointerCamera.prototype.log = function() {
     console.log("createCamera(\nnew THREE.Vector3(" + this.position.x + "," +  this.position.y + ',' + this.position.z + '),\n'
      + "new THREE.Vector3(" + this.target.x + "," +  this.target.y + ',' + this.target.z + ')\n)');
 }
 
+/**
+ * Save the current state of the camera in the history
+ */
 PointerCamera.prototype.save = function() {
     var backup = {};
     backup.position = this.position.clone();
@@ -435,6 +625,9 @@ PointerCamera.prototype.save = function() {
     this.history.addState(backup);
 }
 
+/**
+ * Undo last motion according to the history
+ */
 PointerCamera.prototype.undo = function() {
     var move = this.history.undo();
     if (move !== undefined) {
@@ -447,6 +640,9 @@ PointerCamera.prototype.undo = function() {
     }
 }
 
+/**
+ * Redo last motion according to the history
+ */
 PointerCamera.prototype.redo = function() {
     var move = this.history.redo();
     if (move !== undefined) {
@@ -459,48 +655,19 @@ PointerCamera.prototype.redo = function() {
     }
 }
 
+/**
+ * Checks if there is a undo possibility in the history
+ * @returns {Boolean} true if undo is possible, false otherwise
+ */
 PointerCamera.prototype.undoable = function() {
     return this.history.undoable();
 }
 
+/**
+ * Checks if there is a redo possibility in the history
+ * @returns {Boolean} true if redo is possible, false otherwise
+ */
 PointerCamera.prototype.redoable = function() {
     return this.history.redoable();
 }
 
-var History = function() {
-    this.states = new Array();
-    this.index = -1;
-    this.size = 0;
-}
-
-History.prototype.addState = function(state) {
-    ++this.index;
-    this.size = this.index + 1;
-    this.states[this.size-1] = state;
-}
-
-History.prototype.undo = function() {
-    if (this.undoable()) {
-        this.index--;
-        return this.currentState();
-    }
-}
-
-History.prototype.redo = function() {
-    if (this.redoable()) {
-        this.index++;
-        return this.currentState();
-    }
-}
-
-History.prototype.undoable = function() {
-    return this.index > 0;
-}
-
-History.prototype.redoable = function() {
-    return this.index < this.size - 1;
-}
-
-History.prototype.currentState = function() {
-    return this.states[this.index];
-}

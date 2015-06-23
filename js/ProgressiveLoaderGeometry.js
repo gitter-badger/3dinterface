@@ -1,3 +1,7 @@
+/**
+ * Parse a list as it is sent by the server and gives a slightly more comprehensible result
+ * @private
+ */
 var _parseList2 = function(arr) {
 
     var ret = {};
@@ -64,37 +68,118 @@ var _parseList2 = function(arr) {
     return ret;
 }
 
+/**
+ * Loads a mesh from socket.io
+ * @param {string} path path to the .obj file
+ * @param {THREE.Scene} scene to add the object
+ * @param {PointerCamera} camera the camera that will be sent to server for smart
+ * streaming (can be null, then the server will stream the mesh in the .obj
+ * order)
+ * @param {function} callback callback to call on the objects when they're created
+ * @constructor
+ */
 var ProgressiveLoaderGeometry = function(path, scene, camera, callback) {
 
-    // Init attributes
+    /**
+     * Path to the .obj file
+     * @type {string}
+     */
     this.objPath = path;
+
+    /**
+     * Path to the folder where the textures are
+     * @type {string}
+     */
     this.texturesPath = path.substring(0, path.lastIndexOf('/')) + '/';
+
+    /**
+     * Path to the .mtl file
+     * @type {string}
+     */
     this.mtlPath = path.replace('.obj', '.mtl');
+
+    /**
+     * Reference to the scene in which the object should be added
+     */
     this.scene = scene;
+
+    /**
+     * Callback to call on the object when they're created
+     */
     this.callback = callback;
+
+    /**
+     * Counter (not used)
+     * @private
+     */
     this.counter = 0;
 
+    /**
+     * Group where the sub-objects will be added
+     * @type {THREE.Object3D}
+     */
     this.obj = new THREE.Object3D();
 
     scene.add(this.obj);
 
+    /**
+     * Array of the vertices of the mesh
+     * @type {THREE.Vector3[]}
+     */
     this.vertices = [];
+
+    /**
+     * Array of the texture coordinates of the mesh
+     * @type {THREE.Vector2[]}
+     */
     this.texCoords = [];
+
+    /**
+     * Array of the normal of the mesh
+     * @type {THREE.Vector3[]}
+     */
     this.normals = [];
+
+    /**
+     * Array of the UV mapping
+     * @description Each element is an array of 3 elements that are the indices
+     * of the element in <code>this.texCoords</code> that should be
+     * used as texture coordinates for the current vertex of the face
+     * @type {Number[][]}
+     */
     this.uvs = [];
+
+    /**
+     * Array of all the meshes that will be added to the main object
+     * @type {THREE.Mesh[]}
+     */
     this.meshes = [];
 
-    // Init MTLLoader
+    /**
+     * Loader for the material file
+     * @type {THREE.MTLLoader}
+     */
     this.loader = new THREE.MTLLoader(this.texturesPath);
 
-    // Init io stuff
+    /**
+     * Socket to connect to get the mesh
+     * @type {socket}
+     */
     this.socket = io();
+
     this.initIOCallbacks();
 
+    /**
+     * Reference to the camera
+     * @type {PointerCamera}
+     */
     this.camera = camera;
 
 }
 
+/**
+ * Starts the loading of the mesh
+ */
 ProgressiveLoaderGeometry.prototype.load = function() {
 
     var self = this;
@@ -110,6 +195,9 @@ ProgressiveLoaderGeometry.prototype.load = function() {
     });
 }
 
+/**
+ * Will return a list representation of the camera (to be sent to the server)
+ */
 ProgressiveLoaderGeometry.prototype.getCamera = function() {
     if (this.camera === null)
         return null;
@@ -118,6 +206,9 @@ ProgressiveLoaderGeometry.prototype.getCamera = function() {
         this.camera.target.x,   this.camera.target.y,   this.camera.target.z];
 }
 
+/**
+ * Initializes the socket.io functions so that it can discuss with the server
+ */
 ProgressiveLoaderGeometry.prototype.initIOCallbacks = function() {
 
     var self = this;
@@ -268,6 +359,9 @@ ProgressiveLoaderGeometry.prototype.initIOCallbacks = function() {
     });
 }
 
+/**
+ * Starts the communication with the server
+ */
 ProgressiveLoaderGeometry.prototype.start = function() {
     this.socket.emit('request', this.objPath);
 }
