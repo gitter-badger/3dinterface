@@ -239,14 +239,15 @@ geo.MeshStreamer.prototype.start = function(socket) {
         console.log('Asking for ' + path);
 
         var regex = /.*\.\..*/;
+        var filePath = path.substring(1, path.length);
 
-        if (regex.test(path)) {
+        if (regex.test(filePath)) {
             socket.emit('refused');
             socket.disconnect();
             return;
         }
 
-        self.loadFromFile(path, function() {
+        self.loadFromFile(filePath, function() {
             socket.emit('ok');
         });
 

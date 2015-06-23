@@ -166,8 +166,8 @@ PointerCamera.prototype.normalMotion = function(time) {
     if (this.motion.decreaseTheta) {this.theta -= this.sensitivity * time / 20; this.changed = true; }
 
     if ( this.pointerLocked || this.dragging) {
-        this.theta += this.mouseMove.x * time / 20;
-        this.phi   -= this.mouseMove.y * time / 20;
+        this.theta += this.mouseMove.x * 20 / time;
+        this.phi   -= this.mouseMove.y * 20 / time;
 
         this.mouseMove.x = 0;
         this.mouseMove.y = 0;

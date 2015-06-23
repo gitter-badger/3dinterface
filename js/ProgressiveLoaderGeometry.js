@@ -67,7 +67,7 @@ var _parseList2 = function(arr) {
 var ProgressiveLoaderGeometry = function(path, scene, camera, callback) {
 
     // Init attributes
-    this.objPath = path.substring(1, path.length);
+    this.objPath = path;
     this.texturesPath = path.substring(0, path.lastIndexOf('/')) + '/';
     this.mtlPath = path.replace('.obj', '.mtl');
     this.scene = scene;
