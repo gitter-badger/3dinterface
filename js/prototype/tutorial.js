@@ -4,15 +4,8 @@ var isFullscreen = false;
 var main_section = document.getElementById('main-section');
 
 var container_size = {
-    width: function() { if (!isFullscreen) return main_section.clientWidth; else return screen.width;},
-    height: function() {
-        if (!isFullscreen)
-            return main_section.clientHeight
-                - document.getElementById('nav').offsetHeight
-                - document.getElementById('main-div').offsetHeight;
-        else
-            return screen.height;
-    }
+        width: function() { return 1024; },
+            height: function() { return 768; }
 };
 
 var onWindowResize = (function() {
@@ -71,13 +64,28 @@ function init() {
     stats.domElement.style.position = 'absolute';
     stats.domElement.style.cssFloat = "top-left";
 
+    var camera1 = new TutoCamera(50, container_size.width() / container_size.height(), 0.01, 100000, renderer, scene, onWindowResize, container_size, coins, container);
+
+    // Initialize pointer for pointer lock
+    var pointer = new MousePointer(camera1);
+    pointer.domElement.width = container_size.width();
+    pointer.domElement.height = container_size.height();
+
+    //
+    var startCanvas = new StartCanvas(camera1);
+    startCanvas.domElement.width = container_size.width();
+    startCanvas.domElement.height = container_size.height();
+    startCanvas.render();
+
     // Add elements to page
     container.appendChild( stats.domElement );
+    container.appendChild(Coin.domElement);
+    container.appendChild(startCanvas.domElement);
+    container.appendChild(pointer.domElement);
     container.appendChild(previewer.domElement);
     container.appendChild(renderer.domElement);
 
     // Initialize pointer camera
-    var camera1 = new TutoCamera(50, container_size.width() / container_size.height(), 0.01, 100000, renderer, scene, onWindowResize, container_size, coins, container);
     tutorial = camera1.tutorial;
 
     cameras = new CameraContainer(camera1, []);

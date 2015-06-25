@@ -10,8 +10,16 @@ var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container
 
     this.instructions = [
         {
-            text:"Welcome to this tutorial ! Click on <em>next</em> to go to the next instruction !",
-            justclick:true
+            text:"Welcome to this tutorial ! Click on the canvas to go start !",
+            justclick:false
+        },
+        {
+            text: "You can use your mouse to move around, and press the escape key to unlock the pointer",
+            justclick: false
+        },
+        {
+            text: "You can also uncheck the <em>lock pointer</em> otion at the bottom of the page to rotate the camera via drag'n'drop !",
+            justclick: false
         },
         {
             text:"You can use your mouse (drag'n'drop) to rotate the camera",
@@ -30,7 +38,7 @@ var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container
             justclick: false
         },
         {
-            text: "Two more !",
+            text: "Two more ! Feel free to select the pointer lock option you prefer",
             justclick: false
         },
         {
@@ -100,9 +108,9 @@ TutorialSteps.prototype.nextStep = function() {
         var self = this;
         switch (this.step) {
             case 0: break;
-            case 1: this.camera.allowed.mouseRotate       = true; break;
-            case 2: this.camera.allowed.keyboardRotate    = true; break;
-            case 3:
+            case 3: this.camera.allowed.mouseRotate       = true; break;
+            case 4: this.camera.allowed.keyboardRotate    = true; break;
+            case 5:
                 Coin.max = 1;
                 Coin.update();
                 this.camera.allowed.keyboardRotate    = true;
@@ -110,7 +118,7 @@ TutorialSteps.prototype.nextStep = function() {
                 this.coins[this.coins.length-1].addToScene(this.scene);
                 document.getElementById('container').appendChild(Coin.domElement);
                 break;
-            case 4:
+            case 6:
                 Coin.max = 4;
                 Coin.update();
                 this.coins.push(new Coin(1.4074130964382279,0.6458319586843252,-6.75244526999632, callback));
@@ -120,13 +128,13 @@ TutorialSteps.prototype.nextStep = function() {
                 this.coins.push(new Coin(-4.336597108439718,0.4203578350484251,-8.447211342176862, callback));
                 this.coins[this.coins.length-1].addToScene(this.scene);
                 break;
-            case 7:
+            case 9:
                 this.camera.move(this.camera.resetElements);
                 break;
-            case 8:
+            case 10:
                 this.camera.allowed.keyboardTranslate = true;
                 break;
-            case 9:
+            case 11:
                 Coin.max = 5;
                 Coin.update();
                 this.coins.push(new Coin(2.7378029903574026,2.953347730618792,-11.550836282321221, callback));
@@ -136,7 +144,7 @@ TutorialSteps.prototype.nextStep = function() {
                     target: new THREE.Vector3(13.645394042405439,12.337463485871524,-35.64876053273249)
                 });
                 break;
-            case 12:
+            case 14:
                 var cam = createPeachCameras(this.container_size.width(), this.container_size.height())[2];
                 this.cameras.push(cam);
                 cam.addToScene(this.scene);
@@ -145,7 +153,7 @@ TutorialSteps.prototype.nextStep = function() {
                     target:  new THREE.Vector3(24.021711452218575,7.072419314071788,-32.020702608601745)
                 });
                 break;
-            case 14:
+            case 16:
                 var cams = createPeachCameras(this.container_size.width(), this.container_size.height());
                 for (var i = 0; i < cams.length; i == 1 ? i+=2 : i++) {
                     this.cameras.push(cams[i]);
@@ -167,11 +175,14 @@ TutorialSteps.prototype.nextStep = function() {
 
 TutorialSteps.prototype.nextAction = function() {
     switch (this.step) {
-        case 2: return 'rotate-mouse';
-        case 3: return 'rotate-keyboard';
-        case 9: return 'translate-keyboard';
-        case 11: return 'reset-camera';
-        case 13: return 'recommendation';
+        case 1: return 'lock-pointer';
+        case 2: return 'unlock-pointer';
+        case 3: return 'uncheck-lock';
+        case 4: return 'rotate-mouse';
+        case 5: return 'rotate-keyboard';
+        case 11: return 'translate-keyboard';
+        case 13: return 'reset-camera';
+        case 15: return 'recommendation';
     }
 }
 

@@ -45,19 +45,33 @@ var TutoCamera = function() {
 
     // Set events from the document
     var self = this;
+
     var onKeyDown = function(event) {self.onKeyDown(event);};
     var onKeyUp = function(event) {self.onKeyUp(event);};
-    var onMouseDown = function(event) {self.onMouseDown(event); };
+    var onMouseDown = function(event) {if (event.which === 1) self.onMouseDown(event); };
+    var onMouseUp = function(event) {if (event.which === 1) self.onMouseUp(event); };
     var onMouseMove = function(event) {self.onMouseMove(event); };
-    var onMouseUp = function(event) {self.onMouseUp(event); };
 
     document.addEventListener('keydown', onKeyDown, false);
     document.addEventListener('keyup', onKeyUp, false);
-    listenerTarget.addEventListener('mousedown', function(event) { if (event.which == 1) onMouseDown(event);}, false);
-    listenerTarget.addEventListener('mousemove', function(event) { if (event.which == 1) onMouseMove(event);}, false);
+
+    document.addEventListener('pointerlockchange', function(event) { self.onPointerLockChange(event); }, false);
+    document.addEventListener('mozpointerlockchange', function(event) { self.onPointerLockChange(event); }, false);
+    document.addEventListener('webkitpointerlockchange', function(event) { self.onPointerLockChange(event); }, false);
+
+    document.addEventListener('mousemove', function(event) {self.onMouseMovePointer(event);}, false);
+
+    listenerTarget.addEventListener('mousedown', function() {self.lockPointer();}, false);
+    listenerTarget.addEventListener('mousedown', onMouseDown, false);
+    listenerTarget.addEventListener('mousemove', onMouseMove, false);
     listenerTarget.addEventListener('mouseup', onMouseUp, false);
-    // listenerTarget.addEventListener('mouseup', function() { console.log("mouseup");}, false);
-    // listenerTarget.addEventListener('mouseout', onMouseUp, false);
+    listenerTarget.addEventListener('mouseout', onMouseUp, false);
+
+    document.getElementById('lock').addEventListener('change', function(e) {
+        if (self.tutorial.nextAction() === 'uncheck-lock') {
+            self.tutorial.nextStep();
+        }
+    });
 
     this.collisions = true;
 
@@ -65,9 +79,83 @@ var TutoCamera = function() {
 
     // Create tutorial
     this.tutorial = new TutorialSteps(this, scene, coins, this.onWindowResize, container_size);
+
+    this.shouldLock = true;
+
 }
 TutoCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 TutoCamera.prototype.constructor = TutoCamera;
+
+TutoCamera.prototype.lockPointer = function() {
+
+    if (this.shouldLock) {
+        this.renderer.domElement.requestPointerLock =
+            this.renderer.domElement.requestPointerLock ||
+            this.renderer.domElement.mozRequestPointerLock ||
+            this.renderer.domElement.webkitRequestPointerLock;
+
+        if (this.renderer.domElement.requestPointerLock) {
+
+            this.renderer.domElement.requestPointerLock();
+
+        }
+
+    }
+
+}
+
+TutoCamera.prototype.isLocked = function() {
+    var toto =
+        document.pointerLockElement === this.renderer.domElement ||
+        document.mozPointerLockElement === this.renderer.domElement ||
+        document.webkitPointerLockElement === this.renderer.domElement;
+
+    return toto;
+
+}
+
+TutoCamera.prototype.onPointerLockChange = function() {
+
+    if (this.isLocked()) {
+
+        // The pointer is locked : adapt the state of the camera
+        this.pointerLocked = true;
+        this.mousePointer.render();
+
+        this.mouse.x = this.renderer.domElement.width/2;
+        this.mouse.y = this.renderer.domElement.height/2;
+
+        // Remove start canvas
+        this.startCanvas.clear();
+
+        if (this.tutorial.nextAction() === 'lock-pointer') {
+            this.tutorial.nextStep();
+        }
+
+    } else {
+
+        this.pointerLocked = false;
+        this.mousePointer.clear();
+
+        this.theta = this.previousTheta;
+        this.phi = this.previousPhi;
+
+        this.mouseMove.x = 0;
+        this.mouseMove.y = 0;
+
+        // Draw start canvas only if should lock
+        if (this.shouldLock)
+            this.startCanvas.render();
+        else
+            this.startCanvas.clear();
+
+        if (this.tutorial.nextAction() === 'unlock-pointer') {
+            this.tutorial.nextStep();
+        }
+
+    }
+
+}
 
 // Update function
 TutoCamera.prototype.update = function(time) {
@@ -117,7 +205,7 @@ TutoCamera.prototype.normalMotion = function(time) {
     if (this.motion.increaseTheta) {this.theta += this.sensitivity; this.changed = true; }
     if (this.motion.decreaseTheta) {this.theta -= this.sensitivity; this.changed = true; }
 
-    if (this.dragging) {
+    if (this.isLocked() || this.dragging) {
         this.theta += this.mouseMove.x;
         this.phi   -= this.mouseMove.y;
 
@@ -365,7 +453,7 @@ TutoCamera.prototype.onMouseDown = function(event) {
 }
 
 TutoCamera.prototype.onMouseMove = function(event) {
-    if (this.dragging) {
+    if (!this.shouldLock && this.dragging) {
         var mouse = {x: this.mouse.x, y: this.mouse.y};
         this.mouse.x = ( ( event.clientX - this.renderer.domElement.offsetLeft ) / this.renderer.domElement.width ) * 2 - 1;
         this.mouse.y = - ( ( event.clientY - this.renderer.domElement.offsetTop ) / this.renderer.domElement.height ) * 2 + 1;
@@ -378,6 +466,26 @@ TutoCamera.prototype.onMouseMove = function(event) {
             this.tutorial.nextStep();
         }
     }
+}
+
+TutoCamera.prototype.onMouseMovePointer = function(e) {
+
+    if (this.isLocked()) {
+
+        // Backup theta and phi
+        this.previousTheta = this.theta;
+        this.previousPhi = this.phi;
+
+        this.mouseMove.x = e.movementX || e.mozMovementX || e.webkitMovementX || 0;
+        this.mouseMove.y = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
+
+        this.mouseMove.x *= -(this.sensitivity/5);
+        this.mouseMove.y *=  (this.sensitivity/5);
+
+        this.mouseMoved = true;
+
+    }
+
 }
 
 TutoCamera.prototype.onMouseUp = function(event) {
