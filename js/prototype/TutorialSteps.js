@@ -95,6 +95,8 @@ var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container
     nextStep = function() {self.nextStep();};
 
     this.scene = scene;
+
+    Coin.domElement.style.display = "none";
 }
 
 TutorialSteps.prototype.setCameras = function(cameras) {
@@ -102,6 +104,7 @@ TutorialSteps.prototype.setCameras = function(cameras) {
 }
 
 TutorialSteps.prototype.nextStep = function() {
+    console.log(this.step);
     if (this.step < this.instructions.length) {
         this.alert(this.instructions[this.step].text, this.instructions[this.step].justclick);
         var callback = function() {self.coinNumber++; self.nextStep();};
@@ -111,6 +114,7 @@ TutorialSteps.prototype.nextStep = function() {
             case 3: this.camera.allowed.mouseRotate       = true; break;
             case 4: this.camera.allowed.keyboardRotate    = true; break;
             case 5:
+                Coin.domElement.style.display = "";
                 Coin.max = 1;
                 Coin.update();
                 this.camera.allowed.keyboardRotate    = true;

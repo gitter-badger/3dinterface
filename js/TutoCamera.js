@@ -206,8 +206,10 @@ TutoCamera.prototype.normalMotion = function(time) {
     if (this.motion.decreaseTheta) {this.theta -= this.sensitivity; this.changed = true; }
 
     if (this.isLocked() || this.dragging) {
+
         this.theta += this.mouseMove.x;
         this.phi   -= this.mouseMove.y;
+
 
         this.mouseMove.x = 0;
         this.mouseMove.y = 0;
@@ -271,6 +273,9 @@ TutoCamera.prototype.reset = function() {
     this.moving = false;
     this.movingHermite = false;
     (new BD.Event.ResetClicked()).send();
+
+    this.previousTheta = this.theta;
+    this.previousPhi = this.phi;
 }
 
 TutoCamera.prototype.resetPosition = function() {
@@ -454,6 +459,9 @@ TutoCamera.prototype.onMouseDown = function(event) {
 
 TutoCamera.prototype.onMouseMove = function(event) {
     if (!this.shouldLock && this.dragging) {
+        this.previousTheta = this.theta;
+        this.previousPhi = this.phi;
+
         var mouse = {x: this.mouse.x, y: this.mouse.y};
         this.mouse.x = ( ( event.clientX - this.renderer.domElement.offsetLeft ) / this.renderer.domElement.width ) * 2 - 1;
         this.mouse.y = - ( ( event.clientY - this.renderer.domElement.offsetTop ) / this.renderer.domElement.height ) * 2 + 1;
@@ -479,8 +487,8 @@ TutoCamera.prototype.onMouseMovePointer = function(e) {
         this.mouseMove.x = e.movementX || e.mozMovementX || e.webkitMovementX || 0;
         this.mouseMove.y = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
 
-        this.mouseMove.x *= -(this.sensitivity/5);
-        this.mouseMove.y *=  (this.sensitivity/5);
+        this.mouseMove.x *= -(this.sensitivity/10);
+        this.mouseMove.y *=  (this.sensitivity/10);
 
         this.mouseMoved = true;
 
