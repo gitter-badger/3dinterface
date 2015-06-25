@@ -72,7 +72,7 @@ function init() {
 
     // Initialize pointer camera
     var camera1 = new ReplayCamera(50, container_size.width() / container_size.height(), 0.01, 100000, coins);
-    cameras = initMainScene(camera1, scene, static_path, coins);
+    cameras = initMainScene(camera1, scene, coins);
     camera1.cameras = cameras;
 
     // Add listeners

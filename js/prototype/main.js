@@ -125,12 +125,12 @@ function init() {
 
     startCanvas.render();
 
-    cameras = initMainScene(camera1, scene, static_path, coins);
-    // cameras = initPeach(camera1, scene, static_path, coins);
-    // cameras = initBobomb(camera1, scene, static_path, coins);
-    // cameras = initWhomp(camera1, scene, static_path, coins);
-    // cameras = initMountain(camera1, scene, static_path, coins);
-    // cameras = initSponza(camera1, scene, static_path, coins);
+    cameras = initMainScene(camera1, scene, coins);
+    // cameras = initPeach(camera1, scene, coins);
+    // cameras = initBobomb(camera1, scene, coins);
+    // cameras = initWhomp(camera1, scene, , coins);
+    // cameras = initMountain(camera1, scene, coins);
+    // cameras = initSponza(camera1, scene, coins);
 
     // Add listeners
     initListeners();

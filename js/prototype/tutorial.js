@@ -92,7 +92,7 @@ function init() {
     tutorial.setCameras(cameras);
 
     // Load peach scene
-    initPeach(camera1, scene, static_path);
+    initPeach(camera1, scene);
 
     initListeners();
 

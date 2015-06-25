@@ -147,7 +147,7 @@ Coin.init = function(scale) {
         }
 
         Coin._loader.load(
-            static_path + 'data/coin/Coin.obj',
+            '/static/data/coin/Coin.obj',
             function(object) {
                 object.traverse(function (mesh) {
                     if (mesh instanceof THREE.Mesh) {
@@ -161,6 +161,6 @@ Coin.init = function(scale) {
             }
         );
 
-        Coin.nextSound = new Audio(static_path + 'data/music/redcoins/1' + Coin.extension);
+        Coin.nextSound = new Audio('/static/data/music/redcoins/1' + Coin.extension);
     }
 }

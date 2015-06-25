@@ -43,7 +43,7 @@ function resetPeachElements() {
     };
 }
 
-function initPeach(camera, scene, static_path, coins) {
+function initPeach(camera, scene, coins) {
     addLight(scene);
     var loader = new THREE.OBJMTLLoader();
 
@@ -66,20 +66,15 @@ function initPeach(camera, scene, static_path, coins) {
     return cameras;
 }
 
-function initZeldaScene(scene, collidableObjects, loader, static_path) {
+function initZeldaScene(scene, collidableObjects, loader) {
     // Create loader if not already done
     if (loader === undefined) {
         loader = new THREE.OBJMTLLoader();
     }
 
-    // Try to guess the path to static files
-    if (static_path === undefined) {
-        static_path = "/static/";
-    }
-
     loader.load(
-        static_path + 'data/zelda/Island.obj',
-        static_path + 'data/zelda/Island.mtl',
+        '/static/data/zelda/Island.obj',
+        '/static/data/zelda/Island.mtl',
         function ( object ) {
             collidableObjects.push(object);
             object.scale.set(0.01,0.01,0.01);
@@ -163,7 +158,7 @@ function createPeachCameras(width, height) {
 function initBobombScene(scene, collidableObjects, loader, camera) {
 
     var loader = new ProgressiveLoaderGeometry(
-        static_path + 'data/bobomb/bobomb battlefeild.obj',
+        '/static/data/bobomb/bobomb battlefeild.obj',
         scene,
         null,
         function(object) {
@@ -273,7 +268,7 @@ function createBobombCameras(width, height) {
 
 }
 
-function initBobomb(camera, scene, static_path, coins) {
+function initBobomb(camera, scene, coins) {
     addLight(scene);
     var loader = new THREE.OBJMTLLoader();
 
@@ -309,7 +304,7 @@ function initBobomb(camera, scene, static_path, coins) {
 function initWhompScene(scene, collidableObjects, loader, camera) {
 
     var loader = new ProgressiveLoaderGeometry(
-        static_path + 'data/whomp/Whomps Fortress.obj',
+        '/static/data/whomp/Whomps Fortress.obj',
         scene,
         null,
         function(object) {
@@ -437,7 +432,7 @@ function resetWhompElements() {
     };
 }
 
-function initWhomp(camera, scene, static_path, coins) {
+function initWhomp(camera, scene, coins) {
     addLight(scene);
     var loader = new THREE.OBJMTLLoader();
 
@@ -473,7 +468,7 @@ function initWhomp(camera, scene, static_path, coins) {
 function initMountainScene(scene, collidableObjects, loader, camera) {
 
     var loader = new ProgressiveLoaderGeometry(
-        static_path + 'data/mountain/coocoolmountain.obj',
+        '/static/data/mountain/coocoolmountain.obj',
         scene,
         null,
         function(object) {
@@ -590,7 +585,7 @@ function resetMountainElements() {
     }
 }
 
-function initMountain(camera, scene, static_path, coins) {
+function initMountain(camera, scene, coins) {
     addLight(scene);
     var loader = new THREE.OBJMTLLoader();
 
@@ -691,7 +686,7 @@ function resetSponzaElements() {
     };
 }
 
-function initSponza(camera, scene, static_path, coins) {
+function initSponza(camera, scene, coins) {
 
     addLight(scene);
     var loader = new THREE.JSONLoader();
