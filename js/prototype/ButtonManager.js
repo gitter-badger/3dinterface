@@ -33,6 +33,7 @@ var ButtonManager = function(cameras, previewer) {
 
         self.pointerLockElement.onchange = function() {
             self.cameras.mainCamera().shouldLock = self.pointerLockElement.checked;
+            self.cameras.mainCamera().onPointerLockChange();
         }
 
         self.showarrowsElement.onchange = function() {self.showArrows = self.showarrowsElement.checked;}

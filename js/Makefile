@@ -53,7 +53,6 @@ Bouncing:
 
 Multisphere:
 	$(CLOSURE) $(OPT) \
-		--js StaticPath.js \
 		--js Camera.js \
 		--js Cube.js \
 		--js multisphere/MultiSphere.js \
@@ -61,7 +60,6 @@ Multisphere:
 
 StreamingSimulator:
 	$(CLOSURE) $(OPT) \
-		--js StaticPath.js \
 		--js Camera.js \
 		--js Cube.js \
 		--js ProgressiveSphere.js \
@@ -71,7 +69,7 @@ StreamingSimulator:
 PrototypeTools:
 	$(CLOSURE) $(OPT) \
 		--js History.js \
-		--js StaticPath.js \
+		--js StartCanvas.js \
 		--js Hermite.js \
 		--js Camera.js \
 		--js PointerCamera.js \

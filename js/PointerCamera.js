@@ -131,6 +131,11 @@ var PointerCamera = function() {
      */
     this.pointerLocked = false;
 
+    /**
+     *
+     */
+    this.listenerTarget = listenerTarget;
+
     // Set events from the document
     var self = this;
     var onKeyDown = function(event) {self.onKeyDown(event);};
@@ -141,17 +146,17 @@ var PointerCamera = function() {
 
     document.addEventListener('keydown', onKeyDown, false);
     document.addEventListener('keyup', onKeyUp, false);
-    document.addEventListener('mousemove', function(event) {self.onMouseMovePointer(event);}, false);
 
     document.addEventListener('pointerlockchange', function(event) { self.onPointerLockChange(event); }, false);
     document.addEventListener('mozpointerlockchange', function(event) { self.onPointerLockChange(event); }, false);
     document.addEventListener('webkitpointerlockchange', function(event) { self.onPointerLockChange(event); }, false);
 
+    document.addEventListener('mousemove', function(event) {self.onMouseMovePointer(event);}, false);
+
     listenerTarget.addEventListener('mousedown', function() {self.lockPointer();}, false);
     listenerTarget.addEventListener('mousedown', onMouseDown, false);
     listenerTarget.addEventListener('mousemove', onMouseMove, false);
     listenerTarget.addEventListener('mouseup', onMouseUp, false);
-    // listenerTarget.addEventListener('mouseup', function() { console.log("mouseup");}, false);
     listenerTarget.addEventListener('mouseout', onMouseUp, false);
 
     /**
@@ -183,22 +188,32 @@ PointerCamera.prototype.constructor = PointerCamera;
 PointerCamera.prototype.lockPointer = function() {
 
     if (this.shouldLock) {
-        document.documentElement.requestPointerLock =
-            document.documentElement.requestPointerLock ||
-            document.documentElement.mozRequestPointerLock ||
-            document.documentElement.webkitRequestPointerLock;
+        this.renderer.domElement.requestPointerLock =
+            this.renderer.domElement.requestPointerLock ||
+            this.renderer.domElement.mozRequestPointerLock ||
+            this.renderer.domElement.webkitRequestPointerLock;
 
-        if (document.documentElement.requestPointerLock) {
+        if (this.renderer.domElement.requestPointerLock) {
 
-            document.documentElement.requestPointerLock();
-            this.pointerLocked = true;
-            this.mousePointer.render();
+            this.renderer.domElement.requestPointerLock();
 
-            this.mouse.x = this.renderer.domElement.width/2;
-            this.mouse.y = this.renderer.domElement.height/2;
         }
 
     }
+
+}
+
+/**
+ * Check that the pointer is locked or not, and updated locked attribute
+ * @returns true if the pointer is locked, false otherwise
+ */
+PointerCamera.prototype.isLocked = function() {
+    var toto =
+        document.pointerLockElement === this.renderer.domElement ||
+        document.mozPointerLockElement === this.renderer.domElement ||
+        document.webkitPointerLockElement === this.renderer.domElement;
+
+    return toto;
 
 }
 
@@ -207,19 +222,34 @@ PointerCamera.prototype.lockPointer = function() {
  */
 PointerCamera.prototype.onPointerLockChange = function() {
 
-    document.pointerLockElement =
-        document.pointerLockElement ||
-        document.mozPointerLockElement ||
-        document.webkitPointerLockElement;
+    if (this.isLocked()) {
 
-    if (!document.pointerLockElement) {
+        // The pointer is locked : adapt the state of the camera
+        this.pointerLocked = true;
+        this.mousePointer.render();
 
-        this.dragging = false;
+        this.mouse.x = this.renderer.domElement.width/2;
+        this.mouse.y = this.renderer.domElement.height/2;
+
+        // Remove start canvas
+        this.startCanvas.clear();
+
+    } else {
+
         this.pointerLocked = false;
         this.mousePointer.clear();
 
+        this.theta = this.previousTheta;
+        this.phi = this.previousPhi;
+
         this.mouseMove.x = 0;
         this.mouseMove.y = 0;
+
+        // Draw start canvas only if should lock
+        if (this.shouldLock)
+            this.startCanvas.render();
+        else
+            this.startCanvas.clear();
 
     }
 
@@ -282,18 +312,22 @@ PointerCamera.prototype.hermiteMotion = function(time) {
  * @param {Number} time number of milliseconds between the previous and the next frame
  */
 PointerCamera.prototype.normalMotion = function(time) {
+
     // Update angles
     if (this.motion.increasePhi)   {this.phi   += this.sensitivity * time / 20; this.changed = true; }
     if (this.motion.decreasePhi)   {this.phi   -= this.sensitivity * time / 20; this.changed = true; }
     if (this.motion.increaseTheta) {this.theta += this.sensitivity * time / 20; this.changed = true; }
     if (this.motion.decreaseTheta) {this.theta -= this.sensitivity * time / 20; this.changed = true; }
 
-    if ( this.pointerLocked || this.dragging) {
-        this.theta += this.mouseMove.x * 20 / time;
-        this.phi   -= this.mouseMove.y * 20 / time;
+    if ( this.isLocked() || this.dragging) {
+
+        this.theta += (this.mouseMove.x * 20 / time);
+        this.phi   -= (this.mouseMove.y * 20 / time);
 
         this.mouseMove.x = 0;
         this.mouseMove.y = 0;
+
+        this.vectorsFromAngles();
 
         this.changed = true;
 
@@ -546,7 +580,9 @@ PointerCamera.prototype.onKeyUp = function(event) {
  * @param {event} event the event to manage
  */
 PointerCamera.prototype.onMouseDown = function(event) {
+
     if (!this.shouldLock) {
+
         this.mouse.x = ( ( event.clientX - this.renderer.domElement.offsetLeft ) / this.renderer.domElement.width ) * 2 - 1;
         this.mouse.y = - ( ( event.clientY - this.renderer.domElement.offsetTop ) / this.renderer.domElement.height ) * 2 + 1;
 
@@ -560,6 +596,7 @@ PointerCamera.prototype.onMouseDown = function(event) {
  * @param {event} event the event to manage
  */
 PointerCamera.prototype.onMouseMove = function(event) {
+
     if (!this.shouldLock && this.dragging) {
         var mouse = {x: this.mouse.x, y: this.mouse.y};
         this.mouse.x = ( ( event.clientX - this.renderer.domElement.offsetLeft ) / this.renderer.domElement.width ) * 2 - 1;
@@ -577,7 +614,11 @@ PointerCamera.prototype.onMouseMove = function(event) {
  */
 PointerCamera.prototype.onMouseMovePointer = function(e) {
 
-    if (this.pointerLocked) {
+    if (this.isLocked) {
+
+        // Backup theta and phi
+        this.previousTheta = this.theta;
+        this.previousPhi = this.phi;
 
         this.mouseMove.x = e.movementX || e.mozMovementX || e.webkitMovementX || 0;
         this.mouseMove.y = e.movementY || e.mozMovementY || e.webkitMovementY || 0;

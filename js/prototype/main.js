@@ -110,12 +110,20 @@ function init() {
     pointer.domElement.width = container_size.width();
     pointer.domElement.height = container_size.height();
 
+    //
+    var startCanvas = new StartCanvas(camera1);
+    startCanvas.domElement.width = container_size.width();
+    startCanvas.domElement.height = container_size.height();
+
     // Add elements to page
     container.appendChild( stats.domElement );
+    container.appendChild(Coin.domElement);
+    container.appendChild(startCanvas.domElement);
     container.appendChild(pointer.domElement);
     container.appendChild(previewer.domElement);
-    container.appendChild(Coin.domElement);
     container.appendChild(renderer.domElement);
+
+    startCanvas.render();
 
     cameras = initMainScene(camera1, scene, static_path, coins);
     // cameras = initPeach(camera1, scene, static_path, coins);
