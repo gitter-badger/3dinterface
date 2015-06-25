@@ -18,6 +18,8 @@ var session = require('cookie-session');
 var cookieParser = require('cookie-parser');
 var urls = require('./urls');
 
+var isDev = app.get('env') === 'development';
+
 app.set('view engine', 'jade');
 app.set('trust proxy', 1);
 
@@ -55,12 +57,10 @@ app.use(function(req, res, next) {
 // });
 
 // Load controllers
-console.log("Loading controllers :");
-require('./lib/controllers')(app, { verbose: !module.parent });
+require('./lib/controllers')(app, { verbose: isDev });
 
 // Load post to log data from user study
-console.log("Loading posts :");
-require('./lib/posts')(app, { verbose: !module.parent });
+require('./lib/posts')(app, { verbose: isDev });
 
 // Static files
 app.use('/static', express.static('static'));
@@ -87,7 +87,7 @@ app.use(function(req, res) {
 
 // Set ports and ip address
 var server_port, server_ip_address;
-if ( app.get('env') === 'development' ) {
+if ( isDev ) {
     server_port = 4000;
     server_ip_address = 'localhost';
 } else {
@@ -97,6 +97,7 @@ if ( app.get('env') === 'development' ) {
 }
 
 // Start server
-http.listen(server_port, server_ip_address, function(){
-    console.log("Server ready : now listening " + server_ip_address + ":" + server_port);
+http.listen(server_port, server_ip_address, function() {
+    if (isDev)
+        console.log("Server ready : now listening " + server_ip_address + ":" + server_port);
 });
