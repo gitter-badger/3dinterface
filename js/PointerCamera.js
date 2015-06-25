@@ -604,6 +604,7 @@ PointerCamera.prototype.onMouseMove = function(event) {
 
         this.mouseMove.x = this.mouse.x - mouse.x;
         this.mouseMove.y = this.mouse.y - mouse.y;
+
         this.mouseMoved = true;
     }
 }
@@ -614,7 +615,7 @@ PointerCamera.prototype.onMouseMove = function(event) {
  */
 PointerCamera.prototype.onMouseMovePointer = function(e) {
 
-    if (this.isLocked) {
+    if (this.isLocked()) {
 
         // Backup theta and phi
         this.previousTheta = this.theta;
@@ -625,6 +626,7 @@ PointerCamera.prototype.onMouseMovePointer = function(e) {
 
         this.mouseMove.x *= -(this.sensitivity/5);
         this.mouseMove.y *=  (this.sensitivity/5);
+
         this.mouseMoved = true;
 
     }
