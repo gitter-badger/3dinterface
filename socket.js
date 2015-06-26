@@ -1,5 +1,4 @@
 var fs = require('fs');
-var sleep = require('sleep');
 var geo = require('./geo/MeshStreamer.js');
 
 module.exports = function(io) {
