@@ -328,6 +328,14 @@ geo.MeshStreamer.prototype.start = function(socket) {
         // Send next elements
         var next = self.nextElements(camera);
 
+        if (next.data.length === 0) {
+
+            // If nothing, just serve stuff
+            var tmp = self.nextElements(camera, true);
+            next.data = tmp.data;
+
+        }
+
         socket.emit('elements', next.data);
 
         if (next.finished) {
@@ -373,28 +381,49 @@ geo.MeshStreamer.prototype.nextMaterials = function() {
  * only interesting parts according to the camera
  * @returns {array} an array of elements ready to send
  */
-geo.MeshStreamer.prototype.nextElements = function(_camera) {
+geo.MeshStreamer.prototype.nextElements = function(_camera, force) {
+
+    if (force === undefined) {
+
+        force = false;
+
+    }
 
     // Prepare camera (and scale to model)
     var camera = null;
+    var planes = [];
+    var direction;
 
     if (_camera !== null) {
 
-        var camera = {
+        camera = {
             position: {
-                x: _camera[0],
-                y: _camera[1],
-                z: _camera[2]
+                x: _camera[0][0],
+                y: _camera[0][1],
+                z: _camera[0][2]
             },
             target: {
-                x: _camera[3],
-                y: _camera[4],
-                z: _camera[5]
+                x: _camera[1][0],
+                y: _camera[1][1],
+                z: _camera[1][2]
             }
         }
 
+        for (var i = 2; i < _camera.length; i++) {
+
+            planes.push({
+                normal: {
+                    x: _camera[i][0],
+                    y: _camera[i][1],
+                    z: _camera[i][2]
+                },
+                constant: _camera[i][3]
+            });
+
+        }
+
         // Compute camera direction
-        var direction = {
+        direction = {
             x: camera.target.x - camera.position.x,
             y: camera.target.y - camera.position.y,
             z: camera.target.z - camera.position.z
@@ -436,35 +465,72 @@ geo.MeshStreamer.prototype.nextElements = function(_camera) {
             var vertex2 = this.vertices[currentFace.b];
             var vertex3 = this.vertices[currentFace.c];
 
-            if (camera !== null) {
+            // if (camera !== null) {
 
-                var v1 = {
-                    x: vertex1.x - camera.position.x,
-                    y: vertex1.y - camera.position.y,
-                    z: vertex1.z - camera.position.z
-                };
+            //     var v1 = {
+            //         x: vertex1.x - camera.position.x,
+            //         y: vertex1.y - camera.position.y,
+            //         z: vertex1.z - camera.position.z
+            //     };
 
-                var v2 = {
-                    x: vertex2.x - camera.position.x,
-                    y: vertex2.y - camera.position.y,
-                    z: vertex2.z - camera.position.z
-                };
+            //     var v2 = {
+            //         x: vertex2.x - camera.position.x,
+            //         y: vertex2.y - camera.position.y,
+            //         z: vertex2.z - camera.position.z
+            //     };
 
-                var v3 = {
-                    x: vertex3.x - camera.position.x,
-                    y: vertex3.y - camera.position.y,
-                    z: vertex3.z - camera.position.z
-                };
+            //     var v3 = {
+            //         x: vertex3.x - camera.position.x,
+            //         y: vertex3.y - camera.position.y,
+            //         z: vertex3.z - camera.position.z
+            //     };
 
-                if (
-                    direction.x * v1.x + direction.y * v1.y + direction.z * v1.z < 0 &&
-                    direction.x * v2.x + direction.y * v2.y + direction.z * v2.z < 0 &&
-                    direction.x * v3.x + direction.y * v3.y + direction.z * v3.z < 0
-                ) {
+            //     if (
+            //         direction.x * v1.x + direction.y * v1.y + direction.z * v1.z < 0 &&
+            //         direction.x * v2.x + direction.y * v2.y + direction.z * v2.z < 0 &&
+            //         direction.x * v3.x + direction.y * v3.y + direction.z * v3.z < 0
+            //     ) {
 
-                    continue;
+            //         continue;
+
+            //     }
+
+            // }
+
+            if (!force) {
+
+                var exitToContinue = false;
+                threeVertices = [vertex1, vertex2, vertex3];
+
+                for (var i = 0; i < threeVertices.length; i++) {
+
+                    var vertex = threeVertices[i];
+
+                    for (var j = 0; j < planes.length;  j++) {
+
+                        var plane = planes[j];
+
+                        distance =
+                            plane.normal.x * vertex.x +
+                            plane.normal.y * vertex.y +
+                            plane.normal.z * vertex.z +
+                            plane.constant;
+
+                        if (distance < 0)
+                            {
+                                exitToContinue = true;
+                                break;
+                            }
+
+                    }
+
+                    if (exitToContinue)
+                        break;
 
                 }
+
+                if (exitToContinue)
+                    continue;
 
             }
 

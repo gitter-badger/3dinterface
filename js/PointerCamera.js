@@ -714,3 +714,30 @@ PointerCamera.prototype.redoable = function() {
     return this.history.redoable();
 }
 
+PointerCamera.prototype.toList = function() {
+    this.updateMatrix();
+    this.updateMatrixWorld();
+
+    var frustum = new THREE.Frustum();
+    var projScreenMatrix = new THREE.Matrix4();
+    projScreenMatrix.multiplyMatrices(this.projectionMatrix, this.matrixWorldInverse);
+
+    frustum.setFromMatrix(new THREE.Matrix4().multiplyMatrices(this.projectionMatrix, this.matrixWorldInverse));
+
+    var ret =
+        [[this.position.x, this.position.y, this.position.z],
+         [this.target.x,   this.target.y,   this.target.z]];
+
+    for (var i = 0; i < frustum.planes.length; i++) {
+
+        var p = frustum.planes[i];
+
+        ret.push([
+            p.normal.x, p.normal.y, p.normal.z, p.constant
+        ]);
+
+    }
+
+    return ret;
+}
+

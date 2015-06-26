@@ -637,14 +637,23 @@ function initSponzaScene(scene, collidableObjects, loader, camera) {
 
 
     loader.getCamera = function() {
-        return [
-            loader.camera.position.x * 10,
-            loader.camera.position.y * 10,
-            loader.camera.position.z * 10,
-            loader.camera.target.x * 10,
-            loader.camera.target.y * 10,
-            loader.camera.target.z * 10
-        ];
+        var ret = loader.camera.toList();
+        ret[0][0] *= 10;
+        ret[0][1] *= 10;
+        ret[0][2] *= 10;
+
+        ret[1][0] *= 10;
+        ret[1][1] *= 10;
+        ret[1][2] *= 10;
+
+        // Planes
+        for (var i = 2; i < ret.length; i++) {
+
+            ret[i][3] *= 10;
+
+        }
+
+        return ret;
     }
     loader.obj.scale.set(0.1,0.1,0.1);
 
