@@ -3,6 +3,8 @@ var express = require('express');
 var jade = require('jade');
 var pg = require('pg');
 
+var favicon = require('serve-favicon');
+
 // secret variables
 var secret = require('./private');
 
@@ -64,6 +66,9 @@ require('./lib/posts')(app, { verbose: isDev });
 
 // Static files
 app.use('/static', express.static('static'));
+
+// Favicon
+app.use(favicon(__dirname + '/static/ico/favicon.ico'));
 
 // When error raised
 app.use(function(err, req, res, next) {

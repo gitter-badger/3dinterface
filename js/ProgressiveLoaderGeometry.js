@@ -354,6 +354,11 @@ ProgressiveLoaderGeometry.prototype.initIOCallbacks = function() {
 
     this.socket.on('disconnect', function() {
         console.log('Finished !');
+        setTimeout(function() {
+            self.meshes.forEach(function(obj) {
+                obj.geometry.computeBoundingSphere();
+            });
+        }, 0);
         self.finished = true;
     });
 }
