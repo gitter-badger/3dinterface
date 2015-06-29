@@ -57,6 +57,12 @@ function partialSort(items, k, comparator) {
 geo.MeshStreamer = function(path) {
 
     /**
+     * array of array telling if the jth face of the ith mesh has already been sent
+     * @type{Boolean[][]}
+     */
+    this.meshFaces = [];
+
+    /**
      * array of booleans telling if the ith vertex has already been sent
      * @type {Boolean[]}
      */
@@ -185,6 +191,17 @@ geo.MeshStreamer.prototype.start = function(socket) {
         console.log('Asking for ' + path);
 
         self.mesh = cont.availableMeshes[path];
+
+        self.meshFaces = new Array(self.mesh.meshes.length);
+
+        for (var i = 0; i < self.meshFaces.length; i++) {
+
+            self.meshFaces[i] = {
+                counter: 0,
+                array: new Array(self.mesh.meshes[i].faces.length)
+            };
+
+        }
 
         var regex = /.*\.\..*/;
         var filePath = path.substring(1, path.length);
@@ -326,7 +343,7 @@ geo.MeshStreamer.prototype.nextElements = function(_camera, force) {
 
         var currentMesh = this.mesh.meshes[meshIndex];
 
-        if (currentMesh.isFinished()) {
+        if (this.isFinished(meshIndex)) {
 
             continue;
 
@@ -340,7 +357,7 @@ geo.MeshStreamer.prototype.nextElements = function(_camera, force) {
 
             var currentFace = currentMesh.faces[faceIndex];
 
-            if (currentFace.sent) {
+            if (this.meshFaces[meshIndex].array[faceIndex] === true) {
 
                 continue;
 
@@ -500,7 +517,9 @@ geo.MeshStreamer.prototype.nextElements = function(_camera, force) {
             }
 
             data.push(currentFace.toList());
-            currentFace.sent = true;
+            // this.meshFaces[meshIndex] = this.meshFaces[meshIndex] || [];
+            this.meshFaces[meshIndex].array[faceIndex] = true;
+            this.meshFaces[meshIndex].counter++;
             currentMesh.faceIndex++;
 
             sent++;
@@ -514,6 +533,12 @@ geo.MeshStreamer.prototype.nextElements = function(_camera, force) {
     }
 
     return {data: data, finished: mightBeCompletetlyFinished};
+
+}
+
+geo.MeshStreamer.prototype.isFinished = function(i) {
+
+    return this.meshFaces[i].counter === this.meshFaces[i].array.length;
 
 }
 
