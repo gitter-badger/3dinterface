@@ -1,5 +1,6 @@
 var fs = require('fs');
 var mesh = require('./Mesh.js');
+var cont = require('./MeshContainer.js');
 
 /**
  * @namespace
@@ -52,44 +53,32 @@ function partialSort(items, k, comparator) {
  * @memberOf geo
  * @constructor
  * @param {string} path to the mesh
- * @param {function} callback to execute when the mesh streamer is loaded
  */
-geo.MeshStreamer = function(path, callback) {
-    /**
-     * array of each part of the mesh
-     * @type {mesh.Mesh[]}
-     */
-    this.meshes = [];
+geo.MeshStreamer = function(path) {
 
     /**
-     * array of the vertices of the meshes (all merged)
-     * @type {mesh.Vertex[]}
+     * array of booleans telling if the ith vertex has already been sent
+     * @type {Boolean[]}
      */
     this.vertices = [];
 
     /**
-     * array of the faces of the meshes (all merged)
-     * @type {mesh.Face[]}
+     * array of booleans telling if the ith face has already been sent
+     * @type {Boolean[]}
      */
     this.faces = [];
 
     /**
-     * array of the normals of the meshes (all merged)
-     * @type {mesh.Normal[]}
+     * array of booleans telling if the ith normal has already been sent
+     * @type {Boolean[]}
      */
     this.normals = [];
 
     /**
-     * array of the texture coordinates (all merged)
-     * @type {mesh.TexCoord[]}
+     * array of booleans telling if the ith texCoord has already been sent
+     * @type {Boolean[]}
      */
     this.texCoords = [];
-
-    /**
-     * array of the faces in a nice order for sending
-     * @type {mesh.Face[]}
-     */
-    this.orderedFaces = [];
 
     /**
      * Number of element to send by packet
@@ -98,13 +87,11 @@ geo.MeshStreamer = function(path, callback) {
     this.chunk = 1000;
 
     if (path !== undefined) {
-        var self = this;
-        this.loadFromFile(path, function() {
-            if (typeof callback === 'function')
-                callback();
 
-        });
+        this.mesh = cont.availableMeshes[path];
+
     }
+
 }
 
 /**
@@ -184,108 +171,6 @@ geo.MeshStreamer.prototype.faceComparator = function(camera) {
 }
 
 /**
- * Loads a obj file
- * @param {string} path the path to the file
- * @param {function} callback the callback to call when the mesh is loaded
- */
-geo.MeshStreamer.prototype.loadFromFile = function(path, callback) {
-    var self = this;
-    fs.readFile(path, function(err, data) {
-
-        var oldTime = Date.now();
-
-        var currentMesh;
-
-        // Get lines from file
-        var lines = data.toString('utf-8').split("\n");
-
-        // For each line
-        for (var i = 0; i < lines.length; i++) {
-
-            var line = lines[i];
-
-            if (line[0] === 'v') {
-
-                if (line[1] === 't') {
-
-                    // Texture coord
-                    var texCoord = new mesh.TexCoord(line);
-                    texCoord.index = self.texCoords.length;
-                    self.texCoords.push(texCoord);
-
-                } else if (line[1] === 'n') {
-
-                    var normal = new mesh.Normal(line);
-                    normal.index = self.normals.length;
-                    self.normals.push(normal);
-
-                } else {
-
-                    // Just a simple vertex
-                    // if (currentMesh === undefined) {
-
-                    //     // Chances are that we won't use any material in this case
-                    //     currentMesh = new mesh.Mesh();
-                    //     self.meshes.push(currentMesh);
-
-                    // }
-
-                    var vertex = new mesh.Vertex(line);
-                    vertex.index = self.vertices.length;
-                    self.vertices.push(vertex);
-
-                }
-
-            } else if (line[0] === 'f') {
-
-                // Create mesh if it doesn't exist
-                if (currentMesh === undefined) {
-                    currentMesh = new mesh.Mesh();
-                    self.meshes.push(currentMesh);
-                }
-
-                // Create faces (two if Face4)
-                var faces = currentMesh.addFaces(line);
-
-                faces[0].index = self.faces.length;
-                faces[0].meshIndex = self.meshes.length - 1;
-                self.faces.push(faces[0]);
-                self.orderedFaces.push(faces[0]);
-
-                if (faces.length === 2) {
-
-                    faces[1].index = self.faces.length;
-                    faces[1].meshIndex = self.meshes.length - 1;
-                    self.faces.push(faces[1]);
-                    self.orderedFaces.push(faces[1]);
-
-                }
-
-            } else if (line[0] === 'u') {
-
-                // usemtl
-                // If a current mesh exists, finish it
-
-                // Create a new mesh
-                currentMesh = new mesh.Mesh();
-                self.meshes.push(currentMesh);
-                currentMesh.material = (new mesh.Material(line)).name;
-                // console.log(currentMesh.material);
-
-            }
-
-        }
-
-        if (typeof callback === 'function') {
-            callback();
-        }
-
-        console.log(Date.now() - oldTime);
-
-    });
-}
-
-/**
  * Initialize the socket.io callback
  * @param {socket} socket the socket to initialize
  */
@@ -299,6 +184,8 @@ geo.MeshStreamer.prototype.start = function(socket) {
     socket.on('request', function(path) {
         console.log('Asking for ' + path);
 
+        self.mesh = cont.availableMeshes[path];
+
         var regex = /.*\.\..*/;
         var filePath = path.substring(1, path.length);
 
@@ -308,9 +195,7 @@ geo.MeshStreamer.prototype.start = function(socket) {
             return;
         }
 
-        self.loadFromFile(filePath, function() {
-            socket.emit('ok');
-        });
+        socket.emit('ok');
 
     });
 
@@ -355,9 +240,9 @@ geo.MeshStreamer.prototype.nextMaterials = function() {
 
     var data = [];
 
-    for (var i = 0; i < this.meshes.length; i++) {
+    for (var i = 0; i < this.mesh.meshes.length; i++) {
 
-        var currentMesh = this.meshes[i];
+        var currentMesh = this.mesh.meshes[i];
 
         // Send usemtl
         data.push([
@@ -365,8 +250,8 @@ geo.MeshStreamer.prototype.nextMaterials = function() {
             currentMesh.material,
             currentMesh.vertices.length,
             currentMesh.faces.length,
-            this.texCoords.length > 0,
-            this.normals.length > 0
+            this.mesh.texCoords.length > 0,
+            this.mesh.normals.length > 0
         ]);
 
     }
@@ -437,9 +322,9 @@ geo.MeshStreamer.prototype.nextElements = function(_camera, force) {
     // Sort faces
     var mightBeCompletetlyFinished = true;
 
-    for (var meshIndex = 0; meshIndex < this.meshes.length; meshIndex++) {
+    for (var meshIndex = 0; meshIndex < this.mesh.meshes.length; meshIndex++) {
 
-        var currentMesh = this.meshes[meshIndex];
+        var currentMesh = this.mesh.meshes[meshIndex];
 
         if (currentMesh.isFinished()) {
 
@@ -461,9 +346,9 @@ geo.MeshStreamer.prototype.nextElements = function(_camera, force) {
 
             }
 
-            var vertex1 = this.vertices[currentFace.a];
-            var vertex2 = this.vertices[currentFace.b];
-            var vertex3 = this.vertices[currentFace.c];
+            var vertex1 = this.mesh.vertices[currentFace.a];
+            var vertex2 = this.mesh.vertices[currentFace.b];
+            var vertex3 = this.mesh.vertices[currentFace.c];
 
             // if (camera !== null) {
 
@@ -534,82 +419,82 @@ geo.MeshStreamer.prototype.nextElements = function(_camera, force) {
 
             }
 
-            if (!vertex1.sent) {
+            if (!this.vertices[currentFace.a]) {
 
                 data.push(vertex1.toList());
-                vertex1.sent = true;
+                this.vertices[currentFace.a] = true;
                 sent++;
 
             }
 
-            if (!vertex2.sent) {
+            if (!this.vertices[currentFace.b]) {
 
                 data.push(vertex2.toList());
-                vertex2.sent = true;
+                this.vertices[currentFace.b] = true;
                 sent++;
 
             }
 
-            if (!vertex3.sent) {
+            if (!this.vertices[currentFace.c]) {
 
                 data.push(vertex3.toList());
-                vertex3.sent = true;
+                this.vertices[currentFace.c] = true;
                 sent++;
 
             }
 
-            var normal1 = this.normals[currentFace.aNormal];
-            var normal2 = this.normals[currentFace.bNormal];
-            var normal3 = this.normals[currentFace.cNormal];
+            var normal1 = this.mesh.normals[currentFace.aNormal];
+            var normal2 = this.mesh.normals[currentFace.bNormal];
+            var normal3 = this.mesh.normals[currentFace.cNormal];
 
-            if (normal1 !== undefined && !normal1.sent) {
+            if (normal1 !== undefined && !this.normals[currentFace.aNormal]) {
 
                 data.push(normal1.toList());
-                normal1.sent = true;
+                this.normals[currentFace.aNormal] = true;
                 sent++;
 
             }
 
-            if (normal2 !== undefined && !normal2.sent) {
+            if (normal2 !== undefined && !this.normals[currentFace.bNormal]) {
 
                 data.push(normal2.toList());
-                normal2.sent = true;
+                this.normals[currentFace.bNormal] = true;
                 sent++;
 
             }
 
-            if (normal3 !== undefined && !normal3.sent) {
+            if (normal3 !== undefined && !this.normals[currentFace.cNormal]) {
 
                 data.push(normal3.toList());
-                normal3.sent = true;
+                this.normals[currentFace.cNormal] = true;
                 sent++;
 
             }
 
-            var tex1 = this.texCoords[currentFace.aTexture];
-            var tex2 = this.texCoords[currentFace.bTexture];
-            var tex3 = this.texCoords[currentFace.cTexture];
+            var tex1 = this.mesh.texCoords[currentFace.aTexture];
+            var tex2 = this.mesh.texCoords[currentFace.bTexture];
+            var tex3 = this.mesh.texCoords[currentFace.cTexture];
 
-            if (tex1 !== undefined && !tex1.sent) {
+            if (tex1 !== undefined && !this.texCoords[currentFace.aTexture]) {
 
                 data.push(tex1.toList());
-                tex1.sent = true;
+                this.texCoords[currentFace.aTexture] = true;
                 sent++;
 
             }
 
-            if (tex2 !== undefined && !tex2.sent) {
+            if (tex2 !== undefined && !this.texCoords[currentFace.bTexture]) {
 
                 data.push(tex2.toList());
-                tex2.sent = true;
+                this.texCoords[currentFace.bTexture] = true;
                 sent++;
 
             }
 
-            if (tex3 !== undefined && !tex3.sent) {
+            if (tex3 !== undefined && !this.texCoords[currentFace.cTexture]) {
 
                 data.push(tex3.toList());
-                tex3.sent = true;
+                this.texCoords[currentFace.cTexture] = true;
                 sent++;
 
             }
