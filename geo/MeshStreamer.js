@@ -188,7 +188,6 @@ geo.MeshStreamer.prototype.start = function(socket) {
     var self = this;
 
     socket.on('request', function(path) {
-        console.log('Asking for ' + path);
 
         self.mesh = cont.availableMeshes[path];
 
