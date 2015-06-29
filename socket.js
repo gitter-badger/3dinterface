@@ -1,5 +1,5 @@
 var fs = require('fs');
-var geo = require('./geo/MeshStreamer.js');
+var geo = require('./lib/geo.min.js');
 
 module.exports = function(io) {
     io.on('connection', function(socket) {

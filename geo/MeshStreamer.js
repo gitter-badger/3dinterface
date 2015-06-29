@@ -1,12 +1,3 @@
-var fs = require('fs');
-var mesh = require('./Mesh.js');
-var cont = require('./MeshContainer.js');
-
-/**
- * @namespace
- */
-var geo = {};
-
 /**
  * @private
  */
@@ -58,7 +49,13 @@ geo.MeshStreamer = function(path) {
 
     /**
      * array of array telling if the jth face of the ith mesh has already been sent
-     * @type{Boolean[][]}
+     *
+     * For each mesh, there is an object containing
+     * <ul>
+     *   <li>`counter` : the number of faces currently sent</li>
+     *   <li>`array` : an array boolean telling if the ith face has already been sent</li>
+     * </ul>
+     * @type {Object[]}
      */
     this.meshFaces = [];
 
@@ -94,7 +91,7 @@ geo.MeshStreamer = function(path) {
 
     if (path !== undefined) {
 
-        this.mesh = cont.availableMeshes[path];
+        this.mesh = geo.availableMeshes[path];
 
     }
 
@@ -189,7 +186,7 @@ geo.MeshStreamer.prototype.start = function(socket) {
 
     socket.on('request', function(path) {
 
-        self.mesh = cont.availableMeshes[path];
+        self.mesh = geo.availableMeshes[path];
 
         self.meshFaces = new Array(self.mesh.meshes.length);
 
@@ -540,5 +537,3 @@ geo.MeshStreamer.prototype.isFinished = function(i) {
     return this.meshFaces[i].counter === this.meshFaces[i].array.length;
 
 }
-
-module.exports = geo;

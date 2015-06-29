@@ -1,46 +1,38 @@
-var fs = require('fs');
-var mesh = require('./Mesh.js');
-
 /**
- * @namespace
- */
-var cont = {};
-
-/**
- * Represents a mesh. All meshes are loaded once in cont.availableMesh to avoid
+ * Represents a mesh. All meshes are loaded once in geo.availableMesh to avoid
  * loading at each mesh request
  * @constructor
- * @memberOf cont
+ * @memberOf geo
  */
-cont.MeshContainer = function(path) {
+geo.MeshContainer = function(path) {
 
     /**
      * array of each part of the mesh
-     * @type {mesh.Mesh[]}
+     * @type {geo.Mesh[]}
      */
     this.meshes = [];
 
     /**
      * array of the vertices of the meshes (all merged)
-     * @type {mesh.Vertex[]}
+     * @type {geo.Vertex[]}
      */
     this.vertices = [];
 
     /**
      * array of the faces of the meshes (all merged)
-     * @type {mesh.Face[]}
+     * @type {geo.Face[]}
      */
     this.faces = [];
 
     /**
      * array of the normals of the meshes (all merged)
-     * @type {mesh.Normal[]}
+     * @type {geo.Normal[]}
      */
     this.normals = [];
 
     /**
      * array of the texture coordinates (all merged)
-     * @type {mesh.TexCoord[]}
+     * @type {geo.TexCoord[]}
      */
     this.texCoords = [];
 
@@ -56,7 +48,7 @@ cont.MeshContainer = function(path) {
  * Loads a obj file
  * @param {string} path the path to the file
  */
-cont.MeshContainer.prototype.loadFromFile = function(path) {
+geo.MeshContainer.prototype.loadFromFile = function(path) {
     var self = this;
 
     var data = fs.readFileSync(path, {encoding: 'utf-8'});
@@ -76,13 +68,13 @@ cont.MeshContainer.prototype.loadFromFile = function(path) {
                 if (line[1] === 't') {
 
                     // Texture coord
-                    var texCoord = new mesh.TexCoord(line);
+                    var texCoord = new geo.TexCoord(line);
                     texCoord.index = self.texCoords.length;
                     self.texCoords.push(texCoord);
 
                 } else if (line[1] === 'n') {
 
-                    var normal = new mesh.Normal(line);
+                    var normal = new geo.Normal(line);
                     normal.index = self.normals.length;
                     self.normals.push(normal);
 
@@ -92,12 +84,12 @@ cont.MeshContainer.prototype.loadFromFile = function(path) {
                     // if (currentMesh === undefined) {
 
                     //     // Chances are that we won't use any material in this case
-                    //     currentMesh = new mesh.Mesh();
+                    //     currentMesh = new geo.Mesh();
                     //     self.meshes.push(currentMesh);
 
                     // }
 
-                    var vertex = new mesh.Vertex(line);
+                    var vertex = new geo.Vertex(line);
                     vertex.index = self.vertices.length;
                     self.vertices.push(vertex);
 
@@ -107,7 +99,7 @@ cont.MeshContainer.prototype.loadFromFile = function(path) {
 
                 // Create mesh if it doesn't exist
                 if (currentMesh === undefined) {
-                    currentMesh = new mesh.Mesh();
+                    currentMesh = new geo.Mesh();
                     self.meshes.push(currentMesh);
                 }
 
@@ -132,9 +124,9 @@ cont.MeshContainer.prototype.loadFromFile = function(path) {
                 // If a current mesh exists, finish it
 
                 // Create a new mesh
-                currentMesh = new mesh.Mesh();
+                currentMesh = new geo.Mesh();
                 self.meshes.push(currentMesh);
-                currentMesh.material = (new mesh.Material(line)).name;
+                currentMesh.material = (new geo.Material(line)).name;
                 // console.log(currentMesh.material);
 
             }
@@ -157,13 +149,11 @@ for (var i = 1; i < 26; i++) {
 
 }
 
-cont.availableMeshes = {};
+geo.availableMeshes = {};
 
 for (var i = 0; i < availableMeshNames.length; i++) {
 
     var name = availableMeshNames[i];
-    cont.availableMeshes[name] = new cont.MeshContainer(name.substring(1, name.length));
+    geo.availableMeshes[name] = new geo.MeshContainer(name.substring(1, name.length));
 
 }
-
-module.exports = cont;
