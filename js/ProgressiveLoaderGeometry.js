@@ -239,6 +239,8 @@ ProgressiveLoaderGeometry.prototype.initIOCallbacks = function() {
             if (elt.type === 'vertex') {
 
                 // New vertex arrived
+
+                // Fill the array of vertices with null vector (to avoid undefined)
                 while (elt.index > self.vertices.length) {
 
                     self.vertices.push(new THREE.Vector3());
@@ -308,6 +310,7 @@ ProgressiveLoaderGeometry.prototype.initIOCallbacks = function() {
 
                 // Create mesh
                 var mesh = new THREE.Mesh(geometry, material);
+                mesh.faceNumber = elt.fLength;
                 self.meshes.push(mesh);
 
                 self.currentMesh = mesh;
@@ -344,6 +347,13 @@ ProgressiveLoaderGeometry.prototype.initIOCallbacks = function() {
                 self.meshes[elt.mesh].geometry.normalsNeedUpdate = true;
                 self.meshes[elt.mesh].geometry.groupsNeedUpdate = true;
 
+                if (self.meshes[elt.mesh].faceNumber === self.meshes[elt.mesh].geometry.faces.length) {
+
+                    self.meshes[elt.mesh].geometry.computeBoundingSphere();
+
+                }
+
+
             }
 
         }
@@ -354,11 +364,6 @@ ProgressiveLoaderGeometry.prototype.initIOCallbacks = function() {
 
     this.socket.on('disconnect', function() {
         console.log('Finished !');
-        setTimeout(function() {
-            self.meshes.forEach(function(obj) {
-                obj.geometry.computeBoundingSphere();
-            });
-        }, 0);
         self.finished = true;
     });
 }
