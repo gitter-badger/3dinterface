@@ -206,48 +206,6 @@ ProgressiveLoaderGeometry.prototype.getCamera = function() {
 }
 
 /**
- * Returns the duration between now and last receive
- * @returns {Number} the number of milliseconds between now and the last time we received an element
- */
-ProgressiveLoaderGeometry.prototype.waitTime = function() {
-    return Date.now() - this.lastReceive;
-}
-
-/**
- * Send a request to the server (up !)
- */
-ProgressiveLoaderGeometry.prototype.up = function(time) {
-    // Do stuff
-
-    if (time === undefined) {
-
-        time = 3000;
-
-    }
-
-    if (Date.now() - this.lastReceive > 3000)
-        console.log("up");
-}
-
-/**
- * Sets a timeout for upping in a few seconds
- * @param {Number} number of milliseconds before upping
- */
-ProgressiveLoaderGeometry.prototype.timeoutUp = function(time) {
-
-    if (time === undefined) {
-
-        time = 3000;
-
-    }
-
-    var self = this;
-    setTimeout(function() { self.up(time); }, time);
-
-}
-
-
-/**
  * Initializes the socket.io functions so that it can discuss with the server
  */
 ProgressiveLoaderGeometry.prototype.initIOCallbacks = function() {
@@ -260,9 +218,6 @@ ProgressiveLoaderGeometry.prototype.initIOCallbacks = function() {
     });
 
     this.socket.on('elements', function(arr) {
-
-        self.lastReceive = Date.now();
-        self.timeoutUp();
 
         if (arr.length === 0) {
 
