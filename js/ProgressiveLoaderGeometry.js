@@ -359,7 +359,6 @@ ProgressiveLoaderGeometry.prototype.initIOCallbacks = function() {
         }
 
         // Ask for next elements
-        console.log("Asking next");
         self.socket.emit('next', self.getCamera());
     });
 
