@@ -1,4 +1,4 @@
-var tools = require('../../my_modules/filterInt')
+var tools = require('../../lib/filterInt')
 
 module.exports.index = function(req, res, next) {
 

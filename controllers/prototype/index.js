@@ -1,4 +1,4 @@
-var tools = require('../../my_modules/filterInt');
+var tools = require('../../lib/filterInt');
 var pg = require('pg');
 var pgc = require('../../private');
 var db = require('./dbrequests');
