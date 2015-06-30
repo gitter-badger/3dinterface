@@ -53,10 +53,12 @@ function init() {
     plane.translate(0,0,-100);
     plane.addToScene(scene);
 
+
+    setInterval(animate, 20);
 }
 
 function animate() {
-    requestAnimationFrame(animate);
+    // requestAnimationFrame(animate);
 
     var currentTime = Date.now() - previousTime;
     camera.update(isNaN(currentTime) ? 20 : currentTime);

@@ -77,6 +77,8 @@ function init() {
 
     // Add listeners
     initListeners();
+
+    setInterval(animate, 20);
 }
 
 function initListeners() {
@@ -203,7 +205,7 @@ function render() {
 
 function animate() {
     // Render each frame
-    requestAnimationFrame(animate);
+    // requestAnimationFrame(animate);
 
     // stats count the number of frames per second
     stats.begin();
