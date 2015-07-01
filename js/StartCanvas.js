@@ -8,17 +8,17 @@ var StartCanvas = function(camera) {
 
     camera.startCanvas = this;
 
-}
+};
 
 StartCanvas.prototype.render = function() {
 
     if (!this.shown) {
 
-        this.ctx.fillStyle = 'white'
+        this.ctx.fillStyle = 'white';
         this.ctx.globalAlpha = 0.7;
         this.ctx.fillRect(0,0,this.domElement.width, this.domElement.height);
 
-        this.ctx.font = '30px Verdana'
+        this.ctx.font = '30px Verdana';
         this.ctx.globalAlpha = 1;
         this.ctx.fillStyle = 'black';
         this.ctx.fillText('Click here to lock the pointer !', container_size.width()/3.25, container_size.height()/2-10);
@@ -28,7 +28,7 @@ StartCanvas.prototype.render = function() {
 
     }
 
-}
+};
 
 StartCanvas.prototype.clear = function() {
 
@@ -41,4 +41,4 @@ StartCanvas.prototype.clear = function() {
 
     }
 
-}
+};

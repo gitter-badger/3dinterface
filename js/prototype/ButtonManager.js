@@ -19,8 +19,8 @@ var ButtonManager = function(cameras, previewer) {
     this.fullscreenElement.onclick = function() {fullscreen();};
 
     (function(self) {
-        self.undoElement.onclick = function() {self.cameras.mainCamera().undo(); self.updateElements();}
-        self.redoElement.onclick = function() {self.cameras.mainCamera().redo(); self.updateElements();}
+        self.undoElement.onclick = function() {self.cameras.mainCamera().undo(); self.updateElements();};
+        self.redoElement.onclick = function() {self.cameras.mainCamera().redo(); self.updateElements();};
 
         self.fullElement.onclick = function() {
             self.cameras.map(function(camera) {
@@ -34,21 +34,21 @@ var ButtonManager = function(cameras, previewer) {
         self.pointerLockElement.onchange = function() {
             self.cameras.mainCamera().shouldLock = self.pointerLockElement.checked;
             self.cameras.mainCamera().onPointerLockChange();
-        }
+        };
 
-        self.showarrowsElement.onchange = function() {self.showArrows = self.showarrowsElement.checked;}
+        self.showarrowsElement.onchange = function() {self.showArrows = self.showarrowsElement.checked;};
 
         self.resetElement.onclick = function() {
             // Reinit camera
             self.cameras.mainCamera().reset();
-        }
+        };
 
         self.recommendationElement.onchange = function() {
             previewer.fixedRecommendation(self.recommendationElement.checked);
-        }
+        };
     })(this);
 
-}
+};
 
 ButtonManager.prototype.updateElements = function() {
     // Update icon
@@ -63,5 +63,5 @@ ButtonManager.prototype.updateElements = function() {
     } else {
         this.redoElement.className = "btn btn-primary navbar-btn";
     }
-}
+};
 

@@ -1,7 +1,7 @@
 var renderer, scene, camera, controls, cube, container, plane, mouse= {x:0, y:0};
 var raycaster;
 var objects = [];
-var container_size = new Object();
+var container_size = {};
 var previousTime;
 container_size.width = 1067;
 container_size.height = 600;

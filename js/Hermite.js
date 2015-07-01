@@ -5,7 +5,7 @@ Hermite.Polynom = function(t, f, fp) {
     this.evals = f;
     this.primes = fp;
 
-    this.baseFunctions = new Array();
+    this.baseFunctions = [];
 
     for (var i in this.times) {
         this.baseFunctions.push(new Hermite.BaseFunction(i, this.times));
@@ -22,7 +22,7 @@ Hermite.Polynom = function(t, f, fp) {
         this.tools.sum  = function(a, b) { return a + b;  };
         this.tools.prod = function(a, b) { return a * b;  };
     }
-}
+};
 
 Hermite.Polynom.prototype.eval = function(t) {
     var ret;
@@ -65,7 +65,7 @@ Hermite.Polynom.prototype.eval = function(t) {
     }
 
     return ret;
-}
+};
 
 Hermite.Polynom.prototype.prime = function(t) {
     var ret;
@@ -139,12 +139,12 @@ Hermite.Polynom.prototype.prime = function(t) {
     }
 
     return ret;
-}
+};
 
 Hermite.BaseFunction = function(index, times) {
     this.index = index;
     this.times = times;
-}
+};
 
 Hermite.BaseFunction.prototype.eval = function(t) {
     var ret = 1;
@@ -156,7 +156,7 @@ Hermite.BaseFunction.prototype.eval = function(t) {
     }
 
     return ret * ret;
-}
+};
 
 Hermite.BaseFunction.prototype.prime = function(t) {
     var ret = 0;
@@ -168,7 +168,7 @@ Hermite.BaseFunction.prototype.prime = function(t) {
     }
 
     return this.eval(t) * ret;
-}
+};
 
 Hermite.special = {};
 
@@ -190,12 +190,12 @@ Hermite.special.Polynom = function(P0, P1, PP1) {
 
     this.a = this.tools.sum(PP1, this.tools.diff(P0, P1));
     this.b = this.tools.diff(this.tools.mul(this.tools.diff(P1,P0), 2), PP1);
-}
+};
 
 Hermite.special.Polynom.prototype.eval = function(t) {
     return this.tools.sum(this.tools.mul(this.a, t*t), this.tools.sum(this.tools.mul(this.b, t), this.c));
-}
+};
 
 Hermite.special.Polynom.prototype.prime = function(t) {
     return this.tools.sum(this.tools.mul(this.a,2*t), this.b);
-}
+};

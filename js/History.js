@@ -20,7 +20,7 @@ var History = function() {
      * @type {Number}
      */
     this.size = 0;
-}
+};
 
 /**
  * Appends a new state at the end of the history
@@ -30,7 +30,7 @@ History.prototype.addState = function(state) {
     ++this.index;
     this.size = this.index + 1;
     this.states[this.size-1] = state;
-}
+};
 
 /**
  * Returns the previous state and change the index to the previous state (so you can redo)
@@ -40,7 +40,7 @@ History.prototype.undo = function() {
         this.index--;
         return this.currentState();
     }
-}
+};
 
 /**
  * Returns the next state and change the index to the next state (so you can re-undo)
@@ -50,7 +50,7 @@ History.prototype.redo = function() {
         this.index++;
         return this.currentState();
     }
-}
+};
 
 /**
  * Checks if there is a undo possibility
@@ -58,7 +58,7 @@ History.prototype.redo = function() {
  */
 History.prototype.undoable = function() {
     return this.index > 0;
-}
+};
 
 /**
  * Checks if there is a redo possibility
@@ -66,7 +66,7 @@ History.prototype.undoable = function() {
  */
 History.prototype.redoable = function() {
     return this.index < this.size - 1;
-}
+};
 
 /**
  * Returns the current state in the history
@@ -74,4 +74,4 @@ History.prototype.redoable = function() {
  */
 History.prototype.currentState = function() {
     return this.states[this.index];
-}
+};

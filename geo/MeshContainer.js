@@ -42,7 +42,7 @@ geo.MeshContainer = function(path) {
 
     }
 
-}
+};
 
 /**
  * Loads a obj file
@@ -133,7 +133,7 @@ geo.MeshContainer.prototype.loadFromFile = function(path) {
 
         }
 
-}
+};
 
 var availableMeshNames = [
     '/static/data/castle/princess peaches castle (outside).obj',

@@ -97,11 +97,11 @@ var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container
     this.scene = scene;
 
     Coin.domElement.style.display = "none";
-}
+};
 
 TutorialSteps.prototype.setCameras = function(cameras) {
     this.cameras = cameras;
-}
+};
 
 TutorialSteps.prototype.nextStep = function() {
     console.log(this.step);
@@ -175,7 +175,7 @@ TutorialSteps.prototype.nextStep = function() {
         }
         this.step++;
     }
-}
+};
 
 TutorialSteps.prototype.nextAction = function() {
     switch (this.step) {
@@ -188,18 +188,18 @@ TutorialSteps.prototype.nextAction = function() {
         case 13: return 'reset-camera';
         case 15: return 'recommendation';
     }
-}
+};
 
 TutorialSteps.prototype.tryFinish = function() {
     if (this.coinNumber === 8) {
         console.log("Finished");
     }
-}
+};
 
 TutorialSteps.prototype.alert = function(myString, justclicked) {
     this.notify(myString, justclicked);
     this.onWindowResize();
-}
+};
 
 TutorialSteps.prototype.notify = function(myString, justclick) {
     $('#alert-placeholder').html(
@@ -215,11 +215,11 @@ TutorialSteps.prototype.notify = function(myString, justclick) {
                  ' <a href="#" onclick="setTimeout(onWindowResize, 100); nextStep();"><em>(next)</em></span>' : '' ) +
             '</strong></span>' +
         '</div>'
-    )
+    );
 
     $('#toto').removeClass('alert-info').addClass('alert-danger');
 
     setTimeout(function() {
         $('#toto').removeClass('alert-danger').addClass('alert-warning');
     }, 500);
-}
+};

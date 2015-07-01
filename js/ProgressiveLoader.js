@@ -61,7 +61,7 @@ var _parseList = function(arr) {
     }
 
     return ret;
-}
+};
 
 var ProgressiveLoader = function(path, scene, camera, callback) {
     // Init attributes
@@ -89,7 +89,7 @@ var ProgressiveLoader = function(path, scene, camera, callback) {
 
     this.camera = camera;
 
-}
+};
 
 ProgressiveLoader.prototype.load = function() {
 
@@ -104,7 +104,7 @@ ProgressiveLoader.prototype.load = function() {
         self.start();
 
     });
-}
+};
 
 ProgressiveLoader.prototype.initIOCallbacks = function() {
 
@@ -278,9 +278,9 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
         console.log('Finished !');
         self.finished = true;
     });
-}
+};
 
 ProgressiveLoader.prototype.start = function() {
     this.socket.emit('request', this.objPath);
-}
+};
 

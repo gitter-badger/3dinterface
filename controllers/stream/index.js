@@ -1,4 +1,4 @@
-var tools = require('../../lib/filterInt')
+var tools = require('../../lib/filterInt');
 
 module.exports.index = function(req, res, next) {
 
@@ -22,4 +22,4 @@ module.exports.index = function(req, res, next) {
     res.render('index.jade', res.locals, function(err, result) {
         res.send(result);
     });
-}
+};

@@ -8,7 +8,7 @@ var MousePointer = function(camera) {
     this.drawn = false;
     camera.mousePointer = this;
     this.style = MousePointer.NONE;
-}
+};
 
 MousePointer.NONE = 0;
 MousePointer.BLACK = 1;
@@ -27,7 +27,7 @@ MousePointer.toColor = function(style) {
 
     }
 
-}
+};
 
 MousePointer.prototype.render = function(style) {
 
@@ -73,10 +73,10 @@ MousePointer.prototype.render = function(style) {
 
     }
 
-}
+};
 
 MousePointer.prototype.clear = function() {
 
     this.render(MousePointer.NONE);
 
-}
+};

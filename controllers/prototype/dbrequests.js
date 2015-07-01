@@ -23,7 +23,7 @@ var Info = function(id, finishAction) {
         self.release = release;
         self.execute();
     });
-}
+};
 
 Info.prototype.execute = function() {
     this.loadCameras();
@@ -32,7 +32,7 @@ Info.prototype.execute = function() {
     this.loadResets();
     this.loadPreviousNext();
     this.loadHovered();
-}
+};
 
 Info.prototype.tryMerge = function() {
     // If not ready, do nothing
@@ -49,7 +49,7 @@ Info.prototype.tryMerge = function() {
 
     this.merge();
     this.finishAction(this.finalResult);
-}
+};
 
 // Merges the results of every SQL requests done by the load... methods
 Info.prototype.merge = function() {
@@ -76,7 +76,7 @@ Info.prototype.merge = function() {
         // Add the next element in results and shift its table
         this.finalResult.push(this.results[nextIndex].shift());
     }
-}
+};
 
 Info.prototype.loadCameras = function() {
     var self = this;
@@ -114,7 +114,7 @@ Info.prototype.loadCameras = function() {
             self.tryMerge();
         }
     );
-}
+};
 
 Info.prototype.loadCoins = function() {
     var self = this;
@@ -136,7 +136,7 @@ Info.prototype.loadCoins = function() {
             self.tryMerge();
         }
     );
-}
+};
 
 Info.prototype.loadArrows = function() {
     var self = this;
@@ -158,7 +158,7 @@ Info.prototype.loadArrows = function() {
             self.tryMerge();
         }
     );
-}
+};
 
 Info.prototype.loadResets = function() {
     var self = this;
@@ -179,7 +179,7 @@ Info.prototype.loadResets = function() {
             self.tryMerge();
         }
     );
-}
+};
 
 Info.prototype.loadPreviousNext = function () {
     var self = this;
@@ -218,7 +218,7 @@ Info.prototype.loadPreviousNext = function () {
             self.tryMerge();
         }
     );
-}
+};
 
 Info.prototype.loadHovered = function() {
     var self = this;
@@ -241,7 +241,7 @@ Info.prototype.loadHovered = function() {
             self.tryMerge();
         }
     );
-}
+};
 
 var UserCreator = function(finishAction) {
     this.finishAction = finishAction;
@@ -253,7 +253,7 @@ var UserCreator = function(finishAction) {
         self.release = release;
         self.execute();
     });
-}
+};
 
 UserCreator.prototype.execute = function() {
     var self = this;
@@ -265,7 +265,7 @@ UserCreator.prototype.execute = function() {
             self.finish();
         }
     );
-}
+};
 
 UserCreator.prototype.finish = function() {
     this.release();
@@ -273,7 +273,7 @@ UserCreator.prototype.finish = function() {
     this.release = null;
 
     this.finishAction(this.finalResult);
-}
+};
 
 var ExpCreator = function(user_id, scene_id, finishAction) {
     this.finishAction = finishAction;
@@ -287,7 +287,7 @@ var ExpCreator = function(user_id, scene_id, finishAction) {
         self.release = release;
         self.execute();
     });
-}
+};
 
 ExpCreator.prototype.execute = function() {
     var self = this;
@@ -301,7 +301,7 @@ ExpCreator.prototype.execute = function() {
             });
         }
     );
-}
+};
 
 ExpCreator.prototype.finish = function() {
     this.release();
@@ -309,7 +309,7 @@ ExpCreator.prototype.finish = function() {
     this.release = null;
 
     this.finishAction(this.finalResult);
-}
+};
 
 var UserIdChecker = function(id, finishAction) {
     this.id = id;
@@ -321,7 +321,7 @@ var UserIdChecker = function(id, finishAction) {
         self.release = release;
         self.execute();
     });
-}
+};
 
 UserIdChecker.prototype.execute = function() {
     var self = this;
@@ -333,7 +333,7 @@ UserIdChecker.prototype.execute = function() {
             self.finish();
         }
     );
-}
+};
 
 UserIdChecker.prototype.finish = function() {
     this.release();
@@ -341,7 +341,7 @@ UserIdChecker.prototype.finish = function() {
     this.release = null;
 
     this.finishAction(this.finalResult);
-}
+};
 
 var ExpIdChecker = function(id, finishAction) {
     this.id = id;
@@ -353,7 +353,7 @@ var ExpIdChecker = function(id, finishAction) {
         self.release = release;
         self.execute();
     });
-}
+};
 
 ExpIdChecker.prototype.execute = function() {
     var self = this;
@@ -369,7 +369,7 @@ ExpIdChecker.prototype.execute = function() {
             self.finish();
         }
     );
-}
+};
 
 ExpIdChecker.prototype.finish = function() {
     this.release();
@@ -377,7 +377,7 @@ ExpIdChecker.prototype.finish = function() {
     this.release = null;
 
     this.finishAction(this.finalResult);
-}
+};
 
 var ExpGetter = function(finishAction) {
     this.finishAction = finishAction;
@@ -388,7 +388,7 @@ var ExpGetter = function(finishAction) {
         self.release = release;
         self.execute();
     });
-}
+};
 
 ExpGetter.prototype.execute = function() {
     var self = this;
@@ -407,7 +407,7 @@ ExpGetter.prototype.execute = function() {
             self.finish();
         }
     );
-}
+};
 
 ExpGetter.prototype.finish = function() {
     this.release();
@@ -415,7 +415,7 @@ ExpGetter.prototype.finish = function() {
     this.release = null;
 
     this.finishAction(this.finalResult);
-}
+};
 
 var tryUser = function(id, callback) {
     if (id !== undefined && id !== null) {
@@ -429,7 +429,7 @@ var tryUser = function(id, callback) {
     } else {
         new UserCreator(callback);
     }
-}
+};
 
 module.exports.getInfo      = function(id, callback)           { new Info(id, callback);                 };
 module.exports.createUser   = function(callback)               { new UserCreator(callback);              };

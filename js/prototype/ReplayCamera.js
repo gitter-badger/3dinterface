@@ -2,7 +2,7 @@
 var ReplayCamera = function() {
     THREE.PerspectiveCamera.apply(this, arguments);
 
-    this.coins = arguments[4]
+    this.coins = arguments[4];
 
     this.started = false;
     this.counter = 0;
@@ -17,15 +17,14 @@ var ReplayCamera = function() {
     var xhr = new XMLHttpRequest();
     xhr.open("GET", "/prototype/replay_info/" + id, true);
 
-    (function(self) {
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                self.path = JSON.parse(xhr.responseText);
-                self.started = true;
-                self.nextEvent();
-            }
+    var self = this;
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            self.path = JSON.parse(xhr.responseText);
+            self.started = true;
+            self.nextEvent();
         }
-    })(this);
+    };
     xhr.send();
 
     // Set Position
@@ -34,13 +33,13 @@ var ReplayCamera = function() {
 
     this.resetElements = resetBobombElements();
 
-}
+};
 ReplayCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 ReplayCamera.prototype.constructor = ReplayCamera;
 
 ReplayCamera.prototype.look = function() {
     this.lookAt(this.target);
-}
+};
 
 // Update function
 ReplayCamera.prototype.update = function(time) {
@@ -58,7 +57,7 @@ ReplayCamera.prototype.update = function(time) {
         //     // Nothing to do
         // }
     }
-}
+};
 
 ReplayCamera.prototype.linearMotion = function(time) {
     var tmp = Tools.sum(Tools.mul(this.old_position, 1-this.t), Tools.mul(this.new_position, this.t));
@@ -70,7 +69,7 @@ ReplayCamera.prototype.linearMotion = function(time) {
     if (this.t > 1) {
         this.nextEvent();
     }
-}
+};
 
 ReplayCamera.prototype.cameraMotion = function(time) {
 
@@ -84,13 +83,13 @@ ReplayCamera.prototype.cameraMotion = function(time) {
     if (this.t > 1) {
         this.nextEvent();
     }
-}
+};
 
 ReplayCamera.prototype.hermiteMotion = function(time) {
-    var eval = this.hermitePosition.eval(this.t);
-    this.position.x = eval.x;
-    this.position.y = eval.y;
-    this.position.z = eval.z;
+    var e = this.hermitePosition.eval(this.t);
+    this.position.x = e.x;
+    this.position.y = e.y;
+    this.position.z = e.z;
 
     this.target = Tools.sum(this.position, this.hermiteAngles.eval(this.t));
 
@@ -99,7 +98,7 @@ ReplayCamera.prototype.hermiteMotion = function(time) {
     if (this.t > 1) {
         this.nextEvent();
     }
-}
+};
 
 ReplayCamera.prototype.nextEvent = function() {
     this.counter++;
@@ -136,19 +135,19 @@ ReplayCamera.prototype.nextEvent = function() {
     } else if (this.event.type == 'hovered') {
         this.nextEvent();
     }
-}
+};
 
 ReplayCamera.prototype.reset = function() {
     this.resetPosition();
     this.moving = false;
     this.movingHermite = false;
-}
+};
 
 ReplayCamera.prototype.resetPosition = function() {
     this.position.copy(this.resetElements.position);
     this.target.copy(this.resetElements.target);
     this.anglesFromVectors();
-}
+};
 
 ReplayCamera.prototype.vectorsFromAngles = function() {
     // Update direction
@@ -159,7 +158,7 @@ ReplayCamera.prototype.vectorsFromAngles = function() {
     this.forward.x = cos * Math.sin(this.theta);
     this.forward.normalize();
 
-}
+};
 
 ReplayCamera.prototype.anglesFromVectors = function() {
     // Update phi and theta so that return to reality does not hurt
@@ -171,7 +170,7 @@ ReplayCamera.prototype.anglesFromVectors = function() {
     // Don't know why this line works... But thanks Thierry-san and
     // Bastien because it seems to work...
     this.theta = Math.atan2(forward.x, forward.z);
-}
+};
 
 ReplayCamera.prototype.move = function(otherCamera) {
     this.moving = true;
@@ -181,7 +180,7 @@ ReplayCamera.prototype.move = function(otherCamera) {
     this.new_position = new THREE.Vector3(otherCamera.position.x, otherCamera.position.y, otherCamera.position.z);
     this.t = 0;
 
-}
+};
 
 ReplayCamera.prototype.moveHermite = function(otherCamera) {
     this.movingHermite = true;
@@ -198,6 +197,6 @@ ReplayCamera.prototype.moveHermite = function(otherCamera) {
         Tools.diff(otherCamera.target, otherCamera.position),
         new THREE.Vector3()
     );
-}
+};
 
-ReplayCamera.prototype.save = function() {}
+ReplayCamera.prototype.save = function() {};

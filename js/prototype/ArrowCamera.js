@@ -37,7 +37,7 @@ var ArrowCamera = function(arg1, arg2, arg3, arg4, position, target) {
 
     this.fullArrow = false;
 
-}
+};
 ArrowCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 ArrowCamera.prototype.constructor = ArrowCamera;
 
@@ -46,7 +46,7 @@ ArrowCamera.prototype.check = function() {
         if (obj instanceof THREE.Mesh)
             obj.material.color.setHex(0x663366);
     });
-}
+};
 
 ArrowCamera.prototype.initExtremity = function() {
     var geometry = new THREE.Geometry();
@@ -90,7 +90,7 @@ ArrowCamera.prototype.initExtremity = function() {
 
     this.mesh = new THREE.Mesh(geometry, material);
     return this.mesh;
-}
+};
 
 ArrowCamera.prototype.updateExtremity = function() {
     var direction = this.target.clone();
@@ -116,12 +116,12 @@ ArrowCamera.prototype.updateExtremity = function() {
     this.mesh.geometry.computeFaceNormals();
     this.mesh.geometry.verticesNeedUpdate = true;
 
-}
+};
 
 ArrowCamera.prototype.setSize = function(size) {
     this.size = size;
     this.updateExtremity();
-}
+};
 
 // Update function
 ArrowCamera.prototype.update = function(mainCamera) {
@@ -154,10 +154,11 @@ ArrowCamera.prototype.update = function(mainCamera) {
     });
 
     this.regenerateArrow(mainCamera);
-}
+};
 
 ArrowCamera.prototype.regenerateArrow = function(mainCamera) {
-    var vertices = new Array();
+    var i;
+    var vertices = [];
 
     // First point of curve
     var f0 = mainCamera.position.clone();
@@ -202,7 +203,7 @@ ArrowCamera.prototype.regenerateArrow = function(mainCamera) {
     var limit = this.fullArrow ? 0.1 : 0.3;
 
     // for (var i = this.fullArrow ? 0 : 0.5; i <= 1.001; i += 0.05) {
-    for (var i = 1; i > limit; i -= 0.1) {
+    for (i = 1; i > limit; i -= 0.1) {
         point = hermite.eval(i);
         deriv = hermite.prime(i);
         up.cross(deriv);
@@ -224,10 +225,10 @@ ArrowCamera.prototype.regenerateArrow = function(mainCamera) {
 
     this.arrow.geometry.vertices = vertices;
 
-    if (this.arrow.geometry.faces.length == 0) {
-        var faces = new Array();
+    if (this.arrow.geometry.faces.length === 0) {
+        var faces = [];
 
-        for (var i = 0; i < vertices.length - 4; i+= 4) {
+        for (i = 0; i < vertices.length - 4; i+= 4) {
             faces.push(new THREE.Face3(i,i+1,i+5),new THREE.Face3(i,i+5,i+4),
                        new THREE.Face3(i+1,i+2,i+6),new THREE.Face3(i+1,i+6,i+5),
                        new THREE.Face3(i+2,i+3,i+7),new THREE.Face3(i+2,i+7,i+6),
@@ -262,22 +263,22 @@ ArrowCamera.prototype.regenerateArrow = function(mainCamera) {
     this.arrow.geometry.groupsNeedUpdate = true;
     this.arrow.geometry.normalsNeedUpdate = true;
 
-}
+};
 
 // Look function
 ArrowCamera.prototype.look = function() {
     this.lookAt(this.target);
-}
+};
 
 ArrowCamera.prototype.addToScene = function(scene) {
     scene.add(this);
     scene.add(this.object3D);
-}
+};
 
 ArrowCamera.prototype.traverse = function(callback) {
     this.object3D.traverse(callback);
-}
+};
 
 ArrowCamera.prototype.containsObject = function(object) {
     return object.parent === this.object3D;
-}
+};

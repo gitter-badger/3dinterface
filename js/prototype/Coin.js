@@ -6,7 +6,7 @@ var Coin = function(x,y,z, callback) {
         this.callback = callback;
         this.rotating = true;
     }
-}
+};
 
 var _toto = new Audio();
 Coin.extension = _toto.canPlayType("audio/x-vorbis") === "" ? ".ogg" : ".mp3";
@@ -28,7 +28,7 @@ Coin.initSize = function() {
         setTimeout(100, Coin.initSize);
         return;
     }
-}
+};
 
 Coin.update = function() {
 
@@ -56,7 +56,7 @@ Coin.update = function() {
     Coin.ctx.stroke();
     Coin.ctx.fill();
 
-}
+};
 
 Coin.image.onload = Coin.update;
 
@@ -79,17 +79,17 @@ Coin.prototype.init = function(x,y,z) {
             },1000);
         })(this,x,y,z);
     }
-}
+};
 
 Coin.prototype.addToScene = function(scene) {
     scene.add(this.mesh);
-}
+};
 
 Coin.prototype.update = function() {
     var self = this;
     if (this.ready && this.rotating)
-        this.mesh.rotation.y += 0.1
-}
+        this.mesh.rotation.y += 0.1;
+};
 
 Coin.prototype.get = function() {
     if (!this.got) {
@@ -127,7 +127,7 @@ Coin.prototype.get = function() {
 
         Coin.update();
     }
-}
+};
 
 Coin.lastSound = new Audio('/static/data/music/starappears' + Coin.extension);
 Coin.lastSound.preload = "auto";
@@ -155,7 +155,7 @@ Coin.init = function(scale) {
                         mesh.material.color.setHex(0xff0000);
                         mesh.geometry.computeVertexNormals();
                         mesh.raycastable = true;
-                        Coin.BASIC_MESH = mesh
+                        Coin.BASIC_MESH = mesh;
                     }
                 });
             }
@@ -163,4 +163,4 @@ Coin.init = function(scale) {
 
         Coin.nextSound = new Audio('/static/data/music/redcoins/1' + Coin.extension);
     }
-}
+};

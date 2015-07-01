@@ -50,8 +50,8 @@ var OldFixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
     (function(self, direction, left, other) {
         var material = new THREE.LineBasicMaterial({ color: '0x000000'});
         var geometry = new THREE.Geometry();
-        var direction = Tools.mul(direction, -2);
-        var target = Tools.sum(self.position, direction);
+        var tmp_direction = Tools.mul(direction, -2);
+        var target = Tools.sum(self.position, tmp_direction);
         // geometry.vertices.push(self.position, target);
         geometry.vertices.push(
             Tools.sum(Tools.sum(self.position, left), other),
@@ -61,16 +61,16 @@ var OldFixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
             Tools.sum(Tools.sum(self.position, left), other),
             Tools.sum(Tools.diff(self.position, other), left),
 
-            Tools.sum(self.position, direction),
+            Tools.sum(self.position, tmp_direction),
             Tools.sum(Tools.sum(self.position, left), other),
 
-            Tools.sum(self.position, direction),
+            Tools.sum(self.position, tmp_direction),
             Tools.diff(Tools.sum(self.position, other),left),
 
-            Tools.sum(self.position, direction),
+            Tools.sum(self.position, tmp_direction),
             Tools.diff(Tools.diff(self.position, left),other),
 
-            Tools.sum(self.position, direction),
+            Tools.sum(self.position, tmp_direction),
             Tools.sum(Tools.diff(self.position, other), left)
         );
 
@@ -87,13 +87,13 @@ var OldFixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
 
     this.mesh = new THREE.Mesh(geometry, material);
     this.mesh.raycastable = true;
-}
+};
 OldFixedCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 OldFixedCamera.prototype.constructor = OldFixedCamera;
 
 OldFixedCamera.prototype.check = function() {
     this.mesh.material.color.setHex(0x663366);
-}
+};
 
 // Update function
 OldFixedCamera.prototype.update = function(position) {
@@ -117,25 +117,25 @@ OldFixedCamera.prototype.update = function(position) {
 
     if (new_value < 0.1)
         this.mesh.material.transparent = this.mesh.visible = false;
-}
+};
 
 // Look function
 OldFixedCamera.prototype.look = function() {
     this.lookAt(this.target);
-}
+};
 
 OldFixedCamera.prototype.addToScene = function(scene) {
     scene.add(this);
     scene.add(this.mesh);
     scene.add(this.line);
-}
+};
 
 OldFixedCamera.prototype.traverse = function(callback) {
     callback(this.mesh);
     callback(this.line);
-}
+};
 
 OldFixedCamera.prototype.containsObject = function(object) {
     return object === this.mesh;
-}
+};
 

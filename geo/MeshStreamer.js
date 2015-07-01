@@ -95,7 +95,7 @@ geo.MeshStreamer = function(path) {
 
     }
 
-}
+};
 
 /**
  * Compute a function that can compare two faces
@@ -145,7 +145,7 @@ geo.MeshStreamer.prototype.faceComparator = function(camera) {
             x: (self.vertices[face2.a].x + self.vertices[face2.b].x + self.vertices[face2.b].x) / 3,
             y: (self.vertices[face2.a].y + self.vertices[face2.b].y + self.vertices[face2.b].y) / 3,
             z: (self.vertices[face2.a].z + self.vertices[face2.b].z + self.vertices[face2.b].z) / 3
-        }
+        };
 
         var dir2 = {
             x: center2.x - camera.position.x,
@@ -170,8 +170,8 @@ geo.MeshStreamer.prototype.faceComparator = function(camera) {
         }
         return 0;
 
-    }
-}
+    };
+};
 
 /**
  * Initialize the socket.io callback
@@ -243,7 +243,7 @@ geo.MeshStreamer.prototype.start = function(socket) {
         }
 
     });
-}
+};
 
 /**
  * Prepare the array of materials
@@ -271,7 +271,7 @@ geo.MeshStreamer.prototype.nextMaterials = function() {
 
     return data;
 
-}
+};
 
 /**
  * Prepare the next elements
@@ -280,6 +280,8 @@ geo.MeshStreamer.prototype.nextMaterials = function() {
  * @returns {array} an array of elements ready to send
  */
 geo.MeshStreamer.prototype.nextElements = function(_camera, force) {
+
+    var i;
 
     if (force === undefined) {
 
@@ -305,9 +307,9 @@ geo.MeshStreamer.prototype.nextElements = function(_camera, force) {
                 y: _camera[1][1],
                 z: _camera[1][2]
             }
-        }
+        };
 
-        for (var i = 2; i < _camera.length; i++) {
+        for (i = 2; i < _camera.length; i++) {
 
             planes.push({
                 normal: {
@@ -325,7 +327,7 @@ geo.MeshStreamer.prototype.nextElements = function(_camera, force) {
             x: camera.target.x - camera.position.x,
             y: camera.target.y - camera.position.y,
             z: camera.target.z - camera.position.z
-        }
+        };
 
     }
 
@@ -400,7 +402,7 @@ geo.MeshStreamer.prototype.nextElements = function(_camera, force) {
                 var exitToContinue = false;
                 threeVertices = [vertex1, vertex2, vertex3];
 
-                for (var i = 0; i < threeVertices.length; i++) {
+                for (i = 0; i < threeVertices.length; i++) {
 
                     var vertex = threeVertices[i];
 
@@ -530,10 +532,10 @@ geo.MeshStreamer.prototype.nextElements = function(_camera, force) {
 
     return {data: data, finished: mightBeCompletetlyFinished};
 
-}
+};
 
 geo.MeshStreamer.prototype.isFinished = function(i) {
 
     return this.meshFaces[i].counter === this.meshFaces[i].array.length;
 
-}
+};

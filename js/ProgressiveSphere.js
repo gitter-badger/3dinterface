@@ -29,7 +29,7 @@ var ProgessiveSphere = function(loader, res) {
         });
     })(this);
 
-}
+};
 ProgessiveSphere.prototype = Object.create(Displayable.prototype);
 ProgessiveSphere.prototype.constructor = ProgessiveSphere;
 
@@ -81,9 +81,9 @@ ProgessiveSphere.prototype.addFace = function() {
         this.wasFinished = true;
         console.log("Finished reconstructing the mesh !");
     }
-}
+};
 
 ProgessiveSphere.prototype.addToScene = function(scene) {
     Displayable.prototype.addToScene.call(this, scene);
     this.addedToScene = true;
-}
+};

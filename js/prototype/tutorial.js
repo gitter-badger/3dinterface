@@ -39,7 +39,7 @@ function init() {
     BD.disable();
 
     // Collidable objects to prevent camera from traversing objects
-    var collidableObjects = new Array();
+    var collidableObjects = [];
 
     // Initialize renderer
     container = document.getElementById('container');

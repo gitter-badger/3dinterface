@@ -1,14 +1,14 @@
 var Displayable = function() {
     // Nothing to do here
-}
+};
 
 Displayable.prototype.addToScene = function(scene) {
     scene.add(this.mesh);
-}
+};
 
 Displayable.prototype.translate = function(x,y,z) {
     this.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(x,y,z));
-}
+};
 
 // class Cube extends Displayable
 var Cube = function(size, style) {
@@ -24,7 +24,7 @@ var Cube = function(size, style) {
 
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.mesh.castShadow = false;
-}
+};
 Cube.prototype = Object.create(Displayable.prototype);
 Cube.prototype.constructor = Cube;
 
@@ -40,10 +40,10 @@ var Plane = function(size1, size2, style) {
     this.mesh = new THREE.Mesh(this.geometry, this.material);
 
     this.mesh.receiveShadow = true;
-}
+};
 Plane.prototype = Object.create(Displayable.prototype);
 Plane.prototype.constructor = Plane;
 
 Plane.prototype.addToScene = function(scene) {
     scene.add(this.mesh);
-}
+};

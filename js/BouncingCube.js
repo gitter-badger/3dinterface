@@ -5,7 +5,7 @@ var BouncingCube = function(size, style) {
     this.center = new THREE.Vector3();
 
     this.speed = new THREE.Vector3(0,0,300);
-}
+};
 BouncingCube.prototype = Object.create(Cube.prototype);
 BouncingCube.prototype.constructor = BouncingCube;
 
@@ -27,7 +27,7 @@ BouncingCube.prototype.update = function() {
 
     // Update the mesh
     this.mesh.position.set(this.center.x, this.center.y, this.center.z);
-}
+};
 
 // Static variables
 BouncingCube.DT = new THREE.Vector3(0.1,0.1,0.1);

@@ -66,7 +66,7 @@ var _parseList2 = function(arr) {
     }
 
     return ret;
-}
+};
 
 /**
  * Loads a mesh from socket.io
@@ -175,7 +175,7 @@ var ProgressiveLoaderGeometry = function(path, scene, camera, callback) {
      */
     this.camera = camera;
 
-}
+};
 
 /**
  * Starts the loading of the mesh
@@ -193,7 +193,7 @@ ProgressiveLoaderGeometry.prototype.load = function() {
         self.start();
 
     });
-}
+};
 
 /**
  * Will return a list representation of the camera (to be sent to the server)
@@ -203,7 +203,7 @@ ProgressiveLoaderGeometry.prototype.getCamera = function() {
         return null;
 
     return this.toList();
-}
+};
 
 /**
  * Initializes the socket.io functions so that it can discuss with the server
@@ -366,12 +366,12 @@ ProgressiveLoaderGeometry.prototype.initIOCallbacks = function() {
         console.log('Finished !');
         self.finished = true;
     });
-}
+};
 
 /**
  * Starts the communication with the server
  */
 ProgressiveLoaderGeometry.prototype.start = function() {
     this.socket.emit('request', this.objPath);
-}
+};
 

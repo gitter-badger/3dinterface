@@ -19,17 +19,17 @@ BD.Private.sendData = function(url, data) {
 
         xhr.send(JSON.stringify(data));
     }
-}
+};
 
 BD.Private.enabled = true;
 
 BD.enable = function() {
     BD.Private.enabled = true;
-}
+};
 
 BD.disable = function() {
     BD.Private.enabled = false;
-}
+};
 
 BD.Private.compactCamera = function(camera) {
     return {
@@ -44,7 +44,7 @@ BD.Private.compactCamera = function(camera) {
             z: camera.target.z
         }
     };
-}
+};
 
 BD.Event = {};
 
@@ -53,14 +53,14 @@ BD.Event.ArrowClicked.prototype.send = function() {
     var url = "/arrow-clicked";
     var data = {arrow_id: this.arrow_id};
     BD.Private.sendData(url, data);
-}
+};
 
 BD.Event.CoinClicked = function() {};
 BD.Event.CoinClicked.prototype.send = function() {
     var url = "/coin-clicked";
     var data = {coin_id: this.coin_id};
     BD.Private.sendData(url, data);
-}
+};
 
 BD.Event.KeyboardEvent = function() {};
 BD.Event.KeyboardEvent.prototype.send = function() {
@@ -68,17 +68,17 @@ BD.Event.KeyboardEvent.prototype.send = function() {
 
     var data = {
         camera: BD.Private.compactCamera(this.camera)
-    }
+    };
 
     BD.Private.sendData(url, data);
-}
+};
 
 BD.Event.ResetClicked = function() {};
 BD.Event.ResetClicked.prototype.send = function() {
     var url = "/reset-clicked";
     var data = {};
     BD.Private.sendData(url, data);
-}
+};
 
 BD.Event.PreviousNextClicked = function() {};
 BD.Event.PreviousNextClicked.prototype.send = function() {
@@ -90,7 +90,7 @@ BD.Event.PreviousNextClicked.prototype.send = function() {
     };
 
     BD.Private.sendData(url, data);
-}
+};
 
 BD.Event.Hovered = function() {};
 BD.Event.Hovered.prototype.send = function() {
@@ -101,7 +101,7 @@ BD.Event.Hovered.prototype.send = function() {
     };
 
     BD.Private.sendData(url, data);
-}
+};
 
 BD.Event.Fps = function() {};
 BD.Event.Fps.prototype.send = function() {
@@ -109,8 +109,8 @@ BD.Event.Fps.prototype.send = function() {
     var url = "/fps";
     var data = {
         fps: this.fps
-    }
+    };
 
     BD.Private.sendData(url, data);
 
-}
+};

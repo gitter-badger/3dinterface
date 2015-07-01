@@ -17,7 +17,7 @@ var main_section = document.getElementById('main-section');
 var container_size = {
     width: function() { return 1024; },
     height: function() { return 768; }
-}
+};
 
 var onWindowResize = (function() {
 
@@ -48,7 +48,7 @@ function init() {
     renderer = new THREE.WebGLRenderer({alpha:true, antialias:true});
 
     // Collidable objects to prevent camera from traversing objects
-    var collidableObjects = new Array();
+    var collidableObjects = [];
 
     // Initialize renderer
     container = document.getElementById('container');

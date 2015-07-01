@@ -7,7 +7,7 @@ var CameraSelecter = function(renderer, scene, cameras, coins, buttonManager) {
     this.buttonManager = buttonManager;
     this.scene = scene;
     this.coins = coins;
-}
+};
 
 CameraSelecter.prototype.pointedCamera = function() {
     var returnCamera;
@@ -64,12 +64,14 @@ CameraSelecter.prototype.pointedCamera = function() {
         }
     }
     this.currentPointedCamera = null;
-}
+};
 
 CameraSelecter.prototype.update = function(event, y) {
+    var e;
+
     if (event !== undefined) {
-        this.mouse.x = event.offsetX == undefined ? event.layerX : event.offsetX;
-        this.mouse.y = event.offsetY == undefined ? event.layerY : event.offsetY;
+        this.mouse.x = event.offsetX === undefined ? event.layerX : event.offsetX;
+        this.mouse.y = event.offsetY === undefined ? event.layerY : event.offsetY;
     }
 
     if (y !== undefined) {
@@ -83,10 +85,10 @@ CameraSelecter.prototype.update = function(event, y) {
     if (hovered !== undefined && !(hovered instanceof Coin)) {
         if (hovered !== previousCamera) {
             // log it
-            var event = new BD.Event.Hovered();
-            event.start = true;
-            event.arrow_id = this.cameras.cameras.indexOf(this.currentPointedCamera);
-            event.send();
+            e = new BD.Event.Hovered();
+            e.start = true;
+            e.arrow_id = this.cameras.cameras.indexOf(this.currentPointedCamera);
+            e.send();
 
             this.prev.x = this.mouse.x;
             this.prev.y = this.mouse.y;
@@ -96,10 +98,10 @@ CameraSelecter.prototype.update = function(event, y) {
     } else {
         if (this.prev.go) {
         // Log if previous was not null
-            var event = new BD.Event.Hovered();
-            event.start = false;
-            event.arrow_id = null;
-            event.send();
+            e = new BD.Event.Hovered();
+            e.start = false;
+            e.arrow_id = null;
+            e.send();
         }
         this.prev.go = false;
     }
@@ -109,44 +111,59 @@ CameraSelecter.prototype.update = function(event, y) {
     if (this.cameras.mainCamera().pointerLocked)
         this.cameras.mainCamera().mousePointer.render(hovered ? MousePointer.RED : MousePointer.BLACK);
 
-}
+};
 
 CameraSelecter.prototype.click = function(event) {
+    var e;
     var newCamera = this.pointedCamera();
+
     if (newCamera !== undefined && !(newCamera instanceof Coin)) {
-        var event = new BD.Event.ArrowClicked();
-        event.arrow_id = this.cameras.cameras.indexOf(newCamera);
-        event.send();
+
+        e = new BD.Event.ArrowClicked();
+        e.arrow_id = this.cameras.cameras.indexOf(newCamera);
+        e.send();
 
         newCamera.check();
         this.cameras.mainCamera().moveHermite(newCamera);
         buttonManager.updateElements();
+
     } else if (newCamera instanceof Coin) {
+
         // Coin found, notify server
-        var event = new BD.Event.CoinClicked();
-        event.coin_id = this.coins.indexOf(newCamera);
-        event.send();
+        e = new BD.Event.CoinClicked();
+        e.coin_id = this.coins.indexOf(newCamera);
+        e.send();
         newCamera.get();
+
     }
-}
+
+};
 
 CameraSelecter.prototype.clickPointer = function(event) {
+    var e;
+
     if (this.cameras.mainCamera().pointerLocked) {
+
         var newCamera = this.pointedCamera();
+
         if (newCamera !== undefined && !(newCamera instanceof Coin)) {
-            var event = new BD.Event.ArrowClicked();
-            event.arrow_id = this.cameras.cameras.indexOf(newCamera);
-            event.send();
+
+            e = new BD.Event.ArrowClicked();
+            e.arrow_id = this.cameras.cameras.indexOf(newCamera);
+            e.send();
 
             newCamera.check();
             this.cameras.mainCamera().moveHermite(newCamera);
             buttonManager.updateElements();
+
         } else if (newCamera instanceof Coin) {
+
             // Coin found, notify server
-            var event = new BD.Event.CoinClicked();
-            event.coin_id = this.coins.indexOf(newCamera);
-            event.send();
+            e = new BD.Event.CoinClicked();
+            e.coin_id = this.coins.indexOf(newCamera);
+            e.send();
             newCamera.get();
+
         }
     }
-}
+};

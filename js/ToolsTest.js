@@ -1,3 +1,5 @@
+// We will be doing a lot of document.write, so let's remove jshint warnings
+/* jshint evil:true */
 function test(b) {
     if (b)
         document.write("<li style='color: #008800'>Success !</li>");

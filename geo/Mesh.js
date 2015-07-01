@@ -12,7 +12,7 @@ geo.Mesh = function() {
     this.material = null;
     this.started = false;
     this.finished = false;
-}
+};
 
 /**
  * Checks if there are normals in the mesh
@@ -20,7 +20,7 @@ geo.Mesh = function() {
  */
 geo.Mesh.prototype.hasNormals = function() {
     return this.normals.length > 0;
-}
+};
 
 /**
  * Checks if there are texture coordinates in the mesh
@@ -28,7 +28,7 @@ geo.Mesh.prototype.hasNormals = function() {
  */
 geo.Mesh.prototype.hasTexCoords = function() {
     return this.texCoords.length > 0;
-}
+};
 
 /**
  * Adds a vertex to a mesh
@@ -46,7 +46,7 @@ geo.Mesh.prototype.addVertex = function(vertex) {
     }
 
     return this.vertices[this.vertices.length - 1];
-}
+};
 
 /**
  * Adds a face to a mesh
@@ -70,7 +70,7 @@ geo.Mesh.prototype.addFaces = function(face) {
     } else {
         return faces;
     }
-}
+};
 
 /**
  * Adds a texture coordinate to a mesh
@@ -87,7 +87,7 @@ geo.Mesh.prototype.addTexCoord = function(texCoord) {
     }
 
     return this.texCoords[this.texCoords.length - 1];
-}
+};
 
 /**
  * Adds a normal to a mesh
@@ -104,11 +104,11 @@ geo.Mesh.prototype.addNormal = function(normal) {
     }
 
     return this.normals[this.normals.length - 1];
-}
+};
 
 geo.Mesh.prototype.isFinished = function() {
     return this.faceIndex === this.faces.length;
-}
+};
 
 /**
  * Represent a 3D vertex
@@ -143,7 +143,7 @@ geo.Vertex = function() {
      * @type {Boolean}
      */
     this.sent = false;
-}
+};
 
 /**
  * Gives a list representation of the vertex
@@ -156,7 +156,7 @@ geo.Vertex = function() {
  */
 geo.Vertex.prototype.toList = function() {
     return ['v', this.index, this.x, this.y, this.z];
-}
+};
 
 /**
  * Gives a string representation of the vertex
@@ -168,7 +168,7 @@ geo.Vertex.prototype.toList = function() {
  */
 geo.Vertex.prototype.toString = function() {
     return 'v ' + this.x + ' ' + this.y + ' ' + this.z;
-}
+};
 
 /**
  * Represent a 3D normal
@@ -178,7 +178,7 @@ geo.Vertex.prototype.toString = function() {
  */
 geo.Normal = function() {
     geo.Vertex.apply(this, arguments);
-}
+};
 
 geo.Normal.prototype = Object.create(geo.Vertex.prototype);
 geo.Normal.prototype.constructor = geo.Normal;
@@ -196,7 +196,7 @@ geo.Normal.prototype.toList = function() {
     var superObject = geo.Vertex.prototype.toList.call(this);
     superObject[0] = 'vn';
     return superObject;
-}
+};
 
 /**
  * Gives a string representation of the normal
@@ -210,7 +210,7 @@ geo.Normal.prototype.toString = function() {
     var superObject = geo.Vertex.prototype.toString.call(this);
     superObject.replace('v', 'vn');
     return superObject;
-}
+};
 
 /**
  * Represent a texture coordinate element
@@ -239,7 +239,7 @@ geo.TexCoord = function() {
      * @type {Boolean}
      */
     this.sent = false;
-}
+};
 
 /**
  * Gives a list representation of the texture coordinate
@@ -252,7 +252,7 @@ geo.TexCoord = function() {
  */
 geo.TexCoord.prototype.toList = function() {
     return ['vt', this.index, this.x, this.y];
-}
+};
 
 /**
  * Gives a string representation of the texture coordinate
@@ -264,7 +264,7 @@ geo.TexCoord.prototype.toList = function() {
  */
 geo.TexCoord.prototype.toString = function() {
     return 'vt ' + this.x + ' ' + this.y;
-}
+};
 
 
 /**
@@ -273,17 +273,18 @@ geo.TexCoord.prototype.toString = function() {
  * @memberOf geo
  */
 geo.Face = function() {
+    var split;
     if (typeof arguments[0] === 'string' || arguments[0] instanceof String) {
         if (arguments[0].indexOf('/') === -1) {
             // No / : easy win : "f 1 2 3"  or "f 1 2 3 4"
-            var split = arguments[0].replace(/\s+/g, ' ').split(' ');
+            split = arguments[0].replace(/\s+/g, ' ').split(' ');
             this.a = parseInt(split[1]) - 1;
             this.b = parseInt(split[2]) - 1;
             this.c = parseInt(split[3]) - 1;
 
         } else {
             // There might be textures coords
-            var split = arguments[0].replace(/\s+/g, ' ').trim().split(' ');
+            split = arguments[0].replace(/\s+/g, ' ').trim().split(' ');
 
             // Split elements
             var split1 = split[1].split('/');
@@ -357,7 +358,7 @@ geo.Face = function() {
      */
     this.sent = false;
 
-}
+};
 
 /**
  * Parse a face line and returns an array of faces
@@ -390,7 +391,7 @@ var parseFace = function(arg) {
     }
 
     return ret;
-}
+};
 
 /**
  * Returns the max index of the vertices of the face
@@ -402,7 +403,7 @@ geo.Face.prototype.max = function() {
     } else {
         return Math.max(this.a, this.b, this.c);
     }
-}
+};
 
 /**
  * Returns the max index of the texture coordinates of the face
@@ -414,7 +415,7 @@ geo.Face.prototype.maxTexture = function() {
     } else {
         return Math.max(this.aTexture, this.bTexture, this.cTexture);
     }
-}
+};
 
 /**
  * Gives a list representation of the face
@@ -452,7 +453,7 @@ geo.Face.prototype.toList = function() {
     //     l.push(this.dTexture);
 
     return l;
-}
+};
 
 /**
  * Gives a string representation of the face
@@ -464,7 +465,7 @@ geo.Face.prototype.toList = function() {
  */
 geo.Face.prototype.toString = function() {
     return 'f ' + this.a + ' ' + this.b + ' ' + this.c + (this.d !== undefined ? ' ' + this.d : '');
-}
+};
 
 /**
  * Represents a material name
@@ -480,7 +481,7 @@ geo.Material = function() {
      * @type {string}
      */
     this.name = split[1];
-}
+};
 
 /**
  * Gives a string representation of the material
@@ -488,7 +489,7 @@ geo.Material = function() {
  */
 geo.Material.prototype.toString = function() {
     return 'usemtl ' + this.name;
-}
+};
 
 /**
  * Gives a list representation of the material
@@ -499,5 +500,5 @@ geo.Material.prototype.toString = function() {
  */
 geo.Material.prototype.toList = function() {
     return ['u', this.name];
-}
+};
 

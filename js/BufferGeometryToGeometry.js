@@ -11,7 +11,8 @@ Converter.toGeometry = function (bg) {
 
     var vertices = [];
 
-    for(var i = 0, n = positions.length; i < n; i += 3) {
+    var i;
+    for(i = 0, n = positions.length; i < n; i += 3) {
         var x = positions[i];
         var y = positions[i + 1];
         var z = positions[i + 2];
@@ -20,7 +21,7 @@ Converter.toGeometry = function (bg) {
 
     var faces = [];
 
-    for(var i = 0, n = vertices.length; i < n; i += 3) {
+    for(i = 0, n = vertices.length; i < n; i += 3) {
         faces.push(new THREE.Face3(i, i + 1, i + 2));
     }
 
@@ -29,4 +30,4 @@ Converter.toGeometry = function (bg) {
     geometry.faces = faces;
     geometry.computeFaceNormals();
     return geometry;
-}
+};

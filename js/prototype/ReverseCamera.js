@@ -3,7 +3,7 @@
 // class camera extends THREE.PerspectiveCamera
 var ReverseCamera = function(arg1, arg2, arg3, arg4, position, target) {
     ArrowCamera.apply(this, arguments);
-}
+};
 ReverseCamera.prototype = Object.create(ArrowCamera.prototype);
 ReverseCamera.prototype.constructor = ReverseCamera;
 
@@ -23,7 +23,7 @@ ReverseCamera.prototype.initExtremity = function() {
     left = Tools.mul(left, this.size / 2 );
     other  = Tools.mul(other, this.size / 2);
 
-    var pyramidCenter = Tools.diff(this.position, Tools.mul(direction,0.25))
+    var pyramidCenter = Tools.diff(this.position, Tools.mul(direction,0.25));
     geometry.vertices.push(
         Tools.sum( Tools.sum( this.position, left),  other),
         Tools.diff(Tools.sum( this.position, other), left),
@@ -71,10 +71,11 @@ ReverseCamera.prototype.initExtremity = function() {
     this.mesh = new THREE.Mesh(geometry, material);
     return this.mesh;
 
-}
+};
 
 ReverseCamera.prototype.regenerateArrow = function(mainCamera) {
-    var vertices = new Array();
+    var i;
+    var vertices = [];
 
     // First point of curve
     var f0 = mainCamera.position.clone();
@@ -119,7 +120,7 @@ ReverseCamera.prototype.regenerateArrow = function(mainCamera) {
     var limit = this.fullArrow ? 0.1 : 0.3;
 
     // for (var i = this.fullArrow ? 0 : 0.5; i <= 1.001; i += 0.05) {
-    for (var i = 1; i > limit; i -= 0.1) {
+    for (i = 1; i > limit; i -= 0.1) {
         point = hermite.eval(i);
         deriv = hermite.prime(i);
         up.cross(deriv);
@@ -141,10 +142,10 @@ ReverseCamera.prototype.regenerateArrow = function(mainCamera) {
 
     this.arrow.geometry.vertices = vertices;
 
-    if (this.arrow.geometry.faces.length == 0) {
-        var faces = new Array();
+    if (this.arrow.geometry.faces.length === 0) {
+        var faces = [];
 
-        for (var i = 0; i < vertices.length - 4; i+= 4) {
+        for (i = 0; i < vertices.length - 4; i+= 4) {
             faces.push(new THREE.Face3(i,i+1,i+5),new THREE.Face3(i,i+5,i+4),
                        new THREE.Face3(i+1,i+2,i+6),new THREE.Face3(i+1,i+6,i+5),
                        new THREE.Face3(i+2,i+3,i+7),new THREE.Face3(i+2,i+7,i+6),
@@ -155,7 +156,7 @@ ReverseCamera.prototype.regenerateArrow = function(mainCamera) {
         faces.push(new THREE.Face3(len-4,len-3,len-2), new THREE.Face3(len-4,len-2,len-1));
 
         var max = 0;
-        for (var i = 0; i < faces.length; i++) {
+        for (i = 0; i < faces.length; i++) {
             max = Math.max(max, faces[i].a, faces[i].b, faces[i].c);
         }
         console.log(max + '/' + len);
@@ -179,4 +180,4 @@ ReverseCamera.prototype.regenerateArrow = function(mainCamera) {
     this.arrow.geometry.groupsNeedUpdate = true;
     this.arrow.geometry.normalsNeedUpdate = true;
 
-}
+};

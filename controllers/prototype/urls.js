@@ -8,4 +8,4 @@ module.exports = {
     '/prototype/replay_info/:id': 'replay_info',
     '/prototype/tutorial': 'tutorial',
     '/prototype/sponza': 'sponza'
-}
+};

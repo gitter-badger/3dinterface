@@ -1,6 +1,6 @@
 Math.clamp = Math.clamp || function(number, min, max) {
     return Math.max(Math.min(number, max), min);
-}
+};
 
 var Previewer = function(renderer, scene) {
     this.domElement = document.createElement('canvas');
@@ -10,7 +10,7 @@ var Previewer = function(renderer, scene) {
     this.scene = scene;
     this.drawn = false;
     this.drawnBefore = false;
-}
+};
 
 Previewer.prototype.render = function(prev, container_width, container_height) {
     var width, height, left, bottom;
@@ -77,20 +77,20 @@ Previewer.prototype.render = function(prev, container_width, container_height) {
         this.clearNeeded = true;
     }
 
-}
+};
 
 Previewer.prototype.clear = function() {
     if (this.clearNeeded) {
         this.domElement.width = this.domElement.width;
         this.clearNeeded = false;
     }
-}
+};
 
 Previewer.prototype.fixedRecommendation = function(bool) {
     this.fixed = bool;
-}
+};
 
 Previewer.prototype.update = function(arg) {
     this.drawnBefore = this.drawn;
     this.drawn = arg;
-}
+};

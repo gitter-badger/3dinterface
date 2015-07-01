@@ -7,12 +7,29 @@ var visible = 0;
 
 var loader, previousTime;
 
-var container_size = new Object();
+var container_size = {};
 container_size.width = 1067;
 container_size.height = 600;
 
 init();
 animate();
+
+function loadSphere(i) {
+    loader.load('/static/data/spheres/' + (i+1) + '.obj', function (object) {
+        object.traverse(function (child) {
+            if (child instanceof THREE.Mesh ) {
+                child.material.color.setHex(0xff0000);
+                child.up = new THREE.Vector3(0,0,1);
+                child.geometry.computeFaceNormals();
+                child.geometry.computeVertexNormals();
+            }
+        });
+        spheres[i] = object;
+        scene.add(object);
+        if (i !== 0)
+            hide(object);
+    });
+}
 
 function init() {
     // on initialise le moteur de rendu
@@ -49,24 +66,9 @@ function init() {
     loader = new THREE.OBJLoader();
 
     for (var i = 0; i < mesh_number; i++) {
-        // Capture of i
-        // I am pretty good
-        (function(i) {
-            loader.load('/static/data/spheres/' + (i+1) + '.obj', function (object) {
-                object.traverse(function (child) {
-                    if (child instanceof THREE.Mesh ) {
-                        child.material.color.setHex(0xff0000);
-                        child.up = new THREE.Vector3(0,0,1);
-                        child.geometry.computeFaceNormals();
-                        child.geometry.computeVertexNormals();
-                    }
-                });
-                spheres[i] = object;
-                scene.add(object);
-                if (i != 0)
-                    hide(object);
-            });
-        })(i);
+
+        loadSphere(i);
+
     }
 
 

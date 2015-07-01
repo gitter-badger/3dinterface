@@ -1,3 +1,3 @@
 module.exports = {
     '/logout': 'index'
-}
+};

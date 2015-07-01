@@ -38,7 +38,7 @@ module.exports.index = function(req, res) {
     res.render('index.jade', res.locals, function(err, result) {
         res.send(result);
     });
-}
+};
 
 var generateSceneNumber = function(req, res) {
     if (req.session.scenes !== undefined) {
@@ -49,7 +49,7 @@ var generateSceneNumber = function(req, res) {
     }
 
     return req.session.scenes[req.session.currentSceneIndex];
-}
+};
 
 var sceneToFunction = function(scene) {
     switch (scene) {
@@ -62,7 +62,7 @@ var sceneToFunction = function(scene) {
         default:
             return 'initPeach';
     }
-}
+};
 
 var protoHelper = function(template) {
     return function(req, res) {
@@ -82,7 +82,7 @@ var protoHelper = function(template) {
             });
         });
     };
-}
+};
 
 module.exports.arrows = protoHelper('prototype_arrows.jade');
 module.exports.viewports = protoHelper('prototype_viewports.jade');
@@ -94,7 +94,7 @@ module.exports.sponza = function(req, res) {
     res.render('sponza.jade', res.locals, function(err, result) {
         res.send(result);
     });
-}
+};
 
 module.exports.replay_info = function(req, res) {
     res.setHeader('Content-Type', 'text/plain');
@@ -105,7 +105,7 @@ module.exports.replay_info = function(req, res) {
     db.getInfo(id, function(results) {
         res.send(JSON.stringify(results));
     });
-}
+};
 
 module.exports.replay = function(req, res, next) {
     // Get id parameter
@@ -124,7 +124,7 @@ module.exports.replay = function(req, res, next) {
             });
         }
     });
-}
+};
 
 module.exports.replay_index = function(req, res, next) {
     db.getAllExps(function(result) {
@@ -135,7 +135,7 @@ module.exports.replay_index = function(req, res, next) {
             res.send(result);
         });
     });
-}
+};
 
 module.exports.tutorial = function(req, res) {
 
@@ -144,4 +144,4 @@ module.exports.tutorial = function(req, res) {
     res.render('tutorial.jade', res.lcals, function(err, result) {
         res.send(result);
     });
-}
+};
