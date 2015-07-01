@@ -163,7 +163,8 @@ ReverseCamera.prototype.regenerateArrow = function(mainCamera) {
 
 
         this.arrow.geometry.faces = faces;
-        this.arrow.geometry.facesNeedUpdate = true;
+        this.arrow.geometry.groupsNeedUpdate = true;
+        this.arrow.geometry.elementsNeedUpdate = true;
     }
 
     // this.arrow.geometry.mergeVertices();
@@ -176,8 +177,5 @@ ReverseCamera.prototype.regenerateArrow = function(mainCamera) {
 
     this.arrow.geometry.dynamic = true;
     this.arrow.geometry.verticesNeedUpdate = true;
-    this.arrow.geometry.elementsNeedUpdate = true;
-    this.arrow.geometry.groupsNeedUpdate = true;
-    this.arrow.geometry.normalsNeedUpdate = true;
 
 };
