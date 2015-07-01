@@ -20,11 +20,6 @@ module.exports.url = ... // the url to connect to your database
 module.exports.secret = ... // A secret string used to hash stuff
 ```
 ## Compiling the static js files
-There are two ways to compile the static js files :
-
-  - either you don't mind not minifying the code to compile
-  - or you absolutely want to minify the code
-
 First, `cd` to `utils/`. Here you'll find a script `build_all.sh` that, as its
 name suggests, builds all. By default, it minifies the code, but you can pass
 the option `--dev` to avoid minifying (which is a quite long operation).
