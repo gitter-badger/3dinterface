@@ -8,6 +8,8 @@ module.exports.index = function(req, res) {
             "INSERT INTO fpscounter(exp_id, fps) VALUES($1,$2);",
             [req.session.exp_id, req.body.fps],
             function(err, result) {
+                if (err !== null)
+                    console.log("[DBERROR] " + err);
                 release();
             }
         );

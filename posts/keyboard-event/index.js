@@ -20,6 +20,8 @@ module.exports.index = function(req, res) {
                 req.body.time
             ],
             function(err, result) {
+                if (err !== null)
+                    console.log("[DBERROR] " + err);
                 release();
             }
         );

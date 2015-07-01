@@ -14,6 +14,8 @@ module.exports.index = function(req, res) {
                 req.body.arrow_id
             ],
             function(err, result) {
+                if (err !== null)
+                    console.log("[DBERROR] " + err);
                 release();
             }
         );

@@ -19,6 +19,8 @@ module.exports.index = function(req, res) {
                 req.body.camera.target.z
             ],
             function(err, result) {
+                if (err !== null)
+                    console.log("[DBERROR] " + err);
                 release();
             }
         );
