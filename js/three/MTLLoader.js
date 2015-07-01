@@ -315,7 +315,6 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 					params[ 'map' ] = this.loadTexture( this.baseUrl + value );
 					params[ 'map' ].wrapS = this.wrap;
 					params[ 'map' ].wrapT = this.wrap;
-                    map = params['map'];
 
 					break;
 

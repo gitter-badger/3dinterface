@@ -4,7 +4,6 @@ block title
     title #{title} - Prototype
 
 block extrajs
-    script(src="/static/js/prototypetools.min.js")
     script RecommendedCamera = FixedCamera;
     script var params = params || {}; params.get = params.get || {}; params.get.id = #{id};
     script initMainScene = #{initjs}
