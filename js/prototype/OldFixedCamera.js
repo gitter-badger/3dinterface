@@ -139,3 +139,57 @@ OldFixedCamera.prototype.containsObject = function(object) {
     return object === this.mesh;
 };
 
+OldFixedCamera.prototype.setSize = function(size) {
+
+    var direction = this.target.clone();
+    direction.sub(this.position);
+    direction.normalize();
+
+    var left = Tools.cross(direction, this.up);
+    var other = Tools.cross(direction, left);
+    left.normalize();
+    other.normalize();
+    left = Tools.mul(left, size);
+    other  = Tools.mul(other, size);
+
+    this.mesh.geometry.vertices = [
+        Tools.sum(Tools.sum(this.position, left), other),
+        Tools.diff(Tools.sum(this.position, other),left),
+        Tools.diff(Tools.diff(this.position, left),other),
+        Tools.sum(Tools.diff(this.position, other), left)
+    ];
+
+    this.mesh.geometry.verticesNeedUpdate = true;
+
+    (function(self, direction, left, other, size) {
+
+        var tmp_direction = Tools.mul(direction, -2 * size);
+        var target = Tools.sum(self.position, tmp_direction);
+
+        var vertices = [
+            Tools.sum(Tools.sum(self.position, left), other),
+            Tools.diff(Tools.sum(self.position, other),left),
+            Tools.diff(Tools.diff(self.position, left),other),
+            Tools.sum(Tools.diff(self.position, other), left),
+            Tools.sum(Tools.sum(self.position, left), other),
+            Tools.sum(Tools.diff(self.position, other), left),
+
+            Tools.sum(self.position, tmp_direction),
+            Tools.sum(Tools.sum(self.position, left), other),
+
+            Tools.sum(self.position, tmp_direction),
+            Tools.diff(Tools.sum(self.position, other),left),
+
+            Tools.sum(self.position, tmp_direction),
+            Tools.diff(Tools.diff(self.position, left),other),
+
+            Tools.sum(self.position, tmp_direction),
+            Tools.sum(Tools.diff(self.position, other), left)
+        ];
+
+        self.line.geometry.vertices = vertices;
+        self.line.geometry.verticesNeedUpdate = true;
+
+    })(this, direction, left, other, size);
+
+};
