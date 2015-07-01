@@ -365,38 +365,6 @@ geo.MeshStreamer.prototype.nextElements = function(_camera, force) {
             var vertex2 = this.mesh.vertices[currentFace.b];
             var vertex3 = this.mesh.vertices[currentFace.c];
 
-            // if (camera !== null) {
-
-            //     var v1 = {
-            //         x: vertex1.x - camera.position.x,
-            //         y: vertex1.y - camera.position.y,
-            //         z: vertex1.z - camera.position.z
-            //     };
-
-            //     var v2 = {
-            //         x: vertex2.x - camera.position.x,
-            //         y: vertex2.y - camera.position.y,
-            //         z: vertex2.z - camera.position.z
-            //     };
-
-            //     var v3 = {
-            //         x: vertex3.x - camera.position.x,
-            //         y: vertex3.y - camera.position.y,
-            //         z: vertex3.z - camera.position.z
-            //     };
-
-            //     if (
-            //         direction.x * v1.x + direction.y * v1.y + direction.z * v1.z < 0 &&
-            //         direction.x * v2.x + direction.y * v2.y + direction.z * v2.z < 0 &&
-            //         direction.x * v3.x + direction.y * v3.y + direction.z * v3.z < 0
-            //     ) {
-
-            //         continue;
-
-            //     }
-
-            // }
-
             if (!force) {
 
                 var exitToContinue = false;
@@ -417,10 +385,10 @@ geo.MeshStreamer.prototype.nextElements = function(_camera, force) {
                             plane.constant;
 
                         if (distance < 0)
-                            {
-                                exitToContinue = true;
-                                break;
-                            }
+                        {
+                            exitToContinue = true;
+                            break;
+                        }
 
                     }
 
