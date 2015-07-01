@@ -428,10 +428,6 @@ TutoCamera.prototype.onKeyEvent = function(event, toSet) {
         }
     }
 
-    switch (event.keyCode) {
-        case 13: if (toSet) this.log(); break;
-    }
-
     if (motionJsonCopy != JSON.stringify(this.motion)) {
         // Log any change
         var e = new BD.Event.KeyboardEvent();

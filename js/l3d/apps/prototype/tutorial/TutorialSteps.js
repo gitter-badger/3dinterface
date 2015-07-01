@@ -104,7 +104,6 @@ TutorialSteps.prototype.setCameras = function(cameras) {
 };
 
 TutorialSteps.prototype.nextStep = function() {
-    console.log(this.step);
     if (this.step < this.instructions.length) {
         this.alert(this.instructions[this.step].text, this.instructions[this.step].justclick);
         var callback = function() {self.coinNumber++; self.nextStep();};
