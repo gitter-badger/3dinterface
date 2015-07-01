@@ -55,7 +55,7 @@ function init() {
     scene.add(ambient_light);
 
     // on initialise la camera que l’on place ensuite sur la scène
-    camera = new Camera(50, container_size.width / container_size.height, 1, 10000);
+    camera = new L3D.Camera(50, container_size.width / container_size.height, 1, 10000);
     scene.add(camera);
 
     window.addEventListener('resize', onWindowResize, false);
@@ -71,8 +71,7 @@ function init() {
 
     }
 
-
-    plane = new Plane(1000,1000);
+    plane = new L3D.Plane(1000,1000);
     plane.translate(0,0,-100);
     plane.addToScene(scene);
 }

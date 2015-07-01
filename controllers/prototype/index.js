@@ -54,13 +54,13 @@ var generateSceneNumber = function(req, res) {
 var sceneToFunction = function(scene) {
     switch (scene) {
         case 2:
-            return 'initBobomb';
+            return 'L3D.initBobomb';
         case 3:
-            return 'initMountain';
+            return 'L3D.initMountain';
         case 4:
-            return 'initWhomp';
+            return 'L3D.initWhomp';
         default:
-            return 'initPeach';
+            return 'L3D.initPeach';
     }
 };
 

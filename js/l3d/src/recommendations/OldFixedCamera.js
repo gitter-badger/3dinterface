@@ -1,7 +1,7 @@
 // Initialization
 
 // class camera extends THREE.PerspectiveCamera
-var OldFixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
+L3D.ViewportRecommendation = function(arg1, arg2, arg3, arg4, position, target) {
     THREE.PerspectiveCamera.apply(this, arguments);
 
     // Set Position
@@ -21,7 +21,7 @@ var OldFixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
     direction.normalize();
 
     this.target = this.position.clone();
-    this.target.add(Tools.mul(direction,10));
+    this.target.add(L3D.Tools.mul(direction,10));
     // this.up = new THREE.Vector3(0,0,1);
 
     // Compute corners
@@ -30,17 +30,17 @@ var OldFixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
 
     var geometry = new THREE.Geometry();
 
-    var left = Tools.cross(direction, this.up);
-    var other = Tools.cross(direction, left);
+    var left = L3D.Tools.cross(direction, this.up);
+    var other = L3D.Tools.cross(direction, left);
     left.normalize();
     other.normalize();
-    left = Tools.mul(left, 1);
-    other  = Tools.mul(other, 1);
+    left = L3D.Tools.mul(left, 1);
+    other  = L3D.Tools.mul(other, 1);
 
-    geometry.vertices.push(Tools.sum(Tools.sum(this.position, left), other),
-                           Tools.diff(Tools.sum(this.position, other),left),
-                           Tools.diff(Tools.diff(this.position, left),other),
-                           Tools.sum(Tools.diff(this.position, other), left)
+    geometry.vertices.push(L3D.Tools.sum(L3D.Tools.sum(this.position, left), other),
+                           L3D.Tools.diff(L3D.Tools.sum(this.position, other),left),
+                           L3D.Tools.diff(L3D.Tools.diff(this.position, left),other),
+                           L3D.Tools.sum(L3D.Tools.diff(this.position, other), left)
                           );
 
     geometry.faces.push(new THREE.Face3(0,1,2), // new THREE.Face3(0,2,1),
@@ -50,28 +50,28 @@ var OldFixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
     (function(self, direction, left, other) {
         var material = new THREE.LineBasicMaterial({ color: '0x000000'});
         var geometry = new THREE.Geometry();
-        var tmp_direction = Tools.mul(direction, -2);
-        var target = Tools.sum(self.position, tmp_direction);
+        var tmp_direction = L3D.Tools.mul(direction, -2);
+        var target = L3D.Tools.sum(self.position, tmp_direction);
         // geometry.vertices.push(self.position, target);
         geometry.vertices.push(
-            Tools.sum(Tools.sum(self.position, left), other),
-            Tools.diff(Tools.sum(self.position, other),left),
-            Tools.diff(Tools.diff(self.position, left),other),
-            Tools.sum(Tools.diff(self.position, other), left),
-            Tools.sum(Tools.sum(self.position, left), other),
-            Tools.sum(Tools.diff(self.position, other), left),
+            L3D.Tools.sum(L3D.Tools.sum(self.position, left), other),
+            L3D.Tools.diff(L3D.Tools.sum(self.position, other),left),
+            L3D.Tools.diff(L3D.Tools.diff(self.position, left),other),
+            L3D.Tools.sum(L3D.Tools.diff(self.position, other), left),
+            L3D.Tools.sum(L3D.Tools.sum(self.position, left), other),
+            L3D.Tools.sum(L3D.Tools.diff(self.position, other), left),
 
-            Tools.sum(self.position, tmp_direction),
-            Tools.sum(Tools.sum(self.position, left), other),
+            L3D.Tools.sum(self.position, tmp_direction),
+            L3D.Tools.sum(L3D.Tools.sum(self.position, left), other),
 
-            Tools.sum(self.position, tmp_direction),
-            Tools.diff(Tools.sum(self.position, other),left),
+            L3D.Tools.sum(self.position, tmp_direction),
+            L3D.Tools.diff(L3D.Tools.sum(self.position, other),left),
 
-            Tools.sum(self.position, tmp_direction),
-            Tools.diff(Tools.diff(self.position, left),other),
+            L3D.Tools.sum(self.position, tmp_direction),
+            L3D.Tools.diff(L3D.Tools.diff(self.position, left),other),
 
-            Tools.sum(self.position, tmp_direction),
-            Tools.sum(Tools.diff(self.position, other), left)
+            L3D.Tools.sum(self.position, tmp_direction),
+            L3D.Tools.sum(L3D.Tools.diff(self.position, other), left)
         );
 
         self.line = new THREE.Line(geometry, material);
@@ -88,17 +88,17 @@ var OldFixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
     this.mesh = new THREE.Mesh(geometry, material);
     this.mesh.raycastable = true;
 };
-OldFixedCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
-OldFixedCamera.prototype.constructor = OldFixedCamera;
+L3D.ViewportRecommendation.prototype = Object.create(THREE.PerspectiveCamera.prototype);
+L3D.ViewportRecommendation.prototype.constructor = L3D.ViewportRecommendation;
 
-OldFixedCamera.prototype.check = function() {
+L3D.ViewportRecommendation.prototype.check = function() {
     this.mesh.material.color.setHex(0x663366);
 };
 
 // Update function
-OldFixedCamera.prototype.update = function(position) {
+L3D.ViewportRecommendation.prototype.update = function(position) {
     // Compute distance between center of camera and position
-    dist = Tools.norm2(Tools.diff(position.position, this.position));
+    dist = L3D.Tools.norm2(L3D.Tools.diff(position.position, this.position));
 
     var low_bound = 1;
     var high_bound = 5;
@@ -120,71 +120,71 @@ OldFixedCamera.prototype.update = function(position) {
 };
 
 // Look function
-OldFixedCamera.prototype.look = function() {
+L3D.ViewportRecommendation.prototype.look = function() {
     this.lookAt(this.target);
 };
 
-OldFixedCamera.prototype.addToScene = function(scene) {
+L3D.ViewportRecommendation.prototype.addToScene = function(scene) {
     scene.add(this);
     scene.add(this.mesh);
     scene.add(this.line);
 };
 
-OldFixedCamera.prototype.traverse = function(callback) {
+L3D.ViewportRecommendation.prototype.traverse = function(callback) {
     callback(this.mesh);
     callback(this.line);
 };
 
-OldFixedCamera.prototype.containsObject = function(object) {
+L3D.ViewportRecommendation.prototype.containsObject = function(object) {
     return object === this.mesh;
 };
 
-OldFixedCamera.prototype.setSize = function(size) {
+L3D.ViewportRecommendation.prototype.setSize = function(size) {
 
     var direction = this.target.clone();
     direction.sub(this.position);
     direction.normalize();
 
-    var left = Tools.cross(direction, this.up);
-    var other = Tools.cross(direction, left);
+    var left = L3D.Tools.cross(direction, this.up);
+    var other = L3D.Tools.cross(direction, left);
     left.normalize();
     other.normalize();
-    left = Tools.mul(left, size);
-    other  = Tools.mul(other, size);
+    left = L3D.Tools.mul(left, size);
+    other  = L3D.Tools.mul(other, size);
 
     this.mesh.geometry.vertices = [
-        Tools.sum(Tools.sum(this.position, left), other),
-        Tools.diff(Tools.sum(this.position, other),left),
-        Tools.diff(Tools.diff(this.position, left),other),
-        Tools.sum(Tools.diff(this.position, other), left)
+        L3D.Tools.sum(L3D.Tools.sum(this.position, left), other),
+        L3D.Tools.diff(L3D.Tools.sum(this.position, other),left),
+        L3D.Tools.diff(L3D.Tools.diff(this.position, left),other),
+        L3D.Tools.sum(L3D.Tools.diff(this.position, other), left)
     ];
 
     this.mesh.geometry.verticesNeedUpdate = true;
 
     (function(self, direction, left, other, size) {
 
-        var tmp_direction = Tools.mul(direction, -2 * size);
-        var target = Tools.sum(self.position, tmp_direction);
+        var tmp_direction = L3D.Tools.mul(direction, -2 * size);
+        var target = L3D.Tools.sum(self.position, tmp_direction);
 
         var vertices = [
-            Tools.sum(Tools.sum(self.position, left), other),
-            Tools.diff(Tools.sum(self.position, other),left),
-            Tools.diff(Tools.diff(self.position, left),other),
-            Tools.sum(Tools.diff(self.position, other), left),
-            Tools.sum(Tools.sum(self.position, left), other),
-            Tools.sum(Tools.diff(self.position, other), left),
+            L3D.Tools.sum(L3D.Tools.sum(self.position, left), other),
+            L3D.Tools.diff(L3D.Tools.sum(self.position, other),left),
+            L3D.Tools.diff(L3D.Tools.diff(self.position, left),other),
+            L3D.Tools.sum(L3D.Tools.diff(self.position, other), left),
+            L3D.Tools.sum(L3D.Tools.sum(self.position, left), other),
+            L3D.Tools.sum(L3D.Tools.diff(self.position, other), left),
 
-            Tools.sum(self.position, tmp_direction),
-            Tools.sum(Tools.sum(self.position, left), other),
+            L3D.Tools.sum(self.position, tmp_direction),
+            L3D.Tools.sum(L3D.Tools.sum(self.position, left), other),
 
-            Tools.sum(self.position, tmp_direction),
-            Tools.diff(Tools.sum(self.position, other),left),
+            L3D.Tools.sum(self.position, tmp_direction),
+            L3D.Tools.diff(L3D.Tools.sum(self.position, other),left),
 
-            Tools.sum(self.position, tmp_direction),
-            Tools.diff(Tools.diff(self.position, left),other),
+            L3D.Tools.sum(self.position, tmp_direction),
+            L3D.Tools.diff(L3D.Tools.diff(self.position, left),other),
 
-            Tools.sum(self.position, tmp_direction),
-            Tools.sum(Tools.diff(self.position, other), left)
+            L3D.Tools.sum(self.position, tmp_direction),
+            L3D.Tools.sum(L3D.Tools.diff(self.position, other), left)
         ];
 
         self.line.geometry.vertices = vertices;

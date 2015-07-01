@@ -1,4 +1,4 @@
-var utils = (function() {
+L3D.utils = (function() {
 
 var utils = {};
 

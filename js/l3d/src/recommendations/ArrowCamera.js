@@ -1,7 +1,7 @@
 // Initialization
 
 // class camera extends THREE.PerspectiveCamera
-var ArrowCamera = function(arg1, arg2, arg3, arg4, position, target) {
+L3D.BaseRecommendation = function(arg1, arg2, arg3, arg4, position, target) {
     THREE.PerspectiveCamera.apply(this, arguments);
 
     // Set Position
@@ -24,7 +24,7 @@ var ArrowCamera = function(arg1, arg2, arg3, arg4, position, target) {
     this.center.sub(direction);
 
     this.target = this.position.clone();
-    this.target.add(Tools.mul(direction,20));
+    this.target.add(L3D.Tools.mul(direction,20));
 
 
     this.arrow = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0x0000ff, side:THREE.BackSide}));
@@ -38,37 +38,37 @@ var ArrowCamera = function(arg1, arg2, arg3, arg4, position, target) {
     this.fullArrow = false;
 
 };
-ArrowCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
-ArrowCamera.prototype.constructor = ArrowCamera;
+L3D.BaseRecommendation.prototype = Object.create(THREE.PerspectiveCamera.prototype);
+L3D.BaseRecommendation.prototype.constructor = L3D.BaseRecommendation;
 
-ArrowCamera.prototype.check = function() {
+L3D.BaseRecommendation.prototype.check = function() {
     this.object3D.traverse(function(obj) {
         if (obj instanceof THREE.Mesh)
             obj.material.color.setHex(0x663366);
     });
 };
 
-ArrowCamera.prototype.initExtremity = function() {
+L3D.BaseRecommendation.prototype.initExtremity = function() {
     var geometry = new THREE.Geometry();
 
     var direction = this.target.clone();
     direction.sub(this.position);
     direction.normalize();
 
-    var left = Tools.cross(direction, this.up);
-    var other = Tools.cross(direction, left);
+    var left = L3D.Tools.cross(direction, this.up);
+    var other = L3D.Tools.cross(direction, left);
 
 
     left.normalize();
     other.normalize();
-    left = Tools.mul(left, this.size);
-    other  = Tools.mul(other, this.size);
+    left = L3D.Tools.mul(left, this.size);
+    other  = L3D.Tools.mul(other, this.size);
 
-    geometry.vertices.push(Tools.sum( Tools.sum( this.position, left),  other),
-                           Tools.diff(Tools.sum( this.position, other), left),
-                           Tools.diff(Tools.diff(this.position, left),  other),
-                           Tools.sum( Tools.diff(this.position, other), left),
-                           Tools.sum(this.position, direction)
+    geometry.vertices.push(L3D.Tools.sum( L3D.Tools.sum( this.position, left),  other),
+                           L3D.Tools.diff(L3D.Tools.sum( this.position, other), left),
+                           L3D.Tools.diff(L3D.Tools.diff(this.position, left),  other),
+                           L3D.Tools.sum( L3D.Tools.diff(this.position, other), left),
+                           L3D.Tools.sum(this.position, direction)
                           );
 
     geometry.faces.push(new THREE.Face3(0,2,1), // new THREE.Face3(0,2,1),
@@ -92,25 +92,25 @@ ArrowCamera.prototype.initExtremity = function() {
     return this.mesh;
 };
 
-ArrowCamera.prototype.updateExtremity = function() {
+L3D.BaseRecommendation.prototype.updateExtremity = function() {
     var direction = this.target.clone();
     direction.sub(this.position);
     direction.normalize();
 
-    var left = Tools.cross(direction, this.up);
-    var other = Tools.cross(direction, left);
+    var left = L3D.Tools.cross(direction, this.up);
+    var other = L3D.Tools.cross(direction, left);
 
     left.normalize();
     other.normalize();
-    left = Tools.mul(left, this.size);
-    other  = Tools.mul(other, this.size);
+    left = L3D.Tools.mul(left, this.size);
+    other  = L3D.Tools.mul(other, this.size);
 
     this.mesh.geometry.vertices = [
-        Tools.sum( Tools.sum( this.position, left),  other),
-        Tools.diff(Tools.sum( this.position, other), left),
-        Tools.diff(Tools.diff(this.position, left),  other),
-        Tools.sum( Tools.diff(this.position, other), left),
-        Tools.sum(this.position, direction)
+        L3D.Tools.sum( L3D.Tools.sum( this.position, left),  other),
+        L3D.Tools.diff(L3D.Tools.sum( this.position, other), left),
+        L3D.Tools.diff(L3D.Tools.diff(this.position, left),  other),
+        L3D.Tools.sum( L3D.Tools.diff(this.position, other), left),
+        L3D.Tools.sum(this.position, direction)
     ];
 
     this.mesh.geometry.computeFaceNormals();
@@ -118,15 +118,15 @@ ArrowCamera.prototype.updateExtremity = function() {
 
 };
 
-ArrowCamera.prototype.setSize = function(size) {
+L3D.BaseRecommendation.prototype.setSize = function(size) {
     this.size = size;
     this.updateExtremity();
 };
 
 // Update function
-ArrowCamera.prototype.update = function(mainCamera) {
+L3D.BaseRecommendation.prototype.update = function(mainCamera) {
     // Compute distance between center of camera and position
-    dist = Tools.norm2(Tools.diff(mainCamera.position, this.center));
+    dist = L3D.Tools.norm2(L3D.Tools.diff(mainCamera.position, this.center));
 
     var low_bound = 1;
     var high_bound = 5;
@@ -156,29 +156,29 @@ ArrowCamera.prototype.update = function(mainCamera) {
     this.regenerateArrow(mainCamera);
 };
 
-ArrowCamera.prototype.regenerateArrow = function(mainCamera) {
+L3D.BaseRecommendation.prototype.regenerateArrow = function(mainCamera) {
     var i;
     var vertices = [];
 
     // First point of curve
     var f0 = mainCamera.position.clone();
-    f0.add(Tools.mul(Tools.sum(new THREE.Vector3(0,-0.5,0), Tools.diff(this.target, this.position).normalize()),2));
+    f0.add(L3D.Tools.mul(L3D.Tools.sum(new THREE.Vector3(0,-0.5,0), L3D.Tools.diff(this.target, this.position).normalize()),2));
 
     // Last point of curve
     var f1 = this.position.clone();
 
     // Last derivative of curve
-    var fp1 = Tools.diff(this.target, this.position);
+    var fp1 = L3D.Tools.diff(this.target, this.position);
     fp1.normalize();
     fp1.multiplyScalar(2);
 
     // Camera direction
-    var dir = Tools.diff(this.position, mainCamera.position);
+    var dir = L3D.Tools.diff(this.position, mainCamera.position);
     dir.normalize();
 
     if (fp1.dot(dir) < -0.5) {
         // Regen polynom with better stuff
-        // var new_dir = Tools.cross(Tools.diff(this.position, mainCamera.position).normalize(), mainCamera.up);
+        // var new_dir = L3D.Tools.cross(L3D.Tools.diff(this.position, mainCamera.position).normalize(), mainCamera.up);
         // new_dir.multiplyScalar(new_dir.dot(fp1) < 0 ? 1 : -1);
         // new_dir.add(dir);
         // new_dir.add(dir);
@@ -195,7 +195,7 @@ ArrowCamera.prototype.regenerateArrow = function(mainCamera) {
 
     fp1.multiplyScalar(4);
 
-    var hermite = new Hermite.special.Polynom(f0, f1, fp1);
+    var hermite = new L3D.Hermite.special.Polynom(f0, f1, fp1);
 
     var up = this.up.clone();
     var point;
@@ -212,14 +212,14 @@ ArrowCamera.prototype.regenerateArrow = function(mainCamera) {
         up.normalize();
 
         var coeff = this.size / 2;
-        var left = Tools.cross(up, deriv);     left.normalize(); left.multiplyScalar(coeff);
-        var other = Tools.cross(deriv, left);  other.normalize(); other.multiplyScalar(coeff);
+        var left = L3D.Tools.cross(up, deriv);     left.normalize(); left.multiplyScalar(coeff);
+        var other = L3D.Tools.cross(deriv, left);  other.normalize(); other.multiplyScalar(coeff);
 
         vertices.push(
-            Tools.sum(Tools.sum(point, left), other),
-            Tools.sum(Tools.diff(point, left), other),
-            Tools.diff(point, Tools.sum(other,left)),
-            Tools.sum(Tools.diff(point, other), left)
+            L3D.Tools.sum(L3D.Tools.sum(point, left), other),
+            L3D.Tools.sum(L3D.Tools.diff(point, left), other),
+            L3D.Tools.diff(point, L3D.Tools.sum(other,left)),
+            L3D.Tools.sum(L3D.Tools.diff(point, other), left)
         );
     }
 
@@ -267,19 +267,19 @@ ArrowCamera.prototype.regenerateArrow = function(mainCamera) {
 };
 
 // Look function
-ArrowCamera.prototype.look = function() {
+L3D.BaseRecommendation.prototype.look = function() {
     this.lookAt(this.target);
 };
 
-ArrowCamera.prototype.addToScene = function(scene) {
+L3D.BaseRecommendation.prototype.addToScene = function(scene) {
     scene.add(this);
     scene.add(this.object3D);
 };
 
-ArrowCamera.prototype.traverse = function(callback) {
+L3D.BaseRecommendation.prototype.traverse = function(callback) {
     this.object3D.traverse(callback);
 };
 
-ArrowCamera.prototype.containsObject = function(object) {
+L3D.BaseRecommendation.prototype.containsObject = function(object) {
     return object.parent === this.object3D;
 };

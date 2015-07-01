@@ -1,19 +1,19 @@
-var Displayable = function() {
+L3D.Displayable = function() {
     // Nothing to do here
 };
 
-Displayable.prototype.addToScene = function(scene) {
+L3D.Displayable.prototype.addToScene = function(scene) {
     scene.add(this.mesh);
 };
 
-Displayable.prototype.translate = function(x,y,z) {
+L3D.Displayable.prototype.translate = function(x,y,z) {
     this.geometry.applyMatrix(new THREE.Matrix4().makeTranslation(x,y,z));
 };
 
-// class Cube extends Displayable
-var Cube = function(size, style) {
+// class L3D.Cube extends L3D.Displayable
+L3D.Cube = function(size, style) {
     // Super constructor call
-    Displayable.call(this);
+    L3D.Displayable.call(this);
 
     if (size  === undefined) size = 100;
     if (style === undefined) style = {};
@@ -25,12 +25,12 @@ var Cube = function(size, style) {
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.mesh.castShadow = false;
 };
-Cube.prototype = Object.create(Displayable.prototype);
-Cube.prototype.constructor = Cube;
+L3D.Cube.prototype = Object.create(L3D.Displayable.prototype);
+L3D.Cube.prototype.constructor = L3D.Cube;
 
-// class Plane extends Displayable
-var Plane = function(size1, size2, style) {
-    Displayable.call(this);
+// class L3D.Plane extends L3D.Displayable
+L3D.Plane = function(size1, size2, style) {
+    L3D.Displayable.call(this);
 
     if (style === undefined)  style = {};
 
@@ -41,9 +41,9 @@ var Plane = function(size1, size2, style) {
 
     this.mesh.receiveShadow = true;
 };
-Plane.prototype = Object.create(Displayable.prototype);
-Plane.prototype.constructor = Plane;
+L3D.Plane.prototype = Object.create(L3D.Displayable.prototype);
+L3D.Plane.prototype.constructor = L3D.Plane;
 
-Plane.prototype.addToScene = function(scene) {
+L3D.Plane.prototype.addToScene = function(scene) {
     scene.add(this.mesh);
 };

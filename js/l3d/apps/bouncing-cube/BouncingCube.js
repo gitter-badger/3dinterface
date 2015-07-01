@@ -1,12 +1,12 @@
 var BouncingCube = function(size, style) {
-    Cube.call(this, size, style);
+    L3D.Cube.call(this, size, style);
 
     this.fixed_center = new THREE.Vector3();
     this.center = new THREE.Vector3();
 
     this.speed = new THREE.Vector3(0,0,300);
 };
-BouncingCube.prototype = Object.create(Cube.prototype);
+BouncingCube.prototype = Object.create(L3D.Cube.prototype);
 BouncingCube.prototype.constructor = BouncingCube;
 
 BouncingCube.prototype.update = function() {

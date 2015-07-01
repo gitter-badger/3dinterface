@@ -1,4 +1,4 @@
-var StartCanvas = function(camera) {
+L3D.StartCanvas = function(camera) {
 
     this.domElement = document.createElement('canvas');
     this.domElement.style.position = 'absolute';
@@ -10,7 +10,7 @@ var StartCanvas = function(camera) {
 
 };
 
-StartCanvas.prototype.render = function() {
+L3D.StartCanvas.prototype.render = function() {
 
     if (!this.shown) {
 
@@ -30,7 +30,7 @@ StartCanvas.prototype.render = function() {
 
 };
 
-StartCanvas.prototype.clear = function() {
+L3D.StartCanvas.prototype.clear = function() {
 
     if (this.shown) {
 

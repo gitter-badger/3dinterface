@@ -1,4 +1,4 @@
-var CameraSelecter = function(renderer, scene, cameras, coins, buttonManager) {
+L3D.CameraSelecter = function(renderer, scene, cameras, coins, buttonManager) {
     this.raycaster = new THREE.Raycaster();
     this.renderer = renderer;
     this.mouse = {};
@@ -9,7 +9,7 @@ var CameraSelecter = function(renderer, scene, cameras, coins, buttonManager) {
     this.coins = coins;
 };
 
-CameraSelecter.prototype.pointedCamera = function() {
+L3D.CameraSelecter.prototype.pointedCamera = function() {
     var returnCamera;
 
     var x = ( this.mouse.x / this.renderer.domElement.width ) * 2 - 1;
@@ -66,7 +66,7 @@ CameraSelecter.prototype.pointedCamera = function() {
     this.currentPointedCamera = null;
 };
 
-CameraSelecter.prototype.update = function(event, y) {
+L3D.CameraSelecter.prototype.update = function(event, y) {
     var e;
 
     if (event !== undefined) {
@@ -85,7 +85,7 @@ CameraSelecter.prototype.update = function(event, y) {
     if (hovered !== undefined && !(hovered instanceof Coin)) {
         if (hovered !== previousCamera) {
             // log it
-            e = new BD.Event.Hovered();
+            e = new L3D.BD.Event.Hovered();
             e.start = true;
             e.arrow_id = this.cameras.cameras.indexOf(this.currentPointedCamera);
             e.send();
@@ -98,7 +98,7 @@ CameraSelecter.prototype.update = function(event, y) {
     } else {
         if (this.prev.go) {
         // Log if previous was not null
-            e = new BD.Event.Hovered();
+            e = new L3D.BD.Event.Hovered();
             e.start = false;
             e.arrow_id = null;
             e.send();
@@ -109,17 +109,17 @@ CameraSelecter.prototype.update = function(event, y) {
     document.getElementById('container').style.cursor = hovered ? "pointer" : "auto";
 
     if (this.cameras.mainCamera().pointerLocked)
-        this.cameras.mainCamera().mousePointer.render(hovered ? MousePointer.RED : MousePointer.BLACK);
+        this.cameras.mainCamera().mousePointer.render(hovered ? L3D.MousePointer.RED : L3D.MousePointer.BLACK);
 
 };
 
-CameraSelecter.prototype.click = function(event) {
+L3D.CameraSelecter.prototype.click = function(event) {
     var e;
     var newCamera = this.pointedCamera();
 
     if (newCamera !== undefined && !(newCamera instanceof Coin)) {
 
-        e = new BD.Event.ArrowClicked();
+        e = new L3D.BD.Event.ArrowClicked();
         e.arrow_id = this.cameras.cameras.indexOf(newCamera);
         e.send();
 
@@ -130,7 +130,7 @@ CameraSelecter.prototype.click = function(event) {
     } else if (newCamera instanceof Coin) {
 
         // Coin found, notify server
-        e = new BD.Event.CoinClicked();
+        e = new L3D.BD.Event.CoinClicked();
         e.coin_id = this.coins.indexOf(newCamera);
         e.send();
         newCamera.get();
@@ -139,7 +139,7 @@ CameraSelecter.prototype.click = function(event) {
 
 };
 
-CameraSelecter.prototype.clickPointer = function(event) {
+L3D.CameraSelecter.prototype.clickPointer = function(event) {
     var e;
 
     if (this.cameras.mainCamera().pointerLocked) {
@@ -148,7 +148,7 @@ CameraSelecter.prototype.clickPointer = function(event) {
 
         if (newCamera !== undefined && !(newCamera instanceof Coin)) {
 
-            e = new BD.Event.ArrowClicked();
+            e = new L3D.BD.Event.ArrowClicked();
             e.arrow_id = this.cameras.cameras.indexOf(newCamera);
             e.send();
 
@@ -159,7 +159,7 @@ CameraSelecter.prototype.clickPointer = function(event) {
         } else if (newCamera instanceof Coin) {
 
             // Coin found, notify server
-            e = new BD.Event.CoinClicked();
+            e = new L3D.BD.Event.CoinClicked();
             e.coin_id = this.coins.indexOf(newCamera);
             e.send();
             newCamera.get();

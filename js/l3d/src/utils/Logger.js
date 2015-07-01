@@ -1,9 +1,9 @@
-var BD = {};
+L3D.BD = {};
 
-BD.Private = {};
+L3D.BD.Private = {};
 
-BD.Private.sendData = function(url, data) {
-    if (BD.Private.enabled) {
+L3D.BD.Private.sendData = function(url, data) {
+    if (L3D.BD.Private.enabled) {
         // Append time to data
         data.time = Date.now() / 1000;
 
@@ -21,17 +21,17 @@ BD.Private.sendData = function(url, data) {
     }
 };
 
-BD.Private.enabled = true;
+L3D.BD.Private.enabled = true;
 
-BD.enable = function() {
-    BD.Private.enabled = true;
+L3D.BD.enable = function() {
+    L3D.BD.Private.enabled = true;
 };
 
-BD.disable = function() {
-    BD.Private.enabled = false;
+L3D.BD.disable = function() {
+    L3D.BD.Private.enabled = false;
 };
 
-BD.Private.compactCamera = function(camera) {
+L3D.BD.Private.compactCamera = function(camera) {
     return {
         position: {
             x: camera.position.x,
@@ -46,71 +46,71 @@ BD.Private.compactCamera = function(camera) {
     };
 };
 
-BD.Event = {};
+L3D.BD.Event = {};
 
-BD.Event.ArrowClicked = function() {};
-BD.Event.ArrowClicked.prototype.send = function() {
+L3D.BD.Event.ArrowClicked = function() {};
+L3D.BD.Event.ArrowClicked.prototype.send = function() {
     var url = "/arrow-clicked";
     var data = {arrow_id: this.arrow_id};
-    BD.Private.sendData(url, data);
+    L3D.BD.Private.sendData(url, data);
 };
 
-BD.Event.CoinClicked = function() {};
-BD.Event.CoinClicked.prototype.send = function() {
+L3D.BD.Event.CoinClicked = function() {};
+L3D.BD.Event.CoinClicked.prototype.send = function() {
     var url = "/coin-clicked";
     var data = {coin_id: this.coin_id};
-    BD.Private.sendData(url, data);
+    L3D.BD.Private.sendData(url, data);
 };
 
-BD.Event.KeyboardEvent = function() {};
-BD.Event.KeyboardEvent.prototype.send = function() {
+L3D.BD.Event.KeyboardEvent = function() {};
+L3D.BD.Event.KeyboardEvent.prototype.send = function() {
     var url = "/keyboard-event";
 
     var data = {
-        camera: BD.Private.compactCamera(this.camera)
+        camera: L3D.BD.Private.compactCamera(this.camera)
     };
 
-    BD.Private.sendData(url, data);
+    L3D.BD.Private.sendData(url, data);
 };
 
-BD.Event.ResetClicked = function() {};
-BD.Event.ResetClicked.prototype.send = function() {
+L3D.BD.Event.ResetClicked = function() {};
+L3D.BD.Event.ResetClicked.prototype.send = function() {
     var url = "/reset-clicked";
     var data = {};
-    BD.Private.sendData(url, data);
+    L3D.BD.Private.sendData(url, data);
 };
 
-BD.Event.PreviousNextClicked = function() {};
-BD.Event.PreviousNextClicked.prototype.send = function() {
+L3D.BD.Event.PreviousNextClicked = function() {};
+L3D.BD.Event.PreviousNextClicked.prototype.send = function() {
     var url = "/previous-next-clicked";
     var data = {
         // casts previous to boolean
         previous: this.previous,
-        camera: BD.Private.compactCamera(this.camera)
+        camera: L3D.BD.Private.compactCamera(this.camera)
     };
 
-    BD.Private.sendData(url, data);
+    L3D.BD.Private.sendData(url, data);
 };
 
-BD.Event.Hovered = function() {};
-BD.Event.Hovered.prototype.send = function() {
+L3D.BD.Event.Hovered = function() {};
+L3D.BD.Event.Hovered.prototype.send = function() {
     var url = "/hovered";
     var data = {
         start: this.start,
         arrow_id: this.arrow_id
     };
 
-    BD.Private.sendData(url, data);
+    L3D.BD.Private.sendData(url, data);
 };
 
-BD.Event.Fps = function() {};
-BD.Event.Fps.prototype.send = function() {
+L3D.BD.Event.Fps = function() {};
+L3D.BD.Event.Fps.prototype.send = function() {
 
     var url = "/fps";
     var data = {
         fps: this.fps
     };
 
-    BD.Private.sendData(url, data);
+    L3D.BD.Private.sendData(url, data);
 
 };

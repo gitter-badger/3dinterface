@@ -1,6 +1,6 @@
-var Hermite = {};
+L3D.Hermite = {};
 
-Hermite.Polynom = function(t, f, fp) {
+L3D.Hermite.Polynom = function(t, f, fp) {
     this.times = t;
     this.evals = f;
     this.primes = fp;
@@ -8,15 +8,15 @@ Hermite.Polynom = function(t, f, fp) {
     this.baseFunctions = [];
 
     for (var i in this.times) {
-        this.baseFunctions.push(new Hermite.BaseFunction(i, this.times));
+        this.baseFunctions.push(new L3D.Hermite.BaseFunction(i, this.times));
     }
 
     // Let's do something at least a little reusable
     this.tools = {};
     if (f[0] instanceof THREE.Vector3) {
         this.tools.whatType = 'THREE.Vector3';
-        this.tools.sum  = Tools.sum;
-        this.tools.prod = Tools.mul;
+        this.tools.sum  = L3D.Tools.sum;
+        this.tools.prod = L3D.Tools.mul;
     } else {
         this.tools.whatType = 'number';
         this.tools.sum  = function(a, b) { return a + b;  };
@@ -24,7 +24,7 @@ Hermite.Polynom = function(t, f, fp) {
     }
 };
 
-Hermite.Polynom.prototype.eval = function(t) {
+L3D.Hermite.Polynom.prototype.eval = function(t) {
     var ret;
 
     if (this.tools.whatType === 'THREE.Vector3') {
@@ -67,7 +67,7 @@ Hermite.Polynom.prototype.eval = function(t) {
     return ret;
 };
 
-Hermite.Polynom.prototype.prime = function(t) {
+L3D.Hermite.Polynom.prototype.prime = function(t) {
     var ret;
 
     if (this.tools.whatType === 'THREE.Vector3') {
@@ -141,12 +141,12 @@ Hermite.Polynom.prototype.prime = function(t) {
     return ret;
 };
 
-Hermite.BaseFunction = function(index, times) {
+L3D.Hermite.BaseFunction = function(index, times) {
     this.index = index;
     this.times = times;
 };
 
-Hermite.BaseFunction.prototype.eval = function(t) {
+L3D.Hermite.BaseFunction.prototype.eval = function(t) {
     var ret = 1;
 
     for (var i in this.times) {
@@ -158,7 +158,7 @@ Hermite.BaseFunction.prototype.eval = function(t) {
     return ret * ret;
 };
 
-Hermite.BaseFunction.prototype.prime = function(t) {
+L3D.Hermite.BaseFunction.prototype.prime = function(t) {
     var ret = 0;
 
     for (var i in this.times) {
@@ -170,16 +170,16 @@ Hermite.BaseFunction.prototype.prime = function(t) {
     return this.eval(t) * ret;
 };
 
-Hermite.special = {};
+L3D.Hermite.special = {};
 
 // This polynom interpolates with two coords and one derivative
 // t = [0,1]
-Hermite.special.Polynom = function(P0, P1, PP1) {
+L3D.Hermite.special.Polynom = function(P0, P1, PP1) {
     this.tools = {};
     if (P0 instanceof THREE.Vector3) {
-        this.tools.sum = Tools.sum;
-        this.tools.mul = Tools.mul;
-        this.tools.diff = Tools.diff;
+        this.tools.sum = L3D.Tools.sum;
+        this.tools.mul = L3D.Tools.mul;
+        this.tools.diff = L3D.Tools.diff;
         this.c = P0.clone();
     } else {
         this.tools.sum = function(a,b) { return a+b; };
@@ -192,10 +192,10 @@ Hermite.special.Polynom = function(P0, P1, PP1) {
     this.b = this.tools.diff(this.tools.mul(this.tools.diff(P1,P0), 2), PP1);
 };
 
-Hermite.special.Polynom.prototype.eval = function(t) {
+L3D.Hermite.special.Polynom.prototype.eval = function(t) {
     return this.tools.sum(this.tools.mul(this.a, t*t), this.tools.sum(this.tools.mul(this.b, t), this.c));
 };
 
-Hermite.special.Polynom.prototype.prime = function(t) {
+L3D.Hermite.special.Polynom.prototype.prime = function(t) {
     return this.tools.sum(this.tools.mul(this.a,2*t), this.b);
 };

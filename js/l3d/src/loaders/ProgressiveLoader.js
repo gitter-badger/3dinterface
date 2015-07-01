@@ -1,4 +1,4 @@
-var _parseList = function(arr) {
+L3D._parseList = function(arr) {
 
     var ret = {};
     ret.index = arr[1];
@@ -63,7 +63,7 @@ var _parseList = function(arr) {
     return ret;
 };
 
-var ProgressiveLoader = function(path, scene, camera, callback) {
+L3D.ProgressiveLoader = function(path, scene, camera, callback) {
     // Init attributes
     this.objPath = path.substring(1, path.length);
     this.texturesPath = path.substring(0, path.lastIndexOf('/')) + '/';
@@ -91,7 +91,7 @@ var ProgressiveLoader = function(path, scene, camera, callback) {
 
 };
 
-ProgressiveLoader.prototype.load = function() {
+L3D.ProgressiveLoader.prototype.load = function() {
 
     var self = this;
 
@@ -106,7 +106,7 @@ ProgressiveLoader.prototype.load = function() {
     });
 };
 
-ProgressiveLoader.prototype.initIOCallbacks = function() {
+L3D.ProgressiveLoader.prototype.initIOCallbacks = function() {
 
     var self = this;
 
@@ -280,7 +280,7 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
     });
 };
 
-ProgressiveLoader.prototype.start = function() {
+L3D.ProgressiveLoader.prototype.start = function() {
     this.socket.emit('request', this.objPath);
 };
 

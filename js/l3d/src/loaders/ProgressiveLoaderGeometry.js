@@ -2,7 +2,7 @@
  * Parse a list as it is sent by the server and gives a slightly more comprehensible result
  * @private
  */
-var _parseList2 = function(arr) {
+L3D._parseList2 = function(arr) {
 
     var ret = {};
     ret.index = arr[1];
@@ -77,8 +77,9 @@ var _parseList2 = function(arr) {
  * order)
  * @param {function} callback callback to call on the objects when they're created
  * @constructor
+ * @memberOf L3D
  */
-var ProgressiveLoaderGeometry = function(path, scene, camera, callback) {
+L3D.ProgressiveLoaderGeometry = function(path, scene, camera, callback) {
 
     /**
      * Path to the .obj file
@@ -180,7 +181,7 @@ var ProgressiveLoaderGeometry = function(path, scene, camera, callback) {
 /**
  * Starts the loading of the mesh
  */
-ProgressiveLoaderGeometry.prototype.load = function() {
+L3D.ProgressiveLoaderGeometry.prototype.load = function() {
 
     var self = this;
 
@@ -198,7 +199,7 @@ ProgressiveLoaderGeometry.prototype.load = function() {
 /**
  * Will return a list representation of the camera (to be sent to the server)
  */
-ProgressiveLoaderGeometry.prototype.getCamera = function() {
+L3D.ProgressiveLoaderGeometry.prototype.getCamera = function() {
     if (this.camera === null)
         return null;
 
@@ -208,7 +209,7 @@ ProgressiveLoaderGeometry.prototype.getCamera = function() {
 /**
  * Initializes the socket.io functions so that it can discuss with the server
  */
-ProgressiveLoaderGeometry.prototype.initIOCallbacks = function() {
+L3D.ProgressiveLoaderGeometry.prototype.initIOCallbacks = function() {
 
     var self = this;
 
@@ -233,7 +234,7 @@ ProgressiveLoaderGeometry.prototype.initIOCallbacks = function() {
         // console.log("Received elements for the " + (++self.counter) + "th time !");
         for (var i = 0; i < arr.length; i++) {
 
-            var elt = _parseList2(arr[i]);
+            var elt = L3D._parseList2(arr[i]);
 
             // console.log(elts);
             if (elt.type === 'vertex') {
@@ -371,7 +372,7 @@ ProgressiveLoaderGeometry.prototype.initIOCallbacks = function() {
 /**
  * Starts the communication with the server
  */
-ProgressiveLoaderGeometry.prototype.start = function() {
+L3D.ProgressiveLoaderGeometry.prototype.start = function() {
     this.socket.emit('request', this.objPath);
 };
 

@@ -1,7 +1,6 @@
-// Define RecommendedCamera if not defined
-var RecommendedCamera = RecommendedCamera || FixedCamera;
+var Recommendation = Recommendation || L3D.ArrowRecommendation;
 
-function addLight(scene) {
+L3D.addLight = function(scene) {
     var directional_light = new THREE.DirectionalLight(0xdddddd);
     directional_light.position.set(1, 2.5, 1).normalize();
     directional_light.castShadow = false;
@@ -11,9 +10,9 @@ function addLight(scene) {
     scene.add(ambient_light);
 }
 
-function initPeachCastle(scene, collidableObjects, camera) {
+L3D.initPeachCastle = function(scene, collidableObjects, camera) {
 
-    var loader = new ProgressiveLoaderGeometry(
+    var loader = new L3D.ProgressiveLoaderGeometry(
         '/static/data/castle/princess peaches castle (outside).obj',
         scene,
         null,
@@ -36,20 +35,20 @@ function initPeachCastle(scene, collidableObjects, camera) {
     loader.obj.raycastable = true;
 }
 
-function resetPeachElements() {
+L3D.resetPeachElements = function() {
     return {
         position: new THREE.Vector3(0.24120226734236713,0.2009624547018851,-0.5998422840047036),
         target: new THREE.Vector3(0.24120226734232672,0.20096245470190008,-40.5998422840047)
     };
 }
 
-function initPeach(camera, scene, coins) {
-    addLight(scene);
+L3D.initPeach = function(camera, scene, coins) {
+    L3D.addLight(scene);
 
     var collidableObjects = [];
-    initPeachCastle(scene, collidableObjects, camera);
+    L3D.initPeachCastle(scene, collidableObjects, camera);
 
-    camera.resetElements = resetPeachElements();
+    camera.resetElements = L3D.resetPeachElements();
     camera.collidableObjects = collidableObjects;
 
     camera.speed = 0.001;
@@ -60,12 +59,12 @@ function initPeach(camera, scene, coins) {
 
     Coin.init(0.001);
     var otherCams = [];
-    var cameras = new CameraContainer(camera, otherCams);
+    var cameras = new L3D.CameraContainer(camera, otherCams);
 
     return cameras;
 }
 
-function initZeldaScene(scene, collidableObjects, loader) {
+L3D.initZeldaScene = function(scene, collidableObjects, loader) {
     // Create loader if not already done
     if (loader === undefined) {
         loader = new THREE.OBJMTLLoader();
@@ -94,11 +93,11 @@ function initZeldaScene(scene, collidableObjects, loader) {
 }
 
 
-function createPeachCameras(width, height) {
+L3D.createPeachCameras = function(width, height) {
     var cams = [];
 
     var createCamera = function(position, target) {
-        return new RecommendedCamera(
+        return new Recommendation(
             50,
             width / height,
             1,
@@ -121,8 +120,7 @@ function createPeachCameras(width, height) {
     cams.push(createCamera(
             new THREE.Vector3(2.625389073616235, 1.2252620948239699, -4.818718135555419),
             new THREE.Vector3(-19.756833131355208, -16.20027570329664, -33.02132017177813)
-    ));ader = new THREE.MTLLoader('/static/data/bobomb/');
-    // loader.
+    ));
 
     // cams.push(createCamera(
     //         new THREE.Vector3(1.3304975149911331, 0.4836093721106701, -8.60618907952783),
@@ -154,9 +152,9 @@ function createPeachCameras(width, height) {
     return cams;
 }
 
-function initBobombScene(scene, collidableObjects, camera) {
+L3D.initBobombScene = function(scene, collidableObjects, camera) {
 
-    var loader = new ProgressiveLoaderGeometry(
+    var loader = new L3D.ProgressiveLoaderGeometry(
         '/static/data/bobomb/bobomb battlefeild.obj',
         scene,
         null,
@@ -178,14 +176,14 @@ function initBobombScene(scene, collidableObjects, camera) {
 
 }
 
-function resetBobombElements() {
+L3D.resetBobombElements = function() {
     return {
         position: new THREE.Vector3(38.115627509754646,10.829803024792419,-19.862035691341315),
         target: new THREE.Vector3(-1.4518898576752122,5.048214777643772,-18.869661407832535)
     };
 }
 
-function createBobombCoins() {
+L3D.createBobombCoins = function() {
     var coins = [];
 
     coins.push(
@@ -202,11 +200,11 @@ function createBobombCoins() {
     return coins;
 }
 
-function createBobombCameras(width, height) {
+L3D.createBobombCameras = function(width, height) {
     var cams = [];
 
     var createCamera = function(position, target) {
-        return new RecommendedCamera(
+        return new Recommendation(
             50,
             width / height,
             1,
@@ -267,13 +265,13 @@ function createBobombCameras(width, height) {
 
 }
 
-function initBobomb(camera, scene, coins) {
-    addLight(scene);
+L3D.initBobomb = function(camera, scene, coins) {
+    L3D.addLight(scene);
 
     var collidableObjects = [];
-    initBobombScene(scene, collidableObjects, camera);
+    L3D.initBobombScene(scene, collidableObjects, camera);
 
-    camera.resetElements = resetBobombElements();
+    camera.resetElements = L3D.resetBobombElements();
     camera.collidableObjects = collidableObjects;
 
     camera.speed = 0.005;
@@ -283,14 +281,14 @@ function initBobomb(camera, scene, coins) {
     scene.add(camera);
 
     Coin.init();
-    var tmp = createBobombCoins();
+    var tmp = L3D.createBobombCoins();
 
     for (var i in tmp) {
         coins.push(tmp[i]);
     }
 
-    var otherCams = createBobombCameras(container_size.width(), container_size.height());
-    var cameras = new CameraContainer(camera, otherCams);
+    var otherCams = L3D.createBobombCameras(container_size.width(), container_size.height());
+    var cameras = new L3D.CameraContainer(camera, otherCams);
 
     otherCams.forEach(function(cam) {cam.addToScene(scene);});
 
@@ -299,9 +297,9 @@ function initBobomb(camera, scene, coins) {
     return cameras;
 }
 
-function initWhompScene(scene, collidableObjects, camera) {
+L3D.initWhompScene = function(scene, collidableObjects, camera) {
 
-    var loader = new ProgressiveLoaderGeometry(
+    var loader = new L3D.ProgressiveLoaderGeometry(
         '/static/data/whomp/Whomps Fortress.obj',
         scene,
         null,
@@ -353,11 +351,11 @@ function initWhompScene(scene, collidableObjects, camera) {
     loader.obj.raycastable = true;
 }
 
-function createWhompCameras(width, height) {
+L3D.createWhompCameras = function(width, height) {
     var cams = [];
 
     var createCamera = function(position, target) {
-        return new RecommendedCamera(
+        return new Recommendation(
             50,
             width / height,
             1,
@@ -419,7 +417,7 @@ function createWhompCameras(width, height) {
     return cams;
 }
 
-function createWhompCoins() {
+L3D.createWhompCoins = function() {
     return [
         new Coin(-5.529176900669821,2.886514571524507,4.127968972716147),
         new Coin(-3.336263561768484,9.341710952326468,1.0230063543998414),
@@ -432,20 +430,20 @@ function createWhompCoins() {
     ];
 }
 
-function resetWhompElements() {
+L3D.resetWhompElements = function() {
     return {
         position : new THREE.Vector3(-6.725817925071645,1.4993570618328055,-10.356480813212423),
         target : new THREE.Vector3(-4.8541705829784604,1.3192268872752742,-6.825972443720941)
     };
 }
 
-function initWhomp(camera, scene, coins) {
-    addLight(scene);
+L3D.initWhomp = function(camera, scene, coins) {
+    L3D.addLight(scene);
 
     var collidableObjects = [];
-    initWhompScene(scene, collidableObjects, camera);
+    L3D.initWhompScene(scene, collidableObjects, camera);
 
-    camera.resetElements = resetWhompElements();
+    camera.resetElements = L3D.resetWhompElements();
     camera.collidableObjects = collidableObjects;
 
     camera.speed = 0.002;
@@ -455,14 +453,14 @@ function initWhomp(camera, scene, coins) {
     scene.add(camera);
 
     Coin.init(0.002);
-    var tmp = createWhompCoins();
+    var tmp = L3D.createWhompCoins();
 
     for (var i in tmp) {
         coins.push(tmp[i]);
     }
 
-    var otherCams = createWhompCameras(container_size.width(), container_size.height());
-    var cameras = new CameraContainer(camera, otherCams);
+    var otherCams = L3D.createWhompCameras(container_size.width(), container_size.height());
+    var cameras = new L3D.CameraContainer(camera, otherCams);
 
     otherCams.forEach(function(cam) {cam.addToScene(scene);});
 
@@ -471,9 +469,9 @@ function initWhomp(camera, scene, coins) {
     return cameras;
 }
 
-function initMountainScene(scene, collidableObjects, camera) {
+L3D.initMountainScene = function(scene, collidableObjects, camera) {
 
-    var loader = new ProgressiveLoaderGeometry(
+    var loader = new L3D.ProgressiveLoaderGeometry(
         '/static/data/mountain/coocoolmountain.obj',
         scene,
         null,
@@ -503,7 +501,7 @@ function initMountainScene(scene, collidableObjects, camera) {
     collidableObjects.push(loader.obj);
 }
 
-function createMountainCoins() {
+L3D.createMountainCoins = function() {
     return [
         new Coin(-18.766484229298513,-6.174512332611151,16.379061147364553),
         new Coin(-22.48878786991581,-17.698282433679474,1.6030258853572397),
@@ -516,11 +514,11 @@ function createMountainCoins() {
     ];
 }
 
-function createMountainCameras(width, height) {
+L3D.createMountainCameras = function(width, height) {
     var cams = [];
 
     var createCamera = function(position, target) {
-        return new RecommendedCamera(
+        return new Recommendation(
             50,
             width / height,
             1,
@@ -584,20 +582,20 @@ function createMountainCameras(width, height) {
     return cams;
 }
 
-function resetMountainElements() {
+L3D.resetMountainElements = function() {
     return {
         position : new THREE.Vector3(-20.558328115300082,23.601312087942762,-10.220633604814038),
         target : new THREE.Vector3(11.025356711105232,11.969889531789319,11.393733425161644)
     };
 }
 
-function initMountain(camera, scene, coins) {
-    addLight(scene);
+L3D.initMountain = function(camera, scene, coins) {
+    L3D.addLight(scene);
 
     var collidableObjects = [];
-    initMountainScene(scene, collidableObjects, camera);
+    L3D.initMountainScene(scene, collidableObjects, camera);
 
-    camera.resetElements = resetMountainElements();
+    camera.resetElements = L3D.resetMountainElements();
     camera.collidableObjects = collidableObjects;
 
     camera.speed = 0.005;
@@ -607,14 +605,14 @@ function initMountain(camera, scene, coins) {
     scene.add(camera);
 
     Coin.init();
-    var tmp = createMountainCoins();
+    var tmp = L3D.createMountainCoins();
 
     for (var i in tmp) {
         coins.push(tmp[i]);
     }
 
-    var otherCams = createMountainCameras(container_size.width(), container_size.height());
-    var cameras = new CameraContainer(camera, otherCams);
+    var otherCams = L3D.createMountainCameras(container_size.width(), container_size.height());
+    var cameras = new L3D.CameraContainer(camera, otherCams);
 
     otherCams.forEach(function(cam) {cam.addToScene(scene);});
 
@@ -622,20 +620,25 @@ function initMountain(camera, scene, coins) {
     return cameras;
 }
 
-function initSponzaScene(scene, collidableObjects, camera) {
+L3D.initSponzaScene = function(scene, collidableObjects, camera) {
 
-    var loader = new ProgressiveLoaderGeometry('/static/data/sponza/sponza.obj', scene, camera, function(obj) {
-        if (obj.material.name === 'chain' ||
-            obj.material.name === 'leaf'  ||
-            obj.material.name === 'Material__57') {
+    var loader = new L3D.ProgressiveLoaderGeometry(
+        '/static/data/sponza/sponza.obj',
+        scene,
+        camera,
+        function(obj) {
+            if (obj.material.name === 'chain' ||
+                obj.material.name === 'leaf'  ||
+                obj.material.name === 'Material__57') {
 
-            THREEx.Transparency.push(obj);
+                THREEx.Transparency.push(obj);
+
+            }
+
+            obj.raycastable = true;
 
         }
-
-        obj.raycastable = true;
-
-    });
+    );
 
     l = loader;
     loader.load();
@@ -685,29 +688,29 @@ function initSponzaScene(scene, collidableObjects, camera) {
 
 }
 
-function createSponzaCoins() {
+L3D.createSponzaCoins = function() {
     return [];
 }
 
-function createSponzaCameras() {
+L3D.createSponzaCameras = function() {
     return [];
 }
 
-function resetSponzaElements() {
+L3D.resetSponzaElements = function() {
     return {
         position: new THREE.Vector3(92.98373669520107,60.8877777990862,11.130138641670737),
         target: new THREE.Vector3(53.76696417668598,56.09739213575453,4.877382575136091)
     };
 }
 
-function initSponza(camera, scene, coins) {
+L3D.initSponza = function(camera, scene, coins) {
 
-    addLight(scene);
+    L3D.addLight(scene);
 
     var collidableObjects = [];
-    initSponzaScene(scene, collidableObjects, camera);
+    L3D.initSponzaScene(scene, collidableObjects, camera);
 
-    camera.resetElements = resetSponzaElements();
+    camera.resetElements = L3D.resetSponzaElements();
     camera.collidableObjects = collidableObjects;
 
     camera.speed = 0.05;
@@ -717,14 +720,14 @@ function initSponza(camera, scene, coins) {
     scene.add(camera);
 
     Coin.init();
-    var tmp = createSponzaCoins();
+    var tmp = L3D.createSponzaCoins();
 
     for (var i in tmp) {
         coins.push(tmp[i]);
     }
 
-    var otherCams = createSponzaCameras(container_size.width(), container_size.height());
-    var cameras = new CameraContainer(camera, otherCams);
+    var otherCams = L3D.createSponzaCameras(container_size.width(), container_size.height());
+    var cameras = new L3D.CameraContainer(camera, otherCams);
 
     otherCams.forEach(function(cam) {cam.addToScene(scene);});
 

@@ -41,7 +41,7 @@ var TutoCamera = function() {
     this.raycaster = new THREE.Raycaster();
 
     // Create history object
-    this.history = new History();
+    this.history = new L3D.History();
 
     // Set events from the document
     var self = this;
@@ -74,8 +74,6 @@ var TutoCamera = function() {
     });
 
     this.collisions = true;
-
-    this.resetElements = resetBobombElements();
 
     // Create tutorial
     this.tutorial = new TutorialSteps(this, scene, coins, this.onWindowResize, container_size);
@@ -169,14 +167,14 @@ TutoCamera.prototype.update = function(time) {
 };
 
 TutoCamera.prototype.linearMotion = function(time) {
-    var position_direction = Tools.diff(this.new_position, this.position);
-    var target_direction = Tools.diff(this.new_target, this.target);
+    var position_direction = L3D.Tools.diff(this.new_position, this.position);
+    var target_direction = L3D.Tools.diff(this.new_target, this.target);
 
-    this.position.add(Tools.mul(position_direction, 0.05 * time / 20));
-    this.target.add(Tools.mul(target_direction, 0.05 * time / 20));
+    this.position.add(L3D.Tools.mul(position_direction, 0.05 * time / 20));
+    this.target.add(L3D.Tools.mul(target_direction, 0.05 * time / 20));
 
-    if (Tools.norm2(Tools.diff(this.position, this.new_position)) < 0.01 &&
-        Tools.norm2(Tools.diff(this.target, this.new_target))  < 0.01) {
+    if (L3D.Tools.norm2(L3D.Tools.diff(this.position, this.new_position)) < 0.01 &&
+        L3D.Tools.norm2(L3D.Tools.diff(this.target, this.new_target))  < 0.01) {
         this.moving = false;
     this.anglesFromVectors();
     }
@@ -188,7 +186,7 @@ TutoCamera.prototype.hermiteMotion = function(time) {
     this.position.y = e.y;
     this.position.z = e.z;
 
-    this.target = Tools.sum(this.position, this.hermiteAngles.eval(this.t));
+    this.target = L3D.Tools.sum(this.position, this.hermiteAngles.eval(this.t));
 
     this.t += 0.01 * time / 20;
 
@@ -238,18 +236,18 @@ TutoCamera.prototype.normalMotion = function(time) {
     var direction = new THREE.Vector3();
 
     if (this.motion.boost) speed *= 10;
-    if (this.motion.moveForward)  {direction.add(Tools.mul(forward, speed)); this.changed = true;}
-    if (this.motion.moveBackward) {direction.sub(Tools.mul(forward, speed)); this.changed = true;}
-    if (this.motion.moveLeft)     {direction.add(Tools.mul(left,    speed)); this.changed = true;}
-    if (this.motion.moveRight)    {direction.sub(Tools.mul(left,    speed)); this.changed = true;}
+    if (this.motion.moveForward)  {direction.add(L3D.Tools.mul(forward, speed)); this.changed = true;}
+    if (this.motion.moveBackward) {direction.sub(L3D.Tools.mul(forward, speed)); this.changed = true;}
+    if (this.motion.moveLeft)     {direction.add(L3D.Tools.mul(left,    speed)); this.changed = true;}
+    if (this.motion.moveRight)    {direction.sub(L3D.Tools.mul(left,    speed)); this.changed = true;}
 
     var collide = this.isColliding(direction);
     if (this.collisions && collide) {
         var face = collide.face;
         var vertices = collide.object.geometry.vertices;
-        var normal = Tools.cross(Tools.diff(vertices[face.b], vertices[face.a]), Tools.diff(vertices[face.c], vertices[face.a])).normalize();
+        var normal = L3D.Tools.cross(L3D.Tools.diff(vertices[face.b], vertices[face.a]), L3D.Tools.diff(vertices[face.c], vertices[face.a])).normalize();
 
-        if (Tools.dot(normal, direction) > 0) {
+        if (L3D.Tools.dot(normal, direction) > 0) {
             normal.multiplyScalar(-1);
         }
 
@@ -272,7 +270,7 @@ TutoCamera.prototype.reset = function() {
     this.resetPosition();
     this.moving = false;
     this.movingHermite = false;
-    (new BD.Event.ResetClicked()).send();
+    (new L3D.BD.Event.ResetClicked()).send();
 
     this.previousTheta = this.theta;
     this.previousPhi = this.phi;
@@ -296,7 +294,7 @@ TutoCamera.prototype.vectorsFromAngles = function() {
 };
 
 TutoCamera.prototype.anglesFromVectors = function() {
-    var forward = Tools.diff(this.target, this.position);
+    var forward = L3D.Tools.diff(this.target, this.position);
     forward.normalize();
 
     this.phi = Math.asin(forward.y);
@@ -315,8 +313,8 @@ TutoCamera.prototype.move = function(otherCamera, toSave) {
     this.new_position = otherCamera.position.clone();
     var t = [0,1];
     var f = [this.position.clone(), this.new_position];
-    var fp = [Tools.diff(this.target, this.position), Tools.diff(this.new_target, this.new_position)];
-    this.hermite = new Hermite.Polynom(t,f,fp);
+    var fp = [L3D.Tools.diff(this.target, this.position), L3D.Tools.diff(this.new_target, this.new_position)];
+    this.hermite = new L3D.Hermite.Polynom(t,f,fp);
     this.t = 0;
 
     if (toSave) {
@@ -339,15 +337,15 @@ TutoCamera.prototype.moveHermite = function(otherCamera, toSave) {
     this.movingHermite = true;
     this.t = 0;
 
-    this.hermitePosition = new Hermite.special.Polynom(
+    this.hermitePosition = new L3D.Hermite.special.Polynom(
         this.position.clone(),
         otherCamera.position.clone(),
-        Tools.mul(Tools.diff(otherCamera.target, otherCamera.position).normalize(),4)
+        L3D.Tools.mul(L3D.Tools.diff(otherCamera.target, otherCamera.position).normalize(),4)
     );
 
-    this.hermiteAngles = new Hermite.special.Polynom(
-        Tools.diff(this.target, this.position),
-        Tools.diff(otherCamera.target, otherCamera.position),
+    this.hermiteAngles = new L3D.Hermite.special.Polynom(
+        L3D.Tools.diff(this.target, this.position),
+        L3D.Tools.diff(otherCamera.target, otherCamera.position),
         new THREE.Vector3()
     );
 
@@ -365,7 +363,7 @@ TutoCamera.prototype.isColliding = function(direction) {
     var intersects = this.raycaster.intersectObjects(this.collidableObjects, true);
 
     for (var i in intersects) {
-        if (intersects[i].distance < Tools.norm(direction) + this.speed * 300 &&
+        if (intersects[i].distance < L3D.Tools.norm(direction) + this.speed * 300 &&
             intersects[i].object.raycastable) {
             return intersects[i];
         }
@@ -430,7 +428,7 @@ TutoCamera.prototype.onKeyEvent = function(event, toSet) {
 
     if (motionJsonCopy != JSON.stringify(this.motion)) {
         // Log any change
-        var e = new BD.Event.KeyboardEvent();
+        var e = new L3D.BD.Event.KeyboardEvent();
         e.camera = this;
         e.send();
     }
@@ -498,7 +496,7 @@ TutoCamera.prototype.onMouseUp = function(event) {
 
     // Send log to DB
     if (this.dragging && this.mouseMoved && !this.moving && !this.movingHermite) {
-        var e = new BD.Event.KeyboardEvent();
+        var e = new L3D.BD.Event.KeyboardEvent();
         e.camera = this;
         e.send();
     }
@@ -521,7 +519,7 @@ TutoCamera.prototype.save = function() {
 TutoCamera.prototype.undo = function() {
     var move = this.history.undo();
     if (move !== undefined) {
-        var event = new BD.Event.PreviousNextClicked();
+        var event = new L3D.BD.Event.PreviousNextClicked();
         event.previous = true;
         event.camera = move;
         event.send();
@@ -533,7 +531,7 @@ TutoCamera.prototype.undo = function() {
 TutoCamera.prototype.redo = function() {
     var move = this.history.redo();
     if (move !== undefined) {
-        var event = new BD.Event.PreviousNextClicked();
+        var event = new L3D.BD.Event.PreviousNextClicked();
         event.previous = false;
         event.camera = move;
         event.send();

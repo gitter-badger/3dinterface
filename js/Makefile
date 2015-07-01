@@ -10,9 +10,9 @@ all: L3D L3DP Socket Three Stats Bouncing Multisphere StreamingSimulator Prototy
 
 L3D:
 	$(CLOSURE) $(OPT) \
+		--js l3d/src/l3d.js \
 		--js l3d/src/math/Tools.js \
 		--js l3d/src/math/Hermite.js \
-		--js l3d/src/utils/List.js \
 		--js l3d/src/utils/CameraSelecter.js \
 		--js l3d/src/utils/Logger.js \
 		--js l3d/src/utils/Objects.js \

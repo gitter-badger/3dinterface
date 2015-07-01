@@ -36,7 +36,7 @@ function init() {
     scene = new THREE.Scene();
 
     // Disable log for this time
-    BD.disable();
+    L3D.BD.disable();
 
     // Collidable objects to prevent camera from traversing objects
     var collidableObjects = [];
@@ -52,7 +52,7 @@ function init() {
     renderer.setClearColor(0x87ceeb);
 
     // Initialize previewer
-    previewer = new Previewer(renderer, scene);
+    previewer = new L3D.Previewer(renderer, scene);
     previewer.domElement.style.position ="absolute";
     previewer.domElement.style.cssFloat = 'top-left';
     previewer.domElement.width = container_size.width();
@@ -67,12 +67,12 @@ function init() {
     var camera1 = new TutoCamera(50, container_size.width() / container_size.height(), 0.01, 100000, renderer, scene, onWindowResize, container_size, coins, container);
 
     // Initialize pointer for pointer lock
-    var pointer = new MousePointer(camera1);
+    var pointer = new L3D.MousePointer(camera1);
     pointer.domElement.width = container_size.width();
     pointer.domElement.height = container_size.height();
 
     //
-    var startCanvas = new StartCanvas(camera1);
+    var startCanvas = new L3D.StartCanvas(camera1);
     startCanvas.domElement.width = container_size.width();
     startCanvas.domElement.height = container_size.height();
     startCanvas.render();
@@ -88,11 +88,11 @@ function init() {
     // Initialize pointer camera
     tutorial = camera1.tutorial;
 
-    cameras = new CameraContainer(camera1, []);
+    cameras = new L3D.CameraContainer(camera1, []);
     tutorial.setCameras(cameras);
 
     // Load peach scene
-    initPeach(camera1, scene);
+    L3D.initPeach(camera1, scene);
 
     initListeners();
 
@@ -124,7 +124,7 @@ function initListeners() {
     buttonManager = new ButtonManager(cameras, previewer);
 
     // Camera selecter for hover and clicking recommendations
-    cameraSelecter = new CameraSelecter(renderer, scene, cameras, coins, buttonManager);
+    cameraSelecter = new L3D.CameraSelecter(renderer, scene, cameras, coins, buttonManager);
 }
 
 
@@ -134,7 +134,7 @@ function render() {
     // Update recommendations (set raycastable if shown)
     var transform = buttonManager.showArrows ? show : hide;
     cameras.map(function(camera) {
-        if (camera instanceof RecommendedCamera) {
+        if (camera instanceof Recommendation) {
             transform(camera);
 
             camera.traverse(function(elt) {
@@ -168,7 +168,7 @@ function render() {
     previewer.clear();
 
     // Hide arrows in recommendation
-    cameras.map(function(camera) { if (camera instanceof RecommendedCamera) hide(camera); });
+    cameras.map(function(camera) { if (camera instanceof Recommendation) hide(camera); });
 
     // Render preview
     previewer.render(cameraSelecter.prev, container_size.width(), container_size.height());

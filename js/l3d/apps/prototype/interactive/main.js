@@ -44,7 +44,7 @@ var previousTime;
 
 window.onbeforeunload = function() {
 
-    if (initMainScene !== initPeach && initMainScene !== initSponza && Coin.total !== 9) {
+    if (initMainScene !== L3D.initPeach && initMainScene !== L3D.initSponza && Coin.total !== 9) {
 
         return 'Warning : you are going to leave the page and abort the current test !';
 
@@ -54,7 +54,7 @@ window.onbeforeunload = function() {
 
 
 init();
-if (initMainScene !== initPeach && initMainScene !== initSponza)
+if (initMainScene !== L3D.initPeach && initMainScene !== L3D.initSponza)
     logfps();
 animate();
 
@@ -63,7 +63,7 @@ function logfps() {
     // Log fps
     if (stats !== undefined) {
 
-        var event = new BD.Event.Fps();
+        var event = new L3D.BD.Event.Fps();
         event.fps = stats.getFps();
         event.send();
 
@@ -90,10 +90,10 @@ function init() {
     renderer.setClearColor(0x87ceeb);
 
     // Initialize pointer camera
-    camera1 = new PointerCamera(50, container_size.width() / container_size.height(), 0.01, 100000, renderer, container);
+    camera1 = new L3D.PointerCamera(50, container_size.width() / container_size.height(), 0.01, 100000, renderer, container);
 
     // Initialize previewer
-    previewer = new Previewer(renderer, scene);
+    previewer = new L3D.Previewer(renderer, scene);
     previewer.domElement.style.position ="absolute";
     previewer.domElement.style.cssFloat = 'top-left';
     previewer.domElement.width = container_size.width();
@@ -106,12 +106,12 @@ function init() {
     stats.domElement.style.cssFloat = "top-left";
 
     // Initialize pointer for pointer lock
-    var pointer = new MousePointer(camera1);
+    var pointer = new L3D.MousePointer(camera1);
     pointer.domElement.width = container_size.width();
     pointer.domElement.height = container_size.height();
 
     //
-    var startCanvas = new StartCanvas(camera1);
+    var startCanvas = new L3D.StartCanvas(camera1);
     startCanvas.domElement.width = container_size.width();
     startCanvas.domElement.height = container_size.height();
 
@@ -126,11 +126,11 @@ function init() {
     startCanvas.render();
 
     cameras = initMainScene(camera1, scene, coins);
-    // cameras = initPeach(camera1, scene, coins);
-    // cameras = initBobomb(camera1, scene, coins);
-    // cameras = initWhomp(camera1, scene, , coins);
-    // cameras = initMountain(camera1, scene, coins);
-    // cameras = initSponza(camera1, scene, coins);
+    // cameras = L3D.initPeach(camera1, scene, coins);
+    // cameras = L3D.initBobomb(camera1, scene, coins);
+    // cameras = L3D.initWhomp(camera1, scene, , coins);
+    // cameras = L3D.initMountain(camera1, scene, coins);
+    // cameras = L3D.initSponza(camera1, scene, coins);
 
     // Add listeners
     initListeners();
@@ -168,7 +168,7 @@ function initListeners() {
     buttonManager = new ButtonManager(cameras, previewer);
 
     // Camera selecter for hover and clicking recommendations
-    cameraSelecter = new CameraSelecter(renderer, scene, cameras, coins, buttonManager);
+    cameraSelecter = new L3D.CameraSelecter(renderer, scene, cameras, coins, buttonManager);
 }
 
 function render() {
@@ -177,7 +177,7 @@ function render() {
     // Update recommendations (set raycastable if shown)
     var transform = buttonManager.showArrows ? show : hide;
     cameras.map(function(camera) {
-        if (camera instanceof RecommendedCamera) {
+        if (camera instanceof Recommendation) {
             transform(camera);
 
             camera.traverse(function(elt) {
@@ -211,7 +211,7 @@ function render() {
     previewer.clear();
 
     // Hide arrows in recommendation
-    cameras.map(function(camera) { if (camera instanceof RecommendedCamera) hide(camera); });
+    cameras.map(function(camera) { if (camera instanceof Recommendation) hide(camera); });
 
     // Update transparent elements
     THREEx.Transparency.update(cameras.mainCamera());

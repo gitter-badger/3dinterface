@@ -1,5 +1,5 @@
 // class camera extends THREE.PerspectiveCamera
-var ReplayCamera = function() {
+L3D.ReplayCamera = function() {
     THREE.PerspectiveCamera.apply(this, arguments);
 
     this.coins = arguments[4];
@@ -31,18 +31,16 @@ var ReplayCamera = function() {
     this.theta = Math.PI;
     this.phi = Math.PI;
 
-    this.resetElements = resetBobombElements();
-
 };
-ReplayCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
-ReplayCamera.prototype.constructor = ReplayCamera;
+L3D.ReplayCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
+L3D.ReplayCamera.prototype.constructor = L3D.ReplayCamera;
 
-ReplayCamera.prototype.look = function() {
+L3D.ReplayCamera.prototype.look = function() {
     this.lookAt(this.target);
 };
 
 // Update function
-ReplayCamera.prototype.update = function(time) {
+L3D.ReplayCamera.prototype.update = function(time) {
     if (this.started) {
         if (this.event.type == 'camera') {
             this.cameraMotion(time);
@@ -59,8 +57,8 @@ ReplayCamera.prototype.update = function(time) {
     }
 };
 
-ReplayCamera.prototype.linearMotion = function(time) {
-    var tmp = Tools.sum(Tools.mul(this.old_position, 1-this.t), Tools.mul(this.new_position, this.t));
+L3D.ReplayCamera.prototype.linearMotion = function(time) {
+    var tmp = L3D.Tools.sum(L3D.Tools.mul(this.old_position, 1-this.t), L3D.Tools.mul(this.new_position, this.t));
     this.position.x = tmp.x;
     this.position.y = tmp.y;
     this.position.z = tmp.z;
@@ -71,13 +69,13 @@ ReplayCamera.prototype.linearMotion = function(time) {
     }
 };
 
-ReplayCamera.prototype.cameraMotion = function(time) {
+L3D.ReplayCamera.prototype.cameraMotion = function(time) {
 
-    var tmp = Tools.sum(Tools.mul(this.old_position, 1-this.t), Tools.mul(this.new_position, this.t));
+    var tmp = L3D.Tools.sum(L3D.Tools.mul(this.old_position, 1-this.t), L3D.Tools.mul(this.new_position, this.t));
     this.position.x = tmp.x;
     this.position.y = tmp.y;
     this.position.z = tmp.z;
-    this.target = Tools.sum(Tools.mul(this.old_target, 1-this.t), Tools.mul(this.new_target, this.t));
+    this.target = L3D.Tools.sum(L3D.Tools.mul(this.old_target, 1-this.t), L3D.Tools.mul(this.new_target, this.t));
     this.t += 1 / (((new Date(this.path[this.counter].time)).getTime() - (new Date(this.path[this.counter-1].time)).getTime()) / 20);
 
     if (this.t > 1) {
@@ -85,13 +83,13 @@ ReplayCamera.prototype.cameraMotion = function(time) {
     }
 };
 
-ReplayCamera.prototype.hermiteMotion = function(time) {
+L3D.ReplayCamera.prototype.hermiteMotion = function(time) {
     var e = this.hermitePosition.eval(this.t);
     this.position.x = e.x;
     this.position.y = e.y;
     this.position.z = e.z;
 
-    this.target = Tools.sum(this.position, this.hermiteAngles.eval(this.t));
+    this.target = L3D.Tools.sum(this.position, this.hermiteAngles.eval(this.t));
 
     this.t += 0.01 * time / 20;
 
@@ -100,7 +98,7 @@ ReplayCamera.prototype.hermiteMotion = function(time) {
     }
 };
 
-ReplayCamera.prototype.nextEvent = function() {
+L3D.ReplayCamera.prototype.nextEvent = function() {
     this.counter++;
 
     // Finished
@@ -137,19 +135,19 @@ ReplayCamera.prototype.nextEvent = function() {
     }
 };
 
-ReplayCamera.prototype.reset = function() {
+L3D.ReplayCamera.prototype.reset = function() {
     this.resetPosition();
     this.moving = false;
     this.movingHermite = false;
 };
 
-ReplayCamera.prototype.resetPosition = function() {
+L3D.ReplayCamera.prototype.resetPosition = function() {
     this.position.copy(this.resetElements.position);
     this.target.copy(this.resetElements.target);
     this.anglesFromVectors();
 };
 
-ReplayCamera.prototype.vectorsFromAngles = function() {
+L3D.ReplayCamera.prototype.vectorsFromAngles = function() {
     // Update direction
     this.forward.y = Math.sin(this.phi);
 
@@ -160,9 +158,9 @@ ReplayCamera.prototype.vectorsFromAngles = function() {
 
 };
 
-ReplayCamera.prototype.anglesFromVectors = function() {
+L3D.ReplayCamera.prototype.anglesFromVectors = function() {
     // Update phi and theta so that return to reality does not hurt
-    var forward = Tools.diff(this.target, this.position);
+    var forward = L3D.Tools.diff(this.target, this.position);
     forward.normalize();
 
     this.phi = Math.asin(forward.y);
@@ -172,7 +170,7 @@ ReplayCamera.prototype.anglesFromVectors = function() {
     this.theta = Math.atan2(forward.x, forward.z);
 };
 
-ReplayCamera.prototype.move = function(otherCamera) {
+L3D.ReplayCamera.prototype.move = function(otherCamera) {
     this.moving = true;
     this.old_target =   this.target.clone();
     this.old_position = this.position.clone();
@@ -182,21 +180,21 @@ ReplayCamera.prototype.move = function(otherCamera) {
 
 };
 
-ReplayCamera.prototype.moveHermite = function(otherCamera) {
+L3D.ReplayCamera.prototype.moveHermite = function(otherCamera) {
     this.movingHermite = true;
     this.t = 0;
 
-    this.hermitePosition = new Hermite.special.Polynom(
+    this.hermitePosition = new L3D.Hermite.special.Polynom(
         this.position.clone(),
         otherCamera.position.clone(),
-        Tools.mul(Tools.diff(otherCamera.target, otherCamera.position).normalize(),4)
+        L3D.Tools.mul(L3D.Tools.diff(otherCamera.target, otherCamera.position).normalize(),4)
     );
 
-    this.hermiteAngles = new Hermite.special.Polynom(
-        Tools.diff(this.target, this.position),
-        Tools.diff(otherCamera.target, otherCamera.position),
+    this.hermiteAngles = new L3D.Hermite.special.Polynom(
+        L3D.Tools.diff(this.target, this.position),
+        L3D.Tools.diff(otherCamera.target, otherCamera.position),
         new THREE.Vector3()
     );
 };
 
-ReplayCamera.prototype.save = function() {};
+L3D.ReplayCamera.prototype.save = function() {};

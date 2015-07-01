@@ -1,45 +1,42 @@
-// Initialization
-
-// class camera extends THREE.PerspectiveCamera
-var ReverseCamera = function(arg1, arg2, arg3, arg4, position, target) {
-    ArrowCamera.apply(this, arguments);
+L3D.ReverseRecommendation = function(arg1, arg2, arg3, arg4, position, target) {
+    L3D.BaseRecommendation.apply(this, arguments);
 };
-ReverseCamera.prototype = Object.create(ArrowCamera.prototype);
-ReverseCamera.prototype.constructor = ReverseCamera;
+L3D.ReverseRecommendation.prototype = Object.create(L3D.BaseRecommendation.prototype);
+L3D.ReverseRecommendation.prototype.constructor = L3D.ReverseRecommendation;
 
 // Overload init
-ReverseCamera.prototype.initExtremity = function() {
+L3D.ReverseRecommendation.prototype.initExtremity = function() {
     var geometry = new THREE.Geometry();
 
     var direction = this.target.clone();
     direction.sub(this.position);
     direction.normalize();
 
-    var left = Tools.cross(direction, this.up);
-    var other = Tools.cross(direction, left);
+    var left = L3D.Tools.cross(direction, this.up);
+    var other = L3D.Tools.cross(direction, left);
 
     left.normalize();
     other.normalize();
-    left = Tools.mul(left, this.size / 2 );
-    other  = Tools.mul(other, this.size / 2);
+    left = L3D.Tools.mul(left, this.size / 2 );
+    other  = L3D.Tools.mul(other, this.size / 2);
 
-    var pyramidCenter = Tools.diff(this.position, Tools.mul(direction,0.25));
+    var pyramidCenter = L3D.Tools.diff(this.position, L3D.Tools.mul(direction,0.25));
     geometry.vertices.push(
-        Tools.sum( Tools.sum( this.position, left),  other),
-        Tools.diff(Tools.sum( this.position, other), left),
-        Tools.diff(Tools.diff(this.position, left),  other),
-        Tools.sum( Tools.diff(this.position, other), left),
+        L3D.Tools.sum( L3D.Tools.sum( this.position, left),  other),
+        L3D.Tools.diff(L3D.Tools.sum( this.position, other), left),
+        L3D.Tools.diff(L3D.Tools.diff(this.position, left),  other),
+        L3D.Tools.sum( L3D.Tools.diff(this.position, other), left),
 
-        Tools.sum( Tools.sum( this.position, left),  other),
-        Tools.diff(Tools.sum( this.position, other), left),
-        Tools.diff(Tools.diff(this.position, left),  other),
-        Tools.sum( Tools.diff(this.position, other), left)
-        // Tools.diff(this.position, direction)
+        L3D.Tools.sum( L3D.Tools.sum( this.position, left),  other),
+        L3D.Tools.diff(L3D.Tools.sum( this.position, other), left),
+        L3D.Tools.diff(L3D.Tools.diff(this.position, left),  other),
+        L3D.Tools.sum( L3D.Tools.diff(this.position, other), left)
+        // L3D.Tools.diff(this.position, direction)
     );
 
     var lambda = 0.6;
     for (var i = 0; i < 4; i++)
-        geometry.vertices[i] = Tools.mul(Tools.diff(geometry.vertices[i], Tools.mul(pyramidCenter,lambda)), 1/(1-lambda));
+        geometry.vertices[i] = L3D.Tools.mul(L3D.Tools.diff(geometry.vertices[i], L3D.Tools.mul(pyramidCenter,lambda)), 1/(1-lambda));
 
 
     geometry.faces.push(new THREE.Face3(2,0,1), // new THREE.Face3(0,2,1),
@@ -73,29 +70,29 @@ ReverseCamera.prototype.initExtremity = function() {
 
 };
 
-ReverseCamera.prototype.regenerateArrow = function(mainCamera) {
+L3D.ReverseRecommendation.prototype.regenerateArrow = function(mainCamera) {
     var i;
     var vertices = [];
 
     // First point of curve
     var f0 = mainCamera.position.clone();
-    f0.add(Tools.mul(Tools.sum(new THREE.Vector3(0,-0.5,0), Tools.diff(this.target, this.position).normalize()),2));
+    f0.add(L3D.Tools.mul(L3D.Tools.sum(new THREE.Vector3(0,-0.5,0), L3D.Tools.diff(this.target, this.position).normalize()),2));
 
     // Last point of curve
     var f1 = this.position.clone();
 
     // Last derivative of curve
-    var fp1 = Tools.diff(this.target, this.position);
+    var fp1 = L3D.Tools.diff(this.target, this.position);
     fp1.normalize();
     fp1.multiplyScalar(2);
 
     // Camera direction
-    var dir = Tools.diff(this.position, mainCamera.position);
+    var dir = L3D.Tools.diff(this.position, mainCamera.position);
     dir.normalize();
 
     if (fp1.dot(dir) < -0.5) {
         // Regen polynom with better stuff
-        // var new_dir = Tools.cross(Tools.diff(this.position, mainCamera.position).normalize(), mainCamera.up);
+        // var new_dir = L3D.Tools.cross(L3D.Tools.diff(this.position, mainCamera.position).normalize(), mainCamera.up);
         // new_dir.multiplyScalar(new_dir.dot(fp1) < 0 ? 1 : -1);
         // new_dir.add(dir);
         // new_dir.add(dir);
@@ -112,7 +109,7 @@ ReverseCamera.prototype.regenerateArrow = function(mainCamera) {
 
     fp1.multiplyScalar(4);
 
-    var hermite = new Hermite.special.Polynom(f0, f1, fp1);
+    var hermite = new L3D.Hermite.special.Polynom(f0, f1, fp1);
 
     var up = this.up.clone();
     var point;
@@ -129,14 +126,14 @@ ReverseCamera.prototype.regenerateArrow = function(mainCamera) {
         up.normalize();
 
         var coeff = i * i * this.size / 2;
-        var left = Tools.cross(up, deriv);     left.normalize(); left.multiplyScalar(coeff);
-        var other = Tools.cross(deriv, left);  other.normalize(); other.multiplyScalar(coeff);
+        var left = L3D.Tools.cross(up, deriv);     left.normalize(); left.multiplyScalar(coeff);
+        var other = L3D.Tools.cross(deriv, left);  other.normalize(); other.multiplyScalar(coeff);
 
         vertices.push(
-            Tools.sum(Tools.sum(point, left), other),
-            Tools.sum(Tools.diff(point, left), other),
-            Tools.diff(point, Tools.sum(other,left)),
-            Tools.sum(Tools.diff(point, other), left)
+            L3D.Tools.sum(L3D.Tools.sum(point, left), other),
+            L3D.Tools.sum(L3D.Tools.diff(point, left), other),
+            L3D.Tools.diff(point, L3D.Tools.sum(other,left)),
+            L3D.Tools.sum(L3D.Tools.diff(point, other), left)
         );
     }
 

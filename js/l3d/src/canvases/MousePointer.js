@@ -1,4 +1,4 @@
-var MousePointer = function(camera) {
+L3D.MousePointer = function(camera) {
 
     this.domElement = document.createElement('canvas');
     this.domElement.style.position = 'absolute';
@@ -7,37 +7,37 @@ var MousePointer = function(camera) {
     this.size = 10;
     this.drawn = false;
     camera.mousePointer = this;
-    this.style = MousePointer.NONE;
+    this.style = L3D.MousePointer.NONE;
 };
 
-MousePointer.NONE = 0;
-MousePointer.BLACK = 1;
-MousePointer.RED = 2;
+L3D.MousePointer.NONE = 0;
+L3D.MousePointer.BLACK = 1;
+L3D.MousePointer.RED = 2;
 
-MousePointer.toColor = function(style) {
+L3D.MousePointer.toColor = function(style) {
 
     switch (style) {
 
-        case MousePointer.NONE:
+        case L3D.MousePointer.NONE:
             return null;
-        case MousePointer.BLACK:
+        case L3D.MousePointer.BLACK:
             return '#000000';
-        case MousePointer.RED:
+        case L3D.MousePointer.RED:
             return '#ff0000';
 
     }
 
 };
 
-MousePointer.prototype.render = function(style) {
+L3D.MousePointer.prototype.render = function(style) {
 
     if (this.style !== style) {
 
-        if (style === MousePointer.NONE) {
+        if (style === L3D.MousePointer.NONE) {
 
             // Clear canvas
             this.domElement.width = this.domElement.width;
-            this.style = MousePointer.NONE;
+            this.style = L3D.MousePointer.NONE;
 
         } else {
 
@@ -64,7 +64,7 @@ MousePointer.prototype.render = function(style) {
             this.ctx.stroke();
 
             this.ctx.lineWidth = 2;
-            this.ctx.strokeStyle = MousePointer.toColor(style);
+            this.ctx.strokeStyle = L3D.MousePointer.toColor(style);
             this.ctx.stroke();
 
             this.style = style;
@@ -75,8 +75,8 @@ MousePointer.prototype.render = function(style) {
 
 };
 
-MousePointer.prototype.clear = function() {
+L3D.MousePointer.prototype.clear = function() {
 
-    this.render(MousePointer.NONE);
+    this.render(L3D.MousePointer.NONE);
 
 };

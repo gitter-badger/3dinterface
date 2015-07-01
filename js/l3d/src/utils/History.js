@@ -1,8 +1,9 @@
 /**
  * Represents the history of an object
  * @constructor
+ * @memberOf L3D
  */
-var History = function() {
+L3D.History = function() {
     /**
      * Stores the different states of the object
      * @type {Object[]}
@@ -26,7 +27,7 @@ var History = function() {
  * Appends a new state at the end of the history
  * @param {Object} state the state to append
  */
-History.prototype.addState = function(state) {
+L3D.History.prototype.addState = function(state) {
     ++this.index;
     this.size = this.index + 1;
     this.states[this.size-1] = state;
@@ -35,7 +36,7 @@ History.prototype.addState = function(state) {
 /**
  * Returns the previous state and change the index to the previous state (so you can redo)
  */
-History.prototype.undo = function() {
+L3D.History.prototype.undo = function() {
     if (this.undoable()) {
         this.index--;
         return this.currentState();
@@ -45,7 +46,7 @@ History.prototype.undo = function() {
 /**
  * Returns the next state and change the index to the next state (so you can re-undo)
  */
-History.prototype.redo = function() {
+L3D.History.prototype.redo = function() {
     if (this.redoable()) {
         this.index++;
         return this.currentState();
@@ -56,7 +57,7 @@ History.prototype.redo = function() {
  * Checks if there is a undo possibility
  * @returns {Boolean} true if undo is possible, false otherwise
  */
-History.prototype.undoable = function() {
+L3D.History.prototype.undoable = function() {
     return this.index > 0;
 };
 
@@ -64,7 +65,7 @@ History.prototype.undoable = function() {
  * Checks if there is a redo possibility
  * @returns {Boolean} true if redo is possible, false otherwise
  */
-History.prototype.redoable = function() {
+L3D.History.prototype.redoable = function() {
     return this.index < this.size - 1;
 };
 
@@ -72,6 +73,6 @@ History.prototype.redoable = function() {
  * Returns the current state in the history
  * @returns {Object} the current state in the history
  */
-History.prototype.currentState = function() {
+L3D.History.prototype.currentState = function() {
     return this.states[this.index];
 };
