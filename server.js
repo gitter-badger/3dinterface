@@ -35,9 +35,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use(function(req, res, next) {
+
     // Log connection
-    console.dir(req.headers)
-    console.log('[REQ] ' + new Date() + ' ' + req.headers['X-Forwarded-For'] + ' : ' + req.url);
+    console.log(
+        '[REQ] ' + new Date() + ' ' +
+        (req.headers['x-forwarded-for'] || req.connection.remoteAddress) +
+        ' : ' + req.url
+    );
 
     res.locals.title = "3DUI";
     res.locals.urls = urls;
