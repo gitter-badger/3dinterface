@@ -106,6 +106,5 @@ if ( isDev ) {
 
 // Start server
 http.listen(server_port, server_ip_address, function() {
-    if (isDev)
-        console.log("Server ready : now listening " + server_ip_address + ":" + server_port);
+    console.log("[READY] Now listening " + server_ip_address + ":" + server_port);
 });

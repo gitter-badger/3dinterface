@@ -4,7 +4,7 @@
  * @constructor
  * @memberOf geo
  */
-geo.MeshContainer = function(path) {
+geo.MeshContainer = function(path, callback) {
 
     /**
      * array of each part of the mesh
@@ -36,6 +36,8 @@ geo.MeshContainer = function(path) {
      */
     this.texCoords = [];
 
+    this.callback = callback;
+
     if (path !== undefined) {
 
         this.loadFromFile(path);
@@ -51,7 +53,7 @@ geo.MeshContainer = function(path) {
 geo.MeshContainer.prototype.loadFromFile = function(path) {
     var self = this;
 
-    var data = fs.readFileSync(path, {encoding: 'utf-8'});
+    fs.readFile(path, {encoding: 'utf-8'}, function(err, data) {
 
         var currentMesh;
 
@@ -133,27 +135,54 @@ geo.MeshContainer.prototype.loadFromFile = function(path) {
 
         }
 
+
+        if (typeof self.callback === 'function') {
+
+            self.callback();
+
+        }
+
+    });
+
 };
 
-var availableMeshNames = [
-    '/static/data/castle/princess peaches castle (outside).obj',
-    '/static/data/mountain/coocoolmountain.obj',
-    '/static/data/whomp/Whomps Fortress.obj',
-    '/static/data/bobomb/bobomb battlefeild.obj',
-    '/static/data/sponza/sponza.obj'
-];
+function trySetLoaded() {
+    for (var name in availableMeshNames) {
+
+        if (availableMeshNames[name] === false) {
+
+            return;
+
+        }
+
+    }
+
+    console.log("[OBJ] All meshes are ready");
+}
+
+var availableMeshNames = {
+    '/static/data/castle/princess peaches castle (outside).obj':false,
+    '/static/data/mountain/coocoolmountain.obj':false,
+    '/static/data/whomp/Whomps Fortress.obj':false,
+    '/static/data/bobomb/bobomb battlefeild.obj':false,
+    '/static/data/sponza/sponza.obj':false
+};
 
 for (var i = 1; i < 26; i++) {
 
-    availableMeshNames.push('/static/data/spheres/' + i + '.obj');
+    availableMeshNames['/static/data/spheres/' + i + '.obj'] = false;
 
 }
 
 geo.availableMeshes = {};
 
-for (var i = 0; i < availableMeshNames.length; i++) {
+for (var name in availableMeshNames) {
 
-    var name = availableMeshNames[i];
-    geo.availableMeshes[name] = new geo.MeshContainer(name.substring(1, name.length));
+    (function(name) {
+        geo.availableMeshes[name] = new geo.MeshContainer(name.substring(1, name.length), function() {
+            availableMeshNames[name] = true;
+            trySetLoaded();
+        });
+    })(name);
 
 }
