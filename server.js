@@ -35,6 +35,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use(function(req, res, next) {
+    // Log connection
+    console.log('[REQ] ' + new Date() + ' ' + req.connection.remoteAddress + ' : ' + req.url);
+
     res.locals.title = "3DUI";
     res.locals.urls = urls;
     res.locals.session = req.session;
