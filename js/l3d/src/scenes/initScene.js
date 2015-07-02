@@ -8,7 +8,7 @@ L3D.addLight = function(scene) {
 
     var ambient_light = new THREE.AmbientLight(0x555555);
     scene.add(ambient_light);
-}
+};
 
 L3D.initPeachCastle = function(scene, collidableObjects, camera) {
 
@@ -33,14 +33,14 @@ L3D.initPeachCastle = function(scene, collidableObjects, camera) {
 
     collidableObjects.push(loader.obj);
     loader.obj.raycastable = true;
-}
+};
 
 L3D.resetPeachElements = function() {
     return {
         position: new THREE.Vector3(0.24120226734236713,0.2009624547018851,-0.5998422840047036),
         target: new THREE.Vector3(0.24120226734232672,0.20096245470190008,-40.5998422840047)
     };
-}
+};
 
 L3D.initPeach = function(camera, scene, coins) {
     L3D.addLight(scene);
@@ -62,7 +62,7 @@ L3D.initPeach = function(camera, scene, coins) {
     var cameras = new L3D.CameraContainer(camera, otherCams);
 
     return cameras;
-}
+};
 
 L3D.initZeldaScene = function(scene, collidableObjects, loader) {
     // Create loader if not already done
@@ -90,7 +90,7 @@ L3D.initZeldaScene = function(scene, collidableObjects, loader) {
         }
     );
 
-}
+};
 
 
 L3D.createPeachCameras = function(width, height) {
@@ -150,7 +150,7 @@ L3D.createPeachCameras = function(width, height) {
     cams.forEach(function(cam) {cam.setSize(0.2);});
 
     return cams;
-}
+};
 
 L3D.initBobombScene = function(scene, collidableObjects, camera) {
 
@@ -174,14 +174,14 @@ L3D.initBobombScene = function(scene, collidableObjects, camera) {
     loader.obj.up = new THREE.Vector3(0,0,1);
     collidableObjects.push(loader.obj);
 
-}
+};
 
 L3D.resetBobombElements = function() {
     return {
         position: new THREE.Vector3(38.115627509754646,10.829803024792419,-19.862035691341315),
         target: new THREE.Vector3(-1.4518898576752122,5.048214777643772,-18.869661407832535)
     };
-}
+};
 
 L3D.createBobombCoins = function() {
     var coins = [];
@@ -198,7 +198,7 @@ L3D.createBobombCoins = function() {
     );
 
     return coins;
-}
+};
 
 L3D.createBobombCameras = function(width, height) {
     var cams = [];
@@ -263,7 +263,7 @@ L3D.createBobombCameras = function(width, height) {
 
     return cams;
 
-}
+};
 
 L3D.initBobomb = function(camera, scene, coins) {
     L3D.addLight(scene);
@@ -295,7 +295,7 @@ L3D.initBobomb = function(camera, scene, coins) {
     setTimeout(function() { coins.forEach(function(coin) { coin.addToScene(scene); });}, 1000);
 
     return cameras;
-}
+};
 
 L3D.initWhompScene = function(scene, collidableObjects, camera) {
 
@@ -349,7 +349,7 @@ L3D.initWhompScene = function(scene, collidableObjects, camera) {
 
     collidableObjects.push(loader.obj);
     loader.obj.raycastable = true;
-}
+};
 
 L3D.createWhompCameras = function(width, height) {
     var cams = [];
@@ -415,7 +415,7 @@ L3D.createWhompCameras = function(width, height) {
 
     cams.forEach(function(cam) {cam.setSize(0.2);});
     return cams;
-}
+};
 
 L3D.createWhompCoins = function() {
     return [
@@ -428,14 +428,14 @@ L3D.createWhompCoins = function() {
         new Coin(6.753883218882444,2.019245026490682,-7.001046531863012),
         new Coin(3.4354286209455246,3.487313067990168,-4.091947594995703)
     ];
-}
+};
 
 L3D.resetWhompElements = function() {
     return {
         position : new THREE.Vector3(-6.725817925071645,1.4993570618328055,-10.356480813212423),
         target : new THREE.Vector3(-4.8541705829784604,1.3192268872752742,-6.825972443720941)
     };
-}
+};
 
 L3D.initWhomp = function(camera, scene, coins) {
     L3D.addLight(scene);
@@ -467,7 +467,7 @@ L3D.initWhomp = function(camera, scene, coins) {
     setTimeout(function() { coins.forEach(function(coin) { coin.addToScene(scene); });}, 1000);
 
     return cameras;
-}
+};
 
 L3D.initMountainScene = function(scene, collidableObjects, camera) {
 
@@ -499,7 +499,7 @@ L3D.initMountainScene = function(scene, collidableObjects, camera) {
 
     loader.load();
     collidableObjects.push(loader.obj);
-}
+};
 
 L3D.createMountainCoins = function() {
     return [
@@ -512,7 +512,7 @@ L3D.createMountainCoins = function() {
         new Coin(-13.980787439949077,-0.10719616576499978,22.24889144136683),
         new Coin(4.491305202472262,3.6813420775366277,10.03229664467681)
     ];
-}
+};
 
 L3D.createMountainCameras = function(width, height) {
     var cams = [];
@@ -580,14 +580,14 @@ L3D.createMountainCameras = function(width, height) {
     );
 
     return cams;
-}
+};
 
 L3D.resetMountainElements = function() {
     return {
         position : new THREE.Vector3(-20.558328115300082,23.601312087942762,-10.220633604814038),
         target : new THREE.Vector3(11.025356711105232,11.969889531789319,11.393733425161644)
     };
-}
+};
 
 L3D.initMountain = function(camera, scene, coins) {
     L3D.addLight(scene);
@@ -618,7 +618,7 @@ L3D.initMountain = function(camera, scene, coins) {
 
     setTimeout(function() { coins.forEach(function(coin) { coin.addToScene(scene); });}, 1000);
     return cameras;
-}
+};
 
 L3D.initSponzaScene = function(scene, collidableObjects, camera) {
 
@@ -686,22 +686,22 @@ L3D.initSponzaScene = function(scene, collidableObjects, camera) {
     //     }
     // );
 
-}
+};
 
 L3D.createSponzaCoins = function() {
     return [];
-}
+};
 
 L3D.createSponzaCameras = function() {
     return [];
-}
+};
 
 L3D.resetSponzaElements = function() {
     return {
         position: new THREE.Vector3(92.98373669520107,60.8877777990862,11.130138641670737),
         target: new THREE.Vector3(53.76696417668598,56.09739213575453,4.877382575136091)
     };
-}
+};
 
 L3D.initSponza = function(camera, scene, coins) {
 
@@ -736,4 +736,4 @@ L3D.initSponza = function(camera, scene, coins) {
 
     return cameras;
 
-}
+};
