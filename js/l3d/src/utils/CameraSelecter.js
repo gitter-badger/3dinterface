@@ -115,25 +115,30 @@ L3D.CameraSelecter.prototype.update = function(event, y) {
 
 L3D.CameraSelecter.prototype.click = function(event) {
     var e;
-    var newCamera = this.pointedCamera();
 
-    if (newCamera !== undefined && !(newCamera instanceof Coin)) {
+    if (this.cameras.mainCamera().pointerLocked === false) {
 
-        e = new L3D.BD.Event.ArrowClicked();
-        e.arrow_id = this.cameras.cameras.indexOf(newCamera);
-        e.send();
+        var newCamera = this.pointedCamera();
 
-        newCamera.check();
-        this.cameras.mainCamera().moveHermite(newCamera);
-        buttonManager.updateElements();
+        if (newCamera !== undefined && !(newCamera instanceof Coin)) {
 
-    } else if (newCamera instanceof Coin) {
+            e = new L3D.BD.Event.ArrowClicked();
+            e.arrow_id = this.cameras.cameras.indexOf(newCamera);
+            e.send();
 
-        // Coin found, notify server
-        e = new L3D.BD.Event.CoinClicked();
-        e.coin_id = this.coins.indexOf(newCamera);
-        e.send();
-        newCamera.get();
+            newCamera.check();
+            this.cameras.mainCamera().moveHermite(newCamera);
+            buttonManager.updateElements();
+
+        } else if (newCamera instanceof Coin) {
+
+            // Coin found, notify server
+            e = new L3D.BD.Event.CoinClicked();
+            e.coin_id = this.coins.indexOf(newCamera);
+            e.send();
+            newCamera.get();
+
+        }
 
     }
 

@@ -262,10 +262,13 @@ L3D.PointerCamera.prototype.onPointerLockChange = function() {
 L3D.PointerCamera.prototype.update = function(time) {
     if (this.moving) {
         this.linearMotion(time);
-    } else if (this.movingHermite) {
-        this.hermiteMotion(time);
     } else {
-        this.normalMotion(time);
+        this.shouldLogCameraAngles = false;
+        if (this.movingHermite) {
+            this.hermiteMotion(time);
+        } else {
+            this.normalMotion(time);
+        }
     }
 };
 
