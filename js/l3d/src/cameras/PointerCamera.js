@@ -342,6 +342,7 @@ L3D.PointerCamera.prototype.normalMotion = function(time) {
 
             var event = new L3D.BD.Event.KeyboardEvent();
             event.camera = this;
+            event.send();
 
         }
     }
