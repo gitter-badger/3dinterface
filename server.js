@@ -38,9 +38,11 @@ app.use(function(req, res, next) {
 
     // Log connection
     console.log(
+        (isDev ? '\033[32m' : '') +
         '[REQ] ' + new Date() + ' ' +
         (req.headers['x-forwarded-for'] || req.connection.remoteAddress) +
-        ' : ' + req.url
+        ' : ' + req.url +
+        (isDev ? '\033[0m' : '')
     );
 
     res.locals.title = "3DUI";
