@@ -19,6 +19,7 @@ var bodyParser = require('body-parser');
 var session = require('cookie-session');
 var cookieParser = require('cookie-parser');
 var urls = require('./urls');
+var Log = require('./lib/NodeLog.js');
 
 var isDev = app.get('env') === 'development';
 
@@ -37,13 +38,7 @@ app.use(bodyParser.json());
 app.use(function(req, res, next) {
 
     // Log connection
-    console.log(
-        (isDev ? '\033[32m' : '') +
-        '[REQ] ' + new Date() + ' ' +
-        (req.headers['x-forwarded-for'] || req.connection.remoteAddress) +
-        ' : ' + req.url +
-        (isDev ? '\033[0m' : '')
-    );
+    Log.request(req, res);
 
     res.locals.title = "3DUI";
     res.locals.urls = urls;
@@ -113,5 +108,5 @@ if ( isDev ) {
 
 // Start server
 http.listen(server_port, server_ip_address, function() {
-    console.log("[READY] Now listening " + server_ip_address + ":" + server_port);
+    Log.ready("Now listening " + server_ip_address + ":" + server_port);
 });

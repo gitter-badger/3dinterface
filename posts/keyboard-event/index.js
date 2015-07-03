@@ -1,5 +1,6 @@
 var pg = require('pg');
 var secret = require('../../private');
+var Log = require('../../lib/NodeLog.js');
 
 module.exports.index = function(req, res) {
 
@@ -21,7 +22,7 @@ module.exports.index = function(req, res) {
             ],
             function(err, result) {
                 if (err !== null)
-                    console.log("[DBERROR] " + err);
+                    Log.dberror(err);
                 release();
             }
         );

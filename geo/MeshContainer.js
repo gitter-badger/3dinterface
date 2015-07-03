@@ -1,3 +1,5 @@
+var Log = require('../lib/NodeLog.js');
+
 /**
  * Represents a mesh. All meshes are loaded once in geo.availableMesh to avoid
  * loading at each mesh request
@@ -157,7 +159,7 @@ function trySetLoaded() {
 
     }
 
-    console.log("[OBJ] All meshes are ready");
+    Log.ready("All meshes are ready");
 }
 
 var availableMeshNames = {
