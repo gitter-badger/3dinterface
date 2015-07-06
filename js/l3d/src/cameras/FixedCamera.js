@@ -1,3 +1,9 @@
+/**
+ * Represents a fixed camera
+ * @constructor
+ * @extends THREE.PerspectiveCamera
+ * @memberof L3D
+ */
 L3D.FixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
     THREE.PerspectiveCamera.apply(this, arguments);
 
@@ -23,6 +29,9 @@ L3D.FixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
 L3D.FixedCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 L3D.FixedCamera.prototype.constructor = L3D.FixedCamera;
 
+/**
+ * Look function. Just like OpenGL gluLookAt
+ */
 L3D.FixedCamera.prototype.look = function() {
     this.lookAt(this.target);
 };
