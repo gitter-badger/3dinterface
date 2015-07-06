@@ -266,18 +266,7 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
 
             } else if (elt.type === 'usemtl') {
 
-                if (self.currentMesh !== undefined) {
-
-                    // if (self.currentMesh.geometry.attributes.normal === undefined) {
-
-                    //     self.currentMesh.geometry.computeVertexNormals();
-
-                    // }
-
-                }
-
                 // Must create new mesh
-                // console.log("New mesh arrived : " + elt.materialName);
 
                 // Create mesh material
                 var material;

@@ -30,7 +30,6 @@ L3D:
 		--js l3d/src/cameras/Camera.js \
 		--js l3d/src/cameras/FixedCamera.js \
 		--js l3d/src/cameras/PointerCamera.js \
-		--js l3d/src/cameras/CameraContainer.js \
 		--js l3d/src/scenes/initScene.js \
 		--js_output_file ../static/js/l3d.min.js
 
