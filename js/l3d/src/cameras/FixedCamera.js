@@ -19,10 +19,10 @@ L3D.FixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
 
     this.target = target.clone();
 
-}
+};
 L3D.FixedCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 L3D.FixedCamera.prototype.constructor = L3D.FixedCamera;
 
 L3D.FixedCamera.prototype.look = function() {
     this.lookAt(this.target);
-}
+};
