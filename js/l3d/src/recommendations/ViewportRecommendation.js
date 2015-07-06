@@ -103,8 +103,8 @@ L3D.ViewportRecommendation.prototype.check = function() {
 };
 
 L3D.ViewportRecommendation.prototype.initExtremity = function() {
-
-}
+    // Do nothing
+};
 
 // Update function
 L3D.ViewportRecommendation.prototype.update = function(position) {
