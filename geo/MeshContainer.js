@@ -178,13 +178,17 @@ for (var i = 1; i < 26; i++) {
 
 geo.availableMeshes = {};
 
+function pushMesh(name) {
+
+    geo.availableMeshes[name] = new geo.MeshContainer(name.substring(1, name.length), function() {
+        availableMeshNames[name] = true;
+        trySetLoaded();
+    });
+
+}
+
 for (var name in availableMeshNames) {
 
-    (function(name) {
-        geo.availableMeshes[name] = new geo.MeshContainer(name.substring(1, name.length), function() {
-            availableMeshNames[name] = true;
-            trySetLoaded();
-        });
-    })(name);
+    pushMesh(name);
 
 }

@@ -349,6 +349,4 @@ utils.Iterator = Iterator;
 
 return utils;
 
-console.log("Hello");
-
 })();
