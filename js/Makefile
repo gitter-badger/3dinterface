@@ -21,7 +21,6 @@ L3D:
 		--js l3d/src/canvases/StartCanvas.js \
 		--js l3d/src/canvases/MousePointer.js \
 		--js l3d/src/canvases/Previewer.js \
-		--js l3d/src/loaders/ProgressiveLoaderGeometry.js \
 		--js l3d/src/loaders/ProgressiveLoader.js \
 		--js l3d/src/recommendations/ViewportRecommendation.js \
 		--js l3d/src/recommendations/BaseRecommendation.js \
