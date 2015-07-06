@@ -304,9 +304,11 @@ TutoCamera.prototype.anglesFromVectors = function() {
     this.theta = Math.atan2(forward.x, forward.z);
 };
 
-TutoCamera.prototype.move = function(otherCamera, toSave) {
+TutoCamera.prototype.move = function(recommendation, toSave) {
     if (toSave === undefined)
         toSave = true;
+
+    var otherCamera = recommendation.camera || recommendation;
 
     this.moving = true;
     this.new_target = otherCamera.target.clone();
@@ -326,13 +328,15 @@ TutoCamera.prototype.move = function(otherCamera, toSave) {
     }
 };
 
-TutoCamera.prototype.moveHermite = function(otherCamera, toSave) {
+TutoCamera.prototype.moveHermite = function(recommendation, toSave) {
     if (this.tutorial.nextAction() === 'recommendation') {
         this.tutorial.nextStep();
     }
 
     if (toSave === undefined)
         toSave = true;
+
+    var otherCamera = recommendation.camera;
 
     this.movingHermite = true;
     this.t = 0;

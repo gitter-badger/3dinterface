@@ -116,7 +116,7 @@ L3D.Previewer.prototype.render = function(prev, container_width, container_heigh
         this.renderer.setScissor(left, bottom, width, height);
         this.renderer.enableScissorTest(true);
         this.renderer.setViewport(left, bottom, width, height);
-        this.renderer.render(this.scene, prev.camera);
+        this.renderer.render(this.scene, prev.camera.camera);
 
         this.update(true);
 

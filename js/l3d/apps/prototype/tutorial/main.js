@@ -27,6 +27,7 @@ var loader;
 var coins = [];
 var previousTime;
 var tutorial;
+var camera1;
 
 init();
 animate();
@@ -64,7 +65,7 @@ function init() {
     stats.domElement.style.position = 'absolute';
     stats.domElement.style.cssFloat = "top-left";
 
-    var camera1 = new TutoCamera(50, container_size.width() / container_size.height(), 0.01, 100000, renderer, scene, onWindowResize, container_size, coins, container);
+    camera1 = new TutoCamera(50, container_size.width() / container_size.height(), 0.01, 100000, renderer, scene, onWindowResize, container_size, coins, container);
 
     // Initialize pointer for pointer lock
     var pointer = new L3D.MousePointer(camera1);
@@ -88,7 +89,7 @@ function init() {
     // Initialize pointer camera
     tutorial = camera1.tutorial;
 
-    cameras = new L3D.CameraContainer(camera1, []);
+    cameras = [];
     tutorial.setCameras(cameras);
 
     // Load peach scene
@@ -121,10 +122,10 @@ function initListeners() {
     document.addEventListener('keydown', function(event) { if (event.keyCode == 27) { stopFullscreen();} }, false);
 
     // HTML Bootstrap buttons
-    buttonManager = new ButtonManager(cameras, previewer);
+    buttonManager = new ButtonManager(camera1, cameras, previewer);
 
     // Camera selecter for hover and clicking recommendations
-    cameraSelecter = new L3D.CameraSelecter(renderer, scene, cameras, coins, buttonManager);
+    cameraSelecter = new L3D.CameraSelecter(renderer, scene, camera1, cameras, coins, buttonManager);
 }
 
 
@@ -148,21 +149,21 @@ function render() {
 
     // Update main camera
     var currentTime = Date.now() - previousTime;
-    cameras.updateMainCamera(isNaN(currentTime) ? 20 : currentTime);
+    camera1.update(isNaN(currentTime) ? 20 : currentTime);
     previousTime = Date.now();
 
     // Update the recommendations
-    cameras.update(cameras.mainCamera());
+    cameras.map(function(camera) {camera.update(camera1);});
 
     // Set current position of camera
-    cameras.look();
+    camera1.look();
 
     var left = 0, bottom = 0, width = container_size.width(), height = container_size.height();
     renderer.setScissor(left, bottom, width, height);
     renderer.enableScissorTest(true);
     renderer.setViewport(left, bottom, width, height);
-    THREEx.Transparency.update(cameras.mainCamera());
-    renderer.render(scene, cameras.mainCamera());
+    THREEx.Transparency.update(camera1);
+    renderer.render(scene, camera1);
 
     // Remove borders of preview
     previewer.clear();
@@ -193,8 +194,8 @@ function onWindowResize() {
     previewer.domElement.height = container_size.height();
 
     renderer.setSize(container_size.width(), container_size.height());
-    cameras.forEach(function(camera) {camera.aspect = container_size.width() / container_size.height();});
-    cameras.forEach(function(camera) {camera.updateProjectionMatrix();});
+    cameras.forEach(function(camera) {camera.camera.aspect = container_size.width() / container_size.height();});
+    cameras.forEach(function(camera) {camera.camera.updateProjectionMatrix();});
     render();
 }
 

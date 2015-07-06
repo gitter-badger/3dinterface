@@ -1,4 +1,5 @@
-var ButtonManager = function(cameras, previewer) {
+var ButtonManager = function(camera, cameras, previewer) {
+    this.camera = camera;
     this.cameras = cameras;
     this.previewer = previewer;
 
@@ -19,8 +20,8 @@ var ButtonManager = function(cameras, previewer) {
     this.fullscreenElement.onclick = function() {fullscreen();};
 
     (function(self) {
-        self.undoElement.onclick = function() {self.cameras.mainCamera().undo(); self.updateElements();};
-        self.redoElement.onclick = function() {self.cameras.mainCamera().redo(); self.updateElements();};
+        self.undoElement.onclick = function() {self.camera.undo(); self.updateElements();};
+        self.redoElement.onclick = function() {self.camera.redo(); self.updateElements();};
 
         self.fullElement.onclick = function() {
             self.cameras.map(function(camera) {
@@ -32,15 +33,15 @@ var ButtonManager = function(cameras, previewer) {
         };
 
         self.pointerLockElement.onchange = function() {
-            self.cameras.mainCamera().shouldLock = self.pointerLockElement.checked;
-            self.cameras.mainCamera().onPointerLockChange();
+            self.camera.shouldLock = self.pointerLockElement.checked;
+            self.camera.onPointerLockChange();
         };
 
         self.showarrowsElement.onchange = function() {self.showArrows = self.showarrowsElement.checked;};
 
         self.resetElement.onclick = function() {
             // Reinit camera
-            self.cameras.mainCamera().reset();
+            self.camera.reset();
         };
 
         self.recommendationElement.onchange = function() {
@@ -52,13 +53,13 @@ var ButtonManager = function(cameras, previewer) {
 
 ButtonManager.prototype.updateElements = function() {
     // Update icon
-    if (!this.cameras.mainCamera().undoable()) {
+    if (!this.camera.undoable()) {
         this.undoElement.className = "btn btn-default navbar-btn";
     } else {
         this.undoElement.className = "btn btn-primary navbar-btn";
     }
 
-    if (!this.cameras.mainCamera().redoable()) {
+    if (!this.camera.redoable()) {
         this.redoElement.className = "btn btn-default navbar-btn";
     } else {
         this.redoElement.className = "btn btn-primary navbar-btn";

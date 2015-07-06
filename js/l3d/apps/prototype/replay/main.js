@@ -33,6 +33,7 @@ var cameras, cameraSelecter;
 var spheres = new Array(mesh_number);
 var visible = 0;
 var stats;
+var camera1;
 
 var loader;
 var coins = [];
@@ -71,7 +72,7 @@ function init() {
     container.appendChild(renderer.domElement);
 
     // Initialize pointer camera
-    var camera1 = new L3D.ReplayCamera(50, container_size.width() / container_size.height(), 0.01, 100000, coins);
+    camera1 = new L3D.ReplayCamera(50, container_size.width() / container_size.height(), 0.01, 100000, coins);
     cameras = initMainScene(camera1, scene, coins);
     camera1.cameras = cameras;
 
@@ -183,21 +184,21 @@ function render() {
 
     // Update main camera
     var currentTime = Date.now() - previousTime;
-    cameras.updateMainCamera(isNaN(currentTime) ? 20 : currentTime);
+    camera1.update(isNaN(currentTime) ? 20 : currentTime);
     previousTime = Date.now();
 
     // Update the recommendations
-    cameras.update(cameras.mainCamera());
+    cameras.map(function(camera) {camera.update(camera1);});
 
 
     // Set current position of camera
-    cameras.look();
+    camera1.look();
 
     var left = 0, bottom = 0, width = container_size.width(), height = container_size.height();
     renderer.setScissor(left, bottom, width, height);
     renderer.enableScissorTest(true);
     renderer.setViewport(left, bottom, width, height);
-    renderer.render(scene, cameras.mainCamera());
+    renderer.render(scene, camera1);
 
     // Hide arrows in recommendation
     // cameras.map(function(camera) { if (camera instanceof RecommendedCamera) hide(camera); });

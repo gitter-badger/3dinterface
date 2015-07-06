@@ -1,7 +1,8 @@
-L3D.CameraSelecter = function(renderer, scene, cameras, coins, buttonManager) {
+L3D.CameraSelecter = function(renderer, scene, camera, cameras, coins, buttonManager) {
     this.raycaster = new THREE.Raycaster();
     this.renderer = renderer;
     this.mouse = {};
+    this.camera = camera;
     this.cameras = cameras;
     this.prev = {};
     this.buttonManager = buttonManager;
@@ -15,7 +16,7 @@ L3D.CameraSelecter.prototype.pointedCamera = function() {
     var x = ( this.mouse.x / this.renderer.domElement.width ) * 2 - 1;
     var y = - (this.mouse.y / this.renderer.domElement.height) * 2 + 1;
 
-    var camera = this.cameras.mainCamera();
+    var camera = this.camera;
 
     if (camera.pointerLocked) {
 
@@ -58,8 +59,14 @@ L3D.CameraSelecter.prototype.pointedCamera = function() {
                         return this.coins[coin];
                     }
                 }
-                this.currentPointedCamera = this.cameras.getByObject(intersects[bestIndex].object);
-                return this.currentPointedCamera;
+
+                if (intersects[bestIndex].object.parent.parent instanceof L3D.BaseRecommendation) {
+
+                    this.currentPointedCamera = intersects[bestIndex].object.parent.parent;
+                    return this.currentPointedCamera;
+
+                }
+
             // }
         }
     }
@@ -87,7 +94,7 @@ L3D.CameraSelecter.prototype.update = function(event, y) {
             // log it
             e = new L3D.BD.Event.Hovered();
             e.start = true;
-            e.arrow_id = this.cameras.cameras.indexOf(this.currentPointedCamera);
+            e.arrow_id = this.cameras.indexOf(this.currentPointedCamera);
             e.send();
 
             this.prev.x = this.mouse.x;
@@ -108,8 +115,8 @@ L3D.CameraSelecter.prototype.update = function(event, y) {
 
     document.getElementById('container').style.cursor = hovered ? "pointer" : "auto";
 
-    if (this.cameras.mainCamera().pointerLocked)
-        this.cameras.mainCamera().mousePointer.render(hovered ? L3D.MousePointer.RED : L3D.MousePointer.BLACK);
+    if (this.camera.pointerLocked)
+        this.camera.mousePointer.render(hovered ? L3D.MousePointer.RED : L3D.MousePointer.BLACK);
 
 };
 
@@ -121,11 +128,11 @@ L3D.CameraSelecter.prototype.click = function(event) {
     if (newCamera !== undefined && !(newCamera instanceof Coin)) {
 
         e = new L3D.BD.Event.ArrowClicked();
-        e.arrow_id = this.cameras.cameras.indexOf(newCamera);
+        e.arrow_id = this.cameras.indexOf(newCamera);
         e.send();
 
         newCamera.check();
-        this.cameras.mainCamera().moveHermite(newCamera);
+        this.camera.moveHermite(newCamera);
         buttonManager.updateElements();
 
     } else if (newCamera instanceof Coin) {

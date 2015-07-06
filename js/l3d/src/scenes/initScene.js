@@ -1,5 +1,3 @@
-var Recommendation = Recommendation || L3D.ArrowRecommendation;
-
 L3D.addLight = function(scene) {
     var directional_light = new THREE.DirectionalLight(0xdddddd);
     directional_light.position.set(1, 2.5, 1).normalize();
@@ -59,7 +57,7 @@ L3D.initPeach = function(camera, scene, coins) {
 
     Coin.init(0.001);
     var otherCams = [];
-    var cameras = new L3D.CameraContainer(camera, otherCams);
+    var cameras = otherCams;
 
     return cameras;
 };
@@ -288,7 +286,7 @@ L3D.initBobomb = function(camera, scene, coins) {
     }
 
     var otherCams = L3D.createBobombCameras(container_size.width(), container_size.height());
-    var cameras = new L3D.CameraContainer(camera, otherCams);
+    var cameras = otherCams;
 
     otherCams.forEach(function(cam) {cam.addToScene(scene);});
 
@@ -460,7 +458,7 @@ L3D.initWhomp = function(camera, scene, coins) {
     }
 
     var otherCams = L3D.createWhompCameras(container_size.width(), container_size.height());
-    var cameras = new L3D.CameraContainer(camera, otherCams);
+    var cameras = otherCams;
 
     otherCams.forEach(function(cam) {cam.addToScene(scene);});
 
@@ -612,7 +610,7 @@ L3D.initMountain = function(camera, scene, coins) {
     }
 
     var otherCams = L3D.createMountainCameras(container_size.width(), container_size.height());
-    var cameras = new L3D.CameraContainer(camera, otherCams);
+    var cameras = otherCams;
 
     otherCams.forEach(function(cam) {cam.addToScene(scene);});
 
@@ -727,7 +725,7 @@ L3D.initSponza = function(camera, scene, coins) {
     }
 
     var otherCams = L3D.createSponzaCameras(container_size.width(), container_size.height());
-    var cameras = new L3D.CameraContainer(camera, otherCams);
+    var cameras = otherCams;
 
     otherCams.forEach(function(cam) {cam.addToScene(scene);});
 

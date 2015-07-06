@@ -260,15 +260,14 @@ L3D.PointerCamera.prototype.onPointerLockChange = function() {
  * @param {Number} time number of milliseconds between the previous and the next frame
  */
 L3D.PointerCamera.prototype.update = function(time) {
+    this.shouldLogCameraAngles = false;
     if (this.moving) {
         this.linearMotion(time);
+    } else if (this.movingHermite) {
+        this.hermiteMotion(time);
     } else {
-        this.shouldLogCameraAngles = false;
-        if (this.movingHermite) {
-            this.hermiteMotion(time);
-        } else {
-            this.normalMotion(time);
-        }
+        this.shouldLogCameraAngles = true;
+        this.normalMotion(time);
     }
 };
 
@@ -341,7 +340,7 @@ L3D.PointerCamera.prototype.normalMotion = function(time) {
             var self = this;
             setTimeout(function() {
                 self.shouldLogCameraAngles = true;
-            }, 100);
+            }, 500);
 
             var event = new L3D.BD.Event.KeyboardEvent();
             event.camera = this;
@@ -437,9 +436,11 @@ L3D.PointerCamera.prototype.anglesFromVectors = function() {
  * @param {Camera} camera Camera to move to
  * @param {Boolean} [toSave=true] true if you want to save the current state of the camera
  */
-L3D.PointerCamera.prototype.move = function(otherCamera, toSave) {
+L3D.PointerCamera.prototype.move = function(recommendation, toSave) {
     if (toSave === undefined)
         toSave = true;
+
+    var otherCamera = recommendation.camera;
 
     this.moving = true;
     this.new_target = otherCamera.target.clone();
@@ -464,9 +465,11 @@ L3D.PointerCamera.prototype.move = function(otherCamera, toSave) {
  * @param {Camera} camera Camera to move to
  * @param {Boolean} [toSave=true] true if you want to save the current state of the camera
  */
-L3D.PointerCamera.prototype.moveHermite = function(otherCamera, toSave) {
+L3D.PointerCamera.prototype.moveHermite = function(recommendation, toSave) {
     if (toSave === undefined)
         toSave = true;
+
+    var otherCamera = recommendation.camera;
 
     this.movingHermite = true;
     this.t = 0;

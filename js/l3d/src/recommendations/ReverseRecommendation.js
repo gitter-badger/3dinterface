@@ -14,8 +14,8 @@ L3D.ReverseRecommendation.prototype.constructor = L3D.ReverseRecommendation;
 L3D.ReverseRecommendation.prototype.initExtremity = function() {
     var geometry = new THREE.Geometry();
 
-    var direction = this.target.clone();
-    direction.sub(this.position);
+    var direction = this.camera.target.clone();
+    direction.sub(this.camera.position);
     direction.normalize();
 
     var left = L3D.Tools.cross(direction, this.up);
@@ -26,18 +26,18 @@ L3D.ReverseRecommendation.prototype.initExtremity = function() {
     left = L3D.Tools.mul(left, this.size / 2 );
     other  = L3D.Tools.mul(other, this.size / 2);
 
-    var pyramidCenter = L3D.Tools.diff(this.position, L3D.Tools.mul(direction,0.25));
+    var pyramidCenter = L3D.Tools.diff(this.camera.position, L3D.Tools.mul(direction,0.25));
     geometry.vertices.push(
-        L3D.Tools.sum( L3D.Tools.sum( this.position, left),  other),
-        L3D.Tools.diff(L3D.Tools.sum( this.position, other), left),
-        L3D.Tools.diff(L3D.Tools.diff(this.position, left),  other),
-        L3D.Tools.sum( L3D.Tools.diff(this.position, other), left),
+        L3D.Tools.sum( L3D.Tools.sum( this.camera.position, left),  other),
+        L3D.Tools.diff(L3D.Tools.sum( this.camera.position, other), left),
+        L3D.Tools.diff(L3D.Tools.diff(this.camera.position, left),  other),
+        L3D.Tools.sum( L3D.Tools.diff(this.camera.position, other), left),
 
-        L3D.Tools.sum( L3D.Tools.sum( this.position, left),  other),
-        L3D.Tools.diff(L3D.Tools.sum( this.position, other), left),
-        L3D.Tools.diff(L3D.Tools.diff(this.position, left),  other),
-        L3D.Tools.sum( L3D.Tools.diff(this.position, other), left)
-        // L3D.Tools.diff(this.position, direction)
+        L3D.Tools.sum( L3D.Tools.sum( this.camera.position, left),  other),
+        L3D.Tools.diff(L3D.Tools.sum( this.camera.position, other), left),
+        L3D.Tools.diff(L3D.Tools.diff(this.camera.position, left),  other),
+        L3D.Tools.sum( L3D.Tools.diff(this.camera.position, other), left)
+        // L3D.Tools.diff(this.camera.position, direction)
     );
 
     var lambda = 0.6;
@@ -82,30 +82,30 @@ L3D.ReverseRecommendation.prototype.regenerateArrow = function(mainCamera) {
 
     // First point of curve
     var f0 = mainCamera.position.clone();
-    f0.add(L3D.Tools.mul(L3D.Tools.sum(new THREE.Vector3(0,-0.5,0), L3D.Tools.diff(this.target, this.position).normalize()),2));
+    f0.add(L3D.Tools.mul(L3D.Tools.sum(new THREE.Vector3(0,-0.5,0), L3D.Tools.diff(this.camera.target, this.camera.position).normalize()),2));
 
     // Last point of curve
-    var f1 = this.position.clone();
+    var f1 = this.camera.position.clone();
 
     // Last derivative of curve
-    var fp1 = L3D.Tools.diff(this.target, this.position);
+    var fp1 = L3D.Tools.diff(this.camera.target, this.camera.position);
     fp1.normalize();
     fp1.multiplyScalar(2);
 
     // Camera direction
-    var dir = L3D.Tools.diff(this.position, mainCamera.position);
+    var dir = L3D.Tools.diff(this.camera.position, mainCamera.position);
     dir.normalize();
 
     if (fp1.dot(dir) < -0.5) {
         // Regen polynom with better stuff
-        // var new_dir = L3D.Tools.cross(L3D.Tools.diff(this.position, mainCamera.position).normalize(), mainCamera.up);
+        // var new_dir = L3D.Tools.cross(L3D.Tools.diff(this.camera.position, mainCamera.position).normalize(), mainCamera.up);
         // new_dir.multiplyScalar(new_dir.dot(fp1) < 0 ? 1 : -1);
         // new_dir.add(dir);
         // new_dir.add(dir);
         // new_dir.multiplyScalar(2);
         // f0.add(new_dir);
 
-        if (mainCamera.position.y > this.position.y) {
+        if (mainCamera.position.y > this.camera.position.y) {
             f0.add(new THREE.Vector3(0,2,0));
         } else {
             f0.add(new THREE.Vector3(0,-2,0));
@@ -176,7 +176,7 @@ L3D.ReverseRecommendation.prototype.regenerateArrow = function(mainCamera) {
     this.arrow.geometry.computeBoundingSphere();
 
     // this.arrow.geometry.vertices[0] = new THREE.Vector3(); // mainCamera.position.clone();
-    // this.arrow.geometry.vertices[1] = this.position.clone();
+    // this.arrow.geometry.vertices[1] = this.camera.position.clone();
 
     this.arrow.geometry.dynamic = true;
     this.arrow.geometry.verticesNeedUpdate = true;

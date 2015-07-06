@@ -158,10 +158,10 @@ function initListeners() {
     document.addEventListener('keydown', function(event) { if (event.keyCode == 27) { stopFullscreen();} }, false);
 
     // HTML Bootstrap buttons
-    buttonManager = new ButtonManager(cameras, previewer);
+    buttonManager = new ButtonManager(camera1, cameras, previewer);
 
     // Camera selecter for hover and clicking recommendations
-    cameraSelecter = new L3D.CameraSelecter(renderer, scene, cameras, coins, buttonManager);
+    cameraSelecter = new L3D.CameraSelecter(renderer, scene, camera1, cameras, coins, buttonManager);
 }
 
 function render() {
@@ -184,21 +184,20 @@ function render() {
 
     // Update main camera
     var currentTime = Date.now() - previousTime;
-    cameras.updateMainCamera(isNaN(currentTime) ? 20 : currentTime);
+    camera1.update(isNaN(currentTime) ? 20 : currentTime);
     previousTime = Date.now();
 
     // Update the recommendations
-    cameras.update(cameras.mainCamera());
-
+    cameras.map(function(cam) { cam.update(camera1);});
 
     // Set current position of camera
-    cameras.look();
+    camera1.look();
 
     var left = 0, bottom = 0, width = container_size.width(), height = container_size.height();
     renderer.setScissor(left, bottom, width, height);
     renderer.enableScissorTest(true);
     renderer.setViewport(left, bottom, width, height);
-    renderer.render(scene, cameras.mainCamera());
+    renderer.render(scene, camera1);
 
     // Remove borders of preview
     previewer.clear();
@@ -207,7 +206,7 @@ function render() {
     cameras.map(function(camera) { if (camera instanceof Recommendation) hide(camera); });
 
     // Update transparent elements
-    THREEx.Transparency.update(cameras.mainCamera());
+    THREEx.Transparency.update(camera1);
 
     // Render preview
     previewer.render(cameraSelecter.prev, container_size.width(), container_size.height());

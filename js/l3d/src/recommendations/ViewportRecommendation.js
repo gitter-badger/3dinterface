@@ -5,26 +5,26 @@
  * @constructor
  */
 L3D.ViewportRecommendation = function(arg1, arg2, arg3, arg4, position, target) {
-    THREE.PerspectiveCamera.apply(this, arguments);
+    L3D.BaseRecommendation.apply(this, arguments);
 
     // Set Position
     if (position === undefined) {
-        this.position = new THREE.Vector3(0,0,5);
+        this.camera.position = new THREE.Vector3(0,0,5);
     } else {
-        this.position.x = position.x;
-        this.position.y = position.y;
-        this.position.z = position.z;
+        this.camera.position.x = position.x;
+        this.camera.position.y = position.y;
+        this.camera.position.z = position.z;
     }
 
     if (target === undefined)
         target = new THREE.Vector3(0,0,0);
 
     var direction = target.clone();
-    direction.sub(this.position);
+    direction.sub(this.camera.position);
     direction.normalize();
 
-    this.target = this.position.clone();
-    this.target.add(L3D.Tools.mul(direction,10));
+    this.camera.target = this.camera.position.clone();
+    this.camera.target.add(L3D.Tools.mul(direction,10));
     // this.up = new THREE.Vector3(0,0,1);
 
     // Compute corners
@@ -40,10 +40,10 @@ L3D.ViewportRecommendation = function(arg1, arg2, arg3, arg4, position, target) 
     left = L3D.Tools.mul(left, 1);
     other  = L3D.Tools.mul(other, 1);
 
-    geometry.vertices.push(L3D.Tools.sum(L3D.Tools.sum(this.position, left), other),
-                           L3D.Tools.diff(L3D.Tools.sum(this.position, other),left),
-                           L3D.Tools.diff(L3D.Tools.diff(this.position, left),other),
-                           L3D.Tools.sum(L3D.Tools.diff(this.position, other), left)
+    geometry.vertices.push(L3D.Tools.sum(L3D.Tools.sum(this.camera.position, left), other),
+                           L3D.Tools.diff(L3D.Tools.sum(this.camera.position, other),left),
+                           L3D.Tools.diff(L3D.Tools.diff(this.camera.position, left),other),
+                           L3D.Tools.sum(L3D.Tools.diff(this.camera.position, other), left)
                           );
 
     geometry.faces.push(new THREE.Face3(0,1,2), // new THREE.Face3(0,2,1),
@@ -90,18 +90,28 @@ L3D.ViewportRecommendation = function(arg1, arg2, arg3, arg4, position, target) 
 
     this.mesh = new THREE.Mesh(geometry, material);
     this.mesh.raycastable = true;
+
+    this.object3D = new THREE.Object3D();
+    this.object3D.add(this.mesh);
+    this.object3D.add(this.line);
+    this.add(this.object3D);
+
 };
-L3D.ViewportRecommendation.prototype = Object.create(THREE.PerspectiveCamera.prototype);
+L3D.ViewportRecommendation.prototype = Object.create(L3D.BaseRecommendation.prototype);
 L3D.ViewportRecommendation.prototype.constructor = L3D.ViewportRecommendation;
 
 L3D.ViewportRecommendation.prototype.check = function() {
     this.mesh.material.color.setHex(0x663366);
 };
 
+L3D.ViewportRecommendation.prototype.initExtremity = function() {
+
+}
+
 // Update function
 L3D.ViewportRecommendation.prototype.update = function(position) {
     // Compute distance between center of camera and position
-    dist = L3D.Tools.norm2(L3D.Tools.diff(position.position, this.position));
+    dist = L3D.Tools.norm2(L3D.Tools.diff(position.position, this.camera.position));
 
     var low_bound = 1;
     var high_bound = 5;
@@ -122,30 +132,10 @@ L3D.ViewportRecommendation.prototype.update = function(position) {
         this.mesh.material.transparent = this.mesh.visible = false;
 };
 
-// Look function
-L3D.ViewportRecommendation.prototype.look = function() {
-    this.lookAt(this.target);
-};
-
-L3D.ViewportRecommendation.prototype.addToScene = function(scene) {
-    scene.add(this);
-    scene.add(this.mesh);
-    scene.add(this.line);
-};
-
-L3D.ViewportRecommendation.prototype.traverse = function(callback) {
-    callback(this.mesh);
-    callback(this.line);
-};
-
-L3D.ViewportRecommendation.prototype.containsObject = function(object) {
-    return object === this.mesh;
-};
-
 L3D.ViewportRecommendation.prototype.setSize = function(size) {
 
-    var direction = this.target.clone();
-    direction.sub(this.position);
+    var direction = this.camera.target.clone();
+    direction.sub(this.camera.position);
     direction.normalize();
 
     var left = L3D.Tools.cross(direction, this.up);
@@ -156,10 +146,10 @@ L3D.ViewportRecommendation.prototype.setSize = function(size) {
     other  = L3D.Tools.mul(other, size);
 
     this.mesh.geometry.vertices = [
-        L3D.Tools.sum(L3D.Tools.sum(this.position, left), other),
-        L3D.Tools.diff(L3D.Tools.sum(this.position, other),left),
-        L3D.Tools.diff(L3D.Tools.diff(this.position, left),other),
-        L3D.Tools.sum(L3D.Tools.diff(this.position, other), left)
+        L3D.Tools.sum(L3D.Tools.sum(this.camera.position, left), other),
+        L3D.Tools.diff(L3D.Tools.sum(this.camera.position, other),left),
+        L3D.Tools.diff(L3D.Tools.diff(this.camera.position, left),other),
+        L3D.Tools.sum(L3D.Tools.diff(this.camera.position, other), left)
     ];
 
     this.mesh.geometry.verticesNeedUpdate = true;
