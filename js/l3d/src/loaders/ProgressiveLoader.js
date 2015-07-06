@@ -1,4 +1,10 @@
-L3D._parseList = function(arr) {
+L3D.ProgressiveLoader = (function() {
+
+/**
+ * Parse a list as it is sent by the server and gives a slightly more comprehensible result
+ * @private
+ */
+var _parseList = function(arr) {
 
     var ret = {};
     ret.index = arr[1];
@@ -14,11 +20,12 @@ L3D._parseList = function(arr) {
         ret.y = arr[3];
     } else if (arr[0] === 'f') {
         ret.type = 'face';
+        ret.mesh = arr[2];
 
         // Only Face3 are allowed
-        vertexIndices  = arr[2];
-        textureIndices = arr[3];
-        normalIndices  = arr[4];
+        vertexIndices  = arr[3];
+        textureIndices = arr[4];
+        normalIndices  = arr[5];
 
         // Vertex indices
         ret.a = vertexIndices[0];
@@ -63,35 +70,120 @@ L3D._parseList = function(arr) {
     return ret;
 };
 
-L3D.ProgressiveLoader = function(path, scene, camera, callback) {
-    // Init attributes
-    this.objPath = path.substring(1, path.length);
+/**
+ * Loads a mesh from socket.io
+ * @param {string} path path to the .obj file
+ * @param {THREE.Scene} scene to add the object
+ * @param {PointerCamera} camera the camera that will be sent to server for smart
+ * streaming (can be null, then the server will stream the mesh in the .obj
+ * order)
+ * @param {function} callback callback to call on the objects when they're created
+ * @constructor
+ * @memberOf L3D
+ */
+var ProgressiveLoader = function(path, scene, camera, callback) {
+
+    /**
+     * Path to the .obj file
+     * @type {string}
+     */
+    this.objPath = path;
+
+    /**
+     * Path to the folder where the textures are
+     * @type {string}
+     */
     this.texturesPath = path.substring(0, path.lastIndexOf('/')) + '/';
+
+    /**
+     * Path to the .mtl file
+     * @type {string}
+     */
     this.mtlPath = path.replace('.obj', '.mtl');
+
+    /**
+     * Reference to the scene in which the object should be added
+     */
     this.scene = scene;
+
+    /**
+     * Callback to call on the object when they're created
+     */
     this.callback = callback;
+
+    /**
+     * Counter (not used)
+     * @private
+     */
     this.counter = 0;
 
+    /**
+     * Group where the sub-objects will be added
+     * @type {THREE.Object3D}
+     */
     this.obj = new THREE.Object3D();
 
     scene.add(this.obj);
 
+    /**
+     * Array of the vertices of the mesh
+     * @type {THREE.Vector3[]}
+     */
     this.vertices = [];
+
+    /**
+     * Array of the texture coordinates of the mesh
+     * @type {THREE.Vector2[]}
+     */
     this.texCoords = [];
+
+    /**
+     * Array of the normal of the mesh
+     * @type {THREE.Vector3[]}
+     */
     this.normals = [];
 
-    // Init MTLLoader
+    /**
+     * Array of the UV mapping
+     * @description Each element is an array of 3 elements that are the indices
+     * of the element in <code>this.texCoords</code> that should be
+     * used as texture coordinates for the current vertex of the face
+     * @type {Number[][]}
+     */
+    this.uvs = [];
+
+    /**
+     * Array of all the meshes that will be added to the main object
+     * @type {THREE.Mesh[]}
+     */
+    this.meshes = [];
+
+    /**
+     * Loader for the material file
+     * @type {THREE.MTLLoader}
+     */
     this.loader = new THREE.MTLLoader(this.texturesPath);
 
-    // Init io stuff
+    /**
+     * Socket to connect to get the mesh
+     * @type {socket}
+     */
     this.socket = io();
+
     this.initIOCallbacks();
 
+    /**
+     * Reference to the camera
+     * @type {PointerCamera}
+     */
     this.camera = camera;
 
 };
 
-L3D.ProgressiveLoader.prototype.load = function() {
+/**
+ * Starts the loading of the mesh
+ */
+ProgressiveLoader.prototype.load = function() {
 
     var self = this;
 
@@ -106,16 +198,40 @@ L3D.ProgressiveLoader.prototype.load = function() {
     });
 };
 
-L3D.ProgressiveLoader.prototype.initIOCallbacks = function() {
+/**
+ * Will return a list representation of the camera (to be sent to the server)
+ */
+ProgressiveLoader.prototype.getCamera = function() {
+    if (this.camera === null)
+        return null;
+
+    return this.toList();
+};
+
+/**
+ * Initializes the socket.io functions so that it can discuss with the server
+ */
+ProgressiveLoader.prototype.initIOCallbacks = function() {
 
     var self = this;
 
     this.socket.on('ok', function() {
         console.log('ok');
-        self.socket.emit('next');
+        self.socket.emit('materials');
     });
 
     this.socket.on('elements', function(arr) {
+
+        if (arr.length === 0) {
+
+            console.log("Empty array");
+
+        } else {
+
+            console.log("Stuff received");
+
+        }
+
 
         // console.log("Received elements for the " + (++self.counter) + "th time !");
         for (var i = 0; i < arr.length; i++) {
@@ -126,29 +242,37 @@ L3D.ProgressiveLoader.prototype.initIOCallbacks = function() {
             if (elt.type === 'vertex') {
 
                 // New vertex arrived
-                self.vertices[elt.index] = [elt.x, elt.y, elt.z];
+
+                // Fill the array of vertices with null vector (to avoid undefined)
+                while (elt.index > self.vertices.length) {
+
+                    self.vertices.push(new THREE.Vector3());
+
+                }
+
+                self.vertices[elt.index] = new THREE.Vector3(elt.x, elt.y, elt.z);
+                self.currentMesh.geometry.verticesNeedUpdate = true;
 
             } else if (elt.type === 'texCoord') {
 
                 // New texCoord arrived
-                self.texCoords[elt.index] = [elt.x, elt.y];
+                self.texCoords[elt.index] = new THREE.Vector2(elt.x, elt.y);
+                self.currentMesh.geometry.uvsNeedUpdate = true;
 
             } else if (elt.type === 'normal') {
 
                 // New normal arrived
-                self.normals[elt.index] = [elt.x, elt.y, elt.z];
+                self.normals[elt.index] = new THREE.Vector3(elt.x, elt.y, elt.z);
 
             } else if (elt.type === 'usemtl') {
 
                 if (self.currentMesh !== undefined) {
 
-                    self.currentMesh.geometry.computeBoundingSphere();
+                    // if (self.currentMesh.geometry.attributes.normal === undefined) {
 
-                    if (self.currentMesh.geometry.attributes.normal === undefined) {
+                    //     self.currentMesh.geometry.computeVertexNormals();
 
-                        self.currentMesh.geometry.computeVertexNormals();
-
-                    }
+                    // }
 
                 }
 
@@ -175,41 +299,24 @@ L3D.ProgressiveLoader.prototype.initIOCallbacks = function() {
                 }
 
                 // Create mesh geometry
-                var geometry = new THREE.BufferGeometry();
-                geometry.dynamic = true;
+                self.uvs = [];
+                var geometry = new THREE.Geometry();
+                geometry.vertices = self.vertices;
+                geometry.faces = [];
 
-                var positionArray = new Float32Array(elt.fLength * 3 * 3);
-                var positionAttribute = new THREE.BufferAttribute(positionArray, 3);
-
-                geometry.addAttribute('position', positionAttribute);
-
-                // Add other attributes if necessary
+                // If texture coords, init faceVertexUvs attribute
                 if (elt.texCoordsExist) {
-
-                    // console.log("Mesh with textures");
-
-                    var uvArray = new Float32Array(elt.fLength * 3 * 2);
-                    var uvAttribute = new THREE.BufferAttribute(uvArray, 2);
-
-                    geometry.addAttribute('uv', uvAttribute);
+                    geometry.faceVertexUvs = [self.uvs];
                 }
 
-                if (elt.normalsExist) {
-
-                    // console.log("Mesh with normals");
-
-                    var normalArray = new Float32Array(elt.fLength * 3 * 3);
-                    var normalAttribute = new THREE.BufferAttribute(normalArray, 3);
-
-                    geometry.addAttribute('normal', normalAttribute);
-
-                }
+                geometry.dynamic = true;
 
                 // Create mesh
                 var mesh = new THREE.Mesh(geometry, material);
+                mesh.faceNumber = elt.fLength;
+                self.meshes.push(mesh);
 
                 self.currentMesh = mesh;
-                self.obj.add(mesh);
 
                 if (typeof self.callback === 'function') {
                     self.callback(mesh);
@@ -217,61 +324,45 @@ L3D.ProgressiveLoader.prototype.initIOCallbacks = function() {
 
             } else if (elt.type === 'face') {
 
-                // New face arrived : add it into current mesh
-                self.currentMesh.geometry.attributes.position.array[elt.index * 9    ] =  self.vertices[elt.a][0];
-                self.currentMesh.geometry.attributes.position.array[elt.index * 9 + 1] =  self.vertices[elt.a][1];
-                self.currentMesh.geometry.attributes.position.array[elt.index * 9 + 2] =  self.vertices[elt.a][2];
+                if (!self.meshes[elt.mesh].added) {
 
-                self.currentMesh.geometry.attributes.position.array[elt.index * 9 + 3] =  self.vertices[elt.b][0];
-                self.currentMesh.geometry.attributes.position.array[elt.index * 9 + 4] =  self.vertices[elt.b][1];
-                self.currentMesh.geometry.attributes.position.array[elt.index * 9 + 5] =  self.vertices[elt.b][2];
+                    self.meshes[elt.mesh].added = true;
+                    self.obj.add(self.meshes[elt.mesh]);
 
-                self.currentMesh.geometry.attributes.position.array[elt.index * 9 + 6] =  self.vertices[elt.c][0];
-                self.currentMesh.geometry.attributes.position.array[elt.index * 9 + 7] =  self.vertices[elt.c][1];
-                self.currentMesh.geometry.attributes.position.array[elt.index * 9 + 8] =  self.vertices[elt.c][2];
+                }
 
-                self.currentMesh.geometry.attributes.position.needsUpdate = true;
-
-                // If normals
                 if (elt.aNormal !== undefined) {
-
-                    self.currentMesh.geometry.attributes.normal.array[elt.index * 9    ] =  self.normals[elt.aNormal][0];
-                    self.currentMesh.geometry.attributes.normal.array[elt.index * 9 + 1] =  self.normals[elt.aNormal][1];
-                    self.currentMesh.geometry.attributes.normal.array[elt.index * 9 + 2] =  self.normals[elt.aNormal][2];
-
-                    self.currentMesh.geometry.attributes.normal.array[elt.index * 9 + 3] =  self.normals[elt.bNormal][0];
-                    self.currentMesh.geometry.attributes.normal.array[elt.index * 9 + 4] =  self.normals[elt.bNormal][1];
-                    self.currentMesh.geometry.attributes.normal.array[elt.index * 9 + 5] =  self.normals[elt.bNormal][2];
-
-                    self.currentMesh.geometry.attributes.normal.array[elt.index * 9 + 6] =  self.normals[elt.cNormal][0];
-                    self.currentMesh.geometry.attributes.normal.array[elt.index * 9 + 7] =  self.normals[elt.cNormal][1];
-                    self.currentMesh.geometry.attributes.normal.array[elt.index * 9 + 8] =  self.normals[elt.cNormal][2];
-
-                    self.currentMesh.geometry.attributes.normal.needsUpdate = true;
-
+                    self.meshes[elt.mesh].geometry.faces.push(new THREE.Face3(elt.a, elt.b, elt.c, [self.normals[elt.aNormal], self.normals[elt.bNormal], self.normals[elt.cNormal]]));
+                } else {
+                    self.meshes[elt.mesh].geometry.faces.push(new THREE.Face3(elt.a, elt.b, elt.c));
+                    self.meshes[elt.mesh].geometry.computeFaceNormals();
+                    self.meshes[elt.mesh].geometry.computeVertexNormals();
                 }
 
                 if (elt.aTexture !== undefined) {
 
-                    self.currentMesh.geometry.attributes.uv.array[elt.index * 6    ] =  self.texCoords[elt.aTexture][0];
-                    self.currentMesh.geometry.attributes.uv.array[elt.index * 6 + 1] =  self.texCoords[elt.aTexture][1];
-
-                    self.currentMesh.geometry.attributes.uv.array[elt.index * 6 + 2] =  self.texCoords[elt.bTexture][0];
-                    self.currentMesh.geometry.attributes.uv.array[elt.index * 6 + 3] =  self.texCoords[elt.bTexture][1];
-
-                    self.currentMesh.geometry.attributes.uv.array[elt.index * 6 + 4] =  self.texCoords[elt.cTexture][0];
-                    self.currentMesh.geometry.attributes.uv.array[elt.index * 6 + 5] =  self.texCoords[elt.cTexture][1];
-
-                    self.currentMesh.geometry.attributes.uv.needsUpdate = true;
+                    self.meshes[elt.mesh].geometry.faceVertexUvs[0].push([self.texCoords[elt.aTexture], self.texCoords[elt.bTexture], self.texCoords[elt.cTexture]]);
 
                 }
+
+                self.meshes[elt.mesh].geometry.verticesNeedUpdate = true;
+                self.meshes[elt.mesh].geometry.uvsNeedUpdate = true;
+                self.meshes[elt.mesh].geometry.normalsNeedUpdate = true;
+                self.meshes[elt.mesh].geometry.groupsNeedUpdate = true;
+
+                if (self.meshes[elt.mesh].faceNumber === self.meshes[elt.mesh].geometry.faces.length) {
+
+                    self.meshes[elt.mesh].geometry.computeBoundingSphere();
+
+                }
+
 
             }
 
         }
 
         // Ask for next elements
-        self.socket.emit('next');
+        self.socket.emit('next', self.getCamera());
     });
 
     this.socket.on('disconnect', function() {
@@ -280,7 +371,13 @@ L3D.ProgressiveLoader.prototype.initIOCallbacks = function() {
     });
 };
 
-L3D.ProgressiveLoader.prototype.start = function() {
+/**
+ * Starts the communication with the server
+ */
+ProgressiveLoader.prototype.start = function() {
     this.socket.emit('request', this.objPath);
 };
 
+return ProgressiveLoader;
+
+})();

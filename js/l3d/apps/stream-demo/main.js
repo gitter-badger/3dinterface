@@ -45,7 +45,7 @@ function init() {
 
     // Load the scene
     // loader = new THREE.OBJLoader();
-    sphereLoader = new L3D.ProgressiveLoaderGeometry('/static/data/spheres/' + params.get.res + '.obj', scene, null);
+    sphereLoader = new L3D.ProgressiveLoader('/static/data/spheres/' + params.get.res + '.obj', scene, null);
     sphereLoader.load();
     sphere = sphereLoader.obj;
 

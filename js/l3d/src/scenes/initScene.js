@@ -12,7 +12,7 @@ L3D.addLight = function(scene) {
 
 L3D.initPeachCastle = function(scene, collidableObjects, camera) {
 
-    var loader = new L3D.ProgressiveLoaderGeometry(
+    var loader = new L3D.ProgressiveLoader(
         '/static/data/castle/princess peaches castle (outside).obj',
         scene,
         null,
@@ -154,7 +154,7 @@ L3D.createPeachCameras = function(width, height) {
 
 L3D.initBobombScene = function(scene, collidableObjects, camera) {
 
-    var loader = new L3D.ProgressiveLoaderGeometry(
+    var loader = new L3D.ProgressiveLoader(
         '/static/data/bobomb/bobomb battlefeild.obj',
         scene,
         null,
@@ -299,7 +299,7 @@ L3D.initBobomb = function(camera, scene, coins) {
 
 L3D.initWhompScene = function(scene, collidableObjects, camera) {
 
-    var loader = new L3D.ProgressiveLoaderGeometry(
+    var loader = new L3D.ProgressiveLoader(
         '/static/data/whomp/Whomps Fortress.obj',
         scene,
         null,
@@ -471,7 +471,7 @@ L3D.initWhomp = function(camera, scene, coins) {
 
 L3D.initMountainScene = function(scene, collidableObjects, camera) {
 
-    var loader = new L3D.ProgressiveLoaderGeometry(
+    var loader = new L3D.ProgressiveLoader(
         '/static/data/mountain/coocoolmountain.obj',
         scene,
         null,
@@ -622,7 +622,7 @@ L3D.initMountain = function(camera, scene, coins) {
 
 L3D.initSponzaScene = function(scene, collidableObjects, camera) {
 
-    var loader = new L3D.ProgressiveLoaderGeometry(
+    var loader = new L3D.ProgressiveLoader(
         '/static/data/sponza/sponza.obj',
         scene,
         camera,
