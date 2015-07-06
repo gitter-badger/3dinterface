@@ -19,10 +19,7 @@ L3D.FixedCamera = function(arg1, arg2, arg3, arg4, position, target) {
 
     }
 
-    this.position.x = position.x;
-    this.position.y = position.y;
-    this.position.z = position.z;
-
+    this.position.copy(position);
     this.target = target.clone();
 
 };

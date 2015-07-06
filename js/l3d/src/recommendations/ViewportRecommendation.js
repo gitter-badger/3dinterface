@@ -7,15 +7,6 @@
 L3D.ViewportRecommendation = function(arg1, arg2, arg3, arg4, position, target) {
     L3D.BaseRecommendation.apply(this, arguments);
 
-    // Set Position
-    if (position === undefined) {
-        this.camera.position = new THREE.Vector3(0,0,5);
-    } else {
-        this.camera.position.x = position.x;
-        this.camera.position.y = position.y;
-        this.camera.position.z = position.z;
-    }
-
     if (target === undefined)
         target = new THREE.Vector3(0,0,0);
 

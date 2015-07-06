@@ -59,9 +59,7 @@ L3D.ReplayCamera.prototype.update = function(time) {
 
 L3D.ReplayCamera.prototype.linearMotion = function(time) {
     var tmp = L3D.Tools.sum(L3D.Tools.mul(this.old_position, 1-this.t), L3D.Tools.mul(this.new_position, this.t));
-    this.position.x = tmp.x;
-    this.position.y = tmp.y;
-    this.position.z = tmp.z;
+    this.position.copy(tmp);
     this.t += 0.1 * time / 20;
 
     if (this.t > 1) {
@@ -72,9 +70,7 @@ L3D.ReplayCamera.prototype.linearMotion = function(time) {
 L3D.ReplayCamera.prototype.cameraMotion = function(time) {
 
     var tmp = L3D.Tools.sum(L3D.Tools.mul(this.old_position, 1-this.t), L3D.Tools.mul(this.new_position, this.t));
-    this.position.x = tmp.x;
-    this.position.y = tmp.y;
-    this.position.z = tmp.z;
+    this.position.copy(tmp);
     this.target = L3D.Tools.sum(L3D.Tools.mul(this.old_target, 1-this.t), L3D.Tools.mul(this.new_target, this.t));
     this.t += 1 / (((new Date(this.path[this.counter].time)).getTime() - (new Date(this.path[this.counter-1].time)).getTime()) / 20);
 
@@ -85,9 +81,7 @@ L3D.ReplayCamera.prototype.cameraMotion = function(time) {
 
 L3D.ReplayCamera.prototype.hermiteMotion = function(time) {
     var e = this.hermitePosition.eval(this.t);
-    this.position.x = e.x;
-    this.position.y = e.y;
-    this.position.z = e.z;
+    this.position.copy(tmp);
 
     this.target = L3D.Tools.sum(this.position, this.hermiteAngles.eval(this.t));
 
