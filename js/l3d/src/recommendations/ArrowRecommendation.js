@@ -1,6 +1,8 @@
-// Initialization
-
-// class camera extends THREE.PerspectiveCamera
+/**
+ * @description Represents a reccomendation displayed as an arrow
+ * @constructor
+ * @extends L3D.BaseRecommendation
+ */
 L3D.ArrowRecommendation = function(arg1, arg2, arg3, arg4, position, target) {
     L3D.BaseRecommendation.apply(this, arguments);
 };

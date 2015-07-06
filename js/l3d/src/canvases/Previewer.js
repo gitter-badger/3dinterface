@@ -2,16 +2,72 @@ Math.clamp = Math.clamp || function(number, min, max) {
     return Math.max(Math.min(number, max), min);
 };
 
+/**
+ * @memberof L3D
+ * @constructor
+ * @param {THREE.Renderer} renderer the renderer to use
+ * @param {THREE.Scene} scene the scene to render
+ * @description Displays a small preview of a camera
+ */
 L3D.Previewer = function(renderer, scene) {
+    /**
+     * @type {element}
+     * @description The document element to add on top of the renderer
+     */
     this.domElement = document.createElement('canvas');
+
+    /**
+     * @type {CanvasRenderingContext2D}
+     * @description The context of domElement
+     */
     this.ctx = this.domElement.getContext('2d');
+
+    /**
+     * @type {THREE.Renderer}
+     * @description The renderer to use
+     */
     this.renderer = renderer;
-    this.fixed = false;
+
+    /**
+     * @type {THREE.Scene}
+     * @description The scene to render
+     */
     this.scene = scene;
+
+    /**
+     * @type {Boolean}
+     * @description true if the preview should be stuck at the bottom left of the container,
+     * false if it should appear near the mouse
+     */
+    this.fixed = false;
+
+    /**
+     * @private
+     * @type {Boolean}
+     * @description true if the rendering as already been done
+     */
     this.drawn = false;
+
+    /**
+     * @private
+     * @type {Boolean}
+     * @description true if the rendering was done before
+     */
     this.drawnBefore = false;
 };
 
+/**
+ * Renders the preview
+ * @param {Object} pref an object containing :
+ * <ul>
+ *  <li><code>go</code> : a boolean if the rendering should be done</li>
+ *  <li><code>x</code> : the x coordinate of the mouse</li>
+ *  <li><code>y</code> : the y coordinate of the mouse</li>
+ *  <li><code>camera</code> : the camera to use for the preview</li>
+ * </ul>
+ * @param {Number} container_width width of the container
+ * @param {Number} container_height height of the container
+ */
 L3D.Previewer.prototype.render = function(prev, container_width, container_height) {
     var width, height, left, bottom;
 
@@ -79,6 +135,9 @@ L3D.Previewer.prototype.render = function(prev, container_width, container_heigh
 
 };
 
+/**
+ * Clears the borders of the preview
+ */
 L3D.Previewer.prototype.clear = function() {
     if (this.clearNeeded) {
         this.domElement.width = this.domElement.width;
@@ -86,10 +145,19 @@ L3D.Previewer.prototype.clear = function() {
     }
 };
 
+/**
+ * Setter for the fixed preview
+ * @param {Boolean} true if you want to fix the preview, false otherwise
+ */
 L3D.Previewer.prototype.fixedRecommendation = function(bool) {
     this.fixed = bool;
 };
 
+/**
+ * @private
+ * @description Update flags
+ * @param {Boolean} arg if the update drew something
+ */
 L3D.Previewer.prototype.update = function(arg) {
     this.drawnBefore = this.drawn;
     this.drawn = arg;

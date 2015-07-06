@@ -1,6 +1,10 @@
-// Initialization
-
-// class camera extends THREE.PerspectiveCamera
+/**
+ * @memberof L3D
+ * @description The base class for recommendation
+ * @constructor
+ * @extends THREE.PerspectiveCamera
+ * @abstract
+ */
 L3D.BaseRecommendation = function(arg1, arg2, arg3, arg4, position, target) {
     THREE.PerspectiveCamera.apply(this, arguments);
 
@@ -41,6 +45,9 @@ L3D.BaseRecommendation = function(arg1, arg2, arg3, arg4, position, target) {
 L3D.BaseRecommendation.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 L3D.BaseRecommendation.prototype.constructor = L3D.BaseRecommendation;
 
+/**
+ * Changes the color of the meshes like a HTML link
+ */
 L3D.BaseRecommendation.prototype.check = function() {
     this.object3D.traverse(function(obj) {
         if (obj instanceof THREE.Mesh)
@@ -48,6 +55,9 @@ L3D.BaseRecommendation.prototype.check = function() {
     });
 };
 
+/**
+ * Initialize the extremity of the arrow
+ */
 L3D.BaseRecommendation.prototype.initExtremity = function() {
     var geometry = new THREE.Geometry();
 
@@ -92,6 +102,9 @@ L3D.BaseRecommendation.prototype.initExtremity = function() {
     return this.mesh;
 };
 
+/**
+ * Updates the extremity of the arrow
+ */
 L3D.BaseRecommendation.prototype.updateExtremity = function() {
     var direction = this.target.clone();
     direction.sub(this.position);
@@ -118,12 +131,22 @@ L3D.BaseRecommendation.prototype.updateExtremity = function() {
 
 };
 
+/**
+ * Changes the size of the element
+ * @param size {Number} new size
+ * @deprecated this function doesn't work since there are lots of things to
+ * keep in mind (length of the arrow, width, size of the body, size of the
+ * extremity...)
+ */
 L3D.BaseRecommendation.prototype.setSize = function(size) {
     this.size = size;
     this.updateExtremity();
 };
 
-// Update function
+/**
+ * Updates the arrow. The arrow is moving according to the position of the camera
+ * @param {Object} a camera containing two THREE.Vector3 (position, and target)
+ */
 L3D.BaseRecommendation.prototype.update = function(mainCamera) {
     // Compute distance between center of camera and position
     dist = L3D.Tools.norm2(L3D.Tools.diff(mainCamera.position, this.center));
@@ -156,6 +179,10 @@ L3D.BaseRecommendation.prototype.update = function(mainCamera) {
     this.regenerateArrow(mainCamera);
 };
 
+/**
+ * Regenerates the arrow according to the position of the camera
+ * @param {Object} a camera containing two THREE.Vector3 (position, and target)
+ */
 L3D.BaseRecommendation.prototype.regenerateArrow = function(mainCamera) {
     var i;
     var vertices = [];
@@ -266,20 +293,34 @@ L3D.BaseRecommendation.prototype.regenerateArrow = function(mainCamera) {
 
 };
 
-// Look function
+/**
+ * Look at function. Just like OpenGL gluLookAt (from position to target)
+ */
 L3D.BaseRecommendation.prototype.look = function() {
     this.lookAt(this.target);
 };
 
+/**
+ * Add the camera and its mesh representation to the scene
+ * @param scene {THREE.Scene} scene to add the camera to
+ */
 L3D.BaseRecommendation.prototype.addToScene = function(scene) {
     scene.add(this);
     scene.add(this.object3D);
 };
 
+/**
+ * Apply a callback to all objects representing the camera
+ * @param callback {function} callback to call on each mesh
+ */
 L3D.BaseRecommendation.prototype.traverse = function(callback) {
     this.object3D.traverse(callback);
 };
 
+/**
+ * Checks if an object is contained in the representation of the camera
+ * @param object {THREE.Object3D} Object that could belong the camera
+ */
 L3D.BaseRecommendation.prototype.containsObject = function(object) {
     return object.parent === this.object3D;
 };

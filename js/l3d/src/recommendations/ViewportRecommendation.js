@@ -1,6 +1,9 @@
-// Initialization
-
-// class camera extends THREE.PerspectiveCamera
+/**
+ * @memberof L3D
+ * @extends L3D.BaseRecommendation
+ * @description Reprensents a recommendation as a viewport (3D representation of a camera)
+ * @constructor
+ */
 L3D.ViewportRecommendation = function(arg1, arg2, arg3, arg4, position, target) {
     THREE.PerspectiveCamera.apply(this, arguments);
 

@@ -1,19 +1,89 @@
+/**
+ * Contains a canvas to place over the renderer for FPS-style pointer
+ * It's based on a javascript 2d-canvas : you'll need to render it manually.
+ *
+ * @example
+ * var container = documeng.getElementById('container');
+ * var renderer = new THREE.WebGLRenderer();
+ * renderer.setSize(width, height);
+ *
+ * var pointerCamera = new L3D.PointerCamera(50, width/height, near, fat, renderer, container);
+ * var mousePointer = new L3D.MousePointer(pointerCamera);
+ * mousePointer.domElement.width = width;
+ * mousePointer.domElement.height = height;
+ *
+ * container.appendChild(mousePointer.domElement);
+ * container.appendChild(renderer.domElement);
+ *
+ * mousePointer.render(L3D.MousePointer.BLACK);
+ * @memberof L3D
+ * @constructor
+ */
 L3D.MousePointer = function(camera) {
 
+    /**
+     * @type {elemnt}
+     * @description The document element to add on top of the renderer
+     */
     this.domElement = document.createElement('canvas');
+
     this.domElement.style.position = 'absolute';
     this.domElement.style.cssFloat = 'top-left';
+
+    /**
+     * @type {CanvasRenderingContext2D}
+     * @description The context of the canvas
+     */
     this.ctx = this.domElement.getContext('2d');
+
+    /**
+     * @type {Number}
+     * @description The size of the gun sight
+     */
     this.size = 10;
-    this.drawn = false;
+
     camera.mousePointer = this;
+
+    /**
+     * @type {Number}
+     * @description a L3D.MousePointer style. The current style of the mouse pointer
+     */
     this.style = L3D.MousePointer.NONE;
+
 };
 
+/**
+ * @memberof L3D.MousePointer
+ * @type {Number}
+ * @static
+ * @description Empty style : the canvas is fully transparent
+ */
 L3D.MousePointer.NONE = 0;
+
+/**
+ * @memberof L3D.MousePointer
+ * @type {Number}
+ * @static
+ * @description Black style : the canvas contains only a white cross in the middle of the screen
+ */
 L3D.MousePointer.BLACK = 1;
+
+/**
+ * @memberof L3D.MousePointer
+ * @type {Number}
+ * @static
+ * @description Red style : the canvas contains only a white and red cross in the midlle
+ * (used for hovering stuff)
+ */
 L3D.MousePointer.RED = 2;
 
+/**
+ * @memberof L3D.MousePointer
+ * @static
+ * @description Converts a style to a color
+ * @param {Number} style a L3D.MousePointer style (NONE, BLACK, or RED)
+ * @returns {string} null if input is NONE, a hex color string else
+ */
 L3D.MousePointer.toColor = function(style) {
 
     switch (style) {
@@ -29,9 +99,28 @@ L3D.MousePointer.toColor = function(style) {
 
 };
 
-L3D.MousePointer.prototype.render = function(style) {
+/**
+ * Re-renders the canvas
+ * For performance reasons, the rendering is done only if the style changed.
+ * @param {Number} style the L3D.MousePointer style you want to render
+ * @param {Boolean} force force the re-rendering (even if the style did not change)
+ *
+ */
+L3D.MousePointer.prototype.render = function(style, force) {
 
-    if (this.style !== style) {
+    if (style === undefined) {
+
+        style = L3D.MousePointer.NONE;
+
+    }
+
+    if (force === undefined) {
+
+        force = false;
+
+    }
+
+    if (this.style !== style || force) {
 
         if (style === L3D.MousePointer.NONE) {
 
@@ -75,8 +164,18 @@ L3D.MousePointer.prototype.render = function(style) {
 
 };
 
-L3D.MousePointer.prototype.clear = function() {
+/**
+ * Clears the canvas
+ * @param {Boolean} force force the clearing (even if the style did not change)
+ */
+L3D.MousePointer.prototype.clear = function(force) {
 
-    this.render(L3D.MousePointer.NONE);
+    if (force === undefined) {
+
+        force = false;
+
+    }
+
+    this.render(L3D.MousePointer.NONE, force);
 
 };

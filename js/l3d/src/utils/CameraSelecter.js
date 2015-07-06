@@ -116,59 +116,26 @@ L3D.CameraSelecter.prototype.update = function(event, y) {
 L3D.CameraSelecter.prototype.click = function(event) {
     var e;
 
-    if (this.cameras.mainCamera().pointerLocked === false) {
+    var newCamera = this.pointedCamera();
 
-        var newCamera = this.pointedCamera();
+    if (newCamera !== undefined && !(newCamera instanceof Coin)) {
 
-        if (newCamera !== undefined && !(newCamera instanceof Coin)) {
+        e = new L3D.BD.Event.ArrowClicked();
+        e.arrow_id = this.cameras.cameras.indexOf(newCamera);
+        e.send();
 
-            e = new L3D.BD.Event.ArrowClicked();
-            e.arrow_id = this.cameras.cameras.indexOf(newCamera);
-            e.send();
+        newCamera.check();
+        this.cameras.mainCamera().moveHermite(newCamera);
+        buttonManager.updateElements();
 
-            newCamera.check();
-            this.cameras.mainCamera().moveHermite(newCamera);
-            buttonManager.updateElements();
+    } else if (newCamera instanceof Coin) {
 
-        } else if (newCamera instanceof Coin) {
-
-            // Coin found, notify server
-            e = new L3D.BD.Event.CoinClicked();
-            e.coin_id = this.coins.indexOf(newCamera);
-            e.send();
-            newCamera.get();
-
-        }
+        // Coin found, notify server
+        e = new L3D.BD.Event.CoinClicked();
+        e.coin_id = this.coins.indexOf(newCamera);
+        e.send();
+        newCamera.get();
 
     }
 
-};
-
-L3D.CameraSelecter.prototype.clickPointer = function(event) {
-    var e;
-
-    if (this.cameras.mainCamera().pointerLocked) {
-
-        var newCamera = this.pointedCamera();
-
-        if (newCamera !== undefined && !(newCamera instanceof Coin)) {
-
-            e = new L3D.BD.Event.ArrowClicked();
-            e.arrow_id = this.cameras.cameras.indexOf(newCamera);
-            e.send();
-
-            newCamera.check();
-            this.cameras.mainCamera().moveHermite(newCamera);
-            buttonManager.updateElements();
-
-        } else if (newCamera instanceof Coin) {
-
-            // Coin found, notify server
-            e = new L3D.BD.Event.CoinClicked();
-            e.coin_id = this.coins.indexOf(newCamera);
-            e.send();
-            newCamera.get();
-
-        }
-    }
 };

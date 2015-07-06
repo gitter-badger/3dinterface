@@ -143,13 +143,6 @@ function initListeners() {
     window.addEventListener('resize', onWindowResize, false);
 
     // Transmit click event to camera selecter
-    document.addEventListener('mousedown', function(event) {
-        if (event.which == 1)
-            cameraSelecter.clickPointer(event);
-        }, false
-    );
-
-    // Transmit click event to camera selecter
     container.addEventListener('mousedown', function(event) {
         if (event.which == 1)
             cameraSelecter.click(event);

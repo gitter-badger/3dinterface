@@ -6,13 +6,14 @@ else
 	CLOSURE=../utils/simple-compiler/compiler.sh
 endif
 
-all: L3D L3DP Socket Three Stats Bouncing Multisphere StreamingSimulator PrototypeReplay PrototypeInteractive Tutorial
+all: L3D L3DP Socket Three Stats Bouncing Multisphere StreamingSimulator PrototypeReplay PrototypeInteractive Tutorial TestList
 
 L3D:
 	$(CLOSURE) $(OPT) \
 		--js l3d/src/l3d.js \
 		--js l3d/src/math/Tools.js \
 		--js l3d/src/math/Hermite.js \
+		--js l3d/src/utils/List.js \
 		--js l3d/src/utils/CameraSelecter.js \
 		--js l3d/src/utils/Logger.js \
 		--js l3d/src/utils/Objects.js \
@@ -32,6 +33,13 @@ L3D:
 		--js l3d/src/cameras/CameraContainer.js \
 		--js l3d/src/scenes/initScene.js \
 		--js_output_file ../static/js/l3d.min.js
+
+TestList:
+	$(CLOSURE) $(OPT) \
+		--js l3d/src/l3d.js \
+		--js l3d/src/utils/List.js \
+		--js l3d/src/utils/ListTest.js \
+		--js_output_file ../static/js/ListTest.min.js
 
 L3DP:
 	$(CLOSURE) $(OPT) \

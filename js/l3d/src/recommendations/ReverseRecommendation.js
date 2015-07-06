@@ -1,3 +1,9 @@
+/**
+ * @constructor
+ * @memberof L3D
+ * @description Different representation of 3D recommendation (kind of a weird one)
+ * @extends L3D.BaseRecommendation
+ */
 L3D.ReverseRecommendation = function(arg1, arg2, arg3, arg4, position, target) {
     L3D.BaseRecommendation.apply(this, arguments);
 };
