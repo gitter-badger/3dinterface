@@ -58,11 +58,6 @@ app.use(function(req, res, next) {
     next();
 });
 
-// app.use(function(req, res, next) {
-//     console.log(req.session.user_id);
-//     next();
-// });
-
 // Load controllers
 require('./lib/controllers')(app, { verbose: isDev });
 
