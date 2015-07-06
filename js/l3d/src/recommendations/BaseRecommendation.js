@@ -1,6 +1,7 @@
 /**
  * @memberof L3D
  * @description The base class for recommendation
+ * @extends THREE.Object3D
  * @constructor
  * @abstract
  */
@@ -8,6 +9,10 @@ L3D.BaseRecommendation = function(arg1, arg2, arg3, arg4, position, target) {
 
     THREE.Object3D.apply(this);
 
+    /**
+     * @type {L3D.FixedCamera}
+     * @description Camera corresponding to the suggested point of view
+     */
     this.camera = new L3D.FixedCamera(arg1, arg2, arg3, arg4, position, target);
     this.add(this.camera);
 
@@ -15,15 +20,30 @@ L3D.BaseRecommendation = function(arg1, arg2, arg3, arg4, position, target) {
     direction.sub(this.camera.position);
     direction.normalize();
 
+    /**
+     * @type {THREE.Vector3}
+     * @description Center of the square at the base of the arrow
+     */
     this.center = this.camera.position.clone();
     this.center.sub(direction);
 
-
+    /**
+     * @type {THREE.Mesh}
+     * @description Body of the arrow
+     */
     this.arrow = new THREE.Mesh(new THREE.Geometry(), new THREE.MeshLambertMaterial({color: 0x0000ff, side:THREE.BackSide}));
     this.add(this.arrow);
 
+    /**
+     * @type {Number}
+     * @description Size of the meshes
+     */
     this.size = 0.4;
 
+    /**
+     * @type {THREE.Object3D}
+     * @description A container for the displayable objects in the Recommendation
+     */
     this.object3D = new THREE.Object3D();
 
     var tmp = this.initExtremity();
@@ -36,8 +56,6 @@ L3D.BaseRecommendation = function(arg1, arg2, arg3, arg4, position, target) {
     this.add(this.object3D);
 
     this.fullArrow = false;
-
-    r = this;
 
 };
 L3D.BaseRecommendation.prototype = Object.create(THREE.Object3D.prototype);
@@ -203,13 +221,6 @@ L3D.BaseRecommendation.prototype.regenerateArrow = function(mainCamera) {
 
     if (fp1.dot(dir) < -0.5) {
         // Regen polynom with better stuff
-        // var new_dir = L3D.Tools.cross(L3D.Tools.diff(this.position, mainCamera.position).normalize(), mainCamera.up);
-        // new_dir.multiplyScalar(new_dir.dot(fp1) < 0 ? 1 : -1);
-        // new_dir.add(dir);
-        // new_dir.add(dir);
-        // new_dir.multiplyScalar(2);
-        // f0.add(new_dir);
-
         if (mainCamera.position.y > this.camera.position.y) {
             f0.add(new THREE.Vector3(0,2,0));
         } else {
@@ -227,7 +238,6 @@ L3D.BaseRecommendation.prototype.regenerateArrow = function(mainCamera) {
     var deriv;
     var limit = this.fullArrow ? 0.1 : 0.3;
 
-    // for (var i = this.fullArrow ? 0 : 0.5; i <= 1.001; i += 0.05) {
     for (i = 1; i > limit; i -= 0.1) {
         point = hermite.eval(i);
         deriv = hermite.prime(i);
@@ -263,30 +273,18 @@ L3D.BaseRecommendation.prototype.regenerateArrow = function(mainCamera) {
         var len = vertices.length;
         faces.push(new THREE.Face3(len-4,len-3,len-2), new THREE.Face3(len-4,len-2,len-1));
 
-        // var max = 0;
-        // for (var i = 0; i < faces.length; i++) {
-        //     max = Math.max(max, faces[i].a, faces[i].b, faces[i].c);
-        // }
-        // console.log(max + '/' + len);
-
-
+        // Faces changed, update them
         this.arrow.geometry.faces = faces;
         this.arrow.geometry.groupsNeedUpdate = true;
         this.arrow.geometry.elementsNeedUpdate = true;
     }
 
-    // this.arrow.geometry.mergeVertices();
     this.arrow.geometry.computeFaceNormals();
-    // this.arrow.geometry.computeVertexNormals();
     this.arrow.geometry.computeBoundingSphere();
 
-    // this.arrow.geometry.vertices[0] = new THREE.Vector3(); // mainCamera.position.clone();
-    // this.arrow.geometry.vertices[1] = this.position.clone();
-
+    // Vertices and normals changed, update them
     this.arrow.geometry.dynamic = true;
     this.arrow.geometry.verticesNeedUpdate = true;
-    // this.arrow.geometry.elementsNeedUpdate = true;
-    // this.arrow.geometry.groupsNeedUpdate = true;en-US
     this.arrow.geometry.normalsNeedUpdate = true;
 
 };
