@@ -23,8 +23,6 @@ L3D.ViewportRecommendation = function(arg1, arg2, arg3, arg4, position, target) 
     direction.sub(this.camera.position);
     direction.normalize();
 
-    this.camera.target = this.camera.position.clone();
-    this.camera.target.add(L3D.Tools.mul(direction,10));
     // this.up = new THREE.Vector3(0,0,1);
 
     // Compute corners
@@ -54,27 +52,27 @@ L3D.ViewportRecommendation = function(arg1, arg2, arg3, arg4, position, target) 
         var material = new THREE.LineBasicMaterial({ color: '0x000000'});
         var geometry = new THREE.Geometry();
         var tmp_direction = L3D.Tools.mul(direction, -2);
-        var target = L3D.Tools.sum(self.position, tmp_direction);
-        // geometry.vertices.push(self.position, target);
+        var target = L3D.Tools.sum(self.camera.position, tmp_direction);
+        // geometry.vertices.push(self.camera.position, target);
         geometry.vertices.push(
-            L3D.Tools.sum(L3D.Tools.sum(self.position, left), other),
-            L3D.Tools.diff(L3D.Tools.sum(self.position, other),left),
-            L3D.Tools.diff(L3D.Tools.diff(self.position, left),other),
-            L3D.Tools.sum(L3D.Tools.diff(self.position, other), left),
-            L3D.Tools.sum(L3D.Tools.sum(self.position, left), other),
-            L3D.Tools.sum(L3D.Tools.diff(self.position, other), left),
+            L3D.Tools.sum(L3D.Tools.sum(self.camera.position, left), other),
+            L3D.Tools.diff(L3D.Tools.sum(self.camera.position, other),left),
+            L3D.Tools.diff(L3D.Tools.diff(self.camera.position, left),other),
+            L3D.Tools.sum(L3D.Tools.diff(self.camera.position, other), left),
+            L3D.Tools.sum(L3D.Tools.sum(self.camera.position, left), other),
+            L3D.Tools.sum(L3D.Tools.diff(self.camera.position, other), left),
 
-            L3D.Tools.sum(self.position, tmp_direction),
-            L3D.Tools.sum(L3D.Tools.sum(self.position, left), other),
+            L3D.Tools.sum(self.camera.position, tmp_direction),
+            L3D.Tools.sum(L3D.Tools.sum(self.camera.position, left), other),
 
-            L3D.Tools.sum(self.position, tmp_direction),
-            L3D.Tools.diff(L3D.Tools.sum(self.position, other),left),
+            L3D.Tools.sum(self.camera.position, tmp_direction),
+            L3D.Tools.diff(L3D.Tools.sum(self.camera.position, other),left),
 
-            L3D.Tools.sum(self.position, tmp_direction),
-            L3D.Tools.diff(L3D.Tools.diff(self.position, left),other),
+            L3D.Tools.sum(self.camera.position, tmp_direction),
+            L3D.Tools.diff(L3D.Tools.diff(self.camera.position, left),other),
 
-            L3D.Tools.sum(self.position, tmp_direction),
-            L3D.Tools.sum(L3D.Tools.diff(self.position, other), left)
+            L3D.Tools.sum(self.camera.position, tmp_direction),
+            L3D.Tools.sum(L3D.Tools.diff(self.camera.position, other), left)
         );
 
         self.line = new THREE.Line(geometry, material);
@@ -157,27 +155,27 @@ L3D.ViewportRecommendation.prototype.setSize = function(size) {
     (function(self, direction, left, other, size) {
 
         var tmp_direction = L3D.Tools.mul(direction, -2 * size);
-        var target = L3D.Tools.sum(self.position, tmp_direction);
+        var target = L3D.Tools.sum(self.camera.position, tmp_direction);
 
         var vertices = [
-            L3D.Tools.sum(L3D.Tools.sum(self.position, left), other),
-            L3D.Tools.diff(L3D.Tools.sum(self.position, other),left),
-            L3D.Tools.diff(L3D.Tools.diff(self.position, left),other),
-            L3D.Tools.sum(L3D.Tools.diff(self.position, other), left),
-            L3D.Tools.sum(L3D.Tools.sum(self.position, left), other),
-            L3D.Tools.sum(L3D.Tools.diff(self.position, other), left),
+            L3D.Tools.sum(L3D.Tools.sum(self.camera.position, left), other),
+            L3D.Tools.diff(L3D.Tools.sum(self.camera.position, other),left),
+            L3D.Tools.diff(L3D.Tools.diff(self.camera.position, left),other),
+            L3D.Tools.sum(L3D.Tools.diff(self.camera.position, other), left),
+            L3D.Tools.sum(L3D.Tools.sum(self.camera.position, left), other),
+            L3D.Tools.sum(L3D.Tools.diff(self.camera.position, other), left),
 
-            L3D.Tools.sum(self.position, tmp_direction),
-            L3D.Tools.sum(L3D.Tools.sum(self.position, left), other),
+            L3D.Tools.sum(self.camera.position, tmp_direction),
+            L3D.Tools.sum(L3D.Tools.sum(self.camera.position, left), other),
 
-            L3D.Tools.sum(self.position, tmp_direction),
-            L3D.Tools.diff(L3D.Tools.sum(self.position, other),left),
+            L3D.Tools.sum(self.camera.position, tmp_direction),
+            L3D.Tools.diff(L3D.Tools.sum(self.camera.position, other),left),
 
-            L3D.Tools.sum(self.position, tmp_direction),
-            L3D.Tools.diff(L3D.Tools.diff(self.position, left),other),
+            L3D.Tools.sum(self.camera.position, tmp_direction),
+            L3D.Tools.diff(L3D.Tools.diff(self.camera.position, left),other),
 
-            L3D.Tools.sum(self.position, tmp_direction),
-            L3D.Tools.sum(L3D.Tools.diff(self.position, other), left)
+            L3D.Tools.sum(self.camera.position, tmp_direction),
+            L3D.Tools.sum(L3D.Tools.diff(self.camera.position, other), left)
         ];
 
         self.line.geometry.vertices = vertices;
