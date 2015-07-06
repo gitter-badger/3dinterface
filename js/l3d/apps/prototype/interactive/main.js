@@ -56,6 +56,9 @@ window.onbeforeunload = function() {
 init();
 if (initMainScene !== L3D.initPeach && initMainScene !== L3D.initSponza)
     logfps();
+else
+    L3D.BD.disable();
+
 animate();
 
 function logfps() {
@@ -231,8 +234,8 @@ function onWindowResize() {
     previewer.domElement.height = container_size.height();
 
     renderer.setSize(container_size.width(), container_size.height());
-    cameras.forEach(function(camera) {camera.aspect = container_size.width() / container_size.height();});
-    cameras.forEach(function(camera) {camera.updateProjectionMatrix();});
+    cameras.forEach(function(camera) {camera.camera.aspect = container_size.width() / container_size.height();});
+    cameras.forEach(function(camera) {camera.camera.updateProjectionMatrix();});
     render();
 }
 
