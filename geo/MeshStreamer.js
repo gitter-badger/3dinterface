@@ -253,7 +253,7 @@ geo.MeshStreamer.prototype.nextMaterials = function() {
 
     var data = [];
 
-    data.push(['g', this.mesh.numberOfElements]);
+    data.push(['g', this.mesh.numberOfFaces]);
 
 
     for (var i = 0; i < this.mesh.meshes.length; i++) {

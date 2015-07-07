@@ -69,7 +69,7 @@ var _parseList = function(arr) {
 
         ret.type = "global";
         ret.index = null;
-        ret.numberOfElements = arr[1];
+        ret.numberOfFaces = arr[1];
 
     }
 
@@ -189,13 +189,13 @@ var ProgressiveLoader = function(path, scene, camera, callback, log) {
      * Number of total elements for loading
      * @type{Number}
      */
-    this.numberOfElements = -1;
+    this.numberOfFaces = -1;
 
     /**
      * Number of elements received
      * @type {Number}
      */
-    this.numberOfElementsReceived = -1;
+    this.numberOfFacesReceived = 0;
 
     /**
      * Modulus indicator (not to log too often)
@@ -204,6 +204,8 @@ var ProgressiveLoader = function(path, scene, camera, callback, log) {
     this.modulus = 150;
 
     this.log = log;
+
+    r = this;
 
 };
 
@@ -250,10 +252,8 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
 
         for (var i = 0; i < arr.length; i++) {
 
-            self.numberOfElementsReceived++;
-
-            if (typeof self.log === 'function' && self.numberOfElementsReceived % self.modulus === 0) {
-                self.log(self.numberOfElementsReceived, self.numberOfElements);
+            if (typeof self.log === 'function' && self.numberOfFacesReceived % self.modulus === 0) {
+                self.log(self.numberOfFacesReceived, self.numberOfFaces);
             }
 
             var elt = _parseList(arr[i]);
@@ -285,8 +285,6 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
                 self.normals[elt.index] = new THREE.Vector3(elt.x, elt.y, elt.z);
 
             } else if (elt.type === 'usemtl') {
-
-                // Must create new mesh
 
                 // Create mesh material
                 var material;
@@ -333,6 +331,8 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
 
             } else if (elt.type === 'face') {
 
+                self.numberOfFacesReceived++;
+
                 if (!self.meshes[elt.mesh].added) {
 
                     self.meshes[elt.mesh].added = true;
@@ -368,8 +368,8 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
 
             } else if (elt.type === 'global') {
 
-                self.numberOfElements = elt.numberOfElements;
-                self.modulus = Math.floor(self.numberOfElements / 200);
+                self.numberOfFaces = elt.numberOfFaces;
+                self.modulus = Math.floor(self.numberOfFaces / 200);
 
             }
 
@@ -381,7 +381,8 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
 
     this.socket.on('disconnect', function() {
         console.log('Finished !');
-        self.log(self.numberOfElements, self.numberOfElements);
+        if (typeof self.log === 'function')
+            self.log(self.numberOfFacesReceived, self.numberOfFaces);
         self.finished = true;
     });
 };

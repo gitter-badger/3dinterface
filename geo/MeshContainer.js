@@ -42,7 +42,7 @@ geo.MeshContainer = function(path, callback) {
      * Number of elements to stream in the mesh
      * @type {Number}
      */
-    this.numberOfElements = -1;
+    this.numberOfFaces = 0;
 
     this.callback = callback;
 
@@ -75,8 +75,6 @@ geo.MeshContainer.prototype.loadFromFile = function(path) {
 
             if (line[0] === 'v') {
 
-                self.numberOfElements++;
-
                 if (line[1] === 't') {
 
                     // Texture coord
@@ -93,14 +91,6 @@ geo.MeshContainer.prototype.loadFromFile = function(path) {
                 } else {
 
                     // Just a simple vertex
-                    // if (currentMesh === undefined) {
-
-                    //     // Chances are that we won't use any material in this case
-                    //     currentMesh = new geo.Mesh();
-                    //     self.meshes.push(currentMesh);
-
-                    // }
-
                     var vertex = new geo.Vertex(line);
                     vertex.index = self.vertices.length;
                     self.vertices.push(vertex);
@@ -109,7 +99,7 @@ geo.MeshContainer.prototype.loadFromFile = function(path) {
 
             } else if (line[0] === 'f') {
 
-                self.numberOfElements++;
+                self.numberOfFaces++;
 
                 // Create mesh if it doesn't exist
                 if (currentMesh === undefined) {
@@ -126,6 +116,7 @@ geo.MeshContainer.prototype.loadFromFile = function(path) {
 
                 if (faces.length === 2) {
 
+                    self.numberOfFaces++;
                     faces[1].index = self.faces.length;
                     faces[1].meshIndex = self.meshes.length - 1;
                     self.faces.push(faces[1]);
@@ -133,8 +124,6 @@ geo.MeshContainer.prototype.loadFromFile = function(path) {
                 }
 
             } else if (line[0] === 'u') {
-
-                self.numberOfElements++;
 
                 // usemtl
                 // If a current mesh exists, finish it

@@ -2,7 +2,10 @@ L3D.LogFunction = function(a,b) {
     var val = 100*a/b;
     $('.progress-bar').css('width', val+'%').attr('aria-valuenow', val);
     $('#percentage').html(Math.floor(10*val)/10 + '%');
-}
+    if (a === b) {
+        setTimeout(function() {$('.progress').hide(1000);}, 1000);
+    }
+};
 
 L3D.addLight = function(scene) {
     var directional_light = new THREE.DirectionalLight(0xdddddd);

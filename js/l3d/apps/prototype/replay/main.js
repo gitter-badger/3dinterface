@@ -15,7 +15,7 @@ var main_section = document.getElementById('main-section');
 // };
 
 var container_size = {
-    width: function() { return 1024; },
+    width: function() { return 1134; },
     height: function() { return 768; }
 };
 
