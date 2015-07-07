@@ -253,6 +253,9 @@ geo.MeshStreamer.prototype.nextMaterials = function() {
 
     var data = [];
 
+    data.push(['g', this.mesh.numberOfElements]);
+
+
     for (var i = 0; i < this.mesh.meshes.length; i++) {
 
         var currentMesh = this.mesh.meshes[i];

@@ -38,6 +38,12 @@ geo.MeshContainer = function(path, callback) {
      */
     this.texCoords = [];
 
+    /**
+     * Number of elements to stream in the mesh
+     * @type {Number}
+     */
+    this.numberOfElements = -1;
+
     this.callback = callback;
 
     if (path !== undefined) {
@@ -68,6 +74,8 @@ geo.MeshContainer.prototype.loadFromFile = function(path) {
             var line = lines[i];
 
             if (line[0] === 'v') {
+
+                self.numberOfElements++;
 
                 if (line[1] === 't') {
 
@@ -101,6 +109,8 @@ geo.MeshContainer.prototype.loadFromFile = function(path) {
 
             } else if (line[0] === 'f') {
 
+                self.numberOfElements++;
+
                 // Create mesh if it doesn't exist
                 if (currentMesh === undefined) {
                     currentMesh = new geo.Mesh();
@@ -123,6 +133,8 @@ geo.MeshContainer.prototype.loadFromFile = function(path) {
                 }
 
             } else if (line[0] === 'u') {
+
+                self.numberOfElements++;
 
                 // usemtl
                 // If a current mesh exists, finish it

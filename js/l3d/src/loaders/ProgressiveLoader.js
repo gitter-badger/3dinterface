@@ -65,6 +65,12 @@ var _parseList = function(arr) {
         ret.texCoordsExist = arr[4];
         ret.normalsExist = arr[5];
 
+    } else if (arr[0] === 'g') {
+
+        ret.type = "global";
+        ret.index = null;
+        ret.numberOfElements = arr[1];
+
     }
 
     return ret;
@@ -81,7 +87,7 @@ var _parseList = function(arr) {
  * @constructor
  * @memberOf L3D
  */
-var ProgressiveLoader = function(path, scene, camera, callback) {
+var ProgressiveLoader = function(path, scene, camera, callback, log) {
 
     /**
      * Path to the .obj file
@@ -178,6 +184,27 @@ var ProgressiveLoader = function(path, scene, camera, callback) {
      */
     this.camera = camera;
 
+
+    /**
+     * Number of total elements for loading
+     * @type{Number}
+     */
+    this.numberOfElements = -1;
+
+    /**
+     * Number of elements received
+     * @type {Number}
+     */
+    this.numberOfElementsReceived = -1;
+
+    /**
+     * Modulus indicator (not to log too often)
+     * @type {Number}
+     */
+    this.modulus = 150;
+
+    this.log = log;
+
 };
 
 /**
@@ -216,25 +243,18 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
     var self = this;
 
     this.socket.on('ok', function() {
-        console.log('ok');
         self.socket.emit('materials');
     });
 
     this.socket.on('elements', function(arr) {
 
-        if (arr.length === 0) {
-
-            console.log("Empty array");
-
-        } else {
-
-            console.log("Stuff received");
-
-        }
-
-
-        // console.log("Received elements for the " + (++self.counter) + "th time !");
         for (var i = 0; i < arr.length; i++) {
+
+            self.numberOfElementsReceived++;
+
+            if (typeof self.log === 'function' && self.numberOfElementsReceived % self.modulus === 0) {
+                self.log(self.numberOfElementsReceived, self.numberOfElements);
+            }
 
             var elt = _parseList(arr[i]);
 
@@ -346,6 +366,11 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
                 }
 
 
+            } else if (elt.type === 'global') {
+
+                self.numberOfElements = elt.numberOfElements;
+                self.modulus = Math.floor(self.numberOfElements / 200);
+
             }
 
         }
@@ -356,6 +381,7 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
 
     this.socket.on('disconnect', function() {
         console.log('Finished !');
+        self.log(self.numberOfElements, self.numberOfElements);
         self.finished = true;
     });
 };

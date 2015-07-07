@@ -1,3 +1,9 @@
+L3D.LogFunction = function(a,b) {
+    var val = 100*a/b;
+    $('.progress-bar').css('width', val+'%').attr('aria-valuenow', val);
+    $('#percentage').html(Math.floor(10*val)/10 + '%');
+}
+
 L3D.addLight = function(scene) {
     var directional_light = new THREE.DirectionalLight(0xdddddd);
     directional_light.position.set(1, 2.5, 1).normalize();
@@ -25,7 +31,8 @@ L3D.initPeachCastle = function(scene, collidableObjects, recommendation) {
                 object.raycastable = false;
                 object.material.side = THREE.FrontSide;
             }
-        }
+        },
+        L3D.LogFunction
     );
     loader.load();
 
@@ -161,7 +168,8 @@ L3D.initBobombScene = function(scene, collidableObjects, recommendation) {
                 object.material.name === 'Material.070_41A41EE3_c.bmp') {
                 THREEx.Transparency.push(object);
             }
-        }
+        },
+        L3D.LogFunction
     );
 
     loader.load();
@@ -314,7 +322,8 @@ L3D.initWhompScene = function(scene, collidableObjects, recommendation) {
                 object.visible = false;
             }
 
-        }
+        },
+        L3D.LogFunction
     );
 
     loader.load();
@@ -489,7 +498,8 @@ L3D.initMountainScene = function(scene, collidableObjects, recommendation) {
                 THREEx.Transparency.push(object);
                 object.material.opacity = 0.5;
             }
-        }
+        },
+        L3D.LogFunction
     );
 
     loader.load();
@@ -631,15 +641,16 @@ L3D.initSponzaScene = function(scene, collidableObjects, recommendation) {
 
             obj.raycastable = true;
 
-        }
+        },
+        L3D.LogFunction
     );
 
     l = loader;
     loader.load();
 
 
-    loader.getRecommendation = function() {
-        var ret = loader.recommendation.toList();
+    loader.getCamera = function() {
+        var ret = loader.camera.toList();
         ret[0][0] *= 10;
         ret[0][1] *= 10;
         ret[0][2] *= 10;
