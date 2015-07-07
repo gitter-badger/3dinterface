@@ -89,6 +89,22 @@ Coin.prototype.update = function() {
     var self = this;
     if (this.ready && this.rotating)
         this.mesh.rotation.y += 0.1;
+    else if (this.got) {
+        if (this.mesh.material.opacity > 0.02) {
+
+            // First update
+            this.mesh.rotation.y += 0.3;
+            this.mesh.position.y += 0.05;
+            this.mesh.material.opacity -= 0.05;
+
+
+        } else {
+
+            this.mesh.visible = false;
+
+        }
+
+    }
 };
 
 Coin.prototype.get = function() {
@@ -100,9 +116,12 @@ Coin.prototype.get = function() {
             this.callback();
 
         if (this.mesh) {
-            this.mesh.visible = false;
-            this.mesh.raycastable = false;
+            this.mesh.material = this.mesh.material.clone();
+            this.mesh.material.transparent = true;
+            this.mesh.material.opacity = 1;
         }
+
+
         Coin.total ++;
         Coin.nextSound.play();
         if (Coin.total === 9) {
