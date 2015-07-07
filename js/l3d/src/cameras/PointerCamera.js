@@ -57,7 +57,8 @@ L3D.PointerCamera = function() {
      * Current position of the camera (optical center)
      * @type {THREE.Vector}
      */
-    this.position = new THREE.Vector3();
+    // We use copy because THREE.Object3D.position is immutable
+    this.position.copy(new THREE.Vector3());
 
     /**
      * Current direction of the camera
@@ -295,9 +296,7 @@ L3D.PointerCamera.prototype.linearMotion = function(time) {
  */
 L3D.PointerCamera.prototype.hermiteMotion = function(time) {
     var e = this.hermitePosition.eval(this.t);
-    this.position.x = e.x;
-    this.position.y = e.y;
-    this.position.z = e.z;
+    this.position.copy(e);
 
     this.target = L3D.Tools.sum(this.position, this.hermiteAngles.eval(this.t));
 
