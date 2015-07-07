@@ -57,8 +57,9 @@ L3D.PointerCamera = function() {
      * Current position of the camera (optical center)
      * @type {THREE.Vector}
      */
-    // We use copy because THREE.Object3D.position is immutable
-    this.position.copy(new THREE.Vector3());
+    // This line has no effect since this.position is immutable.
+    // It's here for documenting purpose
+    this.position = new THREE.Vector3();
 
     /**
      * Current direction of the camera

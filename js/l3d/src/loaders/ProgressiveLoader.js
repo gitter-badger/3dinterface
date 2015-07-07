@@ -187,7 +187,7 @@ var ProgressiveLoader = function(path, scene, camera, callback, log) {
 
     /**
      * Number of total elements for loading
-     * @type{Number}
+     * @type {Number}
      */
     this.numberOfFaces = -1;
 
