@@ -59,10 +59,10 @@ app.use(function(req, res, next) {
 });
 
 // Load controllers
-require('./lib/controllers')(app, { verbose: isDev });
+require('./lib/controllers')(app);
 
 // Load post to log data from user study
-require('./lib/posts')(app, { verbose: isDev });
+require('./lib/posts')(app);
 
 // Static files
 app.use('/static', express.static('static'));
