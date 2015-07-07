@@ -40,9 +40,9 @@ L3D.CameraSelecter.prototype.pointedCamera = function() {
 
         // Looking for cameras
         for (var i in intersects) {
-            if (intersects[i].object.raycastable && !(intersects[i].object instanceof THREE.Line)) {
-                if ((intersects[i].distance > 0.5 && minDistance === undefined) || (intersects[i].distance < minDistance )) {
-                    if (!(intersects[i].object instanceof THREE.Mesh && intersects[i].object.material.opacity < 0.1)) {
+            if (intersects[i].object.raycastable) {
+                if ( minDistance === undefined || intersects[i].distance < minDistance ) {
+                    if (intersects[i].object instanceof THREE.Mesh) {
                         minDistance = intersects[i].distance;
                         bestIndex = i;
                     }

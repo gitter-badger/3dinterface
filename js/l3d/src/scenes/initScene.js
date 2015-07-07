@@ -57,7 +57,6 @@ L3D.initPeach = function(recommendation, scene, coins) {
 
     Coin.init(0.001);
     var recommendations = [];
-    var recommendations = recommendations;
 
     return recommendations;
 };
@@ -286,7 +285,6 @@ L3D.initBobomb = function(recommendation, scene, coins) {
     }
 
     var recommendations = L3D.createBobombRecommendations(container_size.width(), container_size.height());
-    var recommendations = recommendations;
 
     recommendations.forEach(function(reco) {reco.addToScene(scene);});
 
@@ -458,7 +456,6 @@ L3D.initWhomp = function(recommendation, scene, coins) {
     }
 
     var recommendations = L3D.createWhompRecommendations(container_size.width(), container_size.height());
-    var recommendations = recommendations;
 
     recommendations.forEach(function(reco) {reco.addToScene(scene);});
 
@@ -610,7 +607,6 @@ L3D.initMountain = function(recommendation, scene, coins) {
     }
 
     var recommendations = L3D.createMountainRecommendations(container_size.width(), container_size.height());
-    var recommendations = recommendations;
 
     recommendations.forEach(function(reco) {reco.addToScene(scene);});
 
@@ -725,7 +721,6 @@ L3D.initSponza = function(recommendation, scene, coins) {
     }
 
     var recommendations = L3D.createSponzaRecommendations(container_size.width(), container_size.height());
-    var recommendations = recommendations;
 
     recommendations.forEach(function(reco) {reco.addToScene(scene);});
 

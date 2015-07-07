@@ -68,12 +68,14 @@ function init() {
     stats.domElement.style.cssFloat = "top-left";
 
     // Add elements to page
+    container.appendChild(Coin.domElement);
     container.appendChild( stats.domElement );
     container.appendChild(renderer.domElement);
 
     // Initialize pointer camera
     camera1 = new L3D.ReplayCamera(50, container_size.width() / container_size.height(), 0.01, 100000, coins);
     cameras = initMainScene(camera1, scene, coins);
+    camera1.cameras = cameras;
 
     // Add listeners
     initListeners();

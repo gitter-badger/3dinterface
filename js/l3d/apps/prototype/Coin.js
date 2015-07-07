@@ -89,7 +89,8 @@ Coin.prototype.update = function() {
     var self = this;
     if (this.ready && this.rotating)
         this.mesh.rotation.y += 0.1;
-    else if (this.got) {
+
+    if (this.got) {
         if (this.mesh.material.opacity > 0.02) {
 
             // First update
@@ -115,12 +116,9 @@ Coin.prototype.get = function() {
         if (this.callback)
             this.callback();
 
-        if (this.mesh) {
-            this.mesh.material = this.mesh.material.clone();
-            this.mesh.material.transparent = true;
-            this.mesh.material.opacity = 1;
-        }
-
+        this.mesh.material = this.mesh.material.clone();
+        this.mesh.material.transparent = true;
+        this.mesh.material.opacity = 1;
 
         Coin.total ++;
         Coin.nextSound.play();

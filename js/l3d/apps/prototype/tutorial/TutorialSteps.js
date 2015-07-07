@@ -148,7 +148,7 @@ TutorialSteps.prototype.nextStep = function() {
                 });
                 break;
             case 14:
-                var cam = L3D.createPeachCameras(this.container_size.width(), this.container_size.height())[2];
+                var cam = L3D.createPeachRecommendations(this.container_size.width(), this.container_size.height())[2];
                 this.cameras.push(cam);
                 cam.addToScene(this.scene);
                 this.camera.move({
@@ -157,7 +157,7 @@ TutorialSteps.prototype.nextStep = function() {
                 });
                 break;
             case 16:
-                var cams = L3D.createPeachCameras(this.container_size.width(), this.container_size.height());
+                var cams = L3D.createPeachRecommendations(this.container_size.width(), this.container_size.height());
                 for (var i = 0; i < cams.length; i == 1 ? i+=2 : i++) {
                     this.cameras.push(cams[i]);
                     cams[i].addToScene(this.scene);

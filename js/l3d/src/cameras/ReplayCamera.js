@@ -81,7 +81,7 @@ L3D.ReplayCamera.prototype.cameraMotion = function(time) {
 
 L3D.ReplayCamera.prototype.hermiteMotion = function(time) {
     var e = this.hermitePosition.eval(this.t);
-    this.position.copy(tmp);
+    this.position.copy(e);
 
     this.target = L3D.Tools.sum(this.position, this.hermiteAngles.eval(this.t));
 
@@ -114,7 +114,7 @@ L3D.ReplayCamera.prototype.nextEvent = function() {
             },500);
         })(this);
     } else if (this.event.type == 'arrow') {
-        this.moveHermite(this.cameras.cameras[this.event.id]);
+        this.moveHermite(this.cameras[this.event.id]);
     } else if (this.event.type == 'reset') {
         this.reset();
         (function (self) {
@@ -164,7 +164,10 @@ L3D.ReplayCamera.prototype.anglesFromVectors = function() {
     this.theta = Math.atan2(forward.x, forward.z);
 };
 
-L3D.ReplayCamera.prototype.move = function(otherCamera) {
+L3D.ReplayCamera.prototype.move = function(recommendation) {
+
+    var otherCamera = recommendation.camera || recommendation;
+
     this.moving = true;
     this.old_target =   this.target.clone();
     this.old_position = this.position.clone();
@@ -174,7 +177,10 @@ L3D.ReplayCamera.prototype.move = function(otherCamera) {
 
 };
 
-L3D.ReplayCamera.prototype.moveHermite = function(otherCamera) {
+L3D.ReplayCamera.prototype.moveHermite = function(recommendation) {
+
+    var otherCamera = recommendation.camera || recommendation;
+
     this.movingHermite = true;
     this.t = 0;
 
