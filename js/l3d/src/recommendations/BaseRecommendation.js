@@ -188,7 +188,7 @@ L3D.BaseRecommendation.prototype.update = function(mainCamera) {
             elt.material.opacity = new_value;
 
             if (new_value < 0.1)
-                elt.material.transparent = elt.visible = false;
+                elt.raycastable = elt.material.transparent = elt.visible = false;
         }
     });
 
