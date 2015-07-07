@@ -221,8 +221,8 @@ function onWindowResize() {
     container.style.height = container_size.height() + "px";
 
     renderer.setSize(container_size.width(), container_size.height());
-    cameras.forEach(function(camera) {camera.aspect = container_size.width() / container_size.height();});
-    cameras.forEach(function(camera) {camera.updateProjectionMatrix();});
+    cameras.forEach(function(camera) {camera.camera.aspect = container_size.width() / container_size.height();});
+    cameras.forEach(function(camera) {camera.camera.updateProjectionMatrix();});
     render();
 }
 
