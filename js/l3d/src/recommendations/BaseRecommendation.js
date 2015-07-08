@@ -159,6 +159,7 @@ L3D.BaseRecommendation.prototype.updateExtremity = function() {
 
     this.mesh.geometry.computeFaceNormals();
     this.mesh.geometry.verticesNeedUpdate = true;
+    this.mesh.geometry.normalsNeedUpdate = true;
 
 };
 

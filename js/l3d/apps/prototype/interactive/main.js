@@ -137,13 +137,10 @@ function render() {
     objectClicker.update();
 
     // Update recommendations (set raycastable if shown)
-    var transform = buttonManager.showArrows ? show : hide;
     recommendations.map(function(reco) {
         if (reco instanceof Recommendation) {
-            transform(reco);
-
             reco.traverse(function(elt) {
-                elt.raycastable = buttonManager.showArrows;
+                elt.visible = elt.raycastable = buttonManager.showArrows;
             });
         }
     });
