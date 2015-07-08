@@ -32,7 +32,8 @@ var renderer, scene, controls, cube, container, plane, mouse= {x:0, y:0};
 var bigmesh;
 var raycaster;
 var objects = [];
-var cameras, cameraSelecter;
+var clickableObjects = [];
+var recommendations, objectClicker;
 var spheres = new Array(mesh_number);
 var visible = 0;
 // stats;
@@ -41,6 +42,7 @@ var camera1;
 var loader;
 var coins = [];
 var previousTime;
+var hoveredCamera = null;
 
 window.onbeforeunload = function() {
 
@@ -128,12 +130,20 @@ function init() {
 
     startCanvas.render();
 
-    cameras = initMainScene(camera1, scene, coins);
-    // cameras = L3D.initPeach(camera1, scene, coins);
-    // cameras = L3D.initBobomb(camera1, scene, coins);
-    // cameras = L3D.initWhomp(camera1, scene, , coins);
-    // cameras = L3D.initMountain(camera1, scene, coins);
-    // cameras = L3D.initSponza(camera1, scene, coins);
+    recommendations = initMainScene(camera1, scene, coins, clickableObjects);
+    // recommendations = L3D.initPeach(camera1, scene, coins, clickableObjects);
+    // recommendations = L3D.initBobomb(camera1, scene, coins, clickableObjects);
+    // recommendations = L3D.initWhomp(camera1, scene, , coins, clickableObjects);
+    // recommendations = L3D.initMountain(camera1, scene, coins, clickableObjects);
+    // recommendations = L3D.initSponza(camera1, scene, coins, clickableObjects);
+
+    // init clickable objects
+    var i;
+    for (i = 0; i < coins.length; i++)
+        clickableObjects.push(coins[i]);
+
+    for (i =0; i < recommendations.length; i++)
+        clickableObjects.push(recommendations[i]);
 
     // Add listeners
     initListeners();
@@ -145,38 +155,100 @@ function init() {
 function initListeners() {
     window.addEventListener('resize', onWindowResize, false);
 
-    // Transmit click event to camera selecter
-    container.addEventListener('mousedown', function(event) {
-        if (event.which == 1)
-            cameraSelecter.click(event);
-        }, false
-    );
-
-    // Update camera selecter when mouse moved
-    container.addEventListener('mousemove', function(event) {
-        cameraSelecter.update(event);
-    });
-
     // Escape key to exit fullscreen mode
     document.addEventListener('keydown', function(event) { if (event.keyCode == 27) { stopFullscreen();} }, false);
 
     // HTML Bootstrap buttons
-    buttonManager = new ButtonManager(camera1, cameras, previewer);
+    buttonManager = new ButtonManager(camera1, recommendations, previewer);
 
-    // Camera selecter for hover and clicking recommendations
-    cameraSelecter = new L3D.CameraSelecter(renderer, scene, camera1, cameras, coins, buttonManager);
+    // Object clicker for hover and clicking recommendations
+    objectClicker = new L3D.ObjectClicker(renderer, camera1, clickableObjects,
+        function onHover(obj,x,y) {
+
+            // Check if the object is clickable
+            var ok = obj instanceof Coin || obj instanceof L3D.BaseRecommendation;
+
+            // Little graphic stuff so the user knows that it's clickable
+            container.style.cursor = ok ? "pointer" : "auto";
+            if (camera1.pointerLocked)
+                camera1.mousePointer.render(ok ? L3D.MousePointer.RED : L3D.MousePointer.BLACK);
+
+            // Set previewer for preview
+            previewer.setCamera(obj instanceof L3D.BaseRecommendation ? obj.camera : null)
+            previewer.setPosition(x,y);
+
+            // Manage the hover camera event
+            if (hoveredCamera !== obj) {
+
+                var event = new L3D.BD.Event.Hovered();
+
+                if (obj instanceof L3D.BaseRecommendation) {
+                    // The newly hovered object is different and is a recommendation
+
+                    event.arrow_id = recommendations.indexOf(obj);
+                    event.start = true;
+                    event.send();
+
+                    hoveredCamera = obj
+
+                } else if (hoveredCamera instanceof L3D.BaseRecommendation) {
+                    // The newly hovered object is not a recommendation,
+                    // but the previous one is : we must log
+
+                    // Unhovered
+                    event.arrow_id = 0;
+                    event.start = false;
+                    event.send();
+
+                    hoveredCamera = null;
+
+                }
+
+            }
+
+        },
+
+        function onClick(obj) {
+
+            var event;
+
+            // Do stuff for click
+            if (obj instanceof Coin) {
+
+                obj.get();
+
+                // Send event to DB
+                event = new L3D.BD.Event.CoinClicked();
+                event.coin_id = coins.indexOf(obj);
+                event.send();
+
+            } else if (obj instanceof L3D.BaseRecommendation) {
+                camera1.moveHermite(obj);
+
+                // Send event to DB
+                event = new L3D.BD.Event.ArrowClicked();
+                event.arrow_id = recommendations.indexOf(obj);
+                event.send();
+            }
+
+            // Update the button manager
+            buttonManager.updateElements();
+
+        },
+        container
+    );
 }
 
 function render() {
-    cameraSelecter.update();
+    objectClicker.update();
 
     // Update recommendations (set raycastable if shown)
     var transform = buttonManager.showArrows ? show : hide;
-    cameras.map(function(camera) {
-        if (camera instanceof Recommendation) {
-            transform(camera);
+    recommendations.map(function(reco) {
+        if (reco instanceof Recommendation) {
+            transform(reco);
 
-            camera.traverse(function(elt) {
+            reco.traverse(function(elt) {
                 elt.raycastable = buttonManager.showArrows;
             });
         }
@@ -191,7 +263,7 @@ function render() {
     previousTime = Date.now();
 
     // Update the recommendations
-    cameras.map(function(cam) { cam.update(camera1);});
+    recommendations.map(function(reco) { reco.update(camera1);});
 
     // Set current position of camera
     camera1.look();
@@ -206,13 +278,13 @@ function render() {
     previewer.clear();
 
     // Hide arrows in recommendation
-    cameras.map(function(camera) { if (camera instanceof Recommendation) hide(camera); });
+    recommendations.map(function(reco) { if (reco instanceof Recommendation) hide(reco); });
 
     // Update transparent elements
     THREEx.Transparency.update(camera1);
 
     // Render preview
-    previewer.render(cameraSelecter.prev, container_size.width(), container_size.height());
+    previewer.render(container_size.width(), container_size.height());
 }
 
 function animate() {
@@ -234,8 +306,8 @@ function onWindowResize() {
     previewer.domElement.height = container_size.height();
 
     renderer.setSize(container_size.width(), container_size.height());
-    cameras.forEach(function(camera) {camera.camera.aspect = container_size.width() / container_size.height();});
-    cameras.forEach(function(camera) {camera.camera.updateProjectionMatrix();});
+    recommendations.forEach(function(reco) {reco.camera.aspect = container_size.width() / container_size.height();});
+    recommendations.forEach(function(reco) {reco.camera.updateProjectionMatrix();});
     render();
 }
 

@@ -54,6 +54,8 @@ L3D.Previewer = function(renderer, scene) {
      * @description true if the rendering was done before
      */
     this.drawnBefore = false;
+
+    this.mouse = {x: null, y: null};
 };
 
 /**
@@ -68,15 +70,15 @@ L3D.Previewer = function(renderer, scene) {
  * @param {Number} container_width width of the container
  * @param {Number} container_height height of the container
  */
-L3D.Previewer.prototype.render = function(prev, container_width, container_height) {
+L3D.Previewer.prototype.render = function(container_width, container_height) {
     var width, height, left, bottom;
 
-    if (prev.go) {
+    if (this.camera) {
         width  = Math.floor(container_width / 5);
         height = Math.floor(container_height / 5);
         if (!this.fixed) {
-            left = Math.floor(prev.x - width/2);
-            bottom = Math.floor(this.renderer.domElement.height - prev.y + height/5);
+            left = Math.floor(this.mouse.x - width/2);
+            bottom = Math.floor(this.renderer.domElement.height - this.mouse.y + height/5);
 
             // Translate box if too high
             if (bottom + height > this.renderer.domElement.height) {
@@ -112,19 +114,19 @@ L3D.Previewer.prototype.render = function(prev, container_width, container_heigh
         this.ctx.stroke();
 
         // Do render in previsualization
-        prev.camera.look();
+        this.camera.look();
         this.renderer.setScissor(left, bottom, width, height);
         this.renderer.enableScissorTest(true);
         this.renderer.setViewport(left, bottom, width, height);
-        this.renderer.render(this.scene, prev.camera.camera);
+        this.renderer.render(this.scene, this.camera);
 
         this.update(true);
 
-        if (this.prevCamera !== prev.camera) {
+        if (this.prevCamera !== this.camera) {
             this.clearNeeded = true;
         }
 
-        this.prevCamera = prev.camera;
+        this.prevCamera = this.camera;
     } else {
         this.update(false);
     }
@@ -162,3 +164,12 @@ L3D.Previewer.prototype.update = function(arg) {
     this.drawnBefore = this.drawn;
     this.drawn = arg;
 };
+
+L3D.Previewer.prototype.setCamera = function(camera) {
+    this.camera = camera;
+}
+
+L3D.Previewer.prototype.setPosition = function(x, y) {
+    this.mouse.x = x;
+    this.mouse.y = y;
+}

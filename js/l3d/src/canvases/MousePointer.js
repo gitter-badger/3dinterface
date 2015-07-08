@@ -103,7 +103,7 @@ L3D.MousePointer.toColor = function(style) {
  * Re-renders the canvas
  * For performance reasons, the rendering is done only if the style changed.
  * @param {Number} style the L3D.MousePointer style you want to render
- * @param {Boolean} force force the re-rendering (even if the style did not change)
+ * @param {Boolean} [force=false] force the re-rendering (even if the style did not change)
  *
  */
 L3D.MousePointer.prototype.render = function(style, force) {

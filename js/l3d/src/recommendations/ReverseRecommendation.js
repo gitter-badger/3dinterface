@@ -163,3 +163,40 @@ L3D.ReverseRecommendation.prototype.regenerateArrow = function(mainCamera) {
     this.arrow.geometry.normalsNeedUpdate = true;
 
 };
+
+L3D.BaseRecommendation.prototype.updateExtremity = function() {
+    var direction = this.camera.target.clone();
+    direction.sub(this.camera.position);
+    direction.normalize();
+
+    var left = L3D.Tools.cross(direction, this.up);
+    var other = L3D.Tools.cross(direction, left);
+
+    left.normalize();
+    other.normalize();
+    left = L3D.Tools.mul(left, this.size / 2 );
+    other  = L3D.Tools.mul(other, this.size / 2);
+
+    var pyramidCenter = L3D.Tools.diff(this.camera.position, L3D.Tools.mul(direction,0.25));
+    this.mesh.geometry.vertices = [
+        L3D.Tools.sum( L3D.Tools.sum( this.camera.position, left),  other),
+        L3D.Tools.diff(L3D.Tools.sum( this.camera.position, other), left),
+        L3D.Tools.diff(L3D.Tools.diff(this.camera.position, left),  other),
+        L3D.Tools.sum( L3D.Tools.diff(this.camera.position, other), left),
+
+        L3D.Tools.sum( L3D.Tools.sum( this.camera.position, left),  other),
+        L3D.Tools.diff(L3D.Tools.sum( this.camera.position, other), left),
+        L3D.Tools.diff(L3D.Tools.diff(this.camera.position, left),  other),
+        L3D.Tools.sum( L3D.Tools.diff(this.camera.position, other), left)
+        // L3D.Tools.diff(this.camera.position, direction)
+    ];
+
+    var lambda = 0.6;
+    for (var i = 0; i < 4; i++)
+        this.mesh.geometry.vertices[i] = L3D.Tools.mul(L3D.Tools.diff(this.mesh.geometry.vertices[i], L3D.Tools.mul(pyramidCenter,lambda)), 1/(1-lambda));
+
+    this.mesh.geometry.computeFaceNormals();
+
+    this.mesh.geometry.normalsNeedUpdate = true;
+    this.mesh.geometry.verticesNeedUpdate = true;
+};

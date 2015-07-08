@@ -89,6 +89,20 @@ L3D.ViewportRecommendation = function(arg1, arg2, arg3, arg4, position, target) 
 L3D.ViewportRecommendation.prototype = Object.create(L3D.BaseRecommendation.prototype);
 L3D.ViewportRecommendation.prototype.constructor = L3D.ViewportRecommendation;
 
+L3D.ViewportRecommendation.prototype.raycast = function(raycaster, intersects) {
+
+    var intersectsThis = [];
+    this.mesh.raycast(raycaster, intersectsThis);
+
+    if (intersectsThis[0] !== undefined) {
+
+        intersectsThis[0].object = this;
+        intersects.push(intersectsThis[0]);
+
+    }
+
+};
+
 L3D.ViewportRecommendation.prototype.check = function() {
     this.mesh.material.color.setHex(0x663366);
 };
@@ -118,7 +132,7 @@ L3D.ViewportRecommendation.prototype.update = function(position) {
     this.mesh.material.opacity = new_value;
 
     if (new_value < 0.1)
-        this.mesh.material.transparent = this.mesh.visible = false;
+        this.raycastable = this.mesh.material.transparent = this.mesh.visible = false;
 };
 
 L3D.ViewportRecommendation.prototype.setSize = function(size) {

@@ -103,6 +103,8 @@ L3D.ReplayCamera.prototype.nextEvent = function() {
 
     this.event = this.path[this.counter];
 
+    console.log(this.event.type);
+
     if (this.event.type == 'camera') {
         this.move(this.event);
     } else if (this.event.type == 'coin') {

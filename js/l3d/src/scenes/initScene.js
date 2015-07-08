@@ -17,13 +17,15 @@ L3D.addLight = function(scene) {
     scene.add(ambient_light);
 };
 
-L3D.initPeachCastle = function(scene, collidableObjects, recommendation) {
+L3D.initPeachCastle = function(scene, collidableObjects, recommendation, clickable) {
 
     var loader = new L3D.ProgressiveLoader(
         '/static/data/castle/princess peaches castle (outside).obj',
         scene,
         null,
         function(object) {
+            if (clickable !== undefined)
+                clickable.push(object);
             object.raycastable = true;
             if (object.material.name === 'Material.103_princess_peaches_cast') {
                 THREEx.Transparency.push(object);
@@ -50,11 +52,11 @@ L3D.resetPeachElements = function() {
     };
 };
 
-L3D.initPeach = function(recommendation, scene, coins) {
+L3D.initPeach = function(recommendation, scene, coins, clickable) {
     L3D.addLight(scene);
 
     var collidableObjects = [];
-    L3D.initPeachCastle(scene, collidableObjects, recommendation);
+    L3D.initPeachCastle(scene, collidableObjects, recommendation, clickable);
 
     recommendation.resetElements = L3D.resetPeachElements();
     recommendation.collidableObjects = collidableObjects;
@@ -159,13 +161,15 @@ L3D.createPeachRecommendations = function(width, height) {
     return recos;
 };
 
-L3D.initBobombScene = function(scene, collidableObjects, recommendation) {
+L3D.initBobombScene = function(scene, collidableObjects, recommendation, clickable) {
 
     var loader = new L3D.ProgressiveLoader(
         '/static/data/bobomb/bobomb battlefeild.obj',
         scene,
         null,
         function(object) {
+            if (clickable !== undefined)
+                clickable.push(object);
             object.raycastable = true;
             if (object.material.name === 'Material.071_574B138E_c.bmp' ||
                 object.material.name === 'Material.070_41A41EE3_c.bmp') {
@@ -273,11 +277,11 @@ L3D.createBobombRecommendations = function(width, height) {
 
 };
 
-L3D.initBobomb = function(recommendation, scene, coins) {
+L3D.initBobomb = function(recommendation, scene, coins, clickable) {
     L3D.addLight(scene);
 
     var collidableObjects = [];
-    L3D.initBobombScene(scene, collidableObjects, recommendation);
+    L3D.initBobombScene(scene, collidableObjects, recommendation, clickable);
 
     recommendation.resetElements = L3D.resetBobombElements();
     recommendation.collidableObjects = collidableObjects;
@@ -304,13 +308,15 @@ L3D.initBobomb = function(recommendation, scene, coins) {
     return recommendations;
 };
 
-L3D.initWhompScene = function(scene, collidableObjects, recommendation) {
+L3D.initWhompScene = function(scene, collidableObjects, recommendation, clickable) {
 
     var loader = new L3D.ProgressiveLoader(
         '/static/data/whomp/Whomps Fortress.obj',
         scene,
         null,
         function(object) {
+            if (clickable !== undefined)
+                clickable.push(object);
             object.raycastable = true;
             if (object.material.name === 'Shape_088' ||
                 object.material.name === 'Shape_089') {
@@ -445,11 +451,11 @@ L3D.resetWhompElements = function() {
     };
 };
 
-L3D.initWhomp = function(recommendation, scene, coins) {
+L3D.initWhomp = function(recommendation, scene, coins, clickable) {
     L3D.addLight(scene);
 
     var collidableObjects = [];
-    L3D.initWhompScene(scene, collidableObjects, recommendation);
+    L3D.initWhompScene(scene, collidableObjects, recommendation, clickable);
 
     recommendation.resetElements = L3D.resetWhompElements();
     recommendation.collidableObjects = collidableObjects;
@@ -476,7 +482,7 @@ L3D.initWhomp = function(recommendation, scene, coins) {
     return recommendations;
 };
 
-L3D.initMountainScene = function(scene, collidableObjects, recommendation) {
+L3D.initMountainScene = function(scene, collidableObjects, recommendation, clickable) {
 
     var loader = new L3D.ProgressiveLoader(
         '/static/data/mountain/coocoolmountain.obj',
@@ -485,6 +491,8 @@ L3D.initMountainScene = function(scene, collidableObjects, recommendation) {
         function(object) {
             // object.rotation.x = -Math.PI/2;
             // object.rotation.z = Math.PI/2;
+            if (clickable !== undefined)
+                clickable.push(object);
             object.raycastable = true;
             if (object.material.name === 'Material.070_13F025D5_c2.png' ||
                 object.material.name === 'Material.068_5972FC88_c.bmp' ||
@@ -597,11 +605,11 @@ L3D.resetMountainElements = function() {
     };
 };
 
-L3D.initMountain = function(recommendation, scene, coins) {
+L3D.initMountain = function(recommendation, scene, coins, clickable) {
     L3D.addLight(scene);
 
     var collidableObjects = [];
-    L3D.initMountainScene(scene, collidableObjects, recommendation);
+    L3D.initMountainScene(scene, collidableObjects, recommendation, clickable);
 
     recommendation.resetElements = L3D.resetMountainElements();
     recommendation.collidableObjects = collidableObjects;
@@ -627,13 +635,15 @@ L3D.initMountain = function(recommendation, scene, coins) {
     return recommendations;
 };
 
-L3D.initSponzaScene = function(scene, collidableObjects, recommendation) {
+L3D.initSponzaScene = function(scene, collidableObjects, recommendation, clickable) {
 
     var loader = new L3D.ProgressiveLoader(
         '/static/data/sponza/sponza.obj',
         scene,
         recommendation,
         function(obj) {
+            if (clickable !== undefined)
+                clickable.push(obj);
             if (obj.material.name === 'chain' ||
                 obj.material.name === 'leaf'  ||
                 obj.material.name === 'Material__57') {
@@ -711,12 +721,12 @@ L3D.resetSponzaElements = function() {
     };
 };
 
-L3D.initSponza = function(recommendation, scene, coins) {
+L3D.initSponza = function(recommendation, scene, coins, clickable) {
 
     L3D.addLight(scene);
 
     var collidableObjects = [];
-    L3D.initSponzaScene(scene, collidableObjects, recommendation);
+    L3D.initSponzaScene(scene, collidableObjects, recommendation, clickable);
 
     recommendation.resetElements = L3D.resetSponzaElements();
     recommendation.collidableObjects = collidableObjects;

@@ -146,20 +146,20 @@ L3D.PointerCamera = function() {
     var onMouseUp = function(event) {if (event.which === 1) self.onMouseUp(event); };
     var onMouseMove = function(event) {self.onMouseMove(event); };
 
-    document.addEventListener('keydown', onKeyDown, false);
-    document.addEventListener('keyup', onKeyUp, false);
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('keyup', onKeyUp);
 
-    document.addEventListener('pointerlockchange', function(event) { self.onPointerLockChange(event); }, false);
-    document.addEventListener('mozpointerlockchange', function(event) { self.onPointerLockChange(event); }, false);
-    document.addEventListener('webkitpointerlockchange', function(event) { self.onPointerLockChange(event); }, false);
+    document.addEventListener('pointerlockchange', function(event) { self.onPointerLockChange(event); });
+    document.addEventListener('mozpointerlockchange', function(event) { self.onPointerLockChange(event); });
+    document.addEventListener('webkitpointerlockchange', function(event) { self.onPointerLockChange(event); });
 
-    document.addEventListener('mousemove', function(event) {self.onMouseMovePointer(event);}, false);
+    document.addEventListener('mousemove', function(event) {self.onMouseMovePointer(event);});
 
-    listenerTarget.addEventListener('mousedown', function() {self.lockPointer();}, false);
-    listenerTarget.addEventListener('mousedown', onMouseDown, false);
-    listenerTarget.addEventListener('mousemove', onMouseMove, false);
-    listenerTarget.addEventListener('mouseup', onMouseUp, false);
-    listenerTarget.addEventListener('mouseout', onMouseUp, false);
+    listenerTarget.addEventListener('click', function() {self.lockPointer();});
+    listenerTarget.addEventListener('mousedown', onMouseDown);
+    listenerTarget.addEventListener('mousemove', onMouseMove);
+    listenerTarget.addEventListener('mouseup', onMouseUp);
+    listenerTarget.addEventListener('mouseout', onMouseUp);
 
     /**
      * Option to enable or disable the collisions
@@ -228,7 +228,7 @@ L3D.PointerCamera.prototype.onPointerLockChange = function() {
 
         // The pointer is locked : adapt the state of the camera
         this.pointerLocked = true;
-        this.mousePointer.render();
+        this.mousePointer.render(L3D.MousePointer.BLACK);
 
         this.mouse.x = this.renderer.domElement.width/2;
         this.mouse.y = this.renderer.domElement.height/2;
@@ -240,9 +240,6 @@ L3D.PointerCamera.prototype.onPointerLockChange = function() {
 
         this.pointerLocked = false;
         this.mousePointer.clear();
-
-        this.theta = this.previousTheta;
-        this.phi = this.previousPhi;
 
         this.mouseMove.x = 0;
         this.mouseMove.y = 0;
@@ -263,6 +260,7 @@ L3D.PointerCamera.prototype.onPointerLockChange = function() {
  */
 L3D.PointerCamera.prototype.update = function(time) {
     this.shouldLogCameraAngles = false;
+
     if (this.moving) {
         this.linearMotion(time);
     } else if (this.movingHermite) {
@@ -623,10 +621,6 @@ L3D.PointerCamera.prototype.onMouseMove = function(event) {
 L3D.PointerCamera.prototype.onMouseMovePointer = function(e) {
 
     if (this.isLocked()) {
-
-        // Backup theta and phi
-        this.previousTheta = this.theta;
-        this.previousPhi = this.phi;
 
         this.mouseMove.x = e.movementX || e.mozMovementX || e.webkitMovementX || 0;
         this.mouseMove.y = e.movementY || e.mozMovementY || e.webkitMovementY || 0;

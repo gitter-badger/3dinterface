@@ -14,6 +14,7 @@ L3D:
 		--js l3d/src/math/Tools.js \
 		--js l3d/src/math/Hermite.js \
 		--js l3d/src/utils/List.js \
+		--js l3d/src/utils/ObjectClicker.js \
 		--js l3d/src/utils/CameraSelecter.js \
 		--js l3d/src/utils/Logger.js \
 		--js l3d/src/utils/Objects.js \

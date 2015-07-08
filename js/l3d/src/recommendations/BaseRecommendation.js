@@ -61,6 +61,21 @@ L3D.BaseRecommendation = function(arg1, arg2, arg3, arg4, position, target) {
 L3D.BaseRecommendation.prototype = Object.create(THREE.Object3D.prototype);
 L3D.BaseRecommendation.prototype.constructor = L3D.BaseRecommendation;
 
+L3D.BaseRecommendation.prototype.raycast = function(raycaster, intersects) {
+
+    var intersectsThis = [];
+    this.object3D.traverse(function(elt) {elt.raycast(raycaster, intersectsThis);});
+
+    // Add closest object
+    if (intersectsThis[0] !== undefined) {
+
+        intersectsThis[0].object = this;
+        intersects.push(intersectsThis[0]);
+
+    }
+
+}
+
 /**
  * Changes the color of the meshes like a HTML link
  */
@@ -182,13 +197,14 @@ L3D.BaseRecommendation.prototype.update = function(mainCamera) {
     }
 
     // Update opacity
+    var self = this;
     this.object3D.traverse(function(elt) {
         if (elt instanceof THREE.Mesh) {
             elt.material.transparent =   new_value < 0.9;
             elt.material.opacity = new_value;
 
             if (new_value < 0.1)
-                elt.raycastable = elt.material.transparent = elt.visible = false;
+                self.raycastable = elt.raycastable = elt.material.transparent = elt.visible = false;
         }
     });
 

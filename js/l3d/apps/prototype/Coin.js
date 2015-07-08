@@ -1,4 +1,6 @@
 var Coin = function(x,y,z, callback) {
+    this.raycastable = true;
+    this.children = [];
     this.ready = false;
     this.got = false;
     this.init(x,y,z);
@@ -79,6 +81,24 @@ Coin.prototype.init = function(x,y,z) {
             },1000);
         })(this,x,y,z);
     }
+};
+
+Coin.prototype.raycast = function(raycaster, intersects) {
+    if (this.mesh !== undefined) {
+
+        var intersectsThis = [];
+        this.mesh.raycast(raycaster, intersectsThis);
+
+        // Add closest object
+        if (intersectsThis[0] !== undefined) {
+
+            intersectsThis[0].object = this;
+            intersects.push(intersectsThis[0]);
+
+        }
+
+    }
+
 };
 
 Coin.prototype.addToScene = function(scene) {
