@@ -7,6 +7,7 @@ block extrajs
     script Recommendation = L3D.ArrowRecommendation;
     script var params = params || {}; params.get = params.get || {}; params.get.id = #{id};
     script initMainScene = #{initjs}
+    script(src="/static/js/l3dp.min.js")
     script(src="/static/js/replay.min.js")
 
 block extrahead

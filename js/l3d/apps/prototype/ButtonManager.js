@@ -6,7 +6,6 @@ var ButtonManager = function(camera, cameras, previewer) {
     this.showArrows = true;
     this.beenFullscreen = false;
 
-    this.fullscreenElement = document.getElementById('full');
     this.fullElement = document.getElementById('fullarrow');
     this.resetElement = document.getElementById('reset');
     this.undoElement = document.getElementById('undo');
@@ -16,8 +15,6 @@ var ButtonManager = function(camera, cameras, previewer) {
     this.showarrowsElement = document.getElementById('showarrows');
 
     this.recommendationElement = document.getElementById('recommendation');
-
-    this.fullscreenElement.onclick = function() {fullscreen();};
 
     (function(self) {
         self.undoElement.onclick = function() {self.camera.undo(); self.updateElements();};

@@ -45,6 +45,7 @@ L3DP:
 	$(CLOSURE) $(OPT) \
 		--js l3d/apps/prototype/ButtonManager.js \
 		--js l3d/apps/prototype/Coin.js \
+		--js l3d/apps/prototype/GlobalFunctions.js \
 		--js_output_file ../static/js/l3dp.min.js
 
 Socket:
