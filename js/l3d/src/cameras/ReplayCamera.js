@@ -103,8 +103,6 @@ L3D.ReplayCamera.prototype.nextEvent = function() {
 
     this.event = this.path[this.counter];
 
-    console.log(this.event.type);
-
     if (this.event.type == 'camera') {
         this.move(this.event);
     } else if (this.event.type == 'coin') {
@@ -126,7 +124,8 @@ L3D.ReplayCamera.prototype.nextEvent = function() {
         })(this);
     } else if (this.event.type == 'previousnext') {
         this.move(this.event);
-    } else if (this.event.type == 'hovered') {
+    } else {
+        // Ignore other events
         this.nextEvent();
     }
 };

@@ -50,21 +50,21 @@ L3D.BD.Event = {};
 
 L3D.BD.Event.ArrowClicked = function() {};
 L3D.BD.Event.ArrowClicked.prototype.send = function() {
-    var url = "/arrow-clicked";
+    var url = "/posts/arrow-clicked";
     var data = {arrow_id: this.arrow_id};
     L3D.BD.Private.sendData(url, data);
 };
 
 L3D.BD.Event.CoinClicked = function() {};
 L3D.BD.Event.CoinClicked.prototype.send = function() {
-    var url = "/coin-clicked";
+    var url = "/posts/coin-clicked";
     var data = {coin_id: this.coin_id};
     L3D.BD.Private.sendData(url, data);
 };
 
 L3D.BD.Event.KeyboardEvent = function() {};
 L3D.BD.Event.KeyboardEvent.prototype.send = function() {
-    var url = "/keyboard-event";
+    var url = "/posts/keyboard-event";
 
     var data = {
         camera: L3D.BD.Private.compactCamera(this.camera)
@@ -75,14 +75,14 @@ L3D.BD.Event.KeyboardEvent.prototype.send = function() {
 
 L3D.BD.Event.ResetClicked = function() {};
 L3D.BD.Event.ResetClicked.prototype.send = function() {
-    var url = "/reset-clicked";
+    var url = "/posts/reset-clicked";
     var data = {};
     L3D.BD.Private.sendData(url, data);
 };
 
 L3D.BD.Event.PreviousNextClicked = function() {};
 L3D.BD.Event.PreviousNextClicked.prototype.send = function() {
-    var url = "/previous-next-clicked";
+    var url = "/posts/previous-next-clicked";
     var data = {
         // casts previous to boolean
         previous: this.previous,
@@ -94,7 +94,7 @@ L3D.BD.Event.PreviousNextClicked.prototype.send = function() {
 
 L3D.BD.Event.Hovered = function() {};
 L3D.BD.Event.Hovered.prototype.send = function() {
-    var url = "/hovered";
+    var url = "/posts/hovered";
     var data = {
         start: this.start,
         arrow_id: this.arrow_id
@@ -106,7 +106,7 @@ L3D.BD.Event.Hovered.prototype.send = function() {
 L3D.BD.Event.Fps = function() {};
 L3D.BD.Event.Fps.prototype.send = function() {
 
-    var url = "/fps";
+    var url = "/posts/fps";
     var data = {
         fps: this.fps
     };
@@ -117,7 +117,7 @@ L3D.BD.Event.Fps.prototype.send = function() {
 
 L3D.BD.Event.PointerLocked = function() {};
 L3D.BD.Event.PointerLocked.prototype.send = function() {
-    var url = "/pointer-locked";
+    var url = "/posts/pointer-locked";
     var data = {
         locked: this.locked
     };
@@ -127,7 +127,7 @@ L3D.BD.Event.PointerLocked.prototype.send = function() {
 
 L3D.BD.Event.SwitchedLockOption = function() {};
 L3D.BD.Event.SwitchedLockOption.prototype.send = function() {
-    var url = "/switched-lock-option";
+    var url = "/posts/switched-lock-option";
 
     var data = {
         locked: this.locked

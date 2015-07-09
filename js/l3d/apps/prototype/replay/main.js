@@ -50,6 +50,7 @@ function init() {
     // Initialize replay camera
     camera1 = new L3D.ReplayCamera(50, container_size.width() / container_size.height(), 0.01, 100000, coins);
     recommendations = initMainScene(camera1, scene, coins);
+    camera1.cameras = recommendations;
 
     // Add listeners
     initListeners();
