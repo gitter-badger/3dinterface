@@ -90,6 +90,9 @@ L3D.BaseRecommendation.prototype.check = function() {
  * Initialize the extremity of the arrow
  */
 L3D.BaseRecommendation.prototype.initExtremity = function() {
+
+    console.log("Init");
+
     var geometry = new THREE.Geometry();
 
     var direction = this.camera.target.clone();
@@ -105,20 +108,22 @@ L3D.BaseRecommendation.prototype.initExtremity = function() {
     left = L3D.Tools.mul(left, this.size);
     other  = L3D.Tools.mul(other, this.size);
 
-    geometry.vertices.push(L3D.Tools.sum( L3D.Tools.sum( this.camera.position, left),  other),
-                           L3D.Tools.diff(L3D.Tools.sum( this.camera.position, other), left),
-                           L3D.Tools.diff(L3D.Tools.diff(this.camera.position, left),  other),
-                           L3D.Tools.sum( L3D.Tools.diff(this.camera.position, other), left),
-                           L3D.Tools.sum(this.camera.position, direction)
-                          );
+    geometry.vertices.push(
+        L3D.Tools.sum( L3D.Tools.sum( this.camera.position, left),  other),
+        L3D.Tools.diff(L3D.Tools.sum( this.camera.position, other), left),
+        L3D.Tools.diff(L3D.Tools.diff(this.camera.position, left),  other),
+        L3D.Tools.sum( L3D.Tools.diff(this.camera.position, other), left),
+        L3D.Tools.sum(this.camera.position, direction)
+    );
 
-    geometry.faces.push(new THREE.Face3(0,2,1), // new THREE.Face3(0,2,1),
-                        new THREE.Face3(0,3,2),  // new THREE.Face3(0,3,2)
-                        new THREE.Face3(4,1,2),
-                        new THREE.Face3(4,0,1),
-                        new THREE.Face3(4,3,0),
-                        new THREE.Face3(4,2,3)
-                        );
+    geometry.faces.push(
+        new THREE.Face3(0,2,1),
+        new THREE.Face3(0,3,2),
+        new THREE.Face3(4,1,2),
+        new THREE.Face3(4,0,1),
+        new THREE.Face3(4,3,0),
+        new THREE.Face3(4,2,3)
+    );
 
     geometry.computeFaceNormals();
 
@@ -137,8 +142,9 @@ L3D.BaseRecommendation.prototype.initExtremity = function() {
  * Updates the extremity of the arrow
  */
 L3D.BaseRecommendation.prototype.updateExtremity = function() {
+
     var direction = this.camera.target.clone();
-    direction.sub(this.camera.position);
+    direction.sub(this.camera.position.clone());
     direction.normalize();
 
     var left = L3D.Tools.cross(direction, this.up);
@@ -149,13 +155,11 @@ L3D.BaseRecommendation.prototype.updateExtremity = function() {
     left = L3D.Tools.mul(left, this.size);
     other  = L3D.Tools.mul(other, this.size);
 
-    this.mesh.geometry.vertices = [
-        L3D.Tools.sum( L3D.Tools.sum( this.camera.position, left),  other),
-        L3D.Tools.diff(L3D.Tools.sum( this.camera.position, other), left),
-        L3D.Tools.diff(L3D.Tools.diff(this.camera.position, left),  other),
-        L3D.Tools.sum( L3D.Tools.diff(this.camera.position, other), left),
-        L3D.Tools.sum(this.camera.position, direction)
-    ];
+    this.mesh.geometry.vertices[0] = L3D.Tools.sum( L3D.Tools.sum( this.camera.position, left),  other);
+    this.mesh.geometry.vertices[1] = L3D.Tools.diff(L3D.Tools.sum( this.camera.position, other), left);
+    this.mesh.geometry.vertices[2] = L3D.Tools.diff(L3D.Tools.diff(this.camera.position, left),  other);
+    this.mesh.geometry.vertices[3] = L3D.Tools.sum( L3D.Tools.diff(this.camera.position, other), left);
+    this.mesh.geometry.vertices[4] = L3D.Tools.sum(this.camera.position, direction);
 
     this.mesh.geometry.computeFaceNormals();
     this.mesh.geometry.verticesNeedUpdate = true;
@@ -189,11 +193,9 @@ L3D.BaseRecommendation.prototype.update = function(mainCamera) {
 
     if (dist < low_bound) {
         new_value = 0;
-    }
-    else if (dist > high_bound) {
+    } else if (dist > high_bound) {
         new_value = 1;
-    }
-    else {
+    } else {
         new_value = (dist - low_bound)/(high_bound - low_bound);
     }
 

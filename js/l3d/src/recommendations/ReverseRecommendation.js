@@ -164,7 +164,7 @@ L3D.ReverseRecommendation.prototype.regenerateArrow = function(mainCamera) {
 
 };
 
-L3D.BaseRecommendation.prototype.updateExtremity = function() {
+L3D.ReverseRecommendation.prototype.updateExtremity = function() {
     var direction = this.camera.target.clone();
     direction.sub(this.camera.position);
     direction.normalize();
