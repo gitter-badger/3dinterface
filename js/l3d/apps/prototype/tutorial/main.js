@@ -20,6 +20,8 @@ var tutorial;
 
 function main() {
 
+    L3D.BD.disable();
+
     // Main container that holds everything
     container = document.getElementById('container');
 
