@@ -134,4 +134,4 @@ L3D.BD.Event.SwitchedLockOption.prototype.send = function() {
     };
 
     L3D.BD.Private.sendData(url, data);
-}
+};

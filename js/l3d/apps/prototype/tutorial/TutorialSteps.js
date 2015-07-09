@@ -108,13 +108,13 @@ TutorialSteps.prototype.addCoin = function(coin) {
     this.coins.push(coin);
     coin.addToScene(this.scene);
     this.clickableObjects.push(coin);
-}
+};
 
 TutorialSteps.prototype.addRecommendation = function(reco) {
     this.cameras.push(reco);
     reco.addToScene(this.scene);
     this.clickableObjects.push(reco);
-}
+};
 
 TutorialSteps.prototype.nextStep = function() {
     if (this.step < this.instructions.length) {

@@ -296,7 +296,7 @@ Info.prototype.loadPointerLocked = function() {
             self.tryMerge();
         }
     );
-}
+};
 
 Info.prototype.loadSwitchedLockOption = function() {
     var self = this;
@@ -322,7 +322,7 @@ Info.prototype.loadSwitchedLockOption = function() {
             self.tryMerge();
         }
     );
-}
+};
 
 var UserCreator = function(finishAction) {
     this.finishAction = finishAction;

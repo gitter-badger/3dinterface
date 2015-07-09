@@ -117,7 +117,7 @@ ObjectClicker.prototype.getPointedObject = function() {
     var intersects = this.raycaster.intersectObjects(this.objects, false);
 
     // Avoid non-raycastable objects
-    for (var i = 0; i < intersects.length && !intersects[i].object.raycastable; i++){};
+    for (var i = 0; i < intersects.length && !intersects[i].object.raycastable; i++){}
 
     // Objects are sorted by distance in intersects, the best is the first
     return intersects[i] !== undefined ? intersects[i].object : undefined;
@@ -162,7 +162,7 @@ ObjectClicker.prototype.click = function() {
 
     this.onClick(this.currentPointedObject, this.mouse.x, this.mouse.y);
 
-}
+};
 
 return ObjectClicker;
 

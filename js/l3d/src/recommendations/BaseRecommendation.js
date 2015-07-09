@@ -79,7 +79,7 @@ L3D.BaseRecommendation.prototype.raycast = function(raycaster, intersects) {
 
     }
 
-}
+};
 
 /**
  * Changes the color of the meshes like a HTML link

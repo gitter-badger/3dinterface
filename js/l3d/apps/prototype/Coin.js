@@ -23,7 +23,7 @@ Coin.setSize = function(width,height) {
     this.domElement.width = width;
     this.domElement.height = height;
     this.update();
-}
+};
 
 Coin.image = new Image();
 Coin.image.src = '/static/img/redcoin.png';
