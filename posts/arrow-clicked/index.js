@@ -10,7 +10,7 @@ module.exports.index = function(req, res) {
             [req.session.exp_id, req.body.arrow_id, req.body.time],
             function(err, result) {
                 if (err !== null)
-                    Log.dberror(err);
+                    Log.dberror(err + ' arrow-clicked');
                 release();
             }
         );

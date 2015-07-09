@@ -22,7 +22,7 @@ module.exports.index = function(req, res) {
             ],
             function(err, result) {
                 if (err !== null)
-                    Log.dberror(err);
+                    Log.dberror(err + ' in keyboard-event');
                 release();
             }
         );

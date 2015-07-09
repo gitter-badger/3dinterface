@@ -10,7 +10,7 @@ module.exports.index = function(req, res) {
             [req.session.exp_id, req.body.fps],
             function(err, result) {
                 if (err !== null)
-                    Log.dberror(err);
+                    Log.dberror(err + ' in fps');
                 release();
             }
         );
