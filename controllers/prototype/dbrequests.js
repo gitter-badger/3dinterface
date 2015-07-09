@@ -1,5 +1,6 @@
 var pg = require('pg');
 var pgc = require('../../private.js');
+var Log = require('../../lib/NodeLog.js');
 
 var Info = function(id, finishAction) {
     this.id = id;
@@ -10,7 +11,9 @@ var Info = function(id, finishAction) {
         arrows: false,
         resets : false,
         previousNext: false,
-        hovered: false
+        hovered: false,
+        pointerLocked: false,
+        switchedLockOption: false
     };
 
     this.results = {};
@@ -32,6 +35,8 @@ Info.prototype.execute = function() {
     this.loadResets();
     this.loadPreviousNext();
     this.loadHovered();
+    this.loadSwitchedLockOption();
+    this.loadPointerLocked();
 };
 
 Info.prototype.tryMerge = function() {
@@ -91,24 +96,28 @@ Info.prototype.loadCameras = function() {
             "FROM keyboardevent WHERE exp_id = $1 ORDER BY time;",
         [self.id],
         function(err, result) {
-            self.results.cameras = [];
-            for (var i in result.rows) {
-                self.results.cameras.push(
-                    {
-                        type: 'camera',
-                        position : {
-                            x: result.rows[i].px,
-                            y: result.rows[i].py,
-                            z: result.rows[i].pz
-                        },
-                        target : {
-                            x: result.rows[i].tx,
-                            y: result.rows[i].ty,
-                            z: result.rows[i].tz
-                        },
-                        time: result.rows[i].time
-                    }
-                );
+            if (err !== null) {
+                Log.dberror(err + ' in loadCameras');
+            } else {
+                self.results.cameras = [];
+                for (var i in result.rows) {
+                    self.results.cameras.push(
+                        {
+                            type: 'camera',
+                            position : {
+                                x: result.rows[i].px,
+                                y: result.rows[i].py,
+                                z: result.rows[i].pz
+                            },
+                            target : {
+                                x: result.rows[i].tx,
+                                y: result.rows[i].ty,
+                                z: result.rows[i].tz
+                            },
+                            time: result.rows[i].time
+                        }
+                    );
+                }
             }
             self.ready.cameras = true;
             self.tryMerge();
@@ -122,15 +131,19 @@ Info.prototype.loadCoins = function() {
         "SELECT coin_id, time FROM coinclicked WHERE exp_id = $1 ORDER BY time;",
         [self.id],
         function(err,result) {
-            self.results.coins = [];
-            for (var i in result.rows) {
-                self.results.coins.push(
-                    {
-                        type: 'coin',
-                        time: result.rows[i].time,
-                        id: result.rows[i].coin_id
-                    }
-                );
+            if (err !== null) {
+                Log.dberror(err + ' in loadCoins');
+            } else {
+                self.results.coins = [];
+                for (var i in result.rows) {
+                    self.results.coins.push(
+                        {
+                            type: 'coin',
+                            time: result.rows[i].time,
+                            id: result.rows[i].coin_id
+                        }
+                    );
+                }
             }
             self.ready.coins = true;
             self.tryMerge();
@@ -144,15 +157,19 @@ Info.prototype.loadArrows = function() {
         "SELECT arrow_id, time FROM arrowclicked WHERE exp_id = $1 ORDER BY time;",
         [self.id],
         function(err, result) {
-            self.results.arrows = [];
-            for (var i in result.rows) {
-                self.results.arrows.push(
-                    {
-                        type: 'arrow',
-                        time: result.rows[i].time,
-                        id: result.rows[i].arrow_id
-                    }
-                );
+            if (err !== null) {
+                Log.dberror(err + ' in loadArrows');
+            } else {
+                self.results.arrows = [];
+                for (var i in result.rows) {
+                    self.results.arrows.push(
+                        {
+                            type: 'arrow',
+                            time: result.rows[i].time,
+                            id: result.rows[i].arrow_id
+                        }
+                    );
+                }
             }
             self.ready.arrows = true;
             self.tryMerge();
@@ -166,14 +183,18 @@ Info.prototype.loadResets = function() {
         "SELECT time FROM resetclicked WHERE exp_id = $1 ORDER BY time;",
         [self.id],
         function(err, result) {
-            self.results.resets = [];
-            for (var i in result.rows) {
-                self.results.resets.push(
-                    {
-                        type: 'reset',
-                        time: result.rows[i].time
-                    }
-                );
+            if (err !== null) {
+                Log.dberror(err + ' in loadResets');
+            } else {
+                self.results.resets = [];
+                for (var i in result.rows) {
+                    self.results.resets.push(
+                        {
+                            type: 'reset',
+                            time: result.rows[i].time
+                        }
+                    );
+                }
             }
             self.ready.resets = true;
             self.tryMerge();
@@ -194,25 +215,29 @@ Info.prototype.loadPreviousNext = function () {
             "FROM previousnextclicked WHERE exp_id = $1 ORDER BY time;",
         [self.id],
         function(err, result) {
-            self.results.previousNext = [];
-            for (var i in result.rows) {
-                self.results.previousNext.push(
-                    {
-                        type: 'previousnext',
-                        time: result.rows[i].time,
-                        previous: result.rows[i].previousnext == 'p',
-                        position : {
-                            x: result.rows[i].px,
-                            y: result.rows[i].py,
-                            z: result.rows[i].pz
-                        },
-                        target : {
-                            x: result.rows[i].tx,
-                            y: result.rows[i].ty,
-                            z: result.rows[i].tz
+            if (err !== null) {
+                Log.dberror(err + ' in loadPreviousNext');
+            } else {
+                self.results.previousNext = [];
+                for (var i in result.rows) {
+                    self.results.previousNext.push(
+                        {
+                            type: 'previousnext',
+                            time: result.rows[i].time,
+                            previous: result.rows[i].previousnext == 'p',
+                            position : {
+                                x: result.rows[i].px,
+                                y: result.rows[i].py,
+                                z: result.rows[i].pz
+                            },
+                            target : {
+                                x: result.rows[i].tx,
+                                y: result.rows[i].ty,
+                                z: result.rows[i].tz
+                            }
                         }
-                    }
-                );
+                    );
+                }
             }
             self.ready.previousNext = true;
             self.tryMerge();
@@ -226,22 +251,78 @@ Info.prototype.loadHovered = function() {
         "SELECT start, time, arrow_id FROM hovered WHERE exp_id = $1 ORDER BY time;",
         [self.id],
         function(err, result) {
-            self.results.hovered = [];
-            for (var i in result.rows) {
-                self.results.hovered.push(
-                    {
-                        type: "hovered",
-                        time: result.rows[i].time,
-                        start: result.rows[i].start,
-                        id: result.rows[i].arrow_id
-                    }
-                );
+            if (err !== null) {
+                Log.dberror(err + ' in loadHovered');
+            } else {
+                self.results.hovered = [];
+                for (var i in result.rows) {
+                    self.results.hovered.push(
+                        {
+                            type: "hovered",
+                            time: result.rows[i].time,
+                            start: result.rows[i].start,
+                            id: result.rows[i].arrow_id
+                        }
+                    );
+                }
             }
             self.ready.hovered = true;
             self.tryMerge();
         }
     );
 };
+
+Info.prototype.loadPointerLocked = function() {
+    var self = this;
+    this.client.query(
+        "SELECT time, locked FROM pointerlocked WHERE exp_id = $1 ORDER BY time;",
+        [self.id],
+        function(err, result) {
+            if (err !== null) {
+                Log.dberror(err + ' in loadPointerLocked');
+            } else {
+                self.results.pointerlocked = [];
+                for (var i in result.rows) {
+                    self.results.pointerlocked.push(
+                        {
+                            type: "pointerlocked",
+                            locked: result.rows[i].locked,
+                            time: result.rows[i].time
+                        }
+                    );
+                }
+            }
+            self.ready.pointerLocked = true;
+            self.tryMerge();
+        }
+    );
+}
+
+Info.prototype.loadSwitchedLockOption = function() {
+    var self = this;
+    this.client.query(
+        "SELECT time, locked FROM switchedlockoption WHERE exp_id = $1 ORDER BY time;",
+        [self.id],
+        function(err, result) {
+            if (err !== null) {
+                Log.dberror(err + ' in loadSwitchedLockOption');
+            } else {
+                self.results.switchedlockoption = [];
+                for (var i in result.rows) {
+                    self.results.switchedlockoption.push(
+                        {
+                            type: "switchedlockoption",
+                            locked: result.rows[i].locked,
+                            time:  result.rows[i].time
+                        }
+                    );
+                }
+            }
+            self.ready.switchedLockOption = true;
+            self.tryMerge();
+        }
+    );
+}
 
 var UserCreator = function(finishAction) {
     this.finishAction = finishAction;
