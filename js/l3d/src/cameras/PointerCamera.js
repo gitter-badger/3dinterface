@@ -440,7 +440,9 @@ L3D.PointerCamera.prototype.move = function(recommendation, toSave) {
 
     var otherCamera = recommendation.camera || recommendation;
 
+    this.movingHermite = false;
     this.moving = true;
+
     this.new_target = otherCamera.target.clone();
     this.new_position = otherCamera.position.clone();
     var t = [0,1];
@@ -469,6 +471,7 @@ L3D.PointerCamera.prototype.moveHermite = function(recommendation, toSave) {
 
     var otherCamera = recommendation.camera || recommendation;
 
+    this.moving = false;
     this.movingHermite = true;
     this.t = 0;
 

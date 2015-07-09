@@ -143,17 +143,9 @@ function resizeElements() {
             continue;
         }
 
-        if (obj instanceof THREE.WebGLRenderer) {
-
-            obj.setSize(width, height);
-
-        }
-
         if (obj.domElement) {
 
-            obj.domElement.width = width;
-            obj.domElement.height = height;
-            continue;
+            obj.setSize(width, height);
 
         }
 

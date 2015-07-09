@@ -179,3 +179,18 @@ L3D.MousePointer.prototype.clear = function(force) {
     this.render(L3D.MousePointer.NONE, force);
 
 };
+
+/**
+ * Sets the size of the canvas
+ * @param {Number} width the new width of the canvas
+ * @param {Number} height the new height of the canvas
+ */
+
+L3D.MousePointer.prototype.setSize = function(width, height) {
+
+    this.domElement.width = width;
+    this.domElement.height = height;
+
+    this.render(this.style, true);
+
+};

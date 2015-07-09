@@ -19,6 +19,12 @@ Coin.domElement.style.cssFloat = 'top-left';
 Coin.domElement.style.top = "0px";
 Coin.domElement.style.left = "0px";
 
+Coin.setSize = function(width,height) {
+    this.domElement.width = width;
+    this.domElement.height = height;
+    this.update();
+}
+
 Coin.image = new Image();
 Coin.image.src = '/static/img/redcoin.png';
 
@@ -69,6 +75,7 @@ Coin.update();
 Coin.prototype.init = function(x,y,z) {
     if (Coin.BASIC_MESH !== null) {
         this.mesh = Coin.BASIC_MESH.clone();
+        this.mesh.material = this.mesh.material.clone();
         this.mesh.position.x = x;
         this.mesh.position.y = y;
         this.mesh.position.z = z;
@@ -122,6 +129,7 @@ Coin.prototype.update = function() {
         } else {
 
             this.mesh.visible = false;
+            this.raycastable = false;
 
         }
 
@@ -136,7 +144,6 @@ Coin.prototype.get = function() {
         if (this.callback)
             this.callback();
 
-        this.mesh.material = this.mesh.material.clone();
         this.mesh.material.transparent = true;
         this.mesh.material.opacity = 1;
 

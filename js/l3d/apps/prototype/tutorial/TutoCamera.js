@@ -118,7 +118,7 @@ TutoCamera.prototype.onPointerLockChange = function() {
 
         // The pointer is locked : adapt the state of the camera
         this.pointerLocked = true;
-        this.mousePointer.render();
+        this.mousePointer.render(L3D.MousePointer.BLACK);
 
         this.mouse.x = this.renderer.domElement.width/2;
         this.mouse.y = this.renderer.domElement.height/2;
@@ -311,6 +311,8 @@ TutoCamera.prototype.move = function(recommendation, toSave) {
     var otherCamera = recommendation.camera || recommendation;
 
     this.moving = true;
+    this.movingHermite = false;
+
     this.new_target = otherCamera.target.clone();
     this.new_position = otherCamera.position.clone();
     var t = [0,1];
@@ -338,6 +340,7 @@ TutoCamera.prototype.moveHermite = function(recommendation, toSave) {
 
     var otherCamera = recommendation.camera;
 
+    this.moving = false;
     this.movingHermite = true;
     this.t = 0;
 

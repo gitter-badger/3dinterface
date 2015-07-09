@@ -40,7 +40,7 @@ function main() {
     tutorial.setCameras(recommendations);
     tutorial.nextStep();
 
-    startCanvas.render(L3D.StartCanvas.Black);
+    startCanvas.render();
 
     // Start rendering
     setInterval(render, 20);

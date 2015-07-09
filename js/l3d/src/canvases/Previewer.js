@@ -173,3 +173,8 @@ L3D.Previewer.prototype.setPosition = function(x, y) {
     this.mouse.x = x;
     this.mouse.y = y;
 }
+
+L3D.Previewer.prototype.setSize = function(width, height) {
+    this.domElement.width = width;
+    this.domElement.height = height;
+}

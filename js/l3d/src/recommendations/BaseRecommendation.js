@@ -91,8 +91,6 @@ L3D.BaseRecommendation.prototype.check = function() {
  */
 L3D.BaseRecommendation.prototype.initExtremity = function() {
 
-    console.log("Init");
-
     var geometry = new THREE.Geometry();
 
     var direction = this.camera.target.clone();

@@ -30,11 +30,12 @@ L3D.StartCanvas = function(camera) {
 };
 
 /**
- * Shows the canvas with a string in the middle of it
+ * Shows the canvas with a string in the middle of it (not done if already shown)
+ * @param {Boolean} force force the rendering
  */
-L3D.StartCanvas.prototype.render = function() {
+L3D.StartCanvas.prototype.render = function(force) {
 
-    if (!this.shown) {
+    if (!this.shown || force) {
 
         this.ctx.fillStyle = 'white';
         this.ctx.globalAlpha = 0.7;
@@ -67,3 +68,19 @@ L3D.StartCanvas.prototype.clear = function() {
     }
 
 };
+
+/**
+ * Sets the size of the canvas
+ * @param {Number} width new width of the canvas
+ * @param {Number} height new height of the canvas
+ */
+L3D.StartCanvas.prototype.setSize = function(width, height) {
+
+    this.domElement.width = width;
+    this.domElement.height = height;
+
+    // If the canvas was shown, redraw it
+    if (this.shown)
+        this.render(true);
+
+}
