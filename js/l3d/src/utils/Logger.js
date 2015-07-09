@@ -114,3 +114,24 @@ L3D.BD.Event.Fps.prototype.send = function() {
     L3D.BD.Private.sendData(url, data);
 
 };
+
+L3D.BD.Event.PointerLocked = function() {};
+L3D.BD.Event.PointerLocked.prototype.send = function() {
+    var url = "/pointer-locked";
+    var data = {
+        locked: this.locked
+    };
+
+    L3D.BD.Private.sendData(url, data);
+};
+
+L3D.BD.Event.SwitchedLockOption = function() {};
+L3D.BD.Event.SwitchedLockOption.prototype.send = function() {
+    var url = "/switched-lock-option";
+
+    var data = {
+        locked: this.locked
+    };
+
+    L3D.BD.Private.sendData(url, data);
+}

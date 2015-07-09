@@ -32,6 +32,11 @@ var ButtonManager = function(camera, cameras, previewer) {
         self.pointerLockElement.onchange = function() {
             self.camera.shouldLock = self.pointerLockElement.checked;
             self.camera.onPointerLockChange();
+
+            // Log
+            var event = new L3D.BD.Event.SwitchedLockOption();
+            event.locked = self.pointerLockElement.checked;
+            event.send();
         };
 
         self.showarrowsElement.onchange = function() {self.showArrows = self.showarrowsElement.checked;};

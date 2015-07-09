@@ -223,6 +223,7 @@ L3D.PointerCamera.prototype.isLocked = function() {
  * Update the camera when the pointer lock changes state
  */
 L3D.PointerCamera.prototype.onPointerLockChange = function() {
+    var event = new L3D.BD.Event.PointerLocked();
 
     if (this.isLocked()) {
 
@@ -235,6 +236,14 @@ L3D.PointerCamera.prototype.onPointerLockChange = function() {
 
         // Remove start canvas
         this.startCanvas.clear();
+
+        // Send event
+        event.locked = true;
+
+        if (this.wasLocked !== event.locked)
+            event.send();
+
+        this.wasLocked = true;
 
     } else {
 
@@ -250,7 +259,14 @@ L3D.PointerCamera.prototype.onPointerLockChange = function() {
         else
             this.startCanvas.clear();
 
+        event.locked = false;
+
+        if (this.wasLocked !== event.locked)
+            event.send();
+
+        this.wasLocked = false;
     }
+
 
 };
 
