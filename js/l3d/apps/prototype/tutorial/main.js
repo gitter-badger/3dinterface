@@ -1,63 +1,76 @@
-var beenFullscreen = false;
-var isFullscreen = false;
-
-var main_section = document.getElementById('main-section');
-
-var container_size = {
-        width: function() { return 1134; },
-            height: function() { return 768; }
-};
-
+// Let's be sure we avoid using global variables
 var onWindowResize = (function() {
 
 // Disable scrolling
 window.onscroll = function () { window.scrollTo(0, 0); };
 
-var mesh_number = 25;
-var renderer, scene, controls, cube, container, plane, mouse= {x:0, y:0};
-var bigmesh;
-var raycaster;
-var objects = [];
-var cameras, cameraSelecter;
-var spheres = new Array(mesh_number);
-var visible = 0;
+window.onload = main;
+
 var stats;
+var renderer, scene, container;
+var clickableObjects = [];
+var recommendations, objectClicker;
 var previewer;
-var loader;
+var camera1;
 var coins = [];
 var previousTime;
+var pointer;
+var startCanvas;
 var tutorial;
-var camera1;
 
-init();
-animate();
+function main() {
 
-function init() {
+    // Main container that holds everything
+    container = document.getElementById('container');
+
+    // Initialization
+    initThreeElements();
+    initCanvases();
+    initModels();
+    initListeners();
+
+    appendTo(container)(stats, Coin, startCanvas, pointer, previewer, renderer);
+
+    // Set the good size of cameras
+    onWindowResize();
+
+    Coin.update();
+
+    // Start tutorial
+    tutorial.setCameras(recommendations);
+    tutorial.nextStep();
+
+    startCanvas.render(L3D.StartCanvas.Black);
+
+    // Start rendering
+    setInterval(render, 20);
+
+}
+
+function initThreeElements() {
+
     // Initialize scene
     scene = new THREE.Scene();
-
-    // Disable log for this time
-    L3D.BD.disable();
-
-    // Collidable objects to prevent camera from traversing objects
-    var collidableObjects = [];
-
-    // Initialize renderer
-    container = document.getElementById('container');
-    container.style.height = container_size.height() + 'px';
-    container.style.width = container_size.width() + 'px';
     renderer = new THREE.WebGLRenderer({alpha:true, antialias:true});
-    renderer.setSize(container_size.width(), container_size.height());
-    // renderer.setSize(container_size.width(), container_size.height());
-    renderer.shadowMapEnabled = true;
     renderer.setClearColor(0x87ceeb);
+
+    // Initialize pointer camera
+    camera1 = new TutoCamera(
+        50,
+        container_size.width() / container_size.height(),
+        0.01, 100000, renderer, scene, onWindowResize, container_size, coins, container, clickableObjects
+    );
+
+    tutorial = camera1.tutorial;
+
+}
+
+function initCanvases() {
 
     // Initialize previewer
     previewer = new L3D.Previewer(renderer, scene);
     previewer.domElement.style.position ="absolute";
     previewer.domElement.style.cssFloat = 'top-left';
-    previewer.domElement.width = container_size.width();
-    previewer.domElement.height = container_size.height();
 
     // Initialize stats counter
     stats = new Stats();
@@ -65,81 +78,61 @@ function init() {
     stats.domElement.style.position = 'absolute';
     stats.domElement.style.cssFloat = "top-left";
 
-    camera1 = new TutoCamera(50, container_size.width() / container_size.height(), 0.01, 100000, renderer, scene, onWindowResize, container_size, coins, container);
-
     // Initialize pointer for pointer lock
-    var pointer = new L3D.MousePointer(camera1);
-    pointer.domElement.width = container_size.width();
-    pointer.domElement.height = container_size.height();
+    pointer = new L3D.MousePointer(camera1);
 
-    //
-    var startCanvas = new L3D.StartCanvas(camera1);
-    startCanvas.domElement.width = container_size.width();
-    startCanvas.domElement.height = container_size.height();
-    startCanvas.render();
+    // Init start canvas
+    startCanvas = new L3D.StartCanvas(camera1);
 
-    // Add elements to page
-    container.appendChild( stats.domElement );
-    container.appendChild(Coin.domElement);
-    container.appendChild(startCanvas.domElement);
-    container.appendChild(pointer.domElement);
-    container.appendChild(previewer.domElement);
-    container.appendChild(renderer.domElement);
+}
 
-    // Initialize pointer camera
-    tutorial = camera1.tutorial;
+function initModels() {
 
-    cameras = [];
-    tutorial.setCameras(cameras);
+    // Init recommendations
+    recommendations = L3D.initPeach(camera1, scene, coins, clickableObjects);
 
-    // Load peach scene
-    L3D.initPeach(camera1, scene);
+    // init clickable objects
+    var i;
+    for (i = 0; i < coins.length; i++)
+        clickableObjects.push(coins[i]);
 
-    initListeners();
+    for (i =0; i < recommendations.length; i++)
+        clickableObjects.push(recommendations[i]);
 
-    tutorial.nextStep();
-
-    setInterval(animate, 20);
 }
 
 function initListeners() {
+
+    // Add listeners
     window.addEventListener('resize', onWindowResize, false);
 
-    // Transmit click event to camera selecter
-    container.addEventListener('mousedown', function(event) {
-        if (event.which == 1)
-            cameraSelecter.click(event);
-        }, false
-    );
-
-    // Update camera selecter when mouse moved
-    container.addEventListener('mousemove', function(event) {
-            cameraSelecter.update(event);
-        }, false
-    );
-
-    // Escape key to exit fullscreen mode
-    document.addEventListener('keydown', function(event) { if (event.keyCode == 27) { stopFullscreen();} }, false);
-
     // HTML Bootstrap buttons
-    buttonManager = new ButtonManager(camera1, cameras, previewer);
+    buttonManager = new ButtonManager(camera1, recommendations, previewer);
 
-    // Camera selecter for hover and clicking recommendations
-    cameraSelecter = new L3D.CameraSelecter(renderer, scene, camera1, cameras, coins, buttonManager);
+    // Object clicker for hover and clicking recommendations
+    objectClicker = new L3D.ObjectClicker(
+        renderer,
+        camera1,
+        clickableObjects,
+        objectClickerOnHover(camera1, previewer, recommendations, container), // Create onHover function
+        objectClickerOnClick(camera1, buttonManager, recommendations, coins), // Create onClick function
+        container
+    );
+
 }
 
-
 function render() {
-    cameraSelecter.update();
+
+    // Stats for render
+    stats.begin();
+
+    objectClicker.update();
 
     // Update recommendations (set raycastable if shown)
-    var transform = buttonManager.showArrows ? show : hide;
-    cameras.map(function(camera) {
-        if (camera instanceof Recommendation) {
-            transform(camera);
-
-            camera.traverse(function(elt) {
-                elt.raycastable = buttonManager.showArrows;
+    recommendations.map(function(reco) {
+        if (reco instanceof Recommendation) {
+            reco.traverse(function(elt) {
+                elt.visible = elt.raycastable = buttonManager.showArrows;
             });
         }
     });
@@ -153,7 +146,7 @@ function render() {
     previousTime = Date.now();
 
     // Update the recommendations
-    cameras.map(function(camera) {camera.update(camera1);});
+    recommendations.map(function(reco) { reco.update(camera1);});
 
     // Set current position of camera
     camera1.look();
@@ -162,87 +155,38 @@ function render() {
     renderer.setScissor(left, bottom, width, height);
     renderer.enableScissorTest(true);
     renderer.setViewport(left, bottom, width, height);
-    THREEx.Transparency.update(camera1);
     renderer.render(scene, camera1);
 
     // Remove borders of preview
     previewer.clear();
 
     // Hide arrows in recommendation
-    cameras.map(function(camera) { if (camera instanceof Recommendation) hide(camera); });
+    recommendations.map(function(reco) { if (reco instanceof Recommendation) hide(reco); });
+
+    // Update transparent elements
+    THREEx.Transparency.update(camera1);
 
     // Render preview
-    previewer.render(cameraSelecter.prev, container_size.width(), container_size.height());
-}
+    previewer.render(container_size.width(), container_size.height());
 
-function animate() {
-    // Render each frame
-    // requestAnimationFrame(animate);
-
-    // stats count the number of frames per second
-    stats.begin();
-    render();
+    // Finish stats
     stats.end();
+
 }
 
 function onWindowResize() {
 
-    container.style.width = container_size.width() + "px";
-    container.style.height = container_size.height() + "px";
+    resizeElements(renderer, container, previewer, Coin, pointer, startCanvas);
 
-    previewer.domElement.width = container_size.width();
-    previewer.domElement.height = container_size.height();
+    recommendations.forEach(function(reco) {
+        resetCameraAspect(reco.camera, container_size.width(), container_size.height());
+    });
 
-    renderer.setSize(container_size.width(), container_size.height());
-    cameras.forEach(function(camera) {camera.camera.aspect = container_size.width() / container_size.height();});
-    cameras.forEach(function(camera) {camera.camera.updateProjectionMatrix();});
     render();
+
 }
 
-function hide(object) {
-    object.traverse(function(object) {object.visible = false;});
-}
-
-function show(object) {
-    object.traverse(function(object) {object.visible = true;});
-}
-
+// onWindowResize will be the only global function
 return onWindowResize;
 
 })();
-
-function fullscreen() {
-    isFullscreen = true;
-
-    if (!beenFullscreen) {
-        beenFullscreen = true;
-        alert('To quit fullscren mode, type ESC key');
-    }
-
-    container.style.position = "absolute";
-    container.style.cssFloat = "top-left";
-    container.style.top = "50px";
-    container.style.bottom = "0px";
-    container.style.left = "0px";
-    container.style.right = "0px";
-    container.style.width="";
-    container.style.height="";
-    container.style.overflow = "hidden";
-
-    onWindowResize();
-}
-
-function stopFullscreen() {
-    isFullscreen = false;
-
-    container.style.position = "";
-    container.style.cssFloat = "";
-    container.style.top = "";
-    container.style.bottom = "";
-    container.style.left = "";
-    container.style.right = "";
-    container.style.width = container_size.width() + "px";
-    container.style.height = container_size.height() + "px";
-
-    onWindowResize();
-}

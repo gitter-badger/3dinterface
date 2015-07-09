@@ -76,7 +76,7 @@ var TutoCamera = function() {
     this.collisions = true;
 
     // Create tutorial
-    this.tutorial = new TutorialSteps(this, scene, coins, this.onWindowResize, container_size);
+    this.tutorial = new TutorialSteps(this, scene, coins, this.onWindowResize, container_size, arguments[10]);
 
     this.shouldLock = true;
 

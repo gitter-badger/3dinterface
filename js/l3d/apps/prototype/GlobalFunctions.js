@@ -96,6 +96,7 @@ function objectClickerOnClick(camera1, buttonManager, recommendations, coins) {
 
         } else if (obj instanceof L3D.BaseRecommendation) {
 
+            obj.check();
             camera1.moveHermite(obj);
 
             // Send event to DB

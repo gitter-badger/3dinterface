@@ -1,5 +1,5 @@
 var nextStep;
-var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container_size) {
+var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container_size, clickableObjects) {
     this.camera = tutoCamera;
     this.step = 0;
     this.coinNumber = 0;
@@ -7,6 +7,7 @@ var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container
     this.onWindowResize = onWindowResize;
     this.container_size = container_size;
     this.coins = coins;
+    this.clickableObjects = clickableObjects;
 
     this.instructions = [
         {
@@ -103,6 +104,18 @@ TutorialSteps.prototype.setCameras = function(cameras) {
     this.cameras = cameras;
 };
 
+TutorialSteps.prototype.addCoin = function(coin) {
+    this.coins.push(coin);
+    coin.addToScene(this.scene);
+    this.clickableObjects.push(coin);
+}
+
+TutorialSteps.prototype.addRecommendation = function(reco) {
+    this.cameras.push(reco);
+    reco.addToScene(this.scene);
+    this.clickableObjects.push(reco);
+}
+
 TutorialSteps.prototype.nextStep = function() {
     if (this.step < this.instructions.length) {
         this.alert(this.instructions[this.step].text, this.instructions[this.step].justclick);
@@ -117,19 +130,15 @@ TutorialSteps.prototype.nextStep = function() {
                 Coin.max = 1;
                 Coin.update();
                 this.camera.allowed.keyboardRotate    = true;
-                this.coins.push(new Coin(0.4911245636058468,1.225621525492101,-5.11526684540265, callback));
-                this.coins[this.coins.length-1].addToScene(this.scene);
+                this.addCoin(new Coin(0.4911245636058468,1.225621525492101,-5.11526684540265, callback));
                 document.getElementById('container').appendChild(Coin.domElement);
                 break;
             case 6:
                 Coin.max = 4;
                 Coin.update();
-                this.coins.push(new Coin(1.4074130964382279,0.6458319586843252,-6.75244526999632, callback));
-                this.coins[this.coins.length-1].addToScene(this.scene);
-                this.coins.push(new Coin(-4.2701659473968965,0.6745750513698942,-0.484545726832743, callback));
-                this.coins[this.coins.length-1].addToScene(this.scene);
-                this.coins.push(new Coin(-4.336597108439718,0.4203578350484251,-8.447211342176862, callback));
-                this.coins[this.coins.length-1].addToScene(this.scene);
+                this.addCoin(new Coin(1.4074130964382279,0.6458319586843252,-6.75244526999632, callback));
+                this.addCoin(new Coin(-4.2701659473968965,0.6745750513698942,-0.484545726832743, callback));
+                this.addCoin(new Coin(-4.336597108439718,0.4203578350484251,-8.447211342176862, callback));
                 break;
             case 9:
                 this.camera.move(this.camera.resetElements);
@@ -140,8 +149,7 @@ TutorialSteps.prototype.nextStep = function() {
             case 11:
                 Coin.max = 5;
                 Coin.update();
-                this.coins.push(new Coin(2.7378029903574026,2.953347730618792,-11.550836282321221, callback));
-                this.coins[this.coins.length-1].addToScene(this.scene);
+                this.addCoin(new Coin(2.7378029903574026,2.953347730618792,-11.550836282321221, callback));
                 this.camera.move({
                     position: new THREE.Vector3(-0.3528994281499122,-0.026355227893303856,-0.2766844454377826),
                     target: new THREE.Vector3(13.645394042405439,12.337463485871524,-35.64876053273249)
@@ -149,8 +157,7 @@ TutorialSteps.prototype.nextStep = function() {
                 break;
             case 14:
                 var cam = L3D.createPeachRecommendations(this.container_size.width(), this.container_size.height())[2];
-                this.cameras.push(cam);
-                cam.addToScene(this.scene);
+                this.addRecommendation(cam);
                 this.camera.move({
                     position: new THREE.Vector3(0.24120226734236713,0.2009624547018851,-0.5998422840047036),
                     target:  new THREE.Vector3(24.021711452218575,7.072419314071788,-32.020702608601745)
@@ -159,17 +166,13 @@ TutorialSteps.prototype.nextStep = function() {
             case 16:
                 var cams = L3D.createPeachRecommendations(this.container_size.width(), this.container_size.height());
                 for (var i = 0; i < cams.length; i == 1 ? i+=2 : i++) {
-                    this.cameras.push(cams[i]);
-                    cams[i].addToScene(this.scene);
+                    this.addRecommendation(cams[i]);
                 }
                 Coin.max = 8;
                 Coin.update();
-                this.coins.push(new Coin(3.701112872561801,-0.4620393514856378,-3.3373375945128085, callback));
-                this.coins[this.coins.length-1].addToScene(this.scene);
-                this.coins.push(new Coin(6.694675339780243,-1.2480369397526456,-1.992336719279164, callback));
-                this.coins[this.coins.length-1].addToScene(this.scene);
-                this.coins.push(new Coin(-2.458336118265302,-1.549510268763568,-11.186153614421212, callback));
-                this.coins[this.coins.length-1].addToScene(this.scene);
+                this.addCoin(new Coin(3.701112872561801,-0.4620393514856378,-3.3373375945128085, callback));
+                this.addCoin(new Coin(6.694675339780243,-1.2480369397526456,-1.992336719279164, callback));
+                this.addCoin(new Coin(-2.458336118265302,-1.549510268763568,-11.186153614421212, callback));
                 break;
         }
         this.step++;
@@ -178,11 +181,11 @@ TutorialSteps.prototype.nextStep = function() {
 
 TutorialSteps.prototype.nextAction = function() {
     switch (this.step) {
-        case 1: return 'lock-pointer';
-        case 2: return 'unlock-pointer';
-        case 3: return 'uncheck-lock';
-        case 4: return 'rotate-mouse';
-        case 5: return 'rotate-keyboard';
+        case  1: return 'lock-pointer';
+        case  2: return 'unlock-pointer';
+        case  3: return 'uncheck-lock';
+        case  4: return 'rotate-mouse';
+        case  5: return 'rotate-keyboard';
         case 11: return 'translate-keyboard';
         case 13: return 'reset-camera';
         case 15: return 'recommendation';
