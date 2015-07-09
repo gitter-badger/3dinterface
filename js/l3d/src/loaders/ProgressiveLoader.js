@@ -203,9 +203,12 @@ var ProgressiveLoader = function(path, scene, camera, callback, log) {
      */
     this.modulus = 150;
 
+    /**
+     * Log function : called each time with the number of elements currently
+     * received and the number of elements in total as parameter
+     * @type {function}
+     */
     this.log = log;
-
-    r = this;
 
 };
 

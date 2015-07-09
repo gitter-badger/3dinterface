@@ -61,6 +61,11 @@ L3D.BaseRecommendation = function(arg1, arg2, arg3, arg4, position, target) {
 L3D.BaseRecommendation.prototype = Object.create(THREE.Object3D.prototype);
 L3D.BaseRecommendation.prototype.constructor = L3D.BaseRecommendation;
 
+/**
+ * Computes the intersections with its mesh
+ * @param raycaster {THREE.Raycaster} the raycaster considered
+ * @param intersects {Object[]} collisions in which we will append the stuff
+ */
 L3D.BaseRecommendation.prototype.raycast = function(raycaster, intersects) {
 
     var intersectsThis = [];

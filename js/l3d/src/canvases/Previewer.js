@@ -165,16 +165,31 @@ L3D.Previewer.prototype.update = function(arg) {
     this.drawn = arg;
 };
 
+/**
+ * @description Changes the camera used for the preview
+ * @param {THREE.Camera} camera the new camera for preview
+ */
 L3D.Previewer.prototype.setCamera = function(camera) {
     this.camera = camera;
-}
+};
 
+/**
+ * @description Sets the position of the preview (automatically moves the
+ * preview if the mouse is in the border of the canvas)
+ * @param {Number} x x coordinate of the mouse
+ * @param {Number} y y coordinate of the mouse
+ */
 L3D.Previewer.prototype.setPosition = function(x, y) {
     this.mouse.x = x;
     this.mouse.y = y;
-}
+};
 
+/**
+ * @description Resets the size of the canvas and clears it
+ * @param width {Number} the new width
+ * @param height {Number} the new height
+ */
 L3D.Previewer.prototype.setSize = function(width, height) {
     this.domElement.width = width;
     this.domElement.height = height;
-}
+};

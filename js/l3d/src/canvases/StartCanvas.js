@@ -83,4 +83,4 @@ L3D.StartCanvas.prototype.setSize = function(width, height) {
     if (this.shown)
         this.render(true);
 
-}
+};

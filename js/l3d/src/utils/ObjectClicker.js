@@ -4,23 +4,84 @@ function pointerCheck(camera) {
     return (camera instanceof L3D.PointerCamera && camera.pointerLocked);
 }
 
+/**
+ * Class to allow easy object clicking
+ * @constructor
+ * @memberof L3D
+ * @param renderer {THREE.Renderer} the renderer
+ * @param camera {THREE.Camera} the camera to use
+ * @param objects {Object[]} the objects on which the collision is possible
+ * @param onHover {function} callback called when the mouse hovers an object
+ * @param onClick {function} callback called when the user clicks an object
+ * @param [domElement=document] {Element} element to which ObjectClicker listens to
+ */
 var ObjectClicker = function(renderer, camera, objects, onHover, onClick, domElement) {
 
+    /**
+     * Renderer used
+     * @type {THREE.Renderer}
+     */
     this.renderer = renderer;
+
+    /**
+     * Objects on which the collision is possible
+     * @type {Object[]}
+     */
     this.objects = objects;
+
+    /**
+     * Function called when the mouse hovers an object
+     * @type {function}
+     */
     this.onHover = onHover;
+
+    /**
+     * Function called when the user clicks on an object
+     * @type {function}
+     */
     this.onClick = onClick;
+
+    /**
+     * Camera used for ray casting
+     * @type {THREE.Camera}
+     */
     this.camera = camera;
 
+    /**
+     * Position of the mouse
+     * @type {Object}
+     */
     this.mouse = {x: null, y: null};
 
+    /**
+     * Element on which we will listen
+     * @type {Element}
+     */
     this.domElement = domElement || document;
 
+    /**
+     * Element currently hovered
+     * @type {Object}
+     */
     this.hoveredElement = null;
 
+    /**
+     * Raycaster used for finding the objects
+     * @private
+     * @type {THREE.Raycaster}
+     */
     this.raycaster = new THREE.Raycaster();
 
+    /**
+     * Currently pointed object
+     * @type {Object}
+     */
     this.currentPointedObject = null;
+
+    /**
+     * Previously pointed object
+     * @type {Object}
+     */
     this.previousPointedObject = null;
 
     // Add event listeners
@@ -30,6 +91,9 @@ var ObjectClicker = function(renderer, camera, objects, onHover, onClick, domEle
 
 };
 
+/**
+ * Returns the object pointed by the mouse
+ */
 ObjectClicker.prototype.getPointedObject = function() {
 
     // Compute x and y for unprojection
@@ -60,6 +124,10 @@ ObjectClicker.prototype.getPointedObject = function() {
 
 };
 
+/**
+ * Updates the position of the mouse and the hovered object and calls onHover
+ * @param event {Event} the event received by 'mousemove'
+ */
 ObjectClicker.prototype.update = function(event) {
 
     // Set mouse position
@@ -87,6 +155,9 @@ ObjectClicker.prototype.update = function(event) {
 
 };
 
+/**
+ * Calls onClick on the current pointed element
+ */
 ObjectClicker.prototype.click = function() {
 
     this.onClick(this.currentPointedObject, this.mouse.x, this.mouse.y);

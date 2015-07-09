@@ -64,6 +64,7 @@ List.prototype.push = function(element) {
 
 /**
  * Sorts the list by creating an array, sorting it, and recopying it to the list
+ * @param comparator {function} comparator between objects
  * Complexity O(size() * log (size()))
  */
 List.prototype.sort = function(comparator) {
