@@ -20,8 +20,6 @@ var tutorial;
 
 function main() {
 
-    L3D.BD.disable();
-
     // Main container that holds everything
     container = document.getElementById('container');
 
@@ -43,6 +41,20 @@ function main() {
     tutorial.nextStep();
 
     startCanvas.render();
+
+    // Bind previewer to renderer (for fixed option)
+    function bind() {
+        if (document.pointerLockElement || document.mozPointerLockElement || document.webkitPointerLockElement) {
+            // Lock event
+            previewer.fixed = true;
+        } else {
+            // Unlock event
+            previewer.fixed = false;
+        }
+    }
+    document.addEventListener('pointerlockchange', bind);
+    document.addEventListener('mozpointerlockchange', bind);
+    document.addEventListener('webkitpointerlockchange', bind);
 
     // Start rendering
     setInterval(render, 20);

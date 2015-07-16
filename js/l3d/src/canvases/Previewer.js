@@ -89,8 +89,8 @@ L3D.Previewer.prototype.render = function(container_width, container_height) {
             left = Math.clamp(left, width / 5, this.renderer.domElement.width - 6 * width / 5);
 
         } else {
-            left = 0;
-            bottom = 0;
+            left = 20;
+            bottom = 20;
         }
 
         // Draw border
