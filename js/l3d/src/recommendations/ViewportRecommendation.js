@@ -69,6 +69,35 @@ L3D.ViewportRecommendation = function(arg1, arg2, arg3, arg4, position, target) 
         self.line = new THREE.Line(geometry, material);
     })(this, direction, left, other);
 
+    (function(self, direction, left, other) {
+
+        var material = new THREE.MeshBasicMaterial();
+        var geometry = new THREE.Geometry();
+        var tmp_direction = L3D.Tools.mul(direction, -2);
+
+        geometry.vertices = [
+            L3D.Tools.sum(L3D.Tools.sum(self.camera.position, left), other),
+            L3D.Tools.diff(L3D.Tools.sum(self.camera.position, other),left),
+            L3D.Tools.diff(L3D.Tools.diff(self.camera.position, left),other),
+            L3D.Tools.sum(L3D.Tools.diff(self.camera.position, other), left),
+            L3D.Tools.sum(self.camera.position, tmp_direction)
+        ];
+
+        geometry.faces = [
+
+            new THREE.Face3(0, 1, 2),
+            new THREE.Face3(0, 2, 3),
+            new THREE.Face3(0, 4, 1),
+            new THREE.Face3(1, 4, 2),
+            new THREE.Face3(4, 3, 2),
+            new THREE.Face3(4, 0, 3)
+
+        ];
+
+        self.collidingObject = new THREE.Mesh(geometry, material);
+
+    })(this, direction, left, other);
+
 
     var material = new THREE.MeshBasicMaterial({
         color : 0x0000ff,
@@ -92,7 +121,7 @@ L3D.ViewportRecommendation.prototype.constructor = L3D.ViewportRecommendation;
 L3D.ViewportRecommendation.prototype.raycast = function(raycaster, intersects) {
 
     var intersectsThis = [];
-    this.mesh.raycast(raycaster, intersectsThis);
+    this.collidingObject.raycast(raycaster, intersectsThis);
 
     if (intersectsThis[0] !== undefined) {
 
@@ -187,5 +216,21 @@ L3D.ViewportRecommendation.prototype.setSize = function(size) {
         self.line.geometry.verticesNeedUpdate = true;
 
     })(this, direction, left, other, size);
+
+    (function(self, direction, left, other) {
+
+        var tmp_direction = L3D.Tools.mul(direction, -2 * size);
+
+        self.collidingObject.geometry.vertices = [
+            L3D.Tools.sum(L3D.Tools.sum(self.camera.position, left), other),
+            L3D.Tools.diff(L3D.Tools.sum(self.camera.position, other),left),
+            L3D.Tools.diff(L3D.Tools.diff(self.camera.position, left),other),
+            L3D.Tools.sum(L3D.Tools.diff(self.camera.position, other), left),
+            L3D.Tools.sum(self.camera.position, tmp_direction)
+        ];
+
+    })(this, direction, left, other, size);
+
+    this.collidingObject.verticesNeedUpdate = true;
 
 };
