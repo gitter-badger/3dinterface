@@ -11,7 +11,6 @@ module.exports.index = function(req, res) {
     }, function(err, message) {
         if (err !== null) {
             Log.mailerror(err);
-            console.log(err);
         }
     });
 
