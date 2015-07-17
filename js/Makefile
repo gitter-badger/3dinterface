@@ -6,10 +6,7 @@ else
 	CLOSURE=../utils/simple-compiler/compiler.sh
 endif
 
-all: L3D L3DP Socket Three Stats Bouncing Multisphere StreamingSimulator PrototypeReplay PrototypeInteractive Tutorial TestList CoinCreator FileSaver
-
-FileSaver:
-	cp filesaver.min.js ../static/js/filesaver.min.js
+all: L3D L3DP Socket Three Stats Bouncing Multisphere StreamingSimulator PrototypeReplay PrototypeInteractive Tutorial TestList CoinCreator
 
 L3D:
 	$(CLOSURE) $(OPT) \
