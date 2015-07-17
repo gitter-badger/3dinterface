@@ -277,20 +277,20 @@ L3D.createBobombRecommendations = function(width, height) {
 
 };
 
-L3D.initBobomb = function(recommendation, scene, coins, clickable) {
+L3D.initBobomb = function(camera, scene, coins, clickable) {
     L3D.addLight(scene);
 
     var collidableObjects = [];
-    L3D.initBobombScene(scene, collidableObjects, recommendation, clickable);
+    L3D.initBobombScene(scene, collidableObjects, camera, clickable);
 
-    recommendation.resetElements = L3D.resetBobombElements();
-    recommendation.collidableObjects = collidableObjects;
+    camera.resetElements = L3D.resetBobombElements();
+    camera.collidableObjects = collidableObjects;
 
-    recommendation.speed = 0.005;
-    recommendation.reset();
-    recommendation.save();
+    camera.speed = 0.005;
+    camera.reset();
+    camera.save();
 
-    scene.add(recommendation);
+    scene.add(camera);
 
     Coin.init();
     var tmp = L3D.createBobombCoins();

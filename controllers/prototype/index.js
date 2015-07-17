@@ -145,3 +145,29 @@ module.exports.tutorial = function(req, res) {
         res.send(result);
     });
 };
+
+module.exports.clicker = function(req, res, next) {
+
+    var scene = req.params.scene;
+
+    switch (scene) {
+
+        case 'peach':            res.locals.scene = "L3D.initPeach";    break;
+        case 'coolcoolmountain': res.locals.scene = "L3D.initMountain"; break;
+        case 'whomp':            res.locals.scene = "L3D.initWhomp";    break;
+        case 'bobomb':           res.locals.scene = "L3D.initBobomb";   break;
+        default:
+            // 404
+            var err = new Error('Incorrect scene');
+            err.status = 404;
+            next(err);
+            break;
+
+    }
+
+    res.setHeader('Content-Type', 'text/html');
+    res.render('prototype_clicker.jade', res.locals, function(err, result) {
+        res.send(result);
+    });
+
+}

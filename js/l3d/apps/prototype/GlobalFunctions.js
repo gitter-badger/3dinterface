@@ -30,7 +30,9 @@ function objectClickerOnHover(camera1, previewer, recommendations, container) {
 
     var hoveredCamera = null;
 
-    return function(obj, x, y) {
+    return function(c, x, y) {
+
+        var obj = c !== undefined ? c.object : undefined;
 
         // Check if the object is clickable
         var ok = obj instanceof Coin || obj instanceof L3D.BaseRecommendation;
@@ -80,9 +82,10 @@ function objectClickerOnHover(camera1, previewer, recommendations, container) {
 
 function objectClickerOnClick(camera1, buttonManager, recommendations, coins) {
 
-    return function(obj, x, y) {
+    return function(c, x, y) {
 
         var event;
+        var obj = c !== undefined ? c.object : undefined;
 
         // Do stuff for click
         if (obj instanceof Coin) {

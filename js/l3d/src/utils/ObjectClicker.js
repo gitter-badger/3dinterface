@@ -87,7 +87,15 @@ var ObjectClicker = function(renderer, camera, objects, onHover, onClick, domEle
     // Add event listeners
     var self = this;
     this.domElement.addEventListener('mousemove', function(event) { self.update(event); });
-    this.domElement.addEventListener('click', function(event) { self.click(event); });
+
+    if (navigator.userAgent.indexOf("Firefox") > 0) {
+        // If firefox
+        this.domElement.addEventListener('mousedown', function(event) {self.click(event); });
+    } else {
+        // If chrome
+        this.domElement.addEventListener('click', function(event) { self.click(event); });
+        this.domElement.addEventListener('contextmenu', function(event) { event.button = 2; self.click(event); });
+    }
 
 };
 
@@ -120,7 +128,7 @@ ObjectClicker.prototype.getPointedObject = function() {
     for (var i = 0; i < intersects.length && !intersects[i].object.raycastable; i++){}
 
     // Objects are sorted by distance in intersects, the best is the first
-    return intersects[i] !== undefined ? intersects[i].object : undefined;
+    return intersects[i];
 
 };
 
@@ -158,9 +166,9 @@ ObjectClicker.prototype.update = function(event) {
 /**
  * Calls onClick on the current pointed element
  */
-ObjectClicker.prototype.click = function() {
+ObjectClicker.prototype.click = function(event) {
 
-    this.onClick(this.currentPointedObject, this.mouse.x, this.mouse.y);
+    this.onClick(this.currentPointedObject, this.mouse.x, this.mouse.y, event);
 
 };
 

@@ -7,5 +7,6 @@ module.exports = {
     '/prototype/replay/:id': 'replay',
     '/prototype/replay_info/:id': 'replay_info',
     '/prototype/tutorial': 'tutorial',
-    '/prototype/sponza': 'sponza'
+    '/prototype/sponza': 'sponza',
+    '/prototype/coin-creator/:scene': 'clicker'
 };

@@ -6,7 +6,10 @@ else
 	CLOSURE=../utils/simple-compiler/compiler.sh
 endif
 
-all: L3D L3DP Socket Three Stats Bouncing Multisphere StreamingSimulator PrototypeReplay PrototypeInteractive Tutorial TestList
+all: L3D L3DP Socket Three Stats Bouncing Multisphere StreamingSimulator PrototypeReplay PrototypeInteractive Tutorial TestList CoinCreator FileSaver
+
+FileSaver:
+	cp filesaver.min.js ../static/js/filesaver.min.js
 
 L3D:
 	$(CLOSURE) $(OPT) \
@@ -83,6 +86,11 @@ PrototypeInteractive:
 	$(CLOSURE) $(OPT) \
 		--js l3d/apps/prototype/interactive/main.js \
 		--js_output_file ../static/js/prototypeinteractive.min.js
+
+CoinCreator:
+	$(CLOSURE) $(OPT) \
+		--js l3d/apps/prototype/coin-creator/main.js \
+		--js_output_file ../static/js/coincreator.min.js
 
 PrototypeReplay:
 	$(CLOSURE) $(OPT) \
