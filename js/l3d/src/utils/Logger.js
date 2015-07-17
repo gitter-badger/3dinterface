@@ -2,8 +2,8 @@ L3D.BD = {};
 
 L3D.BD.Private = {};
 
-L3D.BD.Private.sendData = function(url, data) {
-    if (L3D.BD.Private.enabled) {
+L3D.BD.Private.sendData = function(url, data, force) {
+    if (L3D.BD.Private.enabled || force) {
         // Append time to data
         data.time = Date.now() / 1000;
 

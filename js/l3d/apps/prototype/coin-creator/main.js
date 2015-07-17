@@ -18,6 +18,7 @@ var coins = [];
 var previousTime;
 var pointer;
 var startCanvas;
+var name;
 
 function sceneName() {
     switch (initMainScene) {
@@ -34,15 +35,20 @@ function sceneName() {
 
 saveCoins = function() {
 
-    var result = '{scene: "' + sceneName() + '", coins: [';
+    var result = {scene: sceneName(), coins: []};
 
-    for (var i = 0; i < coins.length - 1; i++) {
-        result += JSON.stringify(coins[i].mesh.position) + ',';
+    if (name === undefined) {
+        name = window.prompt('Your name please ? :D');
     }
-    result += JSON.stringify(coins[coins.length-1].mesh.position) + ']}';
 
-    var blob = new Blob([result], {type: "text/plain;charset=utf-8"});
-    saveAs(blob, "coins.js");
+    result.name = name;
+
+    for (var i = 0; i < coins.length; i++) {
+        if (coins[i].mesh.visible)
+            result.coins.push(coins[i].mesh.position);
+    }
+
+    L3D.BD.Private.sendData('/posts/coin-info', result, true);
 
 };
 
