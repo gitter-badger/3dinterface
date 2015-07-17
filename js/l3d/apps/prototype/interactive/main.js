@@ -47,7 +47,7 @@ function main() {
     if (initMainScene !== L3D.initPeach && initMainScene !== L3D.initSponza)
         setInterval(function() {logfps(stats.getFps());}, 500);
     else
-        L3D.BD.disable();
+        L3D.DB.disable();
 
     Coin.update();
     startCanvas.render(L3D.StartCanvas.Black);

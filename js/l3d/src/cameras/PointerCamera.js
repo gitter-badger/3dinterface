@@ -223,7 +223,7 @@ L3D.PointerCamera.prototype.isLocked = function() {
  * Update the camera when the pointer lock changes state
  */
 L3D.PointerCamera.prototype.onPointerLockChange = function() {
-    var event = new L3D.BD.Event.PointerLocked();
+    var event = new L3D.DB.Event.PointerLocked();
 
     if (this.isLocked()) {
 
@@ -356,7 +356,7 @@ L3D.PointerCamera.prototype.normalMotion = function(time) {
                 self.shouldLogCameraAngles = true;
             }, 500);
 
-            var event = new L3D.BD.Event.KeyboardEvent();
+            var event = new L3D.DB.Event.KeyboardEvent();
             event.camera = this;
             event.send();
 
@@ -405,7 +405,7 @@ L3D.PointerCamera.prototype.reset = function() {
     this.resetPosition();
     this.moving = false;
     this.movingHermite = false;
-    (new L3D.BD.Event.ResetClicked()).send();
+    (new L3D.DB.Event.ResetClicked()).send();
 };
 
 /**
@@ -577,7 +577,7 @@ L3D.PointerCamera.prototype.onKeyEvent = function(event, toSet) {
     }
     if (motionJsonCopy != JSON.stringify(this.motion)) {
         // Log any change
-        var e = new L3D.BD.Event.KeyboardEvent();
+        var e = new L3D.DB.Event.KeyboardEvent();
         e.camera = this;
         e.send();
     }
@@ -662,7 +662,7 @@ L3D.PointerCamera.prototype.onMouseUp = function(event) {
 
     // Send log to DB
     if (this.dragging && this.mouseMoved && !this.moving && !this.movingHermite) {
-        var e = new L3D.BD.Event.KeyboardEvent();
+        var e = new L3D.DB.Event.KeyboardEvent();
         e.camera = this;
         e.send();
     }
@@ -694,7 +694,7 @@ L3D.PointerCamera.prototype.save = function() {
 L3D.PointerCamera.prototype.undo = function() {
     var move = this.history.undo();
     if (move !== undefined) {
-        var event = new L3D.BD.Event.PreviousNextClicked();
+        var event = new L3D.DB.Event.PreviousNextClicked();
         event.previous = true;
         event.camera = move;
         event.send();
@@ -709,7 +709,7 @@ L3D.PointerCamera.prototype.undo = function() {
 L3D.PointerCamera.prototype.redo = function() {
     var move = this.history.redo();
     if (move !== undefined) {
-        var event = new L3D.BD.Event.PreviousNextClicked();
+        var event = new L3D.DB.Event.PreviousNextClicked();
         event.previous = false;
         event.camera = move;
         event.send();

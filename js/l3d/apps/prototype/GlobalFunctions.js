@@ -21,7 +21,7 @@ var container_size = {
 };
 
 function logfps(fps) {
-    var event = new L3D.BD.Event.Fps();
+    var event = new L3D.DB.Event.Fps();
     event.fps = fps;
     event.send();
 }
@@ -49,7 +49,7 @@ function objectClickerOnHover(camera1, previewer, recommendations, container) {
         // Manage the hover camera event
         if (hoveredCamera !== obj) {
 
-            var event = new L3D.BD.Event.Hovered();
+            var event = new L3D.DB.Event.Hovered();
 
             if (obj instanceof L3D.BaseRecommendation) {
                 // The newly hovered object is different and is a recommendation
@@ -93,7 +93,7 @@ function objectClickerOnClick(camera1, buttonManager, recommendations, coins) {
             obj.get();
 
             // Send event to DB
-            event = new L3D.BD.Event.CoinClicked();
+            event = new L3D.DB.Event.CoinClicked();
             event.coin_id = coins.indexOf(obj);
             event.send();
 
@@ -103,7 +103,7 @@ function objectClickerOnClick(camera1, buttonManager, recommendations, coins) {
             camera1.moveHermite(obj);
 
             // Send event to DB
-            event = new L3D.BD.Event.ArrowClicked();
+            event = new L3D.DB.Event.ArrowClicked();
             event.arrow_id = recommendations.indexOf(obj);
             event.send();
         }

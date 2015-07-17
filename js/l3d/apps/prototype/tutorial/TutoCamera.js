@@ -270,7 +270,7 @@ TutoCamera.prototype.reset = function() {
     this.resetPosition();
     this.moving = false;
     this.movingHermite = false;
-    (new L3D.BD.Event.ResetClicked()).send();
+    (new L3D.DB.Event.ResetClicked()).send();
 
     this.previousTheta = this.theta;
     this.previousPhi = this.phi;
@@ -435,7 +435,7 @@ TutoCamera.prototype.onKeyEvent = function(event, toSet) {
 
     if (motionJsonCopy != JSON.stringify(this.motion)) {
         // Log any change
-        var e = new L3D.BD.Event.KeyboardEvent();
+        var e = new L3D.DB.Event.KeyboardEvent();
         e.camera = this;
         e.send();
     }
@@ -503,7 +503,7 @@ TutoCamera.prototype.onMouseUp = function(event) {
 
     // Send log to DB
     if (this.dragging && this.mouseMoved && !this.moving && !this.movingHermite) {
-        var e = new L3D.BD.Event.KeyboardEvent();
+        var e = new L3D.DB.Event.KeyboardEvent();
         e.camera = this;
         e.send();
     }
@@ -526,7 +526,7 @@ TutoCamera.prototype.save = function() {
 TutoCamera.prototype.undo = function() {
     var move = this.history.undo();
     if (move !== undefined) {
-        var event = new L3D.BD.Event.PreviousNextClicked();
+        var event = new L3D.DB.Event.PreviousNextClicked();
         event.previous = true;
         event.camera = move;
         event.send();
@@ -538,7 +538,7 @@ TutoCamera.prototype.undo = function() {
 TutoCamera.prototype.redo = function() {
     var move = this.history.redo();
     if (move !== undefined) {
-        var event = new L3D.BD.Event.PreviousNextClicked();
+        var event = new L3D.DB.Event.PreviousNextClicked();
         event.previous = false;
         event.camera = move;
         event.send();

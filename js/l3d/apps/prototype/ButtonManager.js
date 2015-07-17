@@ -35,7 +35,7 @@ var ButtonManager = function(camera, cameras, previewer) {
             self.camera.onPointerLockChange();
 
             // Log
-            var event = new L3D.BD.Event.SwitchedLockOption();
+            var event = new L3D.DB.Event.SwitchedLockOption();
             event.locked = self.pointerLockElement.checked;
             event.send();
         };

@@ -48,7 +48,7 @@ saveCoins = function() {
             result.coins.push(coins[i].mesh.position);
     }
 
-    L3D.BD.Private.sendData('/posts/coin-info', result, true);
+    L3D.DB.Private.sendData('/posts/coin-info', result, true);
 
 };
 
@@ -69,7 +69,7 @@ function main() {
     onWindowResize();
 
     // Some config
-    L3D.BD.disable();
+    L3D.DB.disable();
 
     Coin.update();
     startCanvas.render(L3D.StartCanvas.Black);
