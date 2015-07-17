@@ -170,4 +170,4 @@ module.exports.clicker = function(req, res, next) {
         res.send(result);
     });
 
-}
+};

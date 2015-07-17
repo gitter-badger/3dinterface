@@ -19,14 +19,27 @@ var previousTime;
 var pointer;
 var startCanvas;
 
+function sceneName() {
+    switch (initMainScene) {
+        case L3D.initPeach:
+            return 'L3D.initPeach';
+        case L3D.initWhomp:
+            return 'L3D.initWhomp';
+        case L3D.initBobomb:
+            return 'L3D.initBobomb';
+        case L3D.initMountain:
+            return 'L3D.initMountain';
+    }
+}
+
 saveCoins = function() {
 
-    var result = '[';
+    var result = '{scene: "' + sceneName() + '", coins: [';
 
     for (var i = 0; i < coins.length - 1; i++) {
         result += JSON.stringify(coins[i].mesh.position) + ',';
     }
-    result += JSON.stringify(coins[coins.length-1].mesh.position) + ']';
+    result += JSON.stringify(coins[coins.length-1].mesh.position) + ']}';
 
     var blob = new Blob([result], {type: "text/plain;charset=utf-8"});
     saveAs(blob, "coins.js");
