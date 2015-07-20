@@ -702,7 +702,7 @@ DBReq.ExpGetter.prototype.finish = function() {
  * @param callback {function} callback to call on the id
  * @memberof DBReq
  */
-var tryUser = function(id, callback) {
+DBReq.tryUser = function(id, callback) {
     if (id !== undefined && id !== null) {
         new DBReq.UserIdChecker(id, function(clear) {
             if (clear) {
@@ -722,7 +722,7 @@ var tryUser = function(id, callback) {
  * @param id {Number} id of the experiment to get the info
  * @param callback {function} callback called on the result of all the SQL requests
  */
-module.exports.getInfo = function(id, callback) {
+DBReq.getInfo = function(id, callback) {
     new DBReq.Info(id, callback);
 };
 
@@ -731,7 +731,7 @@ module.exports.getInfo = function(id, callback) {
  * @memberof DBReq
  * @param callback {function} callback called on the new user id
  */
-module.exports.createUser = function(callback) {
+DBReq.createUser = function(callback) {
     new DBReq.UserCreator(callback);
 };
 
@@ -742,7 +742,7 @@ module.exports.createUser = function(callback) {
  * @param scene_id {Number} id of the scene on which the experiment is
  * @param callback {function} callback called on the new experiment id
  */
-module.exports.createExp = function(id, scene_id, callback) {
+DBReq.createExp = function(id, scene_id, callback) {
     new DBReq.ExpCreator(id, scene_id, callback);
 };
 
@@ -753,7 +753,7 @@ module.exports.createExp = function(id, scene_id, callback) {
  * @param callback {function} callback called on a boolean (true if the user id
  * exists, false otherwise)
  */
-module.exports.checkUserId = function(id, callback) {
+DBReq.checkUserId = function(id, callback) {
     new DBReq.UserIdChecker(id, callback);
 };
 
@@ -765,7 +765,7 @@ module.exports.checkUserId = function(id, callback) {
  * experiment doesn't exist, an object containing username, scene_id,
  * scenename, and exp_id if it exists
  */
-module.exports.checkExpId = function(id, callback) {
+DBReq.checkExpId = function(id, callback) {
     new DBReq.ExpIdChecker(id, callback);
 };
 
@@ -774,8 +774,8 @@ module.exports.checkExpId = function(id, callback) {
  * @memberof DBReq
  * @param callback {function} callback called on an array containing all experiments
  */
-module.exports.getAllExps = function(callback) {
+DBReq.getAllExps = function(callback) {
     new DBReq.ExpGetter(callback);
 };
 
-module.exports.tryUser = tryUser;
+module.exports = DBReq;
