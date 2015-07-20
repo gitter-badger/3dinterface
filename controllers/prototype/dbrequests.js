@@ -61,13 +61,16 @@ Info.prototype.tryMerge = function() {
 
 // Merges the results of every SQL requests done by the load... methods
 Info.prototype.merge = function() {
+
+    var i = 0;
+
     this.finalResult = {redCoins : [], events : []};
 
     for (;;) {
         // Find next element
         var nextIndex = null;
 
-        for (var i in this.results) {
+        for (i in this.results) {
             // The next element is placed at the index 0 (since the elements
             // gotten from the database are sorted)
             if (this.results[i].length !== 0 &&
@@ -86,7 +89,7 @@ Info.prototype.merge = function() {
     }
 
     // Set red coins
-    for (var i = 0; i < this.redCoins.length; i++) {
+    for (i = 0; i < this.redCoins.length; i++) {
         this.finalResult.redCoins.push(this.redCoins[i]);
     }
 };
@@ -349,7 +352,7 @@ Info.prototype.loadRedCoins = function() {
             self.tryMerge();
         }
     );
-}
+};
 
 var UserCreator = function(finishAction) {
     this.finishAction = finishAction;

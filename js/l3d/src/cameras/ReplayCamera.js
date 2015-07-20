@@ -33,7 +33,7 @@ L3D.ReplayCamera.prototype.start = function() {
     this.counter = 0;
     this.started = true;
     this.nextEvent();
-}
+};
 
 // Update function
 L3D.ReplayCamera.prototype.update = function(time) {

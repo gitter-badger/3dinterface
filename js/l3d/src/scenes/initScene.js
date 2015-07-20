@@ -217,11 +217,13 @@ L3D.resetBobombElements = function() {
 
 L3D.generateCoins = function(totalCoins, coin_ids) {
 
+    var i = 0;
+
     if (coin_ids === undefined)
         L3D.shuffle(totalCoins);
     else {
 
-        for (var i = 0; i < coin_ids.length; i++) {
+        for (i = 0; i < coin_ids.length; i++) {
 
             for (var j = 0; j < totalCoins.length; j++) {
 
