@@ -94,7 +94,7 @@ function objectClickerOnClick(camera1, buttonManager, recommendations, coins) {
 
             // Send event to DB
             event = new L3D.DB.Event.CoinClicked();
-            event.coin_id = coins.indexOf(obj);
+            event.coin_id = obj.id;
             event.send();
 
         } else if (obj instanceof L3D.BaseRecommendation) {

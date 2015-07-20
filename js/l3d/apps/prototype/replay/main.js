@@ -18,11 +18,18 @@ function main() {
     container = document.getElementById('container');
 
     initThreeElements();
-    init();
 
-    onWindowResize();
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "/prototype/replay_info/" + params.get.id, true);
 
-    setInterval(render, 20);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            init(JSON.parse(xhr.responseText));
+            onWindowResize();
+            setInterval(render, 20);
+        }
+    };
+    xhr.send();
 
 }
 
@@ -34,7 +41,7 @@ function initThreeElements() {
 
 }
 
-function init() {
+function init(data) {
 
     // Initialize stats counter
     stats = new Stats();
@@ -48,9 +55,11 @@ function init() {
     container.appendChild(renderer.domElement);
 
     // Initialize replay camera
-    camera1 = new L3D.ReplayCamera(50, container_size.width() / container_size.height(), 0.01, 100000, coins);
-    recommendations = initMainScene(camera1, scene, coins);
+    camera1 = new L3D.ReplayCamera(50, container_size.width()/container_size.height(), 0.01, 100000, coins, data);
+    recommendations = initMainScene(camera1, scene, coins, undefined, data.redCoins);
     camera1.cameras = recommendations;
+
+    camera1.start();
 
     // Add listeners
     initListeners();

@@ -13,9 +13,11 @@ var Info = function(id, finishAction) {
         previousNext: false,
         hovered: false,
         pointerLocked: false,
-        switchedLockOption: false
+        switchedLockOption: false,
+        redCoins: false
     };
 
+    this.redCoins = [];
     this.results = {};
     this.finishAction = finishAction;
 
@@ -37,6 +39,7 @@ Info.prototype.execute = function() {
     this.loadHovered();
     this.loadSwitchedLockOption();
     this.loadPointerLocked();
+    this.loadRedCoins();
 };
 
 Info.prototype.tryMerge = function() {
@@ -58,7 +61,7 @@ Info.prototype.tryMerge = function() {
 
 // Merges the results of every SQL requests done by the load... methods
 Info.prototype.merge = function() {
-    this.finalResult = [];
+    this.finalResult = {redCoins : [], events : []};
 
     for (;;) {
         // Find next element
@@ -79,7 +82,12 @@ Info.prototype.merge = function() {
         }
 
         // Add the next element in results and shift its table
-        this.finalResult.push(this.results[nextIndex].shift());
+        this.finalResult.events.push(this.results[nextIndex].shift());
+    }
+
+    // Set red coins
+    for (var i = 0; i < this.redCoins.length; i++) {
+        this.finalResult.redCoins.push(this.redCoins[i]);
     }
 };
 
@@ -323,6 +331,26 @@ Info.prototype.loadSwitchedLockOption = function() {
         }
     );
 };
+
+Info.prototype.loadRedCoins = function() {
+    var self = this;
+    this.client.query(
+        "SELECT coin_id FROM coin WHERE exp_id = $1",
+        [self.id],
+        function(err, result) {
+            if (err !== null) {
+                Log.dberror(err + ' in loadRedCoins');
+            } else {
+                console.log(result.rows);
+                for (var i in result.rows) {
+                    self.redCoins.push(result.rows[i].coin_id);
+                }
+            }
+            self.ready.redCoins = true;
+            self.tryMerge();
+        }
+    );
+}
 
 var UserCreator = function(finishAction) {
     this.finishAction = finishAction;

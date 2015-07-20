@@ -12,20 +12,10 @@ L3D.ReplayCamera = function() {
     this.new_position = new THREE.Vector3();
     this.new_target = new THREE.Vector3();
 
-    var id = params.get.id;
+    this.data = arguments[5];
 
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "/prototype/replay_info/" + id, true);
-
-    var self = this;
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            self.path = JSON.parse(xhr.responseText);
-            self.started = true;
-            self.nextEvent();
-        }
-    };
-    xhr.send();
+    this.started = true;
+    this.path = this.data.events;
 
     // Set Position
     this.theta = Math.PI;
@@ -38,6 +28,12 @@ L3D.ReplayCamera.prototype.constructor = L3D.ReplayCamera;
 L3D.ReplayCamera.prototype.look = function() {
     this.lookAt(this.target);
 };
+
+L3D.ReplayCamera.prototype.start = function() {
+    this.counter = 0;
+    this.started = true;
+    this.nextEvent();
+}
 
 // Update function
 L3D.ReplayCamera.prototype.update = function(time) {
@@ -106,7 +102,11 @@ L3D.ReplayCamera.prototype.nextEvent = function() {
     if (this.event.type == 'camera') {
         this.move(this.event);
     } else if (this.event.type == 'coin') {
-        this.coins[this.event.id].get();
+        // Get the coin with the same id of event
+        for (var i = 0; i < this.coins.length; i++) {
+            if (this.coins[i].id === this.event.id)
+                this.coins[i].get();
+        }
         // Wait a little before launching nextEvent
         (function(self) {
             setTimeout(function() {
@@ -167,6 +167,7 @@ L3D.ReplayCamera.prototype.anglesFromVectors = function() {
 
 L3D.ReplayCamera.prototype.move = function(recommendation) {
 
+    console.log(this.position.x, this.position.y, this.position.z);
     var otherCamera = recommendation.camera || recommendation;
 
     this.moving = true;

@@ -1,3 +1,23 @@
+// http://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array#answer-2450976
+L3D.shuffle = function(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex ;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+
+    return array;
+};
+
 L3D.LogFunction = function(a,b) {
     var val = 100*a/b;
     $('.progress-bar').css('width', val+'%').attr('aria-valuenow', val);
@@ -195,19 +215,42 @@ L3D.resetBobombElements = function() {
     };
 };
 
-L3D.createBobombCoins = function() {
+L3D.generateCoins = function(totalCoins, coin_ids) {
+
+    if (coin_ids === undefined)
+        L3D.shuffle(totalCoins);
+    else {
+
+        for (var i = 0; i < coin_ids.length; i++) {
+
+            for (var j = 0; j < totalCoins.length; j++) {
+
+                if (coin_ids[i] === totalCoins[j].id) {
+
+                    // Swap i and j
+                    var tmp = totalCoins[i];
+                    totalCoins[i] = totalCoins[j];
+                    totalCoins[j] = tmp;
+
+                }
+
+            }
+        }
+    }
+
+    var indices = [];
     var coins = [];
 
-    coins.push(
-        new Coin(-1.6204001515660262,12.245208850063094,-24.871861611322934),
-        new Coin(23.509767766131876,13.6929075780209,-6.1716274892265615),
-        new Coin(34.797219873325524,13.088500612704706,-2.1784858128827413),
-        new Coin(-23.255456493345882,15.763954882327724,-11.08029248078497),
-        new Coin(-7.238094745133173,12.95460420281499,-3.1009487490121885),
-        new Coin(-17.10578612221326,24.17871082944758,-11.574224169812915),
-        new Coin(-12.418656949661646,17.09780294217035,32.472022253887665),
-        new Coin(7.132802719121488,8.802400710545713,22.258165594421055)
-    );
+    for (var i = 0; i < 8; i++) {
+        coins.push(totalCoins[i].coin);
+        totalCoins[i].coin.id = totalCoins[i].id;
+        indices.push(totalCoins[i].id);
+    }
+
+    console.log(coin_ids, indices)
+
+    if (coin_ids === undefined)
+        L3D.DB.Private.sendData('/posts/coin-id', {indices : indices});
 
     return coins;
 };
@@ -277,7 +320,7 @@ L3D.createBobombRecommendations = function(width, height) {
 
 };
 
-L3D.initBobomb = function(camera, scene, coins, clickable) {
+L3D.initBobomb = function(camera, scene, coins, clickable, coin_ids) {
     L3D.addLight(scene);
 
     var collidableObjects = [];
@@ -293,7 +336,7 @@ L3D.initBobomb = function(camera, scene, coins, clickable) {
     scene.add(camera);
 
     Coin.init();
-    var tmp = L3D.createBobombCoins();
+    var tmp = L3D.generateCoins(L3D.createBobombCoins(), coin_ids);
 
     for (var i in tmp) {
         coins.push(tmp[i]);
@@ -431,19 +474,6 @@ L3D.createWhompRecommendations = function(width, height) {
     return recos;
 };
 
-L3D.createWhompCoins = function() {
-    return [
-        new Coin(-5.529176900669821,2.886514571524507,4.127968972716147),
-        new Coin(-3.336263561768484,9.341710952326468,1.0230063543998414),
-        new Coin(1.985057515492925,12.151756532082196,1.3355674703297925),
-        new Coin(8.100383890535953,4.6489182333624335,1.9132972963126775),
-        new Coin(0.6049016864458896,6.2498603432959584,3.6272087520336264),
-        new Coin(-1.4497656612870164,6.263594147452652,-4.0488101538390694),
-        new Coin(6.753883218882444,2.019245026490682,-7.001046531863012),
-        new Coin(3.4354286209455246,3.487313067990168,-4.091947594995703)
-    ];
-};
-
 L3D.resetWhompElements = function() {
     return {
         position : new THREE.Vector3(-6.725817925071645,1.4993570618328055,-10.356480813212423),
@@ -451,7 +481,7 @@ L3D.resetWhompElements = function() {
     };
 };
 
-L3D.initWhomp = function(recommendation, scene, coins, clickable) {
+L3D.initWhomp = function(recommendation, scene, coins, clickable, coin_ids) {
     L3D.addLight(scene);
 
     var collidableObjects = [];
@@ -467,7 +497,7 @@ L3D.initWhomp = function(recommendation, scene, coins, clickable) {
     scene.add(recommendation);
 
     Coin.init(0.002);
-    var tmp = L3D.createWhompCoins();
+    var tmp = L3D.generateCoins(L3D.createWhompCoins(), coin_ids);
 
     for (var i in tmp) {
         coins.push(tmp[i]);
@@ -515,19 +545,6 @@ L3D.initMountainScene = function(scene, collidableObjects, recommendation, click
 
     loader.load();
     collidableObjects.push(loader.obj);
-};
-
-L3D.createMountainCoins = function() {
-    return [
-        new Coin(-18.766484229298513,-6.174512332611151,16.379061147364553),
-        new Coin(-22.48878786991581,-17.698282433679474,1.6030258853572397),
-        new Coin(-8.604868977581164,-17.3348862459467,-11.923191659094416),
-        new Coin(24.81563047462934,-12.174170400556296,5.612049952487652),
-        new Coin(-6.4854226987006305,0.34787283214634307,-17.2093293607182),
-        new Coin(-14.50190371481413,20.88721463986533,7.923724946536855),
-        new Coin(-13.980787439949077,-0.10719616576499978,22.24889144136683),
-        new Coin(4.491305202472262,3.6813420775366277,10.03229664467681)
-    ];
 };
 
 L3D.createMountainRecommendations = function(width, height) {
@@ -605,7 +622,7 @@ L3D.resetMountainElements = function() {
     };
 };
 
-L3D.initMountain = function(recommendation, scene, coins, clickable) {
+L3D.initMountain = function(recommendation, scene, coins, clickable, coin_ids) {
     L3D.addLight(scene);
 
     var collidableObjects = [];
@@ -621,7 +638,7 @@ L3D.initMountain = function(recommendation, scene, coins, clickable) {
     scene.add(recommendation);
 
     Coin.init();
-    var tmp = L3D.createMountainCoins();
+    var tmp = L3D.generateCoins(L3D.createMountainCoins(), coin_ids);
 
     for (var i in tmp) {
         coins.push(tmp[i]);

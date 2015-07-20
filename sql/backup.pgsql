@@ -11,6 +11,7 @@ DROP TABLE IF EXISTS Experiment CASCADE;
 DROP TABLE IF EXISTS FpsCounter CASCADE;
 DROP TABLE IF EXISTS PointerLocked CASCADE;
 DROP TABLE IF EXISTS SwitchedLockOption CASCADE;
+DROP TABLE IF EXISTS Coin CASCADE;
 
 DROP TYPE IF EXISTS VECTOR3 CASCADE;
 DROP TYPE IF EXISTS CAMERA CASCADE;
@@ -33,89 +34,94 @@ CREATE TYPE CAMERA AS(
 );
 
 -- Base tables
-CREATE TABLE users(
+CREATE TABLE Users(
     id SERIAL PRIMARY KEY,
     name CHAR(50)
 );
 
-CREATE TABLE scene(
+CREATE TABLE Scene(
     id SERIAL PRIMARY KEY,
     name CHAR(50)
 );
 
-CREATE TABLE experiment(
+CREATE TABLE Experiment(
     id SERIAL PRIMARY KEY,
-    user_id SERIAL REFERENCES users (id),
-    scene_id SERIAL REFERENCES scene (id)
+    user_id SERIAL REFERENCES Users (id),
+    scene_id SERIAL REFERENCES Scene (id)
+);
+
+CREATE TABLE Coin(
+    exp_id SERIAL REFERENCES Experiment (id),
+    coin_id INTEGER
 );
 
 -- Init scene table
-INSERT INTO scene(name) VALUES ('peachcastle');
-INSERT INTO scene(name) VALUES ('bobomb');
-INSERT INTO scene(name) VALUES ('coolcoolmountain');
-INSERT INTO scene(name) VALUES ('whomp');
+INSERT INTO Scene(name) VALUES ('peachcastle');
+INSERT INTO Scene(name) VALUES ('bobomb');
+INSERT INTO Scene(name) VALUES ('coolcoolmountain');
+INSERT INTO Scene(name) VALUES ('whomp');
 
 -- Events
-CREATE TABLE arrowclicked(
+CREATE TABLE ArrowClicked(
     id SERIAL PRIMARY KEY,
-    exp_id SERIAL REFERENCES experiment (id),
+    exp_id SERIAL REFERENCES Experiment (id),
     time TIMESTAMP DEFAULT NOW(),
     arrow_id INTEGER
 );
 
-CREATE TABLE coinclicked(
+CREATE TABLE CoinClicked(
     id SERIAL PRIMARY KEY,
-    exp_id SERIAL REFERENCES experiment (id),
+    exp_id SERIAL REFERENCES Experiment (id),
     time TIMESTAMP DEFAULT NOW(),
     coin_id INTEGER
 );
 
-CREATE TABLE keyboardevent(
+CREATE TABLE KeyboardEvent(
     id SERIAL PRIMARY KEY,
-    exp_id SERIAL REFERENCES experiment (id),
+    exp_id SERIAL REFERENCES Experiment (id),
     time TIMESTAMP DEFAULT NOW(),
     camera CAMERA
 );
 
-CREATE TABLE resetclicked(
+CREATE TABLE ResetClicked(
     id SERIAL PRIMARY KEY,
-    exp_id SERIAL REFERENCES experiment (id),
+    exp_id SERIAL REFERENCES Experiment (id),
     time TIMESTAMP DEFAULT NOW()
 );
 
-CREATE TABLE previousnextclicked(
+CREATE TABLE PreviousNextClicked(
     id SERIAL PRIMARY KEY,
-    exp_id SERIAL REFERENCES experiment (id),
+    exp_id SERIAL REFERENCES Experiment (id),
     previousnext PREVIOUSNEXT NOT NULL,
     time TIMESTAMP DEFAULT NOW(),
     camera CAMERA
 );
 
-CREATE TABLE hovered(
+CREATE TABLE Hovered(
     id SERIAL PRIMARY KEY,
-    exp_id SERIAL REFERENCES experiment (id),
+    exp_id SERIAL REFERENCES Experiment (id),
     start BOOLEAN NOT NULL,
     time TIMESTAMP DEFAULT NOW(),
     arrow_id INTEGER
 );
 
-CREATE TABLE fpscounter(
+CREATE TABLE FpsCounter(
     id SERIAL PRIMARY KEY,
-    exp_id SERIAL REFERENCES experiment (id),
+    exp_id SERIAL REFERENCES Experiment (id),
     time TIMESTAMP DEFAULT NOW(),
     fps REAL
 );
 
-CREATE TABLE pointerlocked(
+CREATE TABLE PointerLocked(
     id SERIAL PRIMARY KEY,
-    exp_id SERIAL REFERENCES experiment (id),
+    exp_id SERIAL REFERENCES Experiment (id),
     time TIMESTAMP DEFAULT NOW(),
     locked BOOLEAN
 );
 
-CREATE TABLE switchedlockoption(
+CREATE TABLE SwitchedLockOption(
     id SERIAL PRIMARY KEY,
-    exp_id SERIAL REFERENCES experiment (id),
+    exp_id SERIAL REFERENCES Experiment (id),
     time TIMESTAMP DEFAULT NOW(),
     locked BOOLEAN
 );
