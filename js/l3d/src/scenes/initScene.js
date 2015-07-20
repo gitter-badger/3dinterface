@@ -247,8 +247,6 @@ L3D.generateCoins = function(totalCoins, coin_ids) {
         indices.push(totalCoins[i].id);
     }
 
-    console.log(coin_ids, indices)
-
     if (coin_ids === undefined)
         L3D.DB.Private.sendData('/posts/coin-id', {indices : indices});
 

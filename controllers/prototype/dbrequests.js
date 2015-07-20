@@ -341,7 +341,6 @@ Info.prototype.loadRedCoins = function() {
             if (err !== null) {
                 Log.dberror(err + ' in loadRedCoins');
             } else {
-                console.log(result.rows);
                 for (var i in result.rows) {
                     self.redCoins.push(result.rows[i].coin_id);
                 }

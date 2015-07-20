@@ -167,7 +167,6 @@ L3D.ReplayCamera.prototype.anglesFromVectors = function() {
 
 L3D.ReplayCamera.prototype.move = function(recommendation) {
 
-    console.log(this.position.x, this.position.y, this.position.z);
     var otherCamera = recommendation.camera || recommendation;
 
     this.moving = true;
