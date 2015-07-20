@@ -241,13 +241,17 @@ L3D.generateCoins = function(totalCoins, coin_ids) {
     var indices = [];
     var coins = [];
 
-    for (var i = 0; i < 8; i++) {
+    var bound = (coin_ids instanceof Array && coin_ids.length === 0) ? totalCoins.length : 8;
+
+    for (i = 0; i < bound; i++) {
         coins.push(totalCoins[i].coin);
         totalCoins[i].coin.id = totalCoins[i].id;
         indices.push(totalCoins[i].id);
     }
 
-    if (coin_ids === undefined)
+    console.log(bound);
+
+    if (coin_ids === undefined || (coin_ids instanceof Array && coin_ids.length === 0))
         L3D.DB.Private.sendData('/posts/coin-id', {indices : indices});
 
     return coins;

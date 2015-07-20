@@ -1,0 +1,10 @@
+extends ./prototype
+
+block title
+    title #{title} - Prototype
+
+block mainjs
+    script initMainScene = #{scene};
+    script Recommendation = L3D.ArrowRecommendation;
+
+    script(src="/static/js/coinviewer.min.js")

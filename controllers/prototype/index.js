@@ -171,3 +171,29 @@ module.exports.clicker = function(req, res, next) {
     });
 
 };
+
+module.exports.viewer = function(req, res, next) {
+
+    var scene = req.params.scene;
+
+    switch (scene) {
+
+        case 'peach':            res.locals.scene = "L3D.initPeach";    break;
+        case 'coolcoolmountain': res.locals.scene = "L3D.initMountain"; break;
+        case 'whomp':            res.locals.scene = "L3D.initWhomp";    break;
+        case 'bobomb':           res.locals.scene = "L3D.initBobomb";   break;
+        default:
+            // 404
+            var err = new Error('Incorrect scene');
+            err.status = 404;
+            next(err);
+            break;
+
+    }
+
+    res.setHeader('Content-Type', 'text/html');
+    res.render('prototype_viewer.jade', res.locals, function(err, result) {
+        res.send(result);
+    });
+
+};
