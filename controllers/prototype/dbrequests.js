@@ -2,9 +2,33 @@ var pg = require('pg');
 var pgc = require('../../private.js');
 var Log = require('../../lib/NodeLog.js');
 
-var Info = function(id, finishAction) {
+/**
+ * @namespace
+ */
+var DBReq = {};
+
+/**
+ * A class that loads every information from an experiment
+ * @param id {Number} id of the experiment to load
+ * @param finishAction {function} callback on the result when loading is
+ * finished
+ * @memberof DBReq
+ * @constructor
+ *
+ */
+DBReq.Info = function(id, finishAction) {
+
+    /**
+     * Id of the experiment to log
+     * @type {Number}
+     */
     this.id = id;
 
+    /**
+     * Map between each element to load and a boolean saying if the element has
+     * been already loaded
+     * @type {Object}
+     */
     this.ready = {
         cameras: false,
         coins: false,
@@ -17,9 +41,34 @@ var Info = function(id, finishAction) {
         redCoins: false
     };
 
+    /**
+     * List of the ids of the coins involved in the experiment
+     * @type {Number[]}
+     */
     this.redCoins = [];
+
+    /**
+     * Container of the result
+     * @type {Object}
+     */
     this.results = {};
+
+    /**
+     * Callback to call on finalResult when the loading is complete
+     * @type {function}
+     */
     this.finishAction = finishAction;
+
+    /**
+     * Client of connection to database
+     */
+    this.client = null;
+
+    /**
+     * Function that releases the client to database
+     * @type {function}
+     */
+    this.release = null;
 
     // Connect to db
     var self = this;
@@ -30,7 +79,10 @@ var Info = function(id, finishAction) {
     });
 };
 
-Info.prototype.execute = function() {
+/**
+ * Loads everything async
+ */
+DBReq.Info.prototype.execute = function() {
     this.loadCameras();
     this.loadCoins();
     this.loadArrows();
@@ -42,7 +94,11 @@ Info.prototype.execute = function() {
     this.loadRedCoins();
 };
 
-Info.prototype.tryMerge = function() {
+/**
+ * Checks if everything is loaded, and if so merges the results and call the
+ * final callback
+ */
+DBReq.Info.prototype.tryMerge = function() {
     // If not ready, do nothing
     for (var i in this.ready) {
         if (!this.ready[i]) {
@@ -59,8 +115,10 @@ Info.prototype.tryMerge = function() {
     this.finishAction(this.finalResult);
 };
 
-// Merges the results of every SQL requests done by the load... methods
-Info.prototype.merge = function() {
+/**
+ * Merges the results of the different SQL requests and prepare final result.
+ */
+DBReq.Info.prototype.merge = function() {
 
     var i = 0;
 
@@ -94,7 +152,11 @@ Info.prototype.merge = function() {
     }
 };
 
-Info.prototype.loadCameras = function() {
+/**
+ * Launches the SQL request to load the camera information from the DB and
+ * tries to merge when finished
+ */
+DBReq.Info.prototype.loadCameras = function() {
     var self = this;
     this.client.query(
         "SELECT ((camera).position).x AS px, " +
@@ -136,7 +198,11 @@ Info.prototype.loadCameras = function() {
     );
 };
 
-Info.prototype.loadCoins = function() {
+/**
+ * Launches the SQL request to load the coin information from the DB and
+ * tries to merge when finished
+ */
+DBReq.Info.prototype.loadCoins = function() {
     var self = this;
     this.client.query(
         "SELECT coin_id, time FROM coinclicked WHERE exp_id = $1 ORDER BY time;",
@@ -162,7 +228,11 @@ Info.prototype.loadCoins = function() {
     );
 };
 
-Info.prototype.loadArrows = function() {
+/**
+ * Launches the SQL request to load the recommendation information from the DB and
+ * tries to merge when finished
+ */
+DBReq.Info.prototype.loadArrows = function() {
     var self = this;
     this.client.query(
         "SELECT arrow_id, time FROM arrowclicked WHERE exp_id = $1 ORDER BY time;",
@@ -188,7 +258,11 @@ Info.prototype.loadArrows = function() {
     );
 };
 
-Info.prototype.loadResets = function() {
+/**
+ * Launches the SQL request to load the reset information from the DB and
+ * tries to merge when finished
+ */
+DBReq.Info.prototype.loadResets = function() {
     var self = this;
     this.client.query(
         "SELECT time FROM resetclicked WHERE exp_id = $1 ORDER BY time;",
@@ -213,7 +287,11 @@ Info.prototype.loadResets = function() {
     );
 };
 
-Info.prototype.loadPreviousNext = function () {
+/**
+ * Launches the SQL request to load the previous / next information from the DB and
+ * tries to merge when finished
+ */
+DBReq.Info.prototype.loadPreviousNext = function () {
     var self = this;
     this.client.query(
         "SELECT ((camera).position).x AS px, " +
@@ -256,7 +334,11 @@ Info.prototype.loadPreviousNext = function () {
     );
 };
 
-Info.prototype.loadHovered = function() {
+/**
+ * Launches the SQL request to load the hovered information from the DB and
+ * tries to merge when finished
+ */
+DBReq.Info.prototype.loadHovered = function() {
     var self = this;
     this.client.query(
         "SELECT start, time, arrow_id FROM hovered WHERE exp_id = $1 ORDER BY time;",
@@ -283,7 +365,11 @@ Info.prototype.loadHovered = function() {
     );
 };
 
-Info.prototype.loadPointerLocked = function() {
+/**
+ * Launches the SQL request to load the pointer lock information from the DB and
+ * tries to merge when finished
+ */
+DBReq.Info.prototype.loadPointerLocked = function() {
     var self = this;
     this.client.query(
         "SELECT time, locked FROM pointerlocked WHERE exp_id = $1 ORDER BY time;",
@@ -309,7 +395,11 @@ Info.prototype.loadPointerLocked = function() {
     );
 };
 
-Info.prototype.loadSwitchedLockOption = function() {
+/**
+ * Launches the SQL request to load the switch pointer lock option information
+ * from the DB and tries to merge when finished
+ */
+DBReq.Info.prototype.loadSwitchedLockOption = function() {
     var self = this;
     this.client.query(
         "SELECT time, locked FROM switchedlockoption WHERE exp_id = $1 ORDER BY time;",
@@ -335,7 +425,11 @@ Info.prototype.loadSwitchedLockOption = function() {
     );
 };
 
-Info.prototype.loadRedCoins = function() {
+/**
+ * Launches the SQL request to load the coins used in the expermient from the
+ * DB and tries to merge when finished
+ */
+DBReq.Info.prototype.loadRedCoins = function() {
     var self = this;
     this.client.query(
         "SELECT coin_id FROM coin WHERE exp_id = $1",
@@ -354,7 +448,18 @@ Info.prototype.loadRedCoins = function() {
     );
 };
 
-var UserCreator = function(finishAction) {
+/**
+ * Class that creates a user
+ * @param finishAction {function} callback that has as a parameter the id of
+ * the new user
+ * @memberof DBReq
+ * @constructor
+ */
+DBReq.UserCreator = function(finishAction) {
+    /**
+     * Callback to call on the id when the user is created
+     * @type {function}
+     */
     this.finishAction = finishAction;
 
     // Connect to db
@@ -366,7 +471,10 @@ var UserCreator = function(finishAction) {
     });
 };
 
-UserCreator.prototype.execute = function() {
+/**
+ * Executes the SQL request and calls the callback
+ */
+DBReq.UserCreator.prototype.execute = function() {
     var self = this;
     this.client.query(
         "INSERT INTO users(name) VALUES('anonymous'); SELECT currval('users_id_seq');",
@@ -378,7 +486,10 @@ UserCreator.prototype.execute = function() {
     );
 };
 
-UserCreator.prototype.finish = function() {
+/**
+ * Release the DB connection and call the callback
+ */
+DBReq.UserCreator.prototype.finish = function() {
     this.release();
     this.client = null;
     this.release = null;
@@ -386,7 +497,16 @@ UserCreator.prototype.finish = function() {
     this.finishAction(this.finalResult);
 };
 
-var ExpCreator = function(user_id, scene_id, finishAction) {
+/**
+ * Class that creates an experiment
+ * @param user_id {Number} id of the user that does the experiment
+ * @param scene_id {Number} id of the scene the experiment is based on
+ * @param finishAction {function} callback that has as a parameter the id of
+ * the new experiment
+ * @memberof DBReq
+ * @constructor
+ */
+DBReq.ExpCreator = function(user_id, scene_id, finishAction) {
     this.finishAction = finishAction;
     this.user_id = user_id;
     this.scene_id = scene_id;
@@ -400,7 +520,10 @@ var ExpCreator = function(user_id, scene_id, finishAction) {
     });
 };
 
-ExpCreator.prototype.execute = function() {
+/**
+ * Executes the SQL request and calls the callback
+ */
+DBReq.ExpCreator.prototype.execute = function() {
     var self = this;
     this.client.query(
         "INSERT INTO experiment(user_id, scene_id) VALUES($1,$2);",
@@ -414,7 +537,10 @@ ExpCreator.prototype.execute = function() {
     );
 };
 
-ExpCreator.prototype.finish = function() {
+/**
+ * Release the DB connection and call the callback
+ */
+DBReq.ExpCreator.prototype.finish = function() {
     this.release();
     this.client = null;
     this.release = null;
@@ -422,7 +548,15 @@ ExpCreator.prototype.finish = function() {
     this.finishAction(this.finalResult);
 };
 
-var UserIdChecker = function(id, finishAction) {
+/**
+ * Class that creates an experiment
+ * @param id {Number} id of the user that does the experiment
+ * @param finishAction {function} callback that has as a parameter which is a
+ * boolean indicating wether the user id exists or not
+ * @memberof DBReq
+ * @constructor
+ */
+DBReq.UserIdChecker = function(id, finishAction) {
     this.id = id;
     this.finishAction = finishAction;
 
@@ -434,7 +568,10 @@ var UserIdChecker = function(id, finishAction) {
     });
 };
 
-UserIdChecker.prototype.execute = function() {
+/**
+ * Executes the SQL request and calls the callback
+ */
+DBReq.UserIdChecker.prototype.execute = function() {
     var self = this;
     this.client.query(
         "SELECT count(id) > 0 AS answer FROM users WHERE id = $1;",
@@ -446,7 +583,10 @@ UserIdChecker.prototype.execute = function() {
     );
 };
 
-UserIdChecker.prototype.finish = function() {
+/**
+ * Release the DB connection and call the callback
+ */
+DBReq.UserIdChecker.prototype.finish = function() {
     this.release();
     this.client = null;
     this.release = null;
@@ -454,7 +594,15 @@ UserIdChecker.prototype.finish = function() {
     this.finishAction(this.finalResult);
 };
 
-var ExpIdChecker = function(id, finishAction) {
+/**
+ * Class that creates an experiment
+ * @param id {Number} id of the experiment to check
+ * @param finishAction {function} callback that has as a parameter which is the
+ * id of the scene if the experiment exists, or null otherwise
+ * @memberof DBReq
+ * @constructor
+ */
+DBReq.ExpIdChecker = function(id, finishAction) {
     this.id = id;
     this.finishAction = finishAction;
 
@@ -466,7 +614,10 @@ var ExpIdChecker = function(id, finishAction) {
     });
 };
 
-ExpIdChecker.prototype.execute = function() {
+/**
+ * Executes the SQL request and calls the callback
+ */
+DBReq.ExpIdChecker.prototype.execute = function() {
     var self = this;
     this.client.query(
         "SELECT scene_id FROM experiment WHERE id = $1;",
@@ -482,7 +633,10 @@ ExpIdChecker.prototype.execute = function() {
     );
 };
 
-ExpIdChecker.prototype.finish = function() {
+/**
+ * Release the DB connection and call the callback
+ */
+DBReq.ExpIdChecker.prototype.finish = function() {
     this.release();
     this.client = null;
     this.release = null;
@@ -490,7 +644,15 @@ ExpIdChecker.prototype.finish = function() {
     this.finishAction(this.finalResult);
 };
 
-var ExpGetter = function(finishAction) {
+/**
+ * Class that gets the info from all experiment
+ * @param finishAction {function} callback that has as a parameter which is an
+ * array of objects containing the id, the username, the name of the scene and
+ * the id of the user.
+ * @memberof DBReq
+ * @constructor
+ */
+DBReq.ExpGetter = function(finishAction) {
     this.finishAction = finishAction;
 
     var self = this;
@@ -501,7 +663,10 @@ var ExpGetter = function(finishAction) {
     });
 };
 
-ExpGetter.prototype.execute = function() {
+/**
+ * Executes the SQL request and calls the callback
+ */
+DBReq.ExpGetter.prototype.execute = function() {
     var self = this;
     this.client.query(
         "SELECT  " +
@@ -520,7 +685,10 @@ ExpGetter.prototype.execute = function() {
     );
 };
 
-ExpGetter.prototype.finish = function() {
+/**
+ * Release the DB connection and call the callback
+ */
+DBReq.ExpGetter.prototype.finish = function() {
     this.release();
     this.client = null;
     this.release = null;
@@ -528,24 +696,86 @@ ExpGetter.prototype.finish = function() {
     this.finishAction(this.finalResult);
 };
 
+/**
+ * Try to get a user by id, and creates it if it doesn't exists
+ * @param id {Number} id to test
+ * @param callback {function} callback to call on the id
+ * @memberof DBReq
+ */
 var tryUser = function(id, callback) {
     if (id !== undefined && id !== null) {
-        new UserIdChecker(id, function(clear) {
+        new DBReq.UserIdChecker(id, function(clear) {
             if (clear) {
                 callback(id);
             } else {
-                new UserCreator(callback);
+                new DBReq.UserCreator(callback);
             }
         });
     } else {
-        new UserCreator(callback);
+        new DBReq.UserCreator(callback);
     }
 };
 
-module.exports.getInfo      = function(id, callback)           { new Info(id, callback);                 };
-module.exports.createUser   = function(callback)               { new UserCreator(callback);              };
-module.exports.createExp    = function(id, scene_id, callback) { new ExpCreator(id, scene_id, callback); };
-module.exports.checkUserId  = function(id, callback)           { new UserIdChecker(id, callback);        };
-module.exports.checkExpId   = function(id, callback)           { new ExpIdChecker(id, callback);         };
-module.exports.getAllExps   = function(callback)               { new ExpGetter(callback);                };
+/**
+ * Get all the info from an experiment
+ * @memberof DBReq
+ * @param id {Number} id of the experiment to get the info
+ * @param callback {function} callback called on the result of all the SQL requests
+ */
+module.exports.getInfo = function(id, callback) {
+    new DBReq.Info(id, callback);
+};
+
+/**
+ * Creates a user
+ * @memberof DBReq
+ * @param callback {function} callback called on the new user id
+ */
+module.exports.createUser = function(callback) {
+    new DBReq.UserCreator(callback);
+};
+
+/**
+ * Creates an experiment
+ * @memberof DBReq
+ * @param id {Number} id of the user doing the experiment
+ * @param scene_id {Number} id of the scene on which the experiment is
+ * @param callback {function} callback called on the new experiment id
+ */
+module.exports.createExp = function(id, scene_id, callback) {
+    new DBReq.ExpCreator(id, scene_id, callback);
+};
+
+/**
+ * Checks the user id
+ * @memberof DBReq
+ * @param id {Number} id to check
+ * @param callback {function} callback called on a boolean (true if the user id
+ * exists, false otherwise)
+ */
+module.exports.checkUserId = function(id, callback) {
+    new DBReq.UserIdChecker(id, callback);
+};
+
+/**
+ * Checks if an experiment id exists
+ * @memberof DBReq
+ * @param id {Number} id of the experiment to check
+ * @param callback {function} callback called on an object (null if the
+ * experiment doesn't exist, an object containing username, scene_id,
+ * scenename, and exp_id if it exists
+ */
+module.exports.checkExpId = function(id, callback) {
+    new DBReq.ExpIdChecker(id, callback);
+};
+
+/**
+ * Gets a list of all experiments
+ * @memberof DBReq
+ * @param callback {function} callback called on an array containing all experiments
+ */
+module.exports.getAllExps = function(callback) {
+    new DBReq.ExpGetter(callback);
+};
+
 module.exports.tryUser = tryUser;
