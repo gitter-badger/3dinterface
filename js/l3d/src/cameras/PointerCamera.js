@@ -674,7 +674,7 @@ L3D.PointerCamera.prototype.onMouseUp = function(event) {
  * Logs the camera to the terminal (pratical to create recommended views)
  */
 L3D.PointerCamera.prototype.log = function() {
-    console.log("createCamera(\nnew THREE.Vector3(" + this.position.x + "," +  this.position.y + ',' + this.position.z + '),\n' +
+    console.log("createRecommendation(\nnew THREE.Vector3(" + this.position.x + "," +  this.position.y + ',' + this.position.z + '),\n' +
                 "new THREE.Vector3(" + this.target.x + "," +  this.target.y + ',' + this.target.z + ')\n)');
 };
 

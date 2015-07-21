@@ -39,8 +39,6 @@ inotifywait -r -e close_write -m . |
 cd ..
 nodemon server.js &
 
-echo "ok"
-
 function killit {
 
     killall inotifywait
