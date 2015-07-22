@@ -75,7 +75,7 @@ var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container
             justclick:true
         },
         {
-            text: "Here are some more recommendations, try to browse the scene and find the missing red coins (5/8)",
+            text: "Here are some more recommendations, try to browse the scene and find the missing red coins",
             justclick:false
         },
         {
@@ -83,8 +83,28 @@ var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container
             justclick: false
         },
         {
-            text: "Tip : if you find that the previews take too much place, you can put them at the bottom of the screen (use the checkbox options below) !",
+            text: "Tip : you can use the arrow buttons in the bar at the bottom of the screen to go to the previous / next position",
             justclick: false
+        },
+        {
+            text: "Tip : you can use the arrow buttons in the bar at the bottom of the screen to go to the previous / next position",
+            justclick: false
+        },
+        {
+            text: "Tip : you can use the arrow buttons in the bar at the bottom of the screen to go to the previous / next position",
+            justclick: false
+        },
+        {
+            text: "Tip : you can use the arrow buttons in the bar at the bottom of the screen to go to the previous / next position",
+            justclick: false
+        },
+        {
+            text: "Tip : you can use the arrow buttons in the bar at the bottom of the screen to go to the previous / next position",
+            justclick: false
+        },
+        {
+            text: "Tip : you can use the arrow buttons in the bar at the bottom of the screen to go to the previous / next position",
+            justclick:false
         },
         {
             text: "Congratulations ! You've successfully finished the tutorial !",
@@ -175,11 +195,15 @@ TutorialSteps.prototype.nextStep = function() {
                 for (var i = 0; i < cams.length; i == 1 ? i+=2 : i++) {
                     this.addRecommendation(cams[i]);
                 }
+                Coin.total = 1;
                 Coin.max = 8;
                 Coin.update();
-                this.addCoin(new Coin(3.701112872561801,-0.4620393514856378,-3.3373375945128085, callback));
-                this.addCoin(new Coin(6.694675339780243,-1.2480369397526456,-1.992336719279164, callback));
-                this.addCoin(new Coin(-2.458336118265302,-1.549510268763568,-11.186153614421212, callback));
+                var coins = L3D.generateCoins(L3D.createPeachCoins());
+                for (var i = 0; i < coins.length; i++) {
+                    coins[i].rotating = true;
+                    coins[i].callback = callback;
+                    this.addCoin(coins[i]);
+                }
                 break;
         }
         this.step++;

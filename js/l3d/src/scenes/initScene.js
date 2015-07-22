@@ -220,7 +220,9 @@ L3D.generateCoins = function(totalCoins, coin_ids) {
 
     if (coin_ids === undefined)
         L3D.shuffle(totalCoins);
-    else {
+    else if (coin_ids === null) {
+        return [];
+    } else {
 
         for (i = 0; i < coin_ids.length; i++) {
 
@@ -249,8 +251,6 @@ L3D.generateCoins = function(totalCoins, coin_ids) {
         totalCoins[i].coin.id = totalCoins[i].id;
         indices.push(totalCoins[i].id);
     }
-
-    console.log(bound);
 
     if (coin_ids === undefined || (coin_ids instanceof Array && coin_ids.length === 0))
         L3D.DB.Private.sendData('/posts/coin-id', {indices : indices});

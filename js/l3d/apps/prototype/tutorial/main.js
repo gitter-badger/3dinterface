@@ -106,7 +106,7 @@ function initCanvases() {
 function initModels() {
 
     // Init recommendations
-    recommendations = L3D.initPeach(camera1, scene, coins, clickableObjects);
+    recommendations = L3D.initPeach(camera1, scene, coins, clickableObjects, null);
 
     // init clickable objects
     var i;
