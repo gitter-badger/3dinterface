@@ -142,6 +142,7 @@ L3D.Previewer.prototype.render = function(container_width, container_height) {
  */
 L3D.Previewer.prototype.clear = function() {
     if (this.clearNeeded) {
+        console.log("Clear");
         this.domElement.width = this.domElement.width;
         this.clearNeeded = false;
     }
@@ -180,8 +181,12 @@ L3D.Previewer.prototype.setCamera = function(camera) {
  * @param {Number} y y coordinate of the mouse
  */
 L3D.Previewer.prototype.setPosition = function(x, y) {
-    this.mouse.x = x;
-    this.mouse.y = y;
+
+    if (!this.drawn) {
+        this.mouse.x = x;
+        this.mouse.y = y;
+    }
+
 };
 
 /**

@@ -111,8 +111,7 @@ function initCanvases() {
 function initModels() {
 
     // Init recommendations
-    // recommendations = initMainScene(camera1, scene, coins, clickableObjects);
-    recommendations = L3D.initWhomp(camera1, scene, coins, clickableObjects);
+    recommendations = initMainScene(camera1, scene, coins, clickableObjects);
 
     // init clickable objects
     var i;
