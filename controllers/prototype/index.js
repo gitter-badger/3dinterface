@@ -139,11 +139,21 @@ module.exports.replay_index = function(req, res, next) {
 
 module.exports.tutorial = function(req, res) {
 
+    db.tryUser(req.session.user_id, function(id) {
+        req.session.user_id = id;
 
-    res.setHeader('Content-Type', 'text/html');
-    res.render('tutorial.jade', res.lcals, function(err, result) {
-        res.send(result);
+        // 1 is the ID of peach scene
+        db.createExp(id, 1, function(id) {
+            req.session.exp_id = id;
+            req.session.save();
+
+            res.setHeader('Content-Type', 'text/html');
+            res.render('tutorial.jade', res.lcals, function(err, result) {
+                res.send(result);
+            });
+        });
     });
+
 };
 
 module.exports.clicker = function(req, res, next) {

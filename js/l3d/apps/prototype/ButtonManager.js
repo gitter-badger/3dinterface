@@ -17,11 +17,6 @@ var ButtonManager = function(camera, recommendations, previewer) {
 
     // this.recommendationElement = document.getElementById('recommendation');
 
-    // Default option
-    this.pointerLockElement.checked = window.locked;;
-    this.camera.shouldLock = window.locked;
-    this.camera.onPointerLockChange();
-
     (function(self) {
         self.undoElement.onclick = function() {self.camera.undo(); self.updateElements();};
         self.redoElement.onclick = function() {self.camera.redo(); self.updateElements();};

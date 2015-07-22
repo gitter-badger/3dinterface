@@ -94,6 +94,7 @@ L3D.ReplayCamera.prototype.nextEvent = function() {
     // Finished
     if (this.counter >= this.path.length) {
         this.started = false;
+        console.log('The replay is finished');
         return;
     }
 

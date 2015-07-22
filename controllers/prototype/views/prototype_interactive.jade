@@ -5,7 +5,7 @@ block title
 
 block mainjs
     script initMainScene = #{scene};
-    script locked = #{session.locked};
+    script locked = #{session.locked === undefined ? 'true' : session.locked};
     script(src="/static/js/prototypeinteractive.min.js")
 
 block description

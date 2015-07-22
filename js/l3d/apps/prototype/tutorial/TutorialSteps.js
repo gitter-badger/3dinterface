@@ -124,8 +124,15 @@ TutorialSteps.prototype.nextStep = function() {
         switch (this.step) {
             case 0: break;
             case 3: this.camera.allowed.mouseRotate       = true; break;
-            case 4: this.camera.allowed.keyboardRotate    = true; break;
+            case 4:
+                this.camera.allowed.keyboardRotate = true;
+            break;
             case 5:
+                if (!confirm('Do you want to keep pointer lock disabled ?')) {
+                    document.getElementById('lock').checked = true;
+                    this.camera.shouldLock = true;
+                    this.camera.onPointerLockChange();
+                }
                 Coin.domElement.style.display = "";
                 Coin.max = 1;
                 Coin.update();

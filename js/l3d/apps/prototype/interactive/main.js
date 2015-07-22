@@ -85,6 +85,11 @@ function initThreeElements() {
         0.01, 100000, renderer, container
     );
 
+    // Get default param for camera lock
+    document.getElementById('lock').checked = window.locked;
+    camera1.shouldLock = window.locked;
+    camera1.onPointerLockChange();
+
 }
 
 function initCanvases() {

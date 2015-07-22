@@ -80,6 +80,8 @@ var TutoCamera = function() {
 
     this.shouldLock = true;
 
+    this.shouldLogCameraAngles = true;
+
 };
 TutoCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 TutoCamera.prototype.constructor = TutoCamera;
@@ -114,6 +116,8 @@ TutoCamera.prototype.isLocked = function() {
 
 TutoCamera.prototype.onPointerLockChange = function() {
 
+    var event = new L3D.DB.Event.PointerLocked();
+
     if (this.isLocked()) {
 
         // The pointer is locked : adapt the state of the camera
@@ -129,6 +133,14 @@ TutoCamera.prototype.onPointerLockChange = function() {
         if (this.tutorial.nextAction() === 'lock-pointer') {
             this.tutorial.nextStep();
         }
+
+        // Send event
+        event.locked = true;
+
+        if (this.wasLocked !== event.locked)
+            event.send();
+
+        this.wasLocked = true;
 
     } else {
 
@@ -147,9 +159,16 @@ TutoCamera.prototype.onPointerLockChange = function() {
         else
             this.startCanvas.clear();
 
+        event.locked = false;
+
+        if (this.wasLocked !== event.locked)
+            event.send();
+
         if (this.tutorial.nextAction() === 'unlock-pointer') {
             this.tutorial.nextStep();
         }
+
+        this.wasLocked = false;
 
     }
 
@@ -157,10 +176,13 @@ TutoCamera.prototype.onPointerLockChange = function() {
 
 // Update function
 TutoCamera.prototype.update = function(time) {
+
     if (this.moving) {
         this.linearMotion(time);
+        this.shouldLogCameraAngles = false;
     } else if (this.movingHermite) {
         this.hermiteMotion(time);
+        this.shouldLogCameraAngles = false;
     } else {
         this.normalMotion(time);
     }
@@ -213,6 +235,21 @@ TutoCamera.prototype.normalMotion = function(time) {
         this.mouseMove.y = 0;
 
         this.changed = true;
+
+        if (this.shouldLogCameraAngles) {
+
+            this.shouldLogCameraAngles = false;
+
+            var self = this;
+            setTimeout(function() {
+                self.shouldLogCameraAngles = true;
+            }, 500);
+
+            var event = new L3D.DB.Event.KeyboardEvent();
+            event.camera = this;
+            event.send();
+
+        }
     }
 
     // Clamp phi and theta

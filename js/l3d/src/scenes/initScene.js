@@ -72,20 +72,28 @@ L3D.resetPeachElements = function() {
     };
 };
 
-L3D.initPeach = function(recommendation, scene, coins, clickable) {
+L3D.initPeach = function(camera, scene, coins, clickable, coin_ids) {
     L3D.addLight(scene);
 
     var collidableObjects = [];
-    L3D.initPeachCastle(scene, collidableObjects, recommendation, clickable);
+    L3D.initPeachCastle(scene, collidableObjects, camera, clickable);
 
-    recommendation.resetElements = L3D.resetPeachElements();
-    recommendation.collidableObjects = collidableObjects;
+    camera.resetElements = L3D.resetPeachElements();
+    camera.collidableObjects = collidableObjects;
 
-    recommendation.speed = 0.001;
-    recommendation.reset();
-    recommendation.save();
+    camera.speed = 0.001;
+    camera.reset();
+    camera.save();
 
-    scene.add(recommendation);
+    scene.add(camera);
+
+    var tmp = L3D.generateCoins(L3D.createPeachCoins(), coin_ids);
+
+    for (var i in tmp) {
+        coins.push(tmp[i]);
+    }
+
+    setTimeout(function() { coins.forEach(function(coin) { coin.addToScene(scene); });}, 1000);
 
     Coin.init(0.001);
     var recommendations = [];

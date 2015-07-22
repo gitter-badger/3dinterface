@@ -248,16 +248,19 @@ L3D.PointerCamera.prototype.onPointerLockChange = function() {
     } else {
 
         this.pointerLocked = false;
-        this.mousePointer.clear();
+        if (this.mousePointer)
+            this.mousePointer.clear();
 
         this.mouseMove.x = 0;
         this.mouseMove.y = 0;
 
         // Draw start canvas only if should lock
-        if (this.shouldLock)
-            this.startCanvas.render();
-        else
-            this.startCanvas.clear();
+        if (this.startCanvas) {
+            if (this.shouldLock)
+                this.startCanvas.render();
+            else
+                this.startCanvas.clear();
+        }
 
         event.locked = false;
 
@@ -275,14 +278,14 @@ L3D.PointerCamera.prototype.onPointerLockChange = function() {
  * @param {Number} time number of milliseconds between the previous and the next frame
  */
 L3D.PointerCamera.prototype.update = function(time) {
-    this.shouldLogCameraAngles = false;
 
     if (this.moving) {
+        this.shouldLogCameraAngles = false;
         this.linearMotion(time);
     } else if (this.movingHermite) {
+        this.shouldLogCameraAngles = false;
         this.hermiteMotion(time);
     } else {
-        this.shouldLogCameraAngles = true;
         this.normalMotion(time);
     }
 };

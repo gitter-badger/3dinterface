@@ -1,7 +1,7 @@
 L3D.ObjectClicker = (function() {
 
 function pointerCheck(camera) {
-    return (camera instanceof L3D.PointerCamera && camera.pointerLocked);
+    return ((camera instanceof L3D.PointerCamera || camera instanceof TutoCamera) && camera.pointerLocked);
 }
 
 /**

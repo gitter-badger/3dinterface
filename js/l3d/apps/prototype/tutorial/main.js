@@ -59,6 +59,9 @@ function main() {
     // Start rendering
     setInterval(render, 20);
 
+    // Log fps
+    setInterval(function() {logfps(stats.getFps());}, 500);
+
 }
 
 function initThreeElements() {
