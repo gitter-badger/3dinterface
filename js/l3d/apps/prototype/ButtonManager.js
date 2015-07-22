@@ -1,6 +1,6 @@
-var ButtonManager = function(camera, cameras, previewer) {
+var ButtonManager = function(camera, recommendations, previewer) {
     this.camera = camera;
-    this.cameras = cameras;
+    this.recommendations = recommendations;
     this.previewer = previewer;
 
     this.showArrows = true;
@@ -17,12 +17,17 @@ var ButtonManager = function(camera, cameras, previewer) {
 
     // this.recommendationElement = document.getElementById('recommendation');
 
+    // Default option
+    this.pointerLockElement.checked = window.locked;;
+    this.camera.shouldLock = window.locked;
+    this.camera.onPointerLockChange();
+
     (function(self) {
         self.undoElement.onclick = function() {self.camera.undo(); self.updateElements();};
         self.redoElement.onclick = function() {self.camera.redo(); self.updateElements();};
 
         // self.fullElement.onclick = function() {
-        //     self.cameras.map(function(camera) {
+        //     self.recommendations.map(function(camera) {
         //         if (!(camera instanceof PointerCamera)) {
         //             camera.fullArrow = self.fullElement.checked;
         //         }
@@ -34,10 +39,17 @@ var ButtonManager = function(camera, cameras, previewer) {
             self.camera.shouldLock = self.pointerLockElement.checked;
             self.camera.onPointerLockChange();
 
-            // Log
+            // Log (this will change option in the session)
+            var bakup = L3D.DB.Private.enabled;
+            if (!bakup)
+                L3D.DB.enable();
+
             var event = new L3D.DB.Event.SwitchedLockOption();
             event.locked = self.pointerLockElement.checked;
             event.send();
+
+            if (!bakup)
+                L3D.DB.disable();
         };
 
         self.showarrowsElement.onchange = function() {self.showArrows = self.showarrowsElement.checked;};

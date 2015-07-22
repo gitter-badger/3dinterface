@@ -50,7 +50,7 @@ function main() {
         L3D.DB.disable();
 
     Coin.update();
-    startCanvas.render(L3D.StartCanvas.Black);
+    // startCanvas.render(L3D.StartCanvas.Black);
 
     // Bind previewer to renderer (for fixed option)
     function bind() {

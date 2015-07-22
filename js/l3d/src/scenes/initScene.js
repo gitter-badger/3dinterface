@@ -136,45 +136,36 @@ L3D.createPeachRecommendations = function(width, height) {
         );
     };
 
-    recos.push(createRecommendation(
-            new THREE.Vector3(-3.349895207953063, 5.148106346852601, 0.3365943929701533),
-            new THREE.Vector3(13.114421714865292, -7.783476327687569, -33.74713248359852)
-    ));
-
-    recos.push(createRecommendation(
-            new THREE.Vector3(4.659399030971226, 1.018674883050052597, -2.578139604982815),
-            new THREE.Vector3(-16.08800293200113, -28.8795632312717, -19.165379404919797)
-    ));
-
-    recos.push(createRecommendation(
-            new THREE.Vector3(2.625389073616235, 1.2252620948239699, -4.818718135555419),
-            new THREE.Vector3(-19.756833131355208, -16.20027570329664, -33.02132017177813)
-    ));
-
-    // recos.push(createRecommendation(
-    //         new THREE.Vector3(1.3304975149911331, 0.4836093721106701, -8.60618907952783),
-    //         new THREE.Vector3(-1.7713635815431914, 6.271997833695163, -48.06341930106774)
-    // ));
-
-    // recos.push(createRecommendation(
-    //        new THREE.Vector3(1.2976081760482443, 1.1520399813234647, -10.258148122402845),
-    //        new THREE.Vector3(-26.00651734173549, -9.19681009597505, -37.596510029925945)
-    // ));
-
-    recos.push(createRecommendation(
-            new THREE.Vector3(0.15727187830660858, 2.7251137440572855, -5.84333603646124),
-            new THREE.Vector3(19.33738702531091, -13.614383891308975, -36.91010284556961)
-    ));
-
-    recos.push(createRecommendation(
-        new THREE.Vector3(-3.912436457101955,1.4571795397310319,-7.361700012948173),
-        new THREE.Vector3(26.60153755572943,-12.280244389383581,-29.274722938506393)
-    ));
-
-    recos.push(createRecommendation(
-        new THREE.Vector3(4.734058048040269,0.9171350442568073,0.12604632828978296),
-        new THREE.Vector3(25.163187055614348,-27.08137327531798,-19.842284094421995)
-    ));
+    recos.push(
+        createRecommendation(
+            new THREE.Vector3(-4.318087280217455,2.8007613084859253,1.5193437897009336),
+            new THREE.Vector3(19.04561491034525,-11.893857635144567,-27.432436709124897)
+        ),
+         createRecommendation(
+            new THREE.Vector3(-6.257935852456958,2.093463399444844,-7.017904350052701),
+            new THREE.Vector3(25.88235261144178,-14.928107421416371,-23.669270187358173)
+        ),
+         createRecommendation(
+            new THREE.Vector3(9.807915641060413,1.599662719763407,1.3278972044453563),
+            new THREE.Vector3(-16.404678696813406,-19.467671402046243,-20.330065097629618)
+        ),
+         createRecommendation(
+            new THREE.Vector3(8.593027849546461,2.341563400341173,-10.381814971692629),
+            new THREE.Vector3(-23.363783342561,-18.42997444113019,1.755130036517576)
+        ),
+         createRecommendation(
+            new THREE.Vector3(6.422879729593868,3.06821771913114,-4.664407524854438),
+            new THREE.Vector3(-15.171947266786782,-24.05662912371069,-24.6119921091785)
+        ),
+         createRecommendation(
+            new THREE.Vector3(10.155340138717236,6.631665534350463,-5.574670324070963),
+            new THREE.Vector3(-20.721131232754608,-9.966488352174423,-24.839789145555535)
+        ),
+         createRecommendation(
+            new THREE.Vector3(-6.548087435820877,6.193523907010158,-3.627483164733988),
+            new THREE.Vector3(16.752484674681824,-11.466024392567634,-30.926268727065203)
+        )
+    );
 
     recos.forEach(function(reco) {reco.setSize(0.2);});
 
