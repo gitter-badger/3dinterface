@@ -145,7 +145,7 @@ L3D.ViewportRecommendation.prototype.update = function(position) {
     // Compute distance between center of camera and position
     dist = L3D.Tools.norm2(L3D.Tools.diff(position.position, this.camera.position));
 
-    var low_bound = 1;
+    var low_bound = 0.5;
     var high_bound = 5;
     var new_value;
     var max_value = 0.5;
@@ -160,8 +160,7 @@ L3D.ViewportRecommendation.prototype.update = function(position) {
     this.mesh.material.transparent = new_value < 0.9;
     this.mesh.material.opacity = new_value;
 
-    if (new_value < 0.1)
-        this.raycastable = this.mesh.material.transparent = this.mesh.visible = false;
+    this.raycastable = this.line.visible = this.mesh.material.transparent = this.mesh.visible = new_value > 0.1;
 };
 
 L3D.ViewportRecommendation.prototype.setSize = function(size) {

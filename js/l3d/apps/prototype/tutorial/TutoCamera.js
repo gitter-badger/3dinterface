@@ -82,6 +82,8 @@ var TutoCamera = function() {
 
     this.shouldLogCameraAngles = true;
 
+    glob = this;
+
 };
 TutoCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 TutoCamera.prototype.constructor = TutoCamera;

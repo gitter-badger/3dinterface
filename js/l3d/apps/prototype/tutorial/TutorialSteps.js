@@ -75,6 +75,10 @@ var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container
             justclick:true
         },
         {
+            text: "Recommendations can be displayed as arrows, or as viewports",
+            justclick: false
+        },
+        {
             text: "Here are some more recommendations, try to browse the scene and find the missing red coins",
             justclick:false
         },
@@ -183,23 +187,32 @@ TutorialSteps.prototype.nextStep = function() {
                 });
                 break;
             case 14:
-                var cam = L3D.createPeachRecommendations(this.container_size.width(), this.container_size.height())[2];
-                this.addRecommendation(cam);
+                this.firstReco = L3D.createPeachRecommendations(this.container_size.width(), this.container_size.height())[0];
+                this.addRecommendation(this.firstReco);
                 this.camera.move({
-                    position: new THREE.Vector3(0.24120226734236713,0.2009624547018851,-0.5998422840047036),
-                    target:  new THREE.Vector3(24.021711452218575,7.072419314071788,-32.020702608601745)
+                    position: new THREE.Vector3(-9.157274598933608,3.6852142459329533,2.1820896816244444),
+                    target: new THREE.Vector3(28.719309042259358,-7.287186618613339,-4.523939765031559)
                 });
                 break;
             case 16:
+                this.secondReco = L3D.createPeachRecommendations(this.container_size.width(), this.container_size.height(), L3D.ViewportRecommendation)[1];
+                this.addRecommendation(this.secondReco);
+                this.secondReco.raycastable = true;
+                this.camera.move({
+                    position: new THREE.Vector3(-4.450089930098798,1.9849620256150362,-6.290933967410013),
+                    target: new THREE.Vector3(-41.36549967804652,3.333580368597787,-21.63478458275742)
+                });
+                break;
+            case 17:
                 var cams = L3D.createPeachRecommendations(this.container_size.width(), this.container_size.height());
-                for (var i = 0; i < cams.length; i == 1 ? i+=2 : i++) {
+                for (var i = 2; i < cams.length; i++) {
                     this.addRecommendation(cams[i]);
                 }
                 Coin.total = 1;
                 Coin.max = 8;
                 Coin.update();
                 var coins = L3D.generateCoins(L3D.createPeachCoins());
-                for (var i = 0; i < coins.length; i++) {
+                for (i = 0; i < coins.length; i++) {
                     coins[i].rotating = true;
                     coins[i].callback = callback;
                     this.addCoin(coins[i]);
@@ -219,7 +232,9 @@ TutorialSteps.prototype.nextAction = function() {
         case  5: return 'rotate-keyboard';
         case 11: return 'translate-keyboard';
         case 13: return 'reset-camera';
-        case 15: return 'recommendation';
+        case 15: // Fallthrough
+        case 16: // Fallthrough
+        case 17: return 'recommendation';
     }
 };
 

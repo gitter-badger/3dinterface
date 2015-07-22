@@ -130,11 +130,12 @@ L3D.initZeldaScene = function(scene, collidableObjects, loader) {
 };
 
 
-L3D.createPeachRecommendations = function(width, height) {
+L3D.createPeachRecommendations = function(width, height, rec) {
     var recos = [];
+    var Reco = rec !== undefined ? rec : Recommendation;
 
     var createRecommendation = function(position, target) {
-        return new Recommendation(
+        return new Reco(
             50,
             width / height,
             1,

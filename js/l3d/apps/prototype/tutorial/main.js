@@ -109,12 +109,12 @@ function initModels() {
     recommendations = L3D.initPeach(camera1, scene, coins, clickableObjects, null);
 
     // init clickable objects
-    var i;
-    for (i = 0; i < coins.length; i++)
-        clickableObjects.push(coins[i]);
+    // var i;
+    // for (i = 0; i < coins.length; i++)
+    //     clickableObjects.push(coins[i]);
 
-    for (i =0; i < recommendations.length; i++)
-        clickableObjects.push(recommendations[i]);
+    // for (i =0; i < recommendations.length; i++)
+    //     clickableObjects.push(recommendations[i]);
 
 }
 
