@@ -13,6 +13,13 @@ var Coin = function(x,y,z, callback) {
 var _toto = new Audio();
 Coin.extension = _toto.canPlayType("audio/x-vorbis") === "" ? ".ogg" : ".mp3";
 
+Coin.sounds = [];
+for (var i = 0; i < 8; i++) {
+    Coin.sounds.push(new Audio('/static/data/music/redcoins/' + (i+1) + Coin.extension));
+    Coin.sounds[Coin.sounds.length-1].preload = "auto";
+
+}
+
 Coin.domElement = document.createElement('canvas');
 Coin.domElement.style.position = 'absolute';
 Coin.domElement.style.cssFloat = 'top-left';
@@ -147,8 +154,7 @@ Coin.prototype.get = function() {
         this.mesh.material.transparent = true;
         this.mesh.material.opacity = 1;
 
-        Coin.total ++;
-        Coin.nextSound.play();
+        Coin.sounds[(Coin.total ++)  - 1].play();
         if (Coin.total === 9) {
             // You got the last coin
             var music = document.getElementById('music');
@@ -164,9 +170,6 @@ Coin.prototype.get = function() {
                     }, Coin.lastSound.duration*1000);
                 }, Coin.nextSound.duration*1000);
             }
-        } else {
-            Coin.nextSound = new Audio('/static/data/music/redcoins/' + Coin.total + Coin.extension);
-            Coin.nextSound.preload = "auto";
         }
 
         Coin.update();
