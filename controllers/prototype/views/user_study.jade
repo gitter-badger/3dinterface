@@ -3,6 +3,14 @@ extends ../../../views/base.jade
 block extrahead
     link(rel="stylesheet", href="/static/css/signin.css")
 
+block extrabody
+    if identificationFailed
+        .container
+            .alert.alert-danger.alert-dismissible(role="alert", style={'margin-top':'20px'})
+                button.close(type="button", data-dismiss="alert", aria-label="Close")
+                    span(aria-hidden="true") &times;
+                <strong>Error</strong> : this id is already used !
+
 block content
     form.form-signin(method="POST", action='/identification')
         h2 Please sign in
@@ -13,10 +21,11 @@ block content
 
         div(style={'text-align': 'center', 'margin-top':'10px', 'margin-bottom':'10px'})
             label.radio-inline
-                input(type='radio', name='inputGender', value="male")
+                input(type='radio', name='inputGender', value="male", checked)
                 | Male
             label.radio-inline
                 input(type='radio', name='inputGender', value="female")
                 | Female
 
         button.btn.btn-lg.btn-primary.btn-block(type='submit') Sign in
+

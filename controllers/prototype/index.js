@@ -148,7 +148,7 @@ module.exports.tutorial = function(req, res) {
             req.session.save();
 
             res.setHeader('Content-Type', 'text/html');
-            res.render('tutorial.jade', res.lcals, function(err, result) {
+            res.render('tutorial.jade', res.locals, function(err, result) {
                 res.send(result);
             });
         });
@@ -211,7 +211,11 @@ module.exports.viewer = function(req, res, next) {
 module.exports.userstudy = function(req, res) {
     res.setHeader('Content-Type', 'text/html');
 
-    res.render('user_study.jade', res.lcals, function(err, result) {
+    res.locals.identificationFailed = req.session.identificationFailed;
+    req.session.identificationFailed = false;
+    req.session.save();
+
+    res.render('user_study.jade', res.locals, function(err, result) {
         res.send(result);
     });
 

@@ -594,6 +594,40 @@ DBReq.UserIdChecker.prototype.finish = function() {
     this.finishAction(this.finalResult);
 };
 
+DBReq.UserNameChecker = function(name, finishAction) {
+    this.name = name;
+    this.finishAction = finishAction;
+    var self = this;
+    pg.connect(pgc.url, function(err, client, release) {
+        self.client = client;
+        self.release = release;
+        self.execute();
+    });
+};
+
+DBReq.UserNameChecker.prototype.execute = function() {
+    var self = this;
+    this.client.query(
+        "SELECT count(id) > 0 AS answer FROM users WHERE worker_id = $1",
+        [self.name],
+        function(err, result) {
+            if (err !== null)
+                Log.dberror(err + ' in UserNameChecker');
+            self.finalResult = result.rows[0].answer;
+            self.finish();
+        }
+    );
+
+};
+
+DBReq.UserNameChecker.prototype.finish = function() {
+    this.release();
+    this.client = null;
+    this.release = null;
+
+    this.finishAction(this.finalResult);
+};
+
 /**
  * Class that creates an experiment
  * @param id {Number} id of the experiment to check
@@ -671,7 +705,7 @@ DBReq.ExpGetter.prototype.execute = function() {
     this.client.query(
         "SELECT  " +
             "experiment.id as exp_id, " +
-            "users.name as username, " +
+            "users.worker_id as username, " +
             "scene.name as scenename, " +
             "users.id as user_id " +
         "FROM experiment, users, scene " +
@@ -755,6 +789,10 @@ DBReq.createExp = function(id, scene_id, callback) {
  */
 DBReq.checkUserId = function(id, callback) {
     new DBReq.UserIdChecker(id, callback);
+};
+
+DBReq.checkUserName = function(name, callback) {
+    new DBReq.UserNameChecker(name, callback);
 };
 
 /**
