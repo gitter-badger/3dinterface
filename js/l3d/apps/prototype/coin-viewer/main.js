@@ -107,6 +107,8 @@ function initThreeElements() {
         0.01, 100000, renderer, container
     );
 
+    camera1.collisions = false;
+
 }
 
 function initCanvases() {
@@ -137,7 +139,12 @@ function initModels() {
     // Init recommendations
     recommendations = initMainScene(camera1, scene, coins, clickableObjects, []);
 
-    // Erase coins and recommendations
+    for (i = 0; i < coins.length; i++) {
+        coins[i].rotating = true;
+        clickableObjects.push(coins[i]);
+    }
+
+    // Erase recommendations
     for (i =0; i < recommendations.length; i++)
         recommendations[i].traverse(function(obj) {obj.visible = false;});
     recommendations = [];
@@ -162,8 +169,17 @@ function initListeners() {
         // onclick
         function(c, x, y, event) {
 
-            if (event.button !== 2)
+            if (event.button !== 2) {
+
+                if (c !== undefined && c.object instanceof Coin)
+                    glob = c.object;
+                else
+                    glob = null;
+
+                console.log(glob);
                 return;
+
+            }
 
             if (c !== undefined) {
 
