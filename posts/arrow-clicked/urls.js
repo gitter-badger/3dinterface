@@ -1,3 +1,3 @@
 module.exports = {
-    '/arrow-clicked': 'index'
+    '/posts/arrow-clicked': 'index'
 };

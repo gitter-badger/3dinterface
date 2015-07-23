@@ -1,3 +1,3 @@
 module.exports = {
-    '/fps': 'index'
+    '/posts/fps': 'index'
 };

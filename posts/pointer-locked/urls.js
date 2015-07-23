@@ -1,3 +1,3 @@
 module.exports = {
-    '/pointer-locked': 'index'
+    '/posts/pointer-locked': 'index'
 };

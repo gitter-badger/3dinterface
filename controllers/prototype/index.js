@@ -207,3 +207,12 @@ module.exports.viewer = function(req, res, next) {
     });
 
 };
+
+module.exports.userstudy = function(req, res) {
+    res.setHeader('Content-Type', 'text/html');
+
+    res.render('user_study.jade', res.lcals, function(err, result) {
+        res.send(result);
+    });
+
+};

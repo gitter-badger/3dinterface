@@ -1,0 +1,22 @@
+extends ../../../views/base.jade
+
+block extrahead
+    link(rel="stylesheet", href="/static/css/signin.css")
+
+block content
+    form.form-signin(method="POST", action='/identification')
+        h2 Please sign in
+        label(for='inputId').sr-only Id
+        input#inputId.form-control(name="inputId", type="text", placeholder='Id', required, autofocus)
+        label(for='inputAge').sr-only Age
+        input#inputAge.form-control(name="inputAge", type="number", placeholder='Age', min="18", required)
+
+        div(style={'text-align': 'center', 'margin-top':'10px', 'margin-bottom':'10px'})
+            label.radio-inline
+                input(type='radio', name='inputGender', value="male")
+                | Male
+            label.radio-inline
+                input(type='radio', name='inputGender', value="female")
+                | Female
+
+        button.btn.btn-lg.btn-primary.btn-block(type='submit') Sign in

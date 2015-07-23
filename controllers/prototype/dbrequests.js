@@ -477,7 +477,7 @@ DBReq.UserCreator = function(finishAction) {
 DBReq.UserCreator.prototype.execute = function() {
     var self = this;
     this.client.query(
-        "INSERT INTO users(name) VALUES('anonymous'); SELECT currval('users_id_seq');",
+        "INSERT INTO users DEFAULT VALUES; SELECT currval('users_id_seq');",
         [],
         function(err, result) {
             self.finalResult = result.rows[0].currval;

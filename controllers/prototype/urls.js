@@ -9,5 +9,6 @@ module.exports = {
     '/prototype/tutorial': 'tutorial',
     '/prototype/sponza': 'sponza',
     '/prototype/coin-creator/:scene': 'clicker',
-    '/prototype/coin-viewer/:scene': 'viewer'
+    '/prototype/coin-viewer/:scene': 'viewer',
+    '/user-study': 'userstudy'
 };

@@ -1,3 +1,3 @@
 module.exports = {
-    '/coin-id': 'index'
+    '/posts/coin-id': 'index'
 };

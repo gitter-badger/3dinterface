@@ -36,7 +36,9 @@ CREATE TYPE CAMERA AS(
 -- Base tables
 CREATE TABLE Users(
     id SERIAL PRIMARY KEY,
-    name CHAR(50)
+    worker_id varchar(50),
+    age INTEGER,
+    male BOOLEAN
 );
 
 CREATE TABLE Scene(

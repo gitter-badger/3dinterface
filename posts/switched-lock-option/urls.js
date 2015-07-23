@@ -1,3 +1,3 @@
 module.exports = {
-    '/switched-lock-option': 'index'
+    '/posts/switched-lock-option': 'index'
 };

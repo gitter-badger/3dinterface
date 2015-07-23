@@ -1,3 +1,3 @@
 module.exports = {
-    '/keyboard-event': 'index'
+    '/posts/keyboard-event': 'index'
 };
