@@ -2,6 +2,17 @@ extends ../../../views/base.jade
 
 block extrahead
     link(rel="stylesheet", href="/static/css/signin.css")
+    link(rel="stylesheet", href="/static/css/star-rating.min.css")
+
+block extrajs
+    script(src="/static/js/star-rating.min.js")
+    script.
+        $('#3dgames').rating({
+            showClear: false,
+            showCaption: false,
+            size: 'xs'
+        });
+        $('#3dgames').rating('update', 3);
 
 block extrabody
     if identificationFailed
@@ -16,16 +27,44 @@ block content
         h2 Please sign in
         label(for='inputId').sr-only Id
         input#inputId.form-control(name="inputId", type="text", placeholder='Id', required, autofocus)
-        label(for='inputAge').sr-only Age
-        input#inputAge.form-control(name="inputAge", type="number", placeholder='Age', min="18", required)
 
-        div(style={'text-align': 'center', 'margin-top':'10px', 'margin-bottom':'10px'})
-            label.radio-inline
-                input(type='radio', name='inputGender', value="male", checked)
-                | Male
-            label.radio-inline
-                input(type='radio', name='inputGender', value="female")
-                | Female
+        .form-group
+            label Gender
+            .form-group
+                label.radio-inline
+                    input(type='radio', name='inputGender', value="male", checked)
+                    | Male
+                label.radio-inline
+                    input(type='radio', name='inputGender', value="female")
+                    | Female
+
+        .form-group
+            label(for='sel1') How old are you ?
+            select.form-control#sel1(name="inputAge")
+                option(value='-20') Less than 20
+                option(value='20-25') Between 20 and 25
+                option(value='25-30') Between 25 and 30
+                option(value='30-35') Between 30 and 35
+                option(value='35-40') Between 35 and 40
+                option(value='40-45') Between 40 and 45
+                option(value='45-50') Between 45 and 50
+                option(value='50-55') Between 50 and 55
+                option(value='55-60') Between 55 and 60
+                option(value='60-') More than 60
+
+        label(for='3dgames') Rate your 3D game skills (1 star if you never played)
+        input#3dgames(type='number', class='rating', min='0', max='5', step='1', default='3', name='input3dskills')
+
+        .form-group
+            label(for='se21') When is the last time you played a 3D video game ?
+            select.form-control#sel2(name="inputLastTime")
+                option(value='3') This week
+                option(value='2') This month
+                option(value='1') This year
+                option(value='0') I never played a 3D video game
+
+
+
 
         button.btn.btn-lg.btn-primary.btn-block(type='submit') Sign in
 
