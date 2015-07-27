@@ -5,10 +5,6 @@ var Log = require('../../lib/NodeLog.js');
 
 module.exports.index = function(req, res) {
 
-    for (var key in req.body) {
-        console.log(key, req.body[key]);
-    }
-
     db.checkUserName(req.body.inputId, function(ok) {
         if (!ok) {
             db.tryUser(req.session.user_id, function(id) {
