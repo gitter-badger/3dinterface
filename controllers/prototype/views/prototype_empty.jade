@@ -1,10 +1,10 @@
 extends ./prototype_interactive
 
 block title
-    title #{title} - Prototype - Viewports
+    title #{title} - Prototype - Arrows
 
 block configjs
-    script Recommendation = L3D.ViewportRecommendation;
+    script Recommendation = L3D.EmptyRecommendation;
     script.
         Coin.onLastCoin = function() {
             $('#next').show();
@@ -20,8 +20,6 @@ block lastbutton
 //-block preciseDescription
     p
         | Recommended views are displayed with a
-        | transparent red rectangle and some lines.
-        | Basically, it represents the position of a camera
-        | (the point at the extramities of the lines
-        | represents the optical center, and the red
-        | rectangle represents the image plane).
+        | transparent blue arrow.  They disappear when you
+        | come closer to them, and shows the motion between
+        | your current position and the recommendation.

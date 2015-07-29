@@ -111,7 +111,7 @@ var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container
             justclick:false
         },
         {
-            text: "Congratulations ! You've successfully finished the tutorial !",
+            text: "Congratulations ! You've successfully finished the tutorial ! <a href=\"/prototype/empty\">Click here</a> to start.",
             justclick: false
         }
     ];

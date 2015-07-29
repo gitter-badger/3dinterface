@@ -40,8 +40,10 @@ block content
                 input#lock(type="checkbox", style={'margin-right': '10px', 'margin-bottom': '10px'}, checked)
                 label(for="lock" style={'margin-right':'10px'}) Pointer lock
 
-                input#showarrows(type="checkbox", style={'margin-right': '10px', 'margin-bottom': '10px'}, checked)
-                label(for="showarrows" style={'margin-right':'10px'}) Show arrows
+                input#showarrows(type="checkbox", style={'margin-right': '10px', 'margin-bottom': '10px', 'display':'none'}, checked)
+                label(for="showarrows" style={'margin-right':'10px', 'display': 'none'}) Show arrows
+
+                block lastbutton
 
                 //-input#recommendation(type="checkbox", style={'margin-right': '10px', 'margin-bottom': '10px'})
                 //-label(for="recommendation" style={'margin-right':'10px'}) Fixed prev

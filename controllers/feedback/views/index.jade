@@ -1,0 +1,24 @@
+extends ../../../views/base.jade
+
+mixin question(id, qu)
+    label(for="#{id}") #{qu}
+    input.form-control(name="answer#{id}", type="text", placeholder="Answer")
+
+block extrahead
+    link(rel="stylesheet", href="/static/css/feedback.css")
+
+block content
+    form.form-signin(method="POST", action='/feedback-target')
+        h2 Please give us your feedback
+
+        +question(1, "Did you have trouble to find the coins without the recommendations ?")
+        +question(2, "Did the recommendations helped you to find the coins ?")
+        +question(3, "Did the recommendations helped you to browser the scene ?")
+        +question(4, "Do you think recommendations can be helpful ?")
+        +question(5, "Which recommendation style do you prefer and why ?")
+
+        //-label(for='input1') Did you have trouble to find the coins during the first step ?
+        //-input#input1.form-control(name="input1", type="text", placeholder='Id')
+
+        button.btn.btn-lg.btn-primary.btn-block(type='submit') Submit
+

@@ -30,7 +30,7 @@ module.exports.index = function(req, res) {
                     );
                 });
 
-                res.redirect('/');
+                res.redirect('/prototype/tutorial');
 
             });
         } else {

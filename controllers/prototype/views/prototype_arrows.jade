@@ -5,6 +5,17 @@ block title
 
 block configjs
     script Recommendation = L3D.ArrowRecommendation;
+    script.
+        Coin.onLastCoin = function() {
+            $('#next').show();
+            $('#next').click(function() {
+                window.location = '/prototype/arrows';
+            });
+        };
+
+block lastbutton
+    button#next.btn.btn-success.navbar-btn(style={'margin-right':'10px', 'margin-bottom':'10px', 'display':'none'})
+        span Go to the next step
 
 //-block preciseDescription
     p

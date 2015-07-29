@@ -32,6 +32,18 @@ function randomArray() {
     return arr;
 }
 
+
+function randomReco() {
+    var recoStyles = [
+        'prototype_empty.jade',
+        'prototype_viewports.jade',
+        'prototype_arrows.jade'
+    ];
+
+    return shuffle(recoStyles);
+
+}
+
 module.exports.index = function(req, res) {
     res.setHeader('Content-Type', 'text/html');
 
@@ -51,6 +63,15 @@ var generateSceneNumber = function(req, res) {
     return req.session.scenes[req.session.currentSceneIndex];
 };
 
+var generateRecommendationStyle = function(req, res) {
+
+    if (req.session.recos === undefined) {
+        req.session.recos = randomReco();
+    }
+
+    return req.session.recos.shift();
+}
+
 var sceneToFunction = function(scene) {
     switch (scene) {
         case 2:
@@ -65,14 +86,23 @@ var sceneToFunction = function(scene) {
 };
 
 var protoHelper = function(template) {
+
     return function(req, res) {
+
+        template = generateRecommendationStyle(req, res);
+
+        if (template === undefined) {
+            res.redirect('/feedback');
+            return;
+        }
+
         db.tryUser(req.session.user_id, function(id) {
             // Get random scene number
             var scene = generateSceneNumber(req, res);
             res.locals.scene = sceneToFunction(scene);
             req.session.user_id = id;
 
-            db.createExp(id, req.session.scenes[req.session.currentSceneIndex], function(id) {
+            db.createExp(id, req.session.scenes[req.session.currentSceneIndex], template, function(id) {
                 req.session.exp_id = id;
                 req.session.save();
                 res.setHeader('Content-Type','text/html');
@@ -87,6 +117,7 @@ var protoHelper = function(template) {
 module.exports.arrows = protoHelper('prototype_arrows.jade');
 module.exports.viewports = protoHelper('prototype_viewports.jade');
 module.exports.reverse = protoHelper('prototype_reverse.jade');
+module.exports.empty = protoHelper('prototype_empty.jade');
 
 module.exports.sponza = function(req, res) {
     res.setHeader('Content-Type', 'text/html');
@@ -143,7 +174,7 @@ module.exports.tutorial = function(req, res) {
         req.session.user_id = id;
 
         // 1 is the ID of peach scene
-        db.createExp(id, 1, function(id) {
+        db.createExp(id, 1, null, function(id) {
             req.session.exp_id = id;
             req.session.save();
 

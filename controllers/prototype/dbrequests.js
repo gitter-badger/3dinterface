@@ -506,10 +506,11 @@ DBReq.UserCreator.prototype.finish = function() {
  * @memberof DBReq
  * @constructor
  */
-DBReq.ExpCreator = function(user_id, scene_id, finishAction) {
+DBReq.ExpCreator = function(user_id, scene_id, template, finishAction) {
     this.finishAction = finishAction;
     this.user_id = user_id;
     this.scene_id = scene_id;
+    this.template = template;
 
     // Connect to db
     var self = this;
@@ -526,8 +527,8 @@ DBReq.ExpCreator = function(user_id, scene_id, finishAction) {
 DBReq.ExpCreator.prototype.execute = function() {
     var self = this;
     this.client.query(
-        "INSERT INTO experiment(user_id, scene_id) VALUES($1,$2);",
-        [self.user_id, self.scene_id],
+        "INSERT INTO experiment(user_id, scene_id, template) VALUES($1,$2,$3);",
+        [self.user_id, self.scene_id, self.template],
         function(err, result) {
             self.client.query("SELECT MAX(id) AS id FROM experiment;", function(err, result) {
                 self.finalResult = result.rows[0].id;
@@ -776,8 +777,8 @@ DBReq.createUser = function(callback) {
  * @param scene_id {Number} id of the scene on which the experiment is
  * @param callback {function} callback called on the new experiment id
  */
-DBReq.createExp = function(id, scene_id, callback) {
-    new DBReq.ExpCreator(id, scene_id, callback);
+DBReq.createExp = function(id, scene_id, template, callback) {
+    new DBReq.ExpCreator(id, scene_id, template, callback);
 };
 
 /**

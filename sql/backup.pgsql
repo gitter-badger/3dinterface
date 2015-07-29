@@ -51,7 +51,8 @@ CREATE TABLE Scene(
 CREATE TABLE Experiment(
     id SERIAL PRIMARY KEY,
     user_id SERIAL REFERENCES Users (id),
-    scene_id SERIAL REFERENCES Scene (id)
+    scene_id SERIAL REFERENCES Scene (id),
+    template VARCHAR(30)
 );
 
 CREATE TABLE Coin(

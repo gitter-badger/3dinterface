@@ -156,6 +156,9 @@ Coin.prototype.get = function() {
 
         Coin.sounds[(Coin.total ++)  - 1].play();
         if (Coin.total === 9) {
+            if (typeof Coin.onLastCoin === 'function') {
+                Coin.onLastCoin();
+            }
             // You got the last coin
             var music = document.getElementById('music');
             if (music !== null) {
