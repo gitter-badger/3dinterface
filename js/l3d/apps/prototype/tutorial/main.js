@@ -62,6 +62,13 @@ function main() {
     // Log fps
     setInterval(function() {logfps(stats.getFps());}, 500);
 
+    Coin.onLastCoin = function() {
+        $('#next').click(function() {
+            window.location = '/before-begin';
+        });
+        $('#next').show();
+    };
+
 }
 
 function initThreeElements() {
