@@ -55,7 +55,7 @@ var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container
             justclick: false
         },
         {
-            text: "There is a red coin on the top of the castle, just if front of you ! Go and get it !",
+            text: "There is a red coin on the roof of the castle, just in front of you ! Go and get it !",
             justclick: false
         },
         {
@@ -63,7 +63,7 @@ var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container
             justclick: false
         },
         {
-            text: "Nice ! Let me introduce you to <emp>recommendations</em>",
+            text: "Nice ! Let me introduce you to <em>recommendations</em>",
             justclick: true
         },
         {
@@ -75,7 +75,7 @@ var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container
             justclick:true
         },
         {
-            text: "Recommendations can be displayed as arrows, or as viewports",
+            text: "Recommendations can be displayed as 3D arrows, or as viewports",
             justclick: false
         },
         {
@@ -83,31 +83,31 @@ var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container
             justclick:false
         },
         {
-            text:"Tip : you can use the arrow buttons in the bar at the bottom of the screen to go to the previous / next position",
+            text:"Tip : you can use the previous / next buttons in the bar at the bottom of the screen to go to the previous / next position",
             justclick: false
         },
         {
-            text: "Tip : you can use the arrow buttons in the bar at the bottom of the screen to go to the previous / next position",
+            text: "Tip : you can use the previous / next buttons in the bar at the bottom of the screen to go to the previous / next position",
             justclick: false
         },
         {
-            text: "Tip : you can use the arrow buttons in the bar at the bottom of the screen to go to the previous / next position",
+            text: "Tip : you can use the previous / next buttons in the bar at the bottom of the screen to go to the previous / next position",
             justclick: false
         },
         {
-            text: "Tip : you can use the arrow buttons in the bar at the bottom of the screen to go to the previous / next position",
+            text: "Tip : you can use the previous / next buttons in the bar at the bottom of the screen to go to the previous / next position",
             justclick: false
         },
         {
-            text: "Tip : you can use the arrow buttons in the bar at the bottom of the screen to go to the previous / next position",
+            text: "Tip : you can use the previous / next buttons in the bar at the bottom of the screen to go to the previous / next position",
             justclick: false
         },
         {
-            text: "Tip : you can use the arrow buttons in the bar at the bottom of the screen to go to the previous / next position",
+            text: "Tip : you can use the previous / next buttons in the bar at the bottom of the screen to go to the previous / next position",
             justclick: false
         },
         {
-            text: "Tip : you can use the arrow buttons in the bar at the bottom of the screen to go to the previous / next position",
+            text: "Tip : you can use the previous / next buttons in the bar at the bottom of the screen to go to the previous / next position",
             justclick:false
         },
         {

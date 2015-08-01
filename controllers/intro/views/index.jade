@@ -9,4 +9,12 @@ block content
             li When you finish the tutorial, the main part will start. There will be 3 scenes and you will be asked to complete tasks.
             li Once you finished, there will be a short questionnary so we can know what you think of our interface.
 
-    h2 You can now <a href="/user-study">start when you are ready</a>
+    h2#start
+
+block extrajs
+    script.
+        if ($.browser.chrome || $.browser.mozilla) {
+            $('#start').html('You can now <a href="/user-study">start when you are ready</a>');
+        } else {
+            $('#start').html('Sorry, your browser is not compatible... please try again with Firefox or Chrome');
+        }

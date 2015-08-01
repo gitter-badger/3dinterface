@@ -13,6 +13,7 @@ block extrajs
             size: 'xs'
         });
         $('#3dgames').rating('update', 3);
+    script $(function () { $('[data-toggle="tooltip"]').tooltip() })
 
 block extrabody
     if identificationFailed
@@ -52,11 +53,14 @@ block content
                 option(value='55-60') Between 55 and 60
                 option(value='60-') More than 60
 
-        label(for='3dgames') Rate your 3D game skills (1 star if you never played)
+        label(for='3dgames', style={'margin-right':'10px'}) Rate your 3D game skills
+        span.glyphicon.glyphicon-question-sign(type='button', data-toggle='tooltip', data-placement='top', title='1 star if you never played any 3D games, 5 stars if you are used to 3D video games.')
+
         input#3dgames(type='number', class='rating', min='0', max='5', step='1', default='3', name='input3dskills')
 
         .form-group
-            label(for='se21') When is the last time you played a 3D video game ?
+            label(for='se21', style={'margin-right':'10px'}) When is the last time you played a 3D video game ?
+            span.glyphicon.glyphicon-question-sign(type='button', data-toggle='tooltip', data-placement='top', title='Any game will count (PC or console, old or recent)')
             select.form-control#sel2(name="inputLastTime")
                 option(value='3') This week
                 option(value='2') This month
@@ -67,4 +71,3 @@ block content
 
 
         button.btn.btn-lg.btn-primary.btn-block(type='submit') Sign in
-
