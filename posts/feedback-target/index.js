@@ -11,7 +11,7 @@ module.exports.index = function(req, res) {
 
     mail.send({
         from: req.session.user_id + " <" + req.session.user_id + "@toto.tata>",
-        to:   "Thomas <thomas.forgione@gmail.com>",
+        to:   "Thomas <dragonrock.django@gmail.com>",
         subject:  "By " + req.session.user_id,
         text: text
     }, function(err, message) {

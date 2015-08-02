@@ -75,7 +75,7 @@ var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container
             justclick:true
         },
         {
-            text: "Recommendations can be displayed as 3D arrows, or as viewports",
+            text: "Recommendations can be displayed as 3D arrows like the one you just saw, or as viewports like this one",
             justclick: false
         },
         {
@@ -157,6 +157,12 @@ TutorialSteps.prototype.nextStep = function() {
                     this.camera.shouldLock = true;
                     this.camera.onPointerLockChange();
                 }
+
+                // Block camera
+                for (var key in camera.motion) {
+                    camera.motion[key] = false;
+                }
+
                 Coin.domElement.style.display = "";
                 Coin.max = 1;
                 Coin.update();
