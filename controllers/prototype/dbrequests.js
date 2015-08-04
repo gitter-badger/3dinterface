@@ -766,6 +766,10 @@ DBReq.UserNameChecker = function(name, finishAction) {
     this.finishAction = finishAction;
     var self = this;
     pg.connect(pgc.url, function(err, client, release) {
+        if (err) {
+            Log.dberror(err + ' in UserNameChcker connection');
+            return;
+        }
         self.client = client;
         self.release = release;
         self.execute();
