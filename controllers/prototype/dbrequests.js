@@ -914,7 +914,7 @@ DBReq.TutorialCreator.prototype.execute = function() {
     this.client.query(
         // Generate random coins
         "SELECT Scene.id AS scene_id, generate_series AS id\n" +
-        "FROM Scene, generate_series(1,Scene.coin_number)\n" +
+        "FROM Scene, generate_series(0,Scene.coin_number-1)\n" +
         "WHERE Scene.name = 'peachcastle'\n" +
         "ORDER BY RANDOM()\n" +
         "LIMIT 8;",

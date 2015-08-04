@@ -27,6 +27,13 @@ window.onbeforeunload = function() {
 
 };
 
+setTimeout(function() {
+    $('#next').show();
+    $('#next').click(function() {
+        window.location = '/prototype/games';
+    });
+}, 3*60*60*1000);
+
 function main() {
 
     // Main container that holds everything
