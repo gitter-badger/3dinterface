@@ -70,7 +70,7 @@ var generateRecommendationStyle = function(req, res) {
     }
 
     return req.session.recos.shift();
-}
+};
 
 var sceneToFunction = function(scene) {
     switch (scene) {
@@ -85,39 +85,38 @@ var sceneToFunction = function(scene) {
     }
 };
 
-var protoHelper = function(template) {
+module.exports.game = function(req, res) {
 
-    return function(req, res) {
+    db.tryUser(req.session.user_id, function(id) {
 
-        template = generateRecommendationStyle(req, res);
+        var scene = generateSceneNumber(req, res);
+        res.locals.scene = sceneToFunction(scene);
+        res.locals.recommendationStyle = 'L3D.ArrowRecommendation';
+        req.session.user_id = id;
 
-        if (template === undefined) {
-            res.redirect('/feedback');
-            return;
-        }
+        db.createExp(id, function(expId, coinCombinationId, sceneId, recommendationStyle, coins) {
 
-        db.tryUser(req.session.user_id, function(id) {
-            // Get random scene number
-            var scene = generateSceneNumber(req, res);
-            res.locals.scene = sceneToFunction(scene);
-            req.session.user_id = id;
+            if (expId === undefined) {
 
-            db.createExp(id, req.session.scenes[req.session.currentSceneIndex], template, function(id) {
-                req.session.exp_id = id;
-                req.session.save();
-                res.setHeader('Content-Type','text/html');
-                res.render(template, res.locals, function(err, result) {
-                    res.send(result);
-                });
+                res.redirect('/feedback');
+                return;
+
+            }
+
+            req.session.exp_id = expId;
+            req.session.save();
+
+            res.locals.scene = sceneToFunction(sceneId);
+            res.locals.recommendationStyle = recommendationStyle;
+            res.locals.coins = coins;
+
+            res.setHeader('Content-Type','text/html');
+            res.render('prototype_recommendation.jade', res.locals, function(err, result) {
+                res.send(result);
             });
         });
-    };
+    });
 };
-
-module.exports.arrows = protoHelper('prototype_arrows.jade');
-module.exports.viewports = protoHelper('prototype_viewports.jade');
-module.exports.reverse = protoHelper('prototype_reverse.jade');
-module.exports.empty = protoHelper('prototype_empty.jade');
 
 module.exports.sponza = function(req, res) {
     res.setHeader('Content-Type', 'text/html');
@@ -174,7 +173,7 @@ module.exports.tutorial = function(req, res) {
         req.session.user_id = id;
 
         // 1 is the ID of peach scene
-        db.createExp(id, 1, null, function(id) {
+        db.createTutorial(id, function(id) {
             req.session.exp_id = id;
             req.session.save();
 

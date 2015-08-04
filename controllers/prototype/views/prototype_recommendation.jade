@@ -1,0 +1,25 @@
+extends ./prototype_interactive
+
+block title
+    title #{title} - Prototype - Arrows
+
+block configjs
+    script Recommendation = #{recommendationStyle}; coinsId = [#{coins}];
+    script.
+        Coin.onLastCoin = function() {
+            $('#next').show();
+            $('#next').click(function() {
+                window.location = '/prototype/game';
+            });
+        };
+
+block lastbutton
+    button#next.btn.btn-success.navbar-btn(style={'margin-right':'10px', 'margin-bottom':'10px', 'display':'none'})
+        span Go to the next step
+
+//-block preciseDescription
+    p
+        | Recommended views are displayed with a
+        | transparent blue arrow.  They disappear when you
+        | come closer to them, and shows the motion between
+        | your current position and the recommendation.

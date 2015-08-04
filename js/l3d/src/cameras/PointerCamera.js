@@ -582,6 +582,8 @@ L3D.PointerCamera.prototype.onKeyEvent = function(event, toSet) {
         // Log any change
         var e = new L3D.DB.Event.KeyboardEvent();
         e.camera = this;
+        e.keypressed = toSet;
+        e.keycode = event.keyCode;
         e.send();
     }
 };
@@ -667,6 +669,8 @@ L3D.PointerCamera.prototype.onMouseUp = function(event) {
     if (this.dragging && this.mouseMoved && !this.moving && !this.movingHermite) {
         var e = new L3D.DB.Event.KeyboardEvent();
         e.camera = this;
+        e.keypressed = false;
+        e.keycode = -1;
         e.send();
     }
 

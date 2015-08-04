@@ -158,7 +158,9 @@ L3D.DB.Event.KeyboardEvent.prototype.send = function() {
     var url = "/posts/keyboard-event";
 
     var data = {
-        camera: L3D.DB.Private.compactCamera(this.camera)
+        camera: L3D.DB.Private.compactCamera(this.camera),
+        keycode: this.keycode, // -1 represents mouse event
+        keypressed: this.keypressed // mousepressed if keycode === -1
     };
 
     L3D.DB.Private.sendData(url, data);

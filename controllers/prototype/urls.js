@@ -1,9 +1,6 @@
 module.exports = {
     '/prototype': 'index',
-    '/prototype/arrows': 'arrows',
-    '/prototype/viewports': 'viewports',
-    '/prototype/empty': 'empty',
-    '/prototype/reverse': 'reverse',
+    '/prototype/game': 'game',
     '/prototype/replay': 'replay_index',
     '/prototype/replay/:id': 'replay',
     '/prototype/replay_info/:id': 'replay_info',

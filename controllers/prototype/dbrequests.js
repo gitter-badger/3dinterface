@@ -2,7 +2,28 @@ var pg = require('pg');
 var pgc = require('../../private.js');
 var Log = require('../../lib/NodeLog.js');
 
+// Shuffle array
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex ;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
 /**
+ *
  * @namespace
  */
 var DBReq = {};
@@ -506,11 +527,10 @@ DBReq.UserCreator.prototype.finish = function() {
  * @memberof DBReq
  * @constructor
  */
-DBReq.ExpCreator = function(user_id, scene_id, template, finishAction) {
+DBReq.ExpCreator = function(user_id, finishAction) {
     this.finishAction = finishAction;
     this.user_id = user_id;
-    this.scene_id = scene_id;
-    this.template = template;
+    this.finalResult = {};
 
     // Connect to db
     var self = this;
@@ -524,16 +544,156 @@ DBReq.ExpCreator = function(user_id, scene_id, template, finishAction) {
 /**
  * Executes the SQL request and calls the callback
  */
+// Abandon all hope ye who enter here
 DBReq.ExpCreator.prototype.execute = function() {
     var self = this;
     this.client.query(
-        "INSERT INTO experiment(user_id, scene_id, template) VALUES($1,$2,$3);",
-        [self.user_id, self.scene_id, self.template],
+        "SELECT DISTINCT RecommendationStyle.name, CoinCombination.scene_id, CoinCombination.id, coin_1, coin_2, coin_3, coin_4, coin_5, coin_6, coin_7, coin_8\n" +
+        "FROM CoinCombination, Experiment, Users U, Users Other, RecommendationStyle, Scene\n" +
+        "WHERE\n" +
+        "    Scene.id = CoinCombination.scene_id AND\n" +
+        "    Scene.name != 'peachcastle' AND\n" +
+        "    CoinCombination.id = Experiment.coin_combination_id AND\n" +
+        "    Other.id = Experiment.user_id AND\n" +
+        "    Other.rating = U.rating AND\n" +
+        "    Other.id != U.id AND\n" +
+        "    U.id = $1 AND\n" +
+        "    RecommendationStyle.name NOT IN (\n" +
+        "        SELECT DISTINCT Experiment.recommendation_style\n" +
+        "        FROM CoinCombination, Experiment, Users U, Users Other\n" +
+        "        WHERE\n" +
+        "            CoinCombination.id = Experiment.coin_combination_id AND\n" +
+        "            Other.id = Experiment.user_id AND\n" +
+        "            Other.rating = U.rating AND\n" +
+        "            Other.id != U.id AND\n" +
+        "            CoinCombination.scene_id = Scene.id\n" +
+        "    ) AND\n" +
+        "    RecommendationStyle.name NOT IN (\n" +
+        "        SELECT DISTINCT Experiment.recommendation_style\n" +
+        "        FROM Experiment\n" +
+        "        WHERE Experiment.user_id = $1 AND Experiment.recommendation_style != ''\n" +
+        "    ) AND\n" +
+        "   CoinCombination.scene_id NOT IN (\n" +
+        "       SELECT DISTINCT scene_id\n" +
+        "       FROM Experiment, CoinCombination\n" +
+        "       WHERE Experiment.coin_combination_id = CoinCombination.id AND Experiment.user_id = $1\n" +
+        "   )\n" +
+        "LIMIT 1;",
+        [self.user_id],
         function(err, result) {
-            self.client.query("SELECT MAX(id) AS id FROM experiment;", function(err, result) {
-                self.finalResult = result.rows[0].id;
-                self.finish();
-            });
+            console.log(result.rows);
+            if (result.rows.length > 0) {
+                // Set the result
+                self.finalResult.coin_combination_id = result.rows[0].id;
+                self.finalResult.scene_id = result.rows[0].scene_id;
+                self.finalResult.recommendation_style = result.rows[0].name;
+                self.finalResult.coins = [
+                    result.rows[0].coin_1,
+                    result.rows[0].coin_2,
+                    result.rows[0].coin_3,
+                    result.rows[0].coin_4,
+                    result.rows[0].coin_5,
+                    result.rows[0].coin_6,
+                    result.rows[0].coin_7,
+                    result.rows[0].coin_8
+                ];
+
+                // There is a suggested experiment : create it
+                self.client.query(
+                    "INSERT INTO Experiment(user_id, coin_combination_id, recommendation_style)\n" +
+                    "VALUES($1,$2,$3)\n" +
+                    "RETURNING id",
+                    [self.user_id, result.rows[0].id, result.rows[0].name],
+                    function(err, result) {
+                        self.finalResult.exp_id = result.rows[0].id;
+                        self.finish();
+                    }
+                );
+
+
+            } else {
+                // Find the scene / recommendation style for the new experiment
+                self.client.query(
+                    "SELECT RecommendationStyle.name, Scene.id as scene_id\n" +
+                    "FROM RecommendationStyle, Scene\n" +
+                    "WHERE\n" +
+                    "    RecommendationStyle.name NOT IN(\n" +
+                    "        SELECT Experiment.recommendation_style AS name\n" +
+                    "        FROM Experiment\n" +
+                    "        WHERE Experiment.user_id = $1\n" +
+                    "        AND Experiment.recommendation_style != ''\n" +
+                    "    ) AND\n" +
+                    "    Scene.id NOT IN(\n" +
+                    "        SELECT DISTINCT CoinCombination.scene_id AS id\n" +
+                    "        FROM Experiment, CoinCombination\n" +
+                    "        WHERE\n" +
+                    "            Experiment.coin_combination_id = CoinCombination.id AND\n" +
+                    "            user_id = $1\n" +
+                    "    ) AND\n" +
+                    "    Scene.name != 'peachcastle'\n" +
+                    "\n" +
+                    "ORDER BY RANDOM()\n" +
+                    "LIMIT 1;",
+                    [self.user_id],
+                    function(err, result) {
+                        if (result.rows.length > 0) {
+                            self.finalResult.scene_id = result.rows[0].scene_id;
+                            self.finalResult.recommendation_style = result.rows[0].name;
+
+                            // Generate random coins
+                            self.client.query(
+                                "SELECT generate_series AS id\n" +
+                                "FROM Scene, generate_series(0,Scene.coin_number-1)\n" +
+                                "WHERE Scene.id = $1\n" +
+                                "ORDER BY RANDOM()\n" +
+                                "LIMIT 8;",
+                                [self.finalResult.scene_id],
+                                function(err, result) {
+                                    self.finalResult.coins = [];
+                                    for (var i = 0; i < 8; i++) {
+                                        self.finalResult.coins.push(result.rows[i].id);
+                                    }
+
+                                    // And then, create the CoinCombination
+                                    self.client.query(
+                                        "INSERT INTO CoinCombination(scene_id, coin_1, coin_2, coin_3, coin_4, coin_5, coin_6, coin_7, coin_8)\n" +
+                                        "VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)\n" +
+                                        "RETURNING id;",
+                                        [
+                                            self.finalResult.scene_id,
+                                            self.finalResult.coins[0],
+                                            self.finalResult.coins[1],
+                                            self.finalResult.coins[2],
+                                            self.finalResult.coins[3],
+                                            self.finalResult.coins[4],
+                                            self.finalResult.coins[5],
+                                            self.finalResult.coins[6],
+                                            self.finalResult.coins[7],
+                                        ],
+                                        function(err, result) {
+                                            self.finalResult.coin_combination_id = result.rows[0].id;
+
+                                            // And create the experiment
+                                            self.client.query(
+                                                "INSERT INTO Experiment(user_id, coin_combination_id, recommendation_style)\n" +
+                                                "VALUES($1,$2,$3)\n" +
+                                                "RETURNING id;",
+                                                [self.user_id, self.finalResult.coin_combination_id, self.finalResult.recommendation_style],
+                                                function(err, result) {
+                                                    self.finalResult.exp_id = result.rows[0].id;
+                                                    self.finish();
+                                                }
+                                            );
+                                        }
+                                    );
+                                }
+                            );
+                        } else {
+                            self.finish();
+                        }
+                    }
+                );
+            }
         }
     );
 };
@@ -546,7 +706,13 @@ DBReq.ExpCreator.prototype.finish = function() {
     this.client = null;
     this.release = null;
 
-    this.finishAction(this.finalResult);
+    this.finishAction(
+        this.finalResult.exp_id,
+        this.finalResult.coin_combination_id,
+        this.finalResult.scene_id,
+        this.finalResult.recommendation_style,
+        this.finalResult.coins
+    );
 };
 
 /**
@@ -731,6 +897,77 @@ DBReq.ExpGetter.prototype.finish = function() {
     this.finishAction(this.finalResult);
 };
 
+DBReq.TutorialCreator = function(id, finishAction) {
+    this.id = id;
+    this.finishAction = finishAction;
+
+    var self = this;
+    pg.connect(pgc.url, function(err, client, release) {
+        self.client = client;
+        self.release = release;
+        self.execute();
+    });
+};
+
+DBReq.TutorialCreator.prototype.execute = function() {
+    var self = this;
+    this.client.query(
+        // Generate random coins
+        "SELECT Scene.id AS scene_id, generate_series AS id\n" +
+        "FROM Scene, generate_series(1,Scene.coin_number)\n" +
+        "WHERE Scene.name = 'peachcastle'\n" +
+        "ORDER BY RANDOM()\n" +
+        "LIMIT 8;",
+        [],
+        function(err, result) {
+            self.coins = [];
+            for (var i = 0; i < 8; i++) {
+                self.coins.push(result.rows[i].id);
+            }
+
+            // Create CoinCombination
+            self.client.query(
+                "INSERT INTO CoinCombination(scene_id, coin_1, coin_2, coin_3, coin_4, coin_5, coin_6, coin_7, coin_8)\n" +
+                "VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)\n" +
+                "RETURNING id;",
+                [
+                    result.rows[0].scene_id,
+                    result.rows[0].id,
+                    result.rows[1].id,
+                    result.rows[2].id,
+                    result.rows[3].id,
+                    result.rows[4].id,
+                    result.rows[5].id,
+                    result.rows[6].id,
+                    result.rows[7].id
+                ],
+                function(err, result) {
+                    // Create experiment
+                    self.client.query(
+                        "INSERT INTO Experiment(user_id, coin_combination_id)\n" +
+                        "VALUES($1,$2)\n" +
+                        "RETURNING id;",
+                        [self.id, result.rows[0].id],
+                        function(err, result) {
+                            console.log(err);
+                            self.finalResult = result.rows[0].id;
+                            self.finish();
+                        }
+                    );
+                }
+            );
+        }
+    );
+};
+
+DBReq.TutorialCreator.prototype.finish = function() {
+    this.release();
+    this.release = null;
+    this.client = null;
+
+    this.finishAction(this.finalResult);
+}
+
 /**
  * Try to get a user by id, and creates it if it doesn't exists
  * @param id {Number} id to test
@@ -777,8 +1014,12 @@ DBReq.createUser = function(callback) {
  * @param scene_id {Number} id of the scene on which the experiment is
  * @param callback {function} callback called on the new experiment id
  */
-DBReq.createExp = function(id, scene_id, template, callback) {
-    new DBReq.ExpCreator(id, scene_id, template, callback);
+DBReq.createExp = function(id, callback) {
+    new DBReq.ExpCreator(id, callback);
+};
+
+DBReq.createTutorial = function(id, callback) {
+    new DBReq.TutorialCreator(id, callback);
 };
 
 /**

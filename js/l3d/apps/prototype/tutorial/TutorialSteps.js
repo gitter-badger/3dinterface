@@ -159,8 +159,8 @@ TutorialSteps.prototype.nextStep = function() {
                 }
 
                 // Block camera
-                for (var key in camera.motion) {
-                    camera.motion[key] = false;
+                for (var key in this.camera.motion) {
+                    this.camera.motion[key] = false;
                 }
 
                 Coin.domElement.style.display = "";

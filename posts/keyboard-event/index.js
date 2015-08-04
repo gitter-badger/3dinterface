@@ -6,8 +6,8 @@ module.exports.index = function(req, res) {
 
     pg.connect(secret.url, function(err, client, release) {
         client.query(
-            "INSERT INTO keyboardevent(exp_id, camera, time)" +
-            "VALUES($1, ROW(ROW($2,$3,$4),ROW($5,$6,$7)), to_timestamp($8));" ,
+            "INSERT INTO keyboardevent(exp_id, camera, time, keycode, keypressed)" +
+            "VALUES($1, ROW(ROW($2,$3,$4),ROW($5,$6,$7)), to_timestamp($8), $9, $10);" ,
             [
                 req.session.exp_id,
                 req.body.camera.position.x,
@@ -18,7 +18,10 @@ module.exports.index = function(req, res) {
                 req.body.camera.target.y,
                 req.body.camera.target.z,
 
-                req.body.time
+                req.body.time,
+
+                req.body.keycode,
+                req.body.keypressed
             ],
             function(err, result) {
                 if (err !== null)

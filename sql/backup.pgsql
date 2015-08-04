@@ -13,6 +13,7 @@ DROP TABLE IF EXISTS PointerLocked CASCADE;
 DROP TABLE IF EXISTS SwitchedLockOption CASCADE;
 DROP TABLE IF EXISTS Coin CASCADE;
 DROP TABLE IF EXISTS CoinCombination CASCADE;
+DROP TABLE IF EXISTS RecommendationStyle CASCADE;
 
 DROP TYPE IF EXISTS VECTOR3 CASCADE;
 DROP TYPE IF EXISTS CAMERA CASCADE;
@@ -46,6 +47,12 @@ CREATE TABLE Users(
 
 CREATE TABLE Scene(
     id SERIAL PRIMARY KEY,
+    name CHAR(50),
+    coin_number INTEGER
+);
+
+CREATE TABLE RecommendationStyle(
+    id SERIAL PRIMARY KEY,
     name CHAR(50)
 );
 
@@ -66,7 +73,7 @@ CREATE TABLE Experiment(
     id SERIAL PRIMARY KEY,
     user_id SERIAL REFERENCES Users (id),
     coin_combination_id SERIAL REFERENCES CoinCombination (id),
-    template VARCHAR(30)
+    recommendation_style VARCHAR(30)
 );
 
 CREATE TABLE Coin(
@@ -75,10 +82,14 @@ CREATE TABLE Coin(
 );
 
 -- Init scene table
-INSERT INTO Scene(name) VALUES ('peachcastle');
-INSERT INTO Scene(name) VALUES ('bobomb');
-INSERT INTO Scene(name) VALUES ('coolcoolmountain');
-INSERT INTO Scene(name) VALUES ('whomp');
+INSERT INTO Scene(name, coin_number) VALUES ('peachcastle'     , 41);
+INSERT INTO Scene(name, coin_number) VALUES ('bobomb'          , 44);
+INSERT INTO Scene(name, coin_number) VALUES ('coolcoolmountain', 69);
+INSERT INTO Scene(name, coin_number) VALUES ('whomp'           , 50);
+
+INSERT INTO RecommendationStyle(name) VALUES('L3D.EmptyRecommendation');
+INSERT INTO RecommendationStyle(name) VALUES('L3D.ArrowRecommendation');
+INSERT INTO RecommendationStyle(name) VALUES('L3D.ViewportRecommendation');
 
 -- Events
 CREATE TABLE ArrowClicked(
@@ -99,6 +110,8 @@ CREATE TABLE KeyboardEvent(
     id SERIAL PRIMARY KEY,
     exp_id SERIAL REFERENCES Experiment (id),
     time TIMESTAMP DEFAULT NOW(),
+    keycode INTEGER,
+    keypressed BOOLEAN,
     camera CAMERA
 );
 
@@ -143,84 +156,4 @@ CREATE TABLE SwitchedLockOption(
     exp_id SERIAL REFERENCES Experiment (id),
     time TIMESTAMP DEFAULT NOW(),
     locked BOOLEAN
-);
-
--- Fill with example
-INSERT INTO Users(rating) VALUES(3);
-INSERT INTO Users(rating) VALUES(3);
-INSERT INTO Users(rating) VALUES(3);
-INSERT INTO Users(rating) VALUES(3);
-
-INSERT INTO CoinCombination(scene_id) VALUES (2);
-INSERT INTO CoinCombination(scene_id) VALUES (3);
-INSERT INTO CoinCombination(scene_id) VALUES (4);
-INSERT INTO CoinCombination(scene_id) VALUES (4);
-
-INSERT INTO Experiment(user_id, coin_combination_id, template) VALUES(1, 1, '1');
-INSERT INTO Experiment(user_id, coin_combination_id, template) VALUES(2, 1, '2');
--- INSERT INTO Experiment(user_id, coin_combination_id, template) VALUES(2, 1, '3');
-
-INSERT INTO Experiment(user_id, coin_combination_id, template) VALUES(1, 2, '2');
-INSERT INTO Experiment(user_id, coin_combination_id, template) VALUES(2, 2, '3');
-
-INSERT INTO Experiment(user_id, coin_combination_id, template) VALUES(3, 4, '3');
-
-SELECT * FROM Experiment;
-
--- PROTO request
-SELECT DISTINCT CoinCombination.id AS id, all_template as template, CoinCombination.scene_id as scene_id
-FROM Experiment, CoinCombination,
-    (SELECT * FROM generate_series(1,3) all_template) ali
-
-WHERE
-    Experiment.coin_combination_id = CoinCombination.id AND
-    CoinCombination.scene_id IN(
-
-        SELECT CoinCombination.scene_id as scene_id
-
-        FROM Users, Experiment, CoinCombination
-
-        WHERE
-            Experiment.user_id = Users.id AND
-            Experiment.coin_combination_id = CoinCombination.id AND
-            Users.rating = 3 AND
-            Users.id != 3 AND
-            all_template NOT IN (
-                SELECT CAST(template AS INTEGER)
-                FROM Experiment, Users
-                WHERE Experiment.user_id = Users.id AND Users.id = 3
-            ) AND
-            CoinCombination.scene_id NOT IN(
-                SELECT scene_id FROM Experiment, Users
-                WHERE Experiment.user_id = Users.id AND Users.id = 3
-            )
-
-        GROUP BY CoinCombination.scene_id
-
-        HAVING COUNT(DISTINCT Experiment.template) < 3
-
-)
-
-EXCEPT
-
-SELECT CoinCombination.id AS id, CAST(Experiment.template AS INTEGER) as template, CoinCombination.scene_id as scene_id
-FROM Experiment, CoinCombination
-WHERE
-    Experiment.coin_combination_id = CoinCombination.id AND
-    CoinCombination.scene_id IN(
-
-        SELECT CoinCombination.scene_id as scene_id
-
-        FROM Users, Experiment, CoinCombination
-
-        WHERE
-            Experiment.user_id = Users.id AND
-            Experiment.coin_combination_id = CoinCombination.id AND
-            Users.rating = 3 AND
-            Users.id != 3
-
-        GROUP BY CoinCombination.scene_id
-
-        HAVING COUNT(DISTINCT Experiment.template) < 3
-
 );
