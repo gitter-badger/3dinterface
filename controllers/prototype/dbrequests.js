@@ -581,7 +581,6 @@ DBReq.ExpCreator.prototype.execute = function() {
         "LIMIT 1;",
         [self.user_id],
         function(err, result) {
-            console.log(result.rows);
             if (result.rows.length > 0) {
                 // Set the result
                 self.finalResult.coin_combination_id = result.rows[0].id;
@@ -904,6 +903,7 @@ DBReq.ExpGetter.prototype.finish = function() {
 DBReq.TutorialCreator = function(id, finishAction) {
     this.id = id;
     this.finishAction = finishAction;
+    this.finalResult = {};
 
     var self = this;
     pg.connect(pgc.url, function(err, client, release) {
@@ -924,11 +924,10 @@ DBReq.TutorialCreator.prototype.execute = function() {
         "LIMIT 8;",
         [],
         function(err, result) {
-            self.coins = [];
+            self.finalResult.coins = [];
             for (var i = 0; i < 8; i++) {
-                self.coins.push(result.rows[i].id);
+                self.finalResult.coins.push(result.rows[i].id);
             }
-
             // Create CoinCombination
             self.client.query(
                 "INSERT INTO CoinCombination(scene_id, coin_1, coin_2, coin_3, coin_4, coin_5, coin_6, coin_7, coin_8)\n" +
@@ -953,8 +952,7 @@ DBReq.TutorialCreator.prototype.execute = function() {
                         "RETURNING id;",
                         [self.id, result.rows[0].id],
                         function(err, result) {
-                            console.log(err);
-                            self.finalResult = result.rows[0].id;
+                            self.finalResult.expId = result.rows[0].id;
                             self.finish();
                         }
                     );
@@ -969,7 +967,7 @@ DBReq.TutorialCreator.prototype.finish = function() {
     this.release = null;
     this.client = null;
 
-    this.finishAction(this.finalResult);
+    this.finishAction(this.finalResult.expId, this.finalResult.coins);
 }
 
 /**

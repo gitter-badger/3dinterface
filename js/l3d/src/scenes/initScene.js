@@ -255,9 +255,7 @@ L3D.generateCoins = function(totalCoins, coin_ids) {
 
     var bound = (coin_ids instanceof Array && coin_ids.length === 0) ? totalCoins.length : 8;
 
-    console.log(totalCoins);
     for (i = 0; i < bound; i++) {
-        console.log(i + '/' + totalCoins.length);
         coins.push(totalCoins[i].coin);
         totalCoins[i].coin.id = totalCoins[i].id;
         indices.push(totalCoins[i].id);

@@ -173,8 +173,9 @@ module.exports.tutorial = function(req, res) {
         req.session.user_id = id;
 
         // 1 is the ID of peach scene
-        db.createTutorial(id, function(id) {
+        db.createTutorial(id, function(id, coins) {
             req.session.exp_id = id;
+            res.locals.coins = coins;
             req.session.save();
 
             res.setHeader('Content-Type', 'text/html');
