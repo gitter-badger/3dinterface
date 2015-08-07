@@ -32,7 +32,7 @@ setTimeout(function() {
     $('#next').click(function() {
         window.location = '/prototype/games';
     });
-}, 3*60*60*1000);
+}, 3*60*1000);
 
 function main() {
 
