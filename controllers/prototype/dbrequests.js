@@ -535,8 +535,12 @@ DBReq.ExpCreator = function(user_id, finishAction) {
     // Connect to db
     var self = this;
     pg.connect(pgc.url, function(err, client, release) {
+
         self.client = client;
         self.release = release;
+
+        // Start transaction and lock table
+        self.client.query("BEGIN; LOCK CoinCombination; LOCK Experiment;");
         self.execute();
     });
 };
@@ -701,17 +705,23 @@ DBReq.ExpCreator.prototype.execute = function() {
  * Release the DB connection and call the callback
  */
 DBReq.ExpCreator.prototype.finish = function() {
-    this.release();
-    this.client = null;
-    this.release = null;
+    var self = this;
 
-    this.finishAction(
-        this.finalResult.exp_id,
-        this.finalResult.coin_combination_id,
-        this.finalResult.scene_id,
-        this.finalResult.recommendation_style,
-        this.finalResult.coins
-    );
+    // Commit, and then release
+    this.client.query("COMMIT;", function() {
+
+        self.release();
+        self.client = null;
+        self.release = null;
+
+        self.finishAction(
+            self.finalResult.exp_id,
+            self.finalResult.coin_combination_id,
+            self.finalResult.scene_id,
+            self.finalResult.recommendation_style,
+            self.finalResult.coins
+        );
+    });
 };
 
 /**
