@@ -8,5 +8,6 @@ module.exports = {
     '/prototype/sponza': 'sponza',
     '/prototype/coin-creator/:scene': 'clicker',
     '/prototype/coin-viewer/:scene': 'viewer',
+    '/prototype/coin-checker/:scene': 'checker',
     '/user-study': 'userstudy'
 };

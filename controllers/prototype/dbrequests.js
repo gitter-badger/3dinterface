@@ -834,7 +834,7 @@ DBReq.ExpIdChecker = function(id, finishAction) {
 DBReq.ExpIdChecker.prototype.execute = function() {
     var self = this;
     this.client.query(
-        "SELECT scene_id FROM experiment WHERE id = $1;",
+        "SELECT scene_id FROM experiment, CoinCombination WHERE CoinCombination.id = Experiment.coin_combination_id AND Experiment.id = $1;",
         [self.id],
         function(err, result) {
             if (result === undefined || result.rows.length === 0) {
@@ -888,8 +888,9 @@ DBReq.ExpGetter.prototype.execute = function() {
             "users.worker_id as username, " +
             "scene.name as scenename, " +
             "users.id as user_id " +
-        "FROM experiment, users, scene " +
-        "WHERE experiment.user_id = users.id and scene.id = experiment.scene_id " +
+        "FROM experiment, users, scene, CoinCombination " +
+        "WHERE experiment.user_id = users.id and scene.id = CoinCombination.scene_id AND " +
+        "      Experiment.coin_combination_id = CoinCombination.id " +
         "ORDER BY experiment.id;",
         [],
         function(err, result) {
