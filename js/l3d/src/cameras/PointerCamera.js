@@ -340,8 +340,8 @@ L3D.PointerCamera.prototype.normalMotion = function(time) {
 
     if ( this.isLocked() || this.dragging) {
 
-        this.theta += (this.mouseMove.x * 20 / time);
-        this.phi   -= (this.mouseMove.y * 20 / time);
+        this.theta += (this.mouseMove.x * time / 20);
+        this.phi   -= (this.mouseMove.y * time / 20);
 
         this.mouseMove.x = 0;
         this.mouseMove.y = 0;
