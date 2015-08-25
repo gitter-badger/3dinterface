@@ -453,15 +453,30 @@ DBReq.Info.prototype.loadSwitchedLockOption = function() {
 DBReq.Info.prototype.loadRedCoins = function() {
     var self = this;
     this.client.query(
-        "SELECT coin_id FROM coin WHERE exp_id = $1",
+        "SELECT coin_1, \n" +
+        "       coin_2, \n" +
+        "       coin_3, \n" +
+        "       coin_4, \n" +
+        "       coin_5, \n" +
+        "       coin_6, \n" +
+        "       coin_7, \n" +
+        "       coin_8 \n" +
+        "FROM CoinCombination, Experiment \n" +
+        "WHERE CoinCombination.id = Experiment.coin_combination_id AND \n" +
+        "      Experiment.id = $1;",
         [self.id],
         function(err, result) {
             if (err !== null) {
                 Log.dberror(err + ' in loadRedCoins');
             } else {
-                for (var i in result.rows) {
-                    self.redCoins.push(result.rows[i].coin_id);
-                }
+                self.redCoins.push(result.rows[0].coin_1);
+                self.redCoins.push(result.rows[0].coin_2);
+                self.redCoins.push(result.rows[0].coin_3);
+                self.redCoins.push(result.rows[0].coin_4);
+                self.redCoins.push(result.rows[0].coin_5);
+                self.redCoins.push(result.rows[0].coin_6);
+                self.redCoins.push(result.rows[0].coin_7);
+                self.redCoins.push(result.rows[0].coin_8);
             }
             self.ready.redCoins = true;
             self.tryMerge();

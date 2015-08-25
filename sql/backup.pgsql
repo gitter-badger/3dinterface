@@ -76,11 +76,6 @@ CREATE TABLE Experiment(
     recommendation_style VARCHAR(30)
 );
 
-CREATE TABLE Coin(
-    exp_id SERIAL REFERENCES Experiment (id),
-    coin_id INTEGER
-);
-
 -- Init scene table
 INSERT INTO Scene(name, coin_number) VALUES ('peachcastle'     , 41);
 INSERT INTO Scene(name, coin_number) VALUES ('bobomb'          , 44);

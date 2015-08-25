@@ -43,6 +43,11 @@ function initThreeElements() {
 
 function init(data) {
 
+    console.log(data);
+
+    // Some config
+    L3D.DB.disable();
+
     // Initialize stats counter
     stats = new Stats();
     stats.setMode(0);

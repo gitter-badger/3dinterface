@@ -48,6 +48,8 @@ saveCoins = function() {
 };
 
 function main() {
+    // Some config
+    L3D.DB.disable();
 
     // Main container that holds everything
     container = document.getElementById('container');
@@ -62,9 +64,6 @@ function main() {
 
     // Set the good size of cameras
     onWindowResize();
-
-    // Some config
-    L3D.DB.disable();
 
     Coin.update();
     startCanvas.render(L3D.StartCanvas.Black);
