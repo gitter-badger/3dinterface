@@ -48,7 +48,7 @@ L3D.Hermite.Polynom = function(t, f, fp) {
      * @type {Object}
      * @description an object containing
      * <ul>
-     *  <li><code>whatType</code> : a string being <code>THREE.Vector3</code> or <code>number</code></li>
+     *  <li><code>whatType</code> : a string being <code>THREE.Vector3</code> or <code>Number</code></li>
      *  <li><code>tools</code> : an object containg sum and mul, functions of the correct type</li>
      * </ul>
      */
@@ -58,7 +58,7 @@ L3D.Hermite.Polynom = function(t, f, fp) {
         this.tools.sum  = L3D.Tools.sum;
         this.tools.prod = L3D.Tools.mul;
     } else {
-        this.tools.whatType = 'number';
+        this.tools.whatType = 'Number';
         this.tools.sum  = function(a, b) { return a + b;  };
         this.tools.prod = function(a, b) { return a * b;  };
     }
@@ -266,7 +266,7 @@ L3D.Hermite.special.Polynom = function(P0, P1, PP1) {
      * @type {Object}
      * @description an object containing
      * <ul>
-     *  <li><code>whatType</code> : a string being <code>THREE.Vector3</code> or <code>number</code></li>
+     *  <li><code>whatType</code> : a string being <code>THREE.Vector3</code> or <code>Number</code></li>
      *  <li><code>tools</code> : an object containg sum and mul, functions of the correct type</li>
      * </ul>
      */

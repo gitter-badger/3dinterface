@@ -6,7 +6,7 @@ module.exports.index = function(req, res) {
     var text = '';
 
     for (var i in req.body) {
-        text += i + ' : ' + req.body[i] + '\n'
+        text += i + ' : ' + req.body[i] + '\n';
     }
 
     mail.send({

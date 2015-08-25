@@ -210,12 +210,10 @@ L3D.PointerCamera.prototype.lockPointer = function() {
  * @returns true if the pointer is locked, false otherwise
  */
 L3D.PointerCamera.prototype.isLocked = function() {
-    var toto =
+    return
         document.pointerLockElement === this.renderer.domElement ||
         document.mozPointerLockElement === this.renderer.domElement ||
         document.webkitPointerLockElement === this.renderer.domElement;
-
-    return toto;
 
 };
 
@@ -741,6 +739,14 @@ L3D.PointerCamera.prototype.redoable = function() {
     return this.history.redoable();
 };
 
+/**
+ * Creates a list containing all the elements to send to the server to stream visible part
+ * @return {Array} A list containing <ol start="0">
+ * <li>the position of the camera</li>
+ * <li>the target of the camera</li>
+ * <li>and planes defining the frustum of the camera (a,b,c, and d from ax+by+cz+d=0)</li>
+ * </ol>
+ */
 L3D.PointerCamera.prototype.toList = function() {
     this.updateMatrix();
     this.updateMatrixWorld();

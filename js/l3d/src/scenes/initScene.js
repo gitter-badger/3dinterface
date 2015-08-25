@@ -1,23 +1,3 @@
-// http://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array#answer-2450976
-L3D.shuffle = function(array) {
-    var currentIndex = array.length, temporaryValue, randomIndex ;
-
-    // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
-
-        // Pick a remaining element...
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-
-        // And swap it with the current element.
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-    }
-
-    return array;
-};
-
 L3D.LogFunction = function(a,b) {
     var val = 100*a/b;
     $('.progress-bar').css('width', val+'%').attr('aria-valuenow', val);
@@ -218,19 +198,27 @@ L3D.resetBobombElements = function() {
 L3D.generateCoins = function(totalCoins, coin_ids) {
 
     var i = 0;
+    var tmp = [];
 
     if (coin_ids === undefined) {
-        var tmp = [];
-        // Use global variable coinsId
+
+        tmp = [];
+
+        // Use global variable coinsId set by server
         for (i = 0; i < totalCoins.length; i++) {
             tmp.push(totalCoins[i]);
         }
+
         totalCoins.length = 0;
-        for (var i = 0; i < 8; i++) {
+
+        for (i = 0; i < 8; i++) {
             totalCoins.push(tmp[coinsId[i]]);
         }
+
     } else if (coin_ids === null) {
+
         return [];
+
     } else {
 
         for (i = 0; i < coin_ids.length; i++) {
@@ -240,7 +228,7 @@ L3D.generateCoins = function(totalCoins, coin_ids) {
                 if (coin_ids[i] === totalCoins[j].id) {
 
                     // Swap i and j
-                    var tmp = totalCoins[i];
+                    tmp = totalCoins[i];
                     totalCoins[i] = totalCoins[j];
                     totalCoins[j] = tmp;
 

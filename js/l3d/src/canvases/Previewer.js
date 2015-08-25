@@ -10,6 +10,7 @@ Math.clamp = Math.clamp || function(number, min, max) {
  * @description Displays a small preview of a camera
  */
 L3D.Previewer = function(renderer, scene) {
+
     /**
      * @type {element}
      * @description The document element to add on top of the renderer
@@ -60,13 +61,6 @@ L3D.Previewer = function(renderer, scene) {
 
 /**
  * Renders the preview
- * @param {Object} pref an object containing :
- * <ul>
- *  <li><code>go</code> : a boolean if the rendering should be done</li>
- *  <li><code>x</code> : the x coordinate of the mouse</li>
- *  <li><code>y</code> : the y coordinate of the mouse</li>
- *  <li><code>camera</code> : the camera to use for the preview</li>
- * </ul>
  * @param {Number} container_width width of the container
  * @param {Number} container_height height of the container
  */

@@ -2,6 +2,7 @@ L3D.ProgressiveLoader = (function() {
 
 /**
  * Parse a list as it is sent by the server and gives a slightly more comprehensible result
+ * @param Array array corresponding to the line of the mesh file
  * @private
  */
 var _parseList = function(arr) {
@@ -116,12 +117,6 @@ var ProgressiveLoader = function(path, scene, camera, callback, log) {
      * Callback to call on the object when they're created
      */
     this.callback = callback;
-
-    /**
-     * Counter (not used)
-     * @private
-     */
-    this.counter = 0;
 
     /**
      * Group where the sub-objects will be added

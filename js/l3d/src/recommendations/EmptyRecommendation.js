@@ -1,3 +1,9 @@
+/**
+ * @memberof L3D
+ * @extends BaseRecommendation
+ * @description Represents a recommendation not shown and not clickable (for hiding recommendations)
+ * @constructor
+ */
 L3D.EmptyRecommendation = function() {
     L3D.BaseRecommendation.apply(this, arguments);
     this.target = new THREE.Vector3();
