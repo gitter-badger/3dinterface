@@ -151,7 +151,7 @@ function editorHelper(templateName) {
 
     };
 
-};
+}
 
 module.exports.clicker = editorHelper('prototype_clicker.jade');
 module.exports.viewer = editorHelper('prototype_viewer.jade');
