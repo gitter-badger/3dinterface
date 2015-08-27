@@ -210,9 +210,11 @@ L3D.PointerCamera.prototype.lockPointer = function() {
  * @returns true if the pointer is locked, false otherwise
  */
 L3D.PointerCamera.prototype.isLocked = function() {
-    return document.pointerLockElement === this.renderer.domElement ||
+    return (
+        document.pointerLockElement === this.renderer.domElement ||
         document.mozPointerLockElement === this.renderer.domElement ||
-        document.webkitPointerLockElement === this.renderer.domElement;
+        document.webkitPointerLockElement === this.renderer.domElement
+    );
 
 };
 
