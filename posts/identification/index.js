@@ -7,8 +7,8 @@ module.exports.index = function(req, res) {
 
     db.checkUserName(req.body.inputId, function(ok) {
         if (!ok) {
-            db.tryUser(req.session.user_id, function(id) {
-                req.session.user_id = id;
+            db.tryUser(req.session.userId, function(id) {
+                req.session.userId = id;
                 req.session.save();
 
                 pg.connect(secret.url, function(err, client, release) {
@@ -18,7 +18,7 @@ module.exports.index = function(req, res) {
                             req.body.inputId,
                             req.body.inputAge,
                             req.body.inputGender === 'male',
-                            req.session.user_id,
+                            req.session.userId,
                             req.body.input3dskills,
                             req.body.inputLastTime
                         ],

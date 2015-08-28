@@ -1,10 +1,10 @@
 var renderer, scene, camera, controls, cube, container, plane, mouse= {x:0, y:0};
 var raycaster;
 var objects = [];
-var container_size = {};
+var containerSize = {};
 var previousTime;
-container_size.width = 1067;
-container_size.height = 600;
+containerSize.width = 1067;
+containerSize.height = 600;
 
 init();
 animate();
@@ -12,10 +12,10 @@ animate();
 function init() {
     // on initialise le moteur de rendu
     container = document.getElementById('container');
-    container.style.height = container_size.height + 'px';
-    container.style.width = container_size.width + 'px';
+    container.style.height = containerSize.height + 'px';
+    container.style.width = containerSize.width + 'px';
     renderer = new THREE.WebGLRenderer({alpha:"true"});
-    renderer.setSize(container_size.width, container_size.height);
+    renderer.setSize(containerSize.width, containerSize.height);
     renderer.shadowMapEnabled = true;
     document.getElementById('container').appendChild(renderer.domElement);
 
@@ -24,16 +24,16 @@ function init() {
     raycaster = new THREE.Raycaster();
 
     // init light
-    var directional_light = new THREE.DirectionalLight(0xffffff);
-    directional_light.position.set(1, 0.5, 1).normalize();
-    directional_light.castShadow = true;
-    scene.add(directional_light);
+    var directionalLight = new THREE.DirectionalLight(0xffffff);
+    directionalLight.position.set(1, 0.5, 1).normalize();
+    directionalLight.castShadow = true;
+    scene.add(directionalLight);
 
-    var ambient_light = new THREE.AmbientLight(0x444444);
-    scene.add(ambient_light);
+    var ambientLight = new THREE.AmbientLight(0x444444);
+    scene.add(ambientLight);
 
     // on initialise la camera que l’on place ensuite sur la scène
-    camera = new L3D.Camera(50, container_size.width / container_size.height, 1, 10000);
+    camera = new L3D.Camera(50, containerSize.width / containerSize.height, 1, 10000);
     scene.add(camera);
 
     window.addEventListener('resize', onWindowResize, false);

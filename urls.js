@@ -7,6 +7,6 @@ module.exports.viewports = '/prototype/viewports/';
 module.exports.stream = '/stream/';
 module.exports.reverse = '/prototype/reverse/';
 module.exports.sponza = '/prototype/sponza/';
-module.exports.replay_index = '/prototype/replay/';
+module.exports.replayIndex = '/prototype/replay/';
 module.exports.tutorial = '/prototype/tutorial';
 module.exports.logout = '/logout';

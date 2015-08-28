@@ -44,7 +44,7 @@ L3D.StartCanvas.prototype.render = function(force) {
         this.ctx.font = '30px Verdana';
         this.ctx.globalAlpha = 1;
         this.ctx.fillStyle = 'black';
-        this.ctx.fillText('Click here to lock the pointer !', container_size.width()/3.25, container_size.height()/2-10);
+        this.ctx.fillText('Click here to lock the pointer !', containerSize.width()/3.25, containerSize.height()/2-10);
 
 
         this.shown = true;

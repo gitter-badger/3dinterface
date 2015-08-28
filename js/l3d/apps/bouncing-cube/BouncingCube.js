@@ -1,7 +1,7 @@
 var BouncingCube = function(size, style) {
     L3D.Cube.call(this, size, style);
 
-    this.fixed_center = new THREE.Vector3();
+    this.fixedCenter = new THREE.Vector3();
     this.center = new THREE.Vector3();
 
     this.speed = new THREE.Vector3(0,0,300);
@@ -11,13 +11,13 @@ BouncingCube.prototype.constructor = BouncingCube;
 
 BouncingCube.prototype.update = function() {
     // Compute new center
-    var speed_clone = this.speed.clone();
-    speed_clone.multiply(BouncingCube.DT);
+    var speedClone = this.speed.clone();
+    speedClone.multiply(BouncingCube.DT);
 
     this.speed.add(BouncingCube.G);
 
     if (this.speed.dot(this.speed) > 100) {
-        this.center.add(speed_clone);
+        this.center.add(speedClone);
     }
 
     if (this.center.z < 0) {

@@ -9,7 +9,7 @@ module.exports.index = function(req, res) {
             "INSERT INTO resetclicked(exp_id, time)" +
             "VALUES($1, to_timestamp($2));" ,
             [
-                req.session.exp_id,
+                req.session.expId,
                 req.body.time
             ],
             function(err, result) {

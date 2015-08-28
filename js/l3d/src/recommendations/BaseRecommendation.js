@@ -190,26 +190,26 @@ L3D.BaseRecommendation.prototype.update = function(mainCamera) {
     // Compute distance between center of camera and position
     dist = L3D.Tools.norm2(L3D.Tools.diff(mainCamera.position, this.center));
 
-    var low_bound = 1;
-    var high_bound = 5;
-    var new_value;
+    var lowBound = 1;
+    var highBound = 5;
+    var newValue;
 
-    if (dist < low_bound) {
-        new_value = 0;
-    } else if (dist > high_bound) {
-        new_value = 1;
+    if (dist < lowBound) {
+        newValue = 0;
+    } else if (dist > highBound) {
+        newValue = 1;
     } else {
-        new_value = (dist - low_bound)/(high_bound - low_bound);
+        newValue = (dist - lowBound)/(highBound - lowBound);
     }
 
     // Update opacity
     var self = this;
     this.object3D.traverse(function(elt) {
         if (elt instanceof THREE.Mesh) {
-            elt.material.transparent =   new_value < 0.9;
-            elt.material.opacity = new_value;
+            elt.material.transparent =   newValue < 0.9;
+            elt.material.opacity = newValue;
 
-            if (new_value < 0.1)
+            if (newValue < 0.1)
                 self.raycastable = elt.raycastable = elt.material.transparent = elt.visible = false;
         }
     });

@@ -39,8 +39,8 @@ Coin.setSize = function(width,height) {
 
 Coin.initSize = function() {
     try {
-        Coin.domElement.width = container_size.width();
-        Coin.domElement.height = container_size.height();
+        Coin.domElement.width = containerSize.width();
+        Coin.domElement.height = containerSize.height();
     } catch (e) {
         setTimeout(100, Coin.initSize);
         return;
@@ -51,9 +51,9 @@ Coin.update = function() {
 
     var x;
     try {
-        x = container_size.width() * 4.75 / 5;
-        Coin.domElement.width = container_size.width();
-        Coin.domElement.height = container_size.height();
+        x = containerSize.width() * 4.75 / 5;
+        Coin.domElement.width = containerSize.width();
+        Coin.domElement.height = containerSize.height();
     } catch (e) {
         return;
     }
@@ -108,7 +108,7 @@ Coin.set = function() {
             Coin.set(newLvl);
         },50);
     }
-}
+};
 
 // Coin.image.onload = Coin.update;
 

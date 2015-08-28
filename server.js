@@ -91,17 +91,17 @@ app.use(function(req, res) {
 });
 
 // Set ports and ip address
-var server_port, server_ip_address;
+var serverPort, serverIpAddress;
 if ( isDev ) {
-    server_port = 4000;
-    server_ip_address = 'localhost';
+    serverPort = 4000;
+    serverIpAddress = 'localhost';
 } else {
     // Openhift conf
-    server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
-    server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
+    serverPort = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+    serverIpAddress = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 }
 
 // Start server
-http.listen(server_port, server_ip_address, function() {
-    Log.ready("Now listening " + server_ip_address + ":" + server_port);
+http.listen(serverPort, serverIpAddress, function() {
+    Log.ready("Now listening " + serverIpAddress + ":" + serverPort);
 });

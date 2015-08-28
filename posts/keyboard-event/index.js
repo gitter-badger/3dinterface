@@ -9,7 +9,7 @@ module.exports.index = function(req, res) {
             "INSERT INTO keyboardevent(exp_id, camera, time, keycode, keypressed)" +
             "VALUES($1, ROW(ROW($2,$3,$4),ROW($5,$6,$7)), to_timestamp($8), $9, $10);" ,
             [
-                req.session.exp_id,
+                req.session.expId,
                 req.body.camera.position.x,
                 req.body.camera.position.y,
                 req.body.camera.position.z,

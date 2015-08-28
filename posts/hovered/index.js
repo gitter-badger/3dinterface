@@ -9,10 +9,10 @@ module.exports.index = function(req, res) {
             "INSERT INTO hovered(exp_id, time, start, arrow_id)" +
             "VALUES($1, to_timestamp($2), $3, $4);" ,
             [
-                req.session.exp_id,
+                req.session.expId,
                 req.body.time,
                 req.body.start ? true : false,
-                req.body.arrow_id
+                req.body.arrowId
             ],
             function(err, result) {
                 if (err !== null)

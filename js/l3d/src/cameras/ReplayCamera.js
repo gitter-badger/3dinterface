@@ -9,8 +9,8 @@ L3D.ReplayCamera = function() {
 
     this.position = new THREE.Vector3();
     this.target = new THREE.Vector3();
-    this.new_position = new THREE.Vector3();
-    this.new_target = new THREE.Vector3();
+    this.newPosition = new THREE.Vector3();
+    this.newTarget = new THREE.Vector3();
 
     this.data = arguments[5];
 
@@ -54,7 +54,7 @@ L3D.ReplayCamera.prototype.update = function(time) {
 };
 
 L3D.ReplayCamera.prototype.linearMotion = function(time) {
-    var tmp = L3D.Tools.sum(L3D.Tools.mul(this.old_position, 1-this.t), L3D.Tools.mul(this.new_position, this.t));
+    var tmp = L3D.Tools.sum(L3D.Tools.mul(this.oldPosition, 1-this.t), L3D.Tools.mul(this.newPosition, this.t));
     this.position.copy(tmp);
     this.t += 0.1 * time / 20;
 
@@ -65,9 +65,9 @@ L3D.ReplayCamera.prototype.linearMotion = function(time) {
 
 L3D.ReplayCamera.prototype.cameraMotion = function(time) {
 
-    var tmp = L3D.Tools.sum(L3D.Tools.mul(this.old_position, 1-this.t), L3D.Tools.mul(this.new_position, this.t));
+    var tmp = L3D.Tools.sum(L3D.Tools.mul(this.oldPosition, 1-this.t), L3D.Tools.mul(this.newPosition, this.t));
     this.position.copy(tmp);
-    this.target = L3D.Tools.sum(L3D.Tools.mul(this.old_target, 1-this.t), L3D.Tools.mul(this.new_target, this.t));
+    this.target = L3D.Tools.sum(L3D.Tools.mul(this.oldTarget, 1-this.t), L3D.Tools.mul(this.newTarget, this.t));
     this.t += 1 / (((new Date(this.path[this.counter].time)).getTime() - (new Date(this.path[this.counter-1].time)).getTime()) / 20);
 
     if (this.t > 1) {
@@ -171,10 +171,10 @@ L3D.ReplayCamera.prototype.move = function(recommendation) {
     var otherCamera = recommendation.camera || recommendation;
 
     this.moving = true;
-    this.old_target =   this.target.clone();
-    this.old_position = this.position.clone();
-    this.new_target =   new THREE.Vector3(otherCamera.target.x, otherCamera.target.y, otherCamera.target.z);
-    this.new_position = new THREE.Vector3(otherCamera.position.x, otherCamera.position.y, otherCamera.position.z);
+    this.oldTarget =   this.target.clone();
+    this.oldPosition = this.position.clone();
+    this.newTarget =   new THREE.Vector3(otherCamera.target.x, otherCamera.target.y, otherCamera.target.z);
+    this.newPosition = new THREE.Vector3(otherCamera.position.x, otherCamera.position.y, otherCamera.position.z);
     this.t = 0;
 
 };

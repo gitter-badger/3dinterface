@@ -100,7 +100,7 @@ L3D.DB.Event.ArrowClicked = function() {
      * Id of the arrow
      * @type {Number}
      */
-    this.arrow_id = null;
+    this.arrowId = null;
 
 };
 
@@ -109,7 +109,7 @@ L3D.DB.Event.ArrowClicked = function() {
  */
 L3D.DB.Event.ArrowClicked.prototype.send = function() {
     var url = "/posts/arrow-clicked";
-    var data = {arrow_id: this.arrow_id};
+    var data = {arrowId: this.arrowId};
     L3D.DB.Private.sendData(url, data);
 };
 
@@ -124,7 +124,7 @@ L3D.DB.Event.CoinClicked = function() {
      * Id of the coin taken
      * @type {Number}
      */
-    this.coin_id = null;
+    this.coinId = null;
 };
 
 /**
@@ -132,7 +132,7 @@ L3D.DB.Event.CoinClicked = function() {
  */
 L3D.DB.Event.CoinClicked.prototype.send = function() {
     var url = "/posts/coin-clicked";
-    var data = {coin_id: this.coin_id};
+    var data = {coinId: this.coinId};
     L3D.DB.Private.sendData(url, data);
 };
 
@@ -222,7 +222,7 @@ L3D.DB.Event.Hovered = function() {
      * The id of the arrow hovered
      * @type {Number}
      */
-    this.arrow_id = null;
+    this.arrowId = null;
 
     /**
      * true if the hover starts, false if finishes
@@ -239,7 +239,7 @@ L3D.DB.Event.Hovered.prototype.send = function() {
     var url = "/posts/hovered";
     var data = {
         start: this.start,
-        arrow_id: this.arrow_id
+        arrowId: this.arrowId
     };
 
     L3D.DB.Private.sendData(url, data);

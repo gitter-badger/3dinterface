@@ -9,7 +9,7 @@ module.exports.index = function(req, res) {
             "INSERT INTO previousnextclicked(exp_id, previousnext, time, camera)" +
             "VALUES($1, $2, to_timestamp($3), ROW(ROW($4,$5,$6), ROW($7,$8,$9)));" ,
             [
-                req.session.exp_id,
+                req.session.expId,
                 req.body.previous ? 'p' : 'n',
                 req.body.time,
                 req.body.camera.position.x,

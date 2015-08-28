@@ -92,7 +92,7 @@ function initThreeElements() {
     // Initialize pointer camera
     camera1 = new L3D.PointerCamera(
         50,
-        container_size.width() / container_size.height(),
+        containerSize.width() / containerSize.height(),
         0.01, 100000, renderer, container
     );
 
@@ -189,7 +189,7 @@ function render() {
     // Set current position of camera
     camera1.look();
 
-    var left = 0, bottom = 0, width = container_size.width(), height = container_size.height();
+    var left = 0, bottom = 0, width = containerSize.width(), height = containerSize.height();
     renderer.setScissor(left, bottom, width, height);
     renderer.enableScissorTest(true);
     renderer.setViewport(left, bottom, width, height);
@@ -205,7 +205,7 @@ function render() {
     THREEx.Transparency.update(camera1);
 
     // Render preview
-    previewer.render(container_size.width(), container_size.height());
+    previewer.render(containerSize.width(), containerSize.height());
 
     // Finish stats
     stats.end();
@@ -217,7 +217,7 @@ function onWindowResize() {
     resizeElements(renderer, container, previewer, Coin, pointer, startCanvas);
 
     recommendations.forEach(function(reco) {
-        resetCameraAspect(reco.camera, container_size.width(), container_size.height());
+        resetCameraAspect(reco.camera, containerSize.width(), containerSize.height());
     });
 
     render();

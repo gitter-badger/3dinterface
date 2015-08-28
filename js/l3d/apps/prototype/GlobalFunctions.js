@@ -1,11 +1,11 @@
 // Auto-resize case
-// var main_section = document.getElementById('main-section');
+// var mainSection = document.getElementById('main-section');
 //
-// var container_size = {
-//     width: function() { if (!isFullscreen) return main_section.clientWidth; else return screen.width;},
+// var containerSize = {
+//     width: function() { if (!isFullscreen) return mainSection.clientWidth; else return screen.width;},
 //     height: function() {
 //         if (!isFullscreen)
-//             return main_section.clientHeight
+//             return mainSection.clientHeight
 //                 - document.getElementById('nav').offsetHeight
 //                 - document.getElementById('main-div').offsetHeight;
 //         else
@@ -13,7 +13,7 @@
 //     }
 // };
 
-var container_size = {
+var containerSize = {
 
     width: function() { return 1134; },
     height: function() { return 768; }
@@ -54,7 +54,7 @@ function objectClickerOnHover(camera1, previewer, recommendations, container) {
             if (obj instanceof L3D.BaseRecommendation) {
                 // The newly hovered object is different and is a recommendation
 
-                event.arrow_id = recommendations.indexOf(obj);
+                event.arrowId = recommendations.indexOf(obj);
                 event.start = true;
                 event.send();
 
@@ -66,7 +66,7 @@ function objectClickerOnHover(camera1, previewer, recommendations, container) {
                 // but the previous one is : we must log
 
                 // Unhovered
-                event.arrow_id = 0;
+                event.arrowId = 0;
                 event.start = false;
                 event.send();
 
@@ -94,7 +94,7 @@ function objectClickerOnClick(camera1, buttonManager, recommendations, coins) {
 
             // Send event to DB
             event = new L3D.DB.Event.CoinClicked();
-            event.coin_id = obj.id;
+            event.coinId = obj.id;
             event.send();
 
         } else if (obj instanceof L3D.BaseRecommendation) {
@@ -104,7 +104,7 @@ function objectClickerOnClick(camera1, buttonManager, recommendations, coins) {
 
             // Send event to DB
             event = new L3D.DB.Event.ArrowClicked();
-            event.arrow_id = recommendations.indexOf(obj);
+            event.arrowId = recommendations.indexOf(obj);
             event.send();
         }
 
@@ -133,7 +133,7 @@ var hide = createVisibilityFunction(false);
 
 function resizeElements() {
 
-    var width = container_size.width(), height = container_size.height();
+    var width = containerSize.width(), height = containerSize.height();
 
     for (var i = 0; i < arguments.length; i++) {
 

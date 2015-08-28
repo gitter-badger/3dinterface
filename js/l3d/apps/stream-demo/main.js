@@ -1,14 +1,14 @@
-var mesh_number = 25;
+var meshNumber = 25;
 var renderer, scene, controls, cube, container, plane, mouse= {x:0, y:0}, sphere, sphereLoader;
 var bigmesh;
 var raycaster;
 var objects = [];
-var spheres = new Array(mesh_number);
+var spheres = new Array(meshNumber);
 var visible = 0;
 var previousTime;
 var loader;
 
-var container_size = {width: 1067, height: 600};
+var containerSize = {width: 1067, height: 600};
 
 init();
 animate();
@@ -16,10 +16,10 @@ animate();
 function init() {
     // on initialise le moteur de rendu
     container = document.getElementById('container');
-    container.style.height = container_size.height + 'px';
-    container.style.width = container_size.width + 'px';
+    container.style.height = containerSize.height + 'px';
+    container.style.width = containerSize.width + 'px';
     renderer = new THREE.WebGLRenderer({alpha:"true"});
-    renderer.setSize(container_size.width, container_size.height);
+    renderer.setSize(containerSize.width, containerSize.height);
     renderer.shadowMapEnabled = true;
     // renderer.setClearColor(0x000000);
     document.getElementById('container').appendChild(renderer.domElement);
@@ -29,16 +29,16 @@ function init() {
     raycaster = new THREE.Raycaster();
 
     // init light
-    var directional_light = new THREE.DirectionalLight(0x999999);
-    directional_light.position.set(1, 0.5, 1).normalize();
-    directional_light.castShadow = true;
-    scene.add(directional_light);
+    var directionalLight = new THREE.DirectionalLight(0x999999);
+    directionalLight.position.set(1, 0.5, 1).normalize();
+    directionalLight.castShadow = true;
+    scene.add(directionalLight);
 
-    var ambient_light = new THREE.AmbientLight(0x333333);
-    scene.add(ambient_light);
+    var ambientLight = new THREE.AmbientLight(0x333333);
+    scene.add(ambientLight);
 
     // on initialise la camera que l’on place ensuite sur la scène
-    camera = new L3D.Camera(50, container_size.width / container_size.height, 1, 100000);
+    camera = new L3D.Camera(50, containerSize.width / containerSize.height, 1, 100000);
     scene.add(camera);
 
     window.addEventListener('resize', onWindowResize, false);

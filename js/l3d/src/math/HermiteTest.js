@@ -2,9 +2,9 @@ var container = document.getElementById('content');
 
 function print(text) {
     var content = document.createTextNode(text);
-    var new_line = document.createElement('br');
+    var newLine = document.createElement('br');
     container.appendChild(content);
-    container.appendChild(new_line);
+    container.appendChild(newLine);
 }
 
 function toString(variable) {

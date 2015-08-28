@@ -5,7 +5,7 @@ var TutoCamera = function() {
     this.renderer = arguments[4];
     this.onWindowResize = arguments[6];
     var scene = arguments[5];
-    var container_size = arguments[7];
+    var containerSize = arguments[7];
     var coins = arguments[8];
 
     if (arguments[9] === undefined)
@@ -76,7 +76,7 @@ var TutoCamera = function() {
     this.collisions = true;
 
     // Create tutorial
-    this.tutorial = new TutorialSteps(this, scene, coins, this.onWindowResize, container_size, arguments[10]);
+    this.tutorial = new TutorialSteps(this, scene, coins, this.onWindowResize, containerSize, arguments[10]);
 
     this.shouldLock = true;
 
@@ -191,14 +191,14 @@ TutoCamera.prototype.update = function(time) {
 };
 
 TutoCamera.prototype.linearMotion = function(time) {
-    var position_direction = L3D.Tools.diff(this.new_position, this.position);
-    var target_direction = L3D.Tools.diff(this.new_target, this.target);
+    var positionDirection = L3D.Tools.diff(this.newPosition, this.position);
+    var targetDirection = L3D.Tools.diff(this.newTarget, this.target);
 
-    this.position.add(L3D.Tools.mul(position_direction, 0.05 * time / 20));
-    this.target.add(L3D.Tools.mul(target_direction, 0.05 * time / 20));
+    this.position.add(L3D.Tools.mul(positionDirection, 0.05 * time / 20));
+    this.target.add(L3D.Tools.mul(targetDirection, 0.05 * time / 20));
 
-    if (L3D.Tools.norm2(L3D.Tools.diff(this.position, this.new_position)) < 0.01 &&
-        L3D.Tools.norm2(L3D.Tools.diff(this.target, this.new_target))  < 0.01) {
+    if (L3D.Tools.norm2(L3D.Tools.diff(this.position, this.newPosition)) < 0.01 &&
+        L3D.Tools.norm2(L3D.Tools.diff(this.target, this.newTarget))  < 0.01) {
         this.moving = false;
     this.anglesFromVectors();
     }
@@ -352,11 +352,11 @@ TutoCamera.prototype.move = function(recommendation, toSave) {
     this.moving = true;
     this.movingHermite = false;
 
-    this.new_target = otherCamera.target.clone();
-    this.new_position = otherCamera.position.clone();
+    this.newTarget = otherCamera.target.clone();
+    this.newPosition = otherCamera.position.clone();
     var t = [0,1];
-    var f = [this.position.clone(), this.new_position];
-    var fp = [L3D.Tools.diff(this.target, this.position), L3D.Tools.diff(this.new_target, this.new_position)];
+    var f = [this.position.clone(), this.newPosition];
+    var fp = [L3D.Tools.diff(this.target, this.position), L3D.Tools.diff(this.newTarget, this.newPosition)];
     this.hermite = new L3D.Hermite.Polynom(t,f,fp);
     this.t = 0;
 

@@ -132,11 +132,11 @@ L3D.MousePointer.prototype.render = function(style, force) {
 
             this.domElement.width = this.domElement.width;
 
-            var i = container_size.width() / 2;
+            var i = containerSize.width() / 2;
             var imin = i - this.size;
             var imax = i + this.size;
 
-            var j = container_size.height() / 2;
+            var j = containerSize.height() / 2;
             var jmin = j - this.size;
             var jmax = j + this.size;
 

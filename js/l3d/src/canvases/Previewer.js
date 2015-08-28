@@ -61,15 +61,15 @@ L3D.Previewer = function(renderer, scene) {
 
 /**
  * Renders the preview
- * @param {Number} container_width width of the container
- * @param {Number} container_height height of the container
+ * @param {Number} containerWidth width of the container
+ * @param {Number} containerHeight height of the container
  */
-L3D.Previewer.prototype.render = function(container_width, container_height) {
+L3D.Previewer.prototype.render = function(containerWidth, containerHeight) {
     var width, height, left, bottom;
 
     if (this.camera) {
-        width  = Math.floor(container_width / 5);
-        height = Math.floor(container_height / 5);
+        width  = Math.floor(containerWidth / 5);
+        height = Math.floor(containerHeight / 5);
         if (!this.fixed) {
             left = Math.floor(this.mouse.x - width/2);
             bottom = Math.floor(this.renderer.domElement.height - this.mouse.y + height/5);
@@ -88,22 +88,22 @@ L3D.Previewer.prototype.render = function(container_width, container_height) {
         }
 
         // Draw border
-        var can_bottom = container_height - bottom - height ;
+        var canBottom = containerHeight - bottom - height ;
         this.ctx.strokeStyle = "#ffffff";
         this.ctx.beginPath();
-        this.ctx.moveTo(left-1, can_bottom);
-        this.ctx.lineTo(left-1, can_bottom + height);
-        this.ctx.lineTo(left + width-1, can_bottom + height);
-        this.ctx.lineTo(left + width-1, can_bottom);
+        this.ctx.moveTo(left-1, canBottom);
+        this.ctx.lineTo(left-1, canBottom + height);
+        this.ctx.lineTo(left + width-1, canBottom + height);
+        this.ctx.lineTo(left + width-1, canBottom);
         this.ctx.closePath();
         this.ctx.stroke();
 
         this.ctx.strokeStyle = "#000000";
         this.ctx.beginPath();
-        this.ctx.moveTo(left, can_bottom + 1);
-        this.ctx.lineTo(left, can_bottom + height - 1);
-        this.ctx.lineTo(left + width - 2 , can_bottom + height-1);
-        this.ctx.lineTo(left + width - 2, can_bottom+1);
+        this.ctx.moveTo(left, canBottom + 1);
+        this.ctx.lineTo(left, canBottom + height - 1);
+        this.ctx.lineTo(left + width - 2 , canBottom + height-1);
+        this.ctx.lineTo(left + width - 2, canBottom+1);
         this.ctx.closePath();
         this.ctx.stroke();
 

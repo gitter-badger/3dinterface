@@ -8,13 +8,13 @@ L3D.LogFunction = function(a,b) {
 };
 
 L3D.addLight = function(scene) {
-    var directional_light = new THREE.DirectionalLight(0xdddddd);
-    directional_light.position.set(1, 2.5, 1).normalize();
-    directional_light.castShadow = false;
-    scene.add(directional_light);
+    var directionalLight = new THREE.DirectionalLight(0xdddddd);
+    directionalLight.position.set(1, 2.5, 1).normalize();
+    directionalLight.castShadow = false;
+    scene.add(directionalLight);
 
-    var ambient_light = new THREE.AmbientLight(0x555555);
-    scene.add(ambient_light);
+    var ambientLight = new THREE.AmbientLight(0x555555);
+    scene.add(ambientLight);
 };
 
 L3D.initPeachCastle = function(scene, collidableObjects, recommendation, clickable) {
@@ -52,7 +52,7 @@ L3D.resetPeachElements = function() {
     };
 };
 
-L3D.initPeach = function(camera, scene, coins, clickable, coin_ids) {
+L3D.initPeach = function(camera, scene, coins, clickable, coinIds) {
     L3D.addLight(scene);
 
     var collidableObjects = [];
@@ -67,7 +67,7 @@ L3D.initPeach = function(camera, scene, coins, clickable, coin_ids) {
 
     scene.add(camera);
 
-    var tmp = L3D.generateCoins(L3D.createPeachCoins(), coin_ids);
+    var tmp = L3D.generateCoins(L3D.createPeachCoins(), coinIds);
 
     for (var i in tmp) {
         coins.push(tmp[i]);
@@ -195,12 +195,12 @@ L3D.resetBobombElements = function() {
     };
 };
 
-L3D.generateCoins = function(totalCoins, coin_ids) {
+L3D.generateCoins = function(totalCoins, coinIds) {
 
     var i = 0;
     var tmp = [];
 
-    if (coin_ids === undefined) {
+    if (coinIds === undefined) {
 
         tmp = [];
 
@@ -215,17 +215,17 @@ L3D.generateCoins = function(totalCoins, coin_ids) {
             totalCoins.push(tmp[coinsId[i]]);
         }
 
-    } else if (coin_ids === null) {
+    } else if (coinIds === null) {
 
         return [];
 
     } else {
 
-        for (i = 0; i < coin_ids.length; i++) {
+        for (i = 0; i < coinIds.length; i++) {
 
             for (var j = 0; j < totalCoins.length; j++) {
 
-                if (coin_ids[i] === totalCoins[j].id) {
+                if (coinIds[i] === totalCoins[j].id) {
 
                     // Swap i and j
                     tmp = totalCoins[i];
@@ -241,7 +241,7 @@ L3D.generateCoins = function(totalCoins, coin_ids) {
     var indices = [];
     var coins = [];
 
-    var bound = (coin_ids instanceof Array && coin_ids.length === 0) ? totalCoins.length : 8;
+    var bound = (coinIds instanceof Array && coinIds.length === 0) ? totalCoins.length : 8;
 
     for (i = 0; i < bound; i++) {
         coins.push(totalCoins[i].coin);
@@ -317,7 +317,7 @@ L3D.createBobombRecommendations = function(width, height) {
 
 };
 
-L3D.initBobomb = function(camera, scene, coins, clickable, coin_ids) {
+L3D.initBobomb = function(camera, scene, coins, clickable, coinIds) {
     L3D.addLight(scene);
 
     var collidableObjects = [];
@@ -333,13 +333,13 @@ L3D.initBobomb = function(camera, scene, coins, clickable, coin_ids) {
     scene.add(camera);
 
     Coin.init();
-    var tmp = L3D.generateCoins(L3D.createBobombCoins(), coin_ids);
+    var tmp = L3D.generateCoins(L3D.createBobombCoins(), coinIds);
 
     for (var i in tmp) {
         coins.push(tmp[i]);
     }
 
-    var recommendations = L3D.createBobombRecommendations(container_size.width(), container_size.height());
+    var recommendations = L3D.createBobombRecommendations(containerSize.width(), containerSize.height());
 
     recommendations.forEach(function(reco) {reco.addToScene(scene);});
 
@@ -473,7 +473,7 @@ L3D.resetWhompElements = function() {
     };
 };
 
-L3D.initWhomp = function(recommendation, scene, coins, clickable, coin_ids) {
+L3D.initWhomp = function(recommendation, scene, coins, clickable, coinIds) {
     L3D.addLight(scene);
 
     var collidableObjects = [];
@@ -489,13 +489,13 @@ L3D.initWhomp = function(recommendation, scene, coins, clickable, coin_ids) {
     scene.add(recommendation);
 
     Coin.init(0.002);
-    var tmp = L3D.generateCoins(L3D.createWhompCoins(), coin_ids);
+    var tmp = L3D.generateCoins(L3D.createWhompCoins(), coinIds);
 
     for (var i in tmp) {
         coins.push(tmp[i]);
     }
 
-    var recommendations = L3D.createWhompRecommendations(container_size.width(), container_size.height());
+    var recommendations = L3D.createWhompRecommendations(containerSize.width(), containerSize.height());
 
     recommendations.forEach(function(reco) {reco.addToScene(scene);});
 
@@ -610,7 +610,7 @@ L3D.resetMountainElements = function() {
     };
 };
 
-L3D.initMountain = function(recommendation, scene, coins, clickable, coin_ids) {
+L3D.initMountain = function(recommendation, scene, coins, clickable, coinIds) {
     L3D.addLight(scene);
 
     var collidableObjects = [];
@@ -626,13 +626,13 @@ L3D.initMountain = function(recommendation, scene, coins, clickable, coin_ids) {
     scene.add(recommendation);
 
     Coin.init();
-    var tmp = L3D.generateCoins(L3D.createMountainCoins(), coin_ids);
+    var tmp = L3D.generateCoins(L3D.createMountainCoins(), coinIds);
 
     for (var i in tmp) {
         coins.push(tmp[i]);
     }
 
-    var recommendations = L3D.createMountainRecommendations(container_size.width(), container_size.height());
+    var recommendations = L3D.createMountainRecommendations(containerSize.width(), containerSize.height());
 
     recommendations.forEach(function(reco) {reco.addToScene(scene);});
 
@@ -691,8 +691,6 @@ L3D.initSponzaScene = function(scene, collidableObjects, recommendation, clickab
     collidableObjects.push(loader.obj);
     loader.obj.raycastable = true;
 
-
-
     // ProgressiveLoader('/static/data/sponza/sponza.obj', scene,
     //     function(obj) {
     //         obj.scale.set(0.1,0.1,0.1);
@@ -749,7 +747,7 @@ L3D.initSponza = function(recommendation, scene, coins, clickable) {
         coins.push(tmp[i]);
     }
 
-    var recommendations = L3D.createSponzaRecommendations(container_size.width(), container_size.height());
+    var recommendations = L3D.createSponzaRecommendations(containerSize.width(), containerSize.height());
 
     recommendations.forEach(function(reco) {reco.addToScene(scene);});
 

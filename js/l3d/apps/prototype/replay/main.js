@@ -20,7 +20,7 @@ function main() {
     initThreeElements();
 
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "/prototype/replay_info/" + params.get.id, true);
+    xhr.open("GET", "/prototype/replay-info/" + params.get.id, true);
 
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 200) {
@@ -60,7 +60,7 @@ function init(data) {
     container.appendChild(renderer.domElement);
 
     // Initialize replay camera
-    camera1 = new L3D.ReplayCamera(50, container_size.width()/container_size.height(), 0.01, 100000, coins, data);
+    camera1 = new L3D.ReplayCamera(50, containerSize.width()/containerSize.height(), 0.01, 100000, coins, data);
     recommendations = initMainScene(camera1, scene, coins, undefined, data.redCoins);
     camera1.cameras = recommendations;
 

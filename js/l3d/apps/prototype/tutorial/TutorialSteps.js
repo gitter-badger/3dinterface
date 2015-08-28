@@ -1,11 +1,11 @@
 var nextStep;
-var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container_size, clickableObjects) {
+var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, containerSize, clickableObjects) {
     this.camera = tutoCamera;
     this.step = 0;
     this.coinNumber = 0;
     this.camera.allowed = {};
     this.onWindowResize = onWindowResize;
-    this.container_size = container_size;
+    this.containerSize = containerSize;
     this.coins = coins;
     this.clickableObjects = clickableObjects;
 
@@ -193,7 +193,7 @@ TutorialSteps.prototype.nextStep = function() {
                 });
                 break;
             case 14:
-                this.firstReco = L3D.createPeachRecommendations(this.container_size.width(), this.container_size.height())[0];
+                this.firstReco = L3D.createPeachRecommendations(this.containerSize.width(), this.containerSize.height())[0];
                 this.addRecommendation(this.firstReco);
                 this.camera.move({
                     position: new THREE.Vector3(-9.157274598933608,3.6852142459329533,2.1820896816244444),
@@ -201,7 +201,7 @@ TutorialSteps.prototype.nextStep = function() {
                 });
                 break;
             case 16:
-                this.secondReco = L3D.createPeachRecommendations(this.container_size.width(), this.container_size.height(), L3D.ViewportRecommendation)[1];
+                this.secondReco = L3D.createPeachRecommendations(this.containerSize.width(), this.containerSize.height(), L3D.ViewportRecommendation)[1];
                 this.addRecommendation(this.secondReco);
                 this.secondReco.raycastable = true;
                 this.camera.move({
@@ -217,7 +217,7 @@ TutorialSteps.prototype.nextStep = function() {
                 });
             }, 3*60*1000);
 
-                var cams = L3D.createPeachRecommendations(this.container_size.width(), this.container_size.height());
+                var cams = L3D.createPeachRecommendations(this.containerSize.width(), this.containerSize.height());
                 for (var i = 2; i < cams.length; i++) {
                     this.addRecommendation(cams[i]);
                 }

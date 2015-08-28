@@ -26,9 +26,9 @@ var sceneToFunction = function(scene) {
 
 module.exports.game = function(req, res) {
 
-    db.tryUser(req.session.user_id, function(id) {
+    db.tryUser(req.session.userId, function(id) {
 
-        req.session.user_id = id;
+        req.session.userId = id;
 
         db.createExp(id, function(expId, coinCombinationId, sceneId, recommendationStyle, coins) {
 
@@ -39,7 +39,7 @@ module.exports.game = function(req, res) {
 
             }
 
-            req.session.exp_id = expId;
+            req.session.expId = expId;
             req.session.save();
 
             res.locals.scene = sceneToFunction(sceneId);
@@ -62,7 +62,7 @@ module.exports.sponza = function(req, res) {
     });
 };
 
-module.exports.replay_info = function(req, res) {
+module.exports.replayInfo = function(req, res) {
     res.setHeader('Content-Type', 'text/plain');
 
     // Parse id
@@ -77,13 +77,13 @@ module.exports.replay = function(req, res, next) {
     // Get id parameter
     res.locals.id = tools.filterInt(req.params.id);
 
-    db.checkExpId(res.locals.id, function(scene_id) {
-        if (scene_id === null) {
+    db.checkExpId(res.locals.id, function(sceneId) {
+        if (sceneId === null) {
             var err = new Error("This replay does not exist");
             err.status = 404;
             next(err);
         } else {
-            res.locals.initjs = sceneToFunction(scene_id);
+            res.locals.initjs = sceneToFunction(sceneId);
             res.setHeader('Content-Type', 'text/html');
             res.render('prototype_replays.jade', res.locals, function(err, result) {
                 res.send(result);
@@ -92,7 +92,7 @@ module.exports.replay = function(req, res, next) {
     });
 };
 
-module.exports.replay_index = function(req, res, next) {
+module.exports.replayIndex = function(req, res, next) {
     db.getAllExps(function(result) {
         res.locals.users = result;
 
@@ -105,12 +105,12 @@ module.exports.replay_index = function(req, res, next) {
 
 module.exports.tutorial = function(req, res) {
 
-    db.tryUser(req.session.user_id, function(id) {
-        req.session.user_id = id;
+    db.tryUser(req.session.userId, function(id) {
+        req.session.userId = id;
 
         // 1 is the ID of peach scene
         db.createTutorial(id, function(id, coins) {
-            req.session.exp_id = id;
+            req.session.expId = id;
             res.locals.coins = coins;
             req.session.save();
 
