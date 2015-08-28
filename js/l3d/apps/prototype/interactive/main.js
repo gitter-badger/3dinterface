@@ -19,7 +19,7 @@ var startCanvas;
 
 window.onbeforeunload = function() {
 
-    if (initMainScene !== L3D.initPeach && initMainScene !== L3D.initSponza && Coin.total !== 9) {
+    if (initMainScene !== L3D.initPeach && initMainScene !== L3D.initSponza && Coin.total !== 8) {
 
         return 'Warning : you are going to leave the page and abort the current test !';
 

@@ -4,9 +4,9 @@ var Coin = function(x,y,z, callback) {
     this.ready = false;
     this.got = false;
     this.init(x,y,z);
+    this.rotating = true;
     if (callback) {
         this.callback = callback;
-        this.rotating = true;
     }
 };
 
@@ -26,14 +26,16 @@ Coin.domElement.style.cssFloat = 'top-left';
 Coin.domElement.style.top = "0px";
 Coin.domElement.style.left = "0px";
 
+Coin.lvl = 0;
+
 Coin.setSize = function(width,height) {
     this.domElement.width = width;
     this.domElement.height = height;
     this.update();
 };
 
-Coin.image = new Image();
-Coin.image.src = '/static/img/redcoin.png';
+// Coin.image = new Image();
+// Coin.image.src = '/static/img/redcoin.png';
 
 Coin.initSize = function() {
     try {
@@ -49,33 +51,67 @@ Coin.update = function() {
 
     var x;
     try {
-        x = container_size.width() * 4.25 / 5;
+        x = container_size.width() * 4.75 / 5;
         Coin.domElement.width = container_size.width();
         Coin.domElement.height = container_size.height();
     } catch (e) {
         return;
     }
 
+    // Coin.domElement.width = Coin.domElement.width;
+
+    // Coin.ctx.drawImage(Coin.image, x + 75,25,30,30);
+
+    // Coin.ctx.fillStyle = 'red';
+    // Coin.ctx.strokeStyle = 'black';
+
+    // Coin.ctx.font = "30px Verdana";
+    // Coin.ctx.lineWidth = 5;
+    // Coin.ctx.strokeText(Coin.total + " / " + Coin.max, x, 50);
+    // Coin.ctx.fillText(Coin.total + " / " + Coin.max, x, 50);
+
+    // Coin.ctx.stroke();
+    // Coin.ctx.fill();
+
     Coin.domElement.width = Coin.domElement.width;
 
-    Coin.ctx.drawImage(Coin.image, x + 75,25,30,30);
+    var width = 10;
+    var height = 100;
+    var lvl = Coin.lvl;
+    var grd = Coin.ctx.createLinearGradient(x,20,width,height);
+    grd.addColorStop(1, "red");
+    grd.addColorStop(0.5, "green");
 
-    Coin.ctx.fillStyle = 'red';
-    Coin.ctx.strokeStyle = 'black';
+    Coin.ctx.fillStyle = grd;
+    Coin.ctx.fillRect(x,20 + (1-lvl)*height,10,(lvl*height));
 
-    Coin.ctx.font = "30px Verdana";
-    Coin.ctx.lineWidth = 5;
-    Coin.ctx.strokeText(Coin.total - 1 + " / " + Coin.max, x, 50);
-    Coin.ctx.fillText(Coin.total - 1 + " / " + Coin.max, x, 50);
-
+    Coin.ctx.beginPath();
+    Coin.ctx.moveTo(x,20);
+    Coin.ctx.lineTo(x,120);
+    Coin.ctx.lineTo(x+width,120);
+    Coin.ctx.lineTo(x+width,20);
     Coin.ctx.stroke();
-    Coin.ctx.fill();
+    Coin.ctx.closePath();
+
+    Coin.ctx.fillStyle = 'black';
+    Coin.ctx.font="20px Arial";
+    Coin.ctx.fillText('Score', x - 60, 25);
 
 };
 
-Coin.image.onload = Coin.update;
+Coin.set = function() {
+    var newLvl = Coin.total / Coin.max;
+    Coin.lvl+=0.01*Math.sign(newLvl-Coin.lvl);
+    if (Math.abs(Coin.lvl-newLvl) > 0.005) {
+        Coin.update();
+        setTimeout(function() {
+            Coin.set(newLvl);
+        },50);
+    }
+}
 
-Coin.total = 1;
+// Coin.image.onload = Coin.update;
+
 Coin.ctx = Coin.domElement.getContext('2d');
 Coin.update();
 
@@ -154,8 +190,8 @@ Coin.prototype.get = function() {
         this.mesh.material.transparent = true;
         this.mesh.material.opacity = 1;
 
-        Coin.sounds[(Coin.total ++)  - 1].play();
-        if (Coin.total === 9) {
+        Coin.sounds[Coin.total ++].play();
+        if (Coin.total === 8) {
             if (typeof Coin.onLastCoin === 'function') {
                 Coin.onLastCoin();
             }
@@ -175,14 +211,14 @@ Coin.prototype.get = function() {
             }
         }
 
-        Coin.update();
+        Coin.set();
     }
 };
 
 Coin.lastSound = new Audio('/static/data/music/starappears' + Coin.extension);
 Coin.lastSound.preload = "auto";
 
-Coin.total = 1;
+Coin.total = 0;
 Coin.BASIC_MESH = null;
 
 Coin._loader = new THREE.OBJLoader();
