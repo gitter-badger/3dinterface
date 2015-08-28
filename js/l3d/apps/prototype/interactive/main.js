@@ -27,12 +27,16 @@ window.onbeforeunload = function() {
 
 };
 
-setTimeout(function() {
-    $('#next').show();
-    $('#next').click(function() {
-        window.location = '/prototype/games';
-    });
-}, 3*60*1000);
+Coin.onCoinGot = function(coin) {
+    if (coin === 6) {
+        setTimeout(function() {
+            $('#next').show();
+            $('#next').click(function() {
+                window.location = '/prototype/games';
+            });
+        }, 60*1000);
+    }
+};
 
 function main() {
 

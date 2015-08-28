@@ -18,6 +18,17 @@ var pointer;
 var startCanvas;
 var tutorial;
 
+Coin.onCoinGot = function(val) {
+    if (val === 6) {
+        setTimeout(function() {
+            $('#next').show();
+            $('#next').click(function() {
+                window.location = '/prototype/games';
+            });
+        }, 60*1000);
+    }
+};
+
 function main() {
 
     // Main container that holds everything

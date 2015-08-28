@@ -183,6 +183,10 @@ Coin.prototype.get = function() {
     if (!this.got) {
         this.got = true;
 
+        if (typeof Coin.onCoinGot === 'function') {
+            Coin.onCoinGot(Coin.total + 1);
+        }
+
         // Call the callback if any
         if (this.callback)
             this.callback();
