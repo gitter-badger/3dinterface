@@ -6,7 +6,7 @@ else
 	CLOSURE=../utils/simple-compiler/compiler.sh
 endif
 
-all: L3D L3DP Socket Three Stats Bouncing Multisphere StreamingSimulator PrototypeReplay PrototypeInteractive Tutorial TestList CoinCreator CoinViewer CoinChecker StarRating
+all: L3D L3DP Socket Three Stats Bouncing Multisphere StreamingSimulator PrototypeReplay PrototypeInteractive Tutorial TestList CoinCreator CoinViewer CoinChecker StarRating JustGage
 
 StarRating:
 	cp star-rating.min.js ../static/js/

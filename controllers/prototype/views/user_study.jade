@@ -42,8 +42,9 @@ block content
         .form-group
             label(for='sel1') How old are you ?
             select.form-control#sel1(name="inputAge")
-                option(value='-20') Less than 20
-                option(value='20-25') Between 20 and 25
+                option(value='-15') Less than 15
+                option(value='15-20') Between 15 and 18
+                option(value='18-25') Between 18 and 25
                 option(value='25-30') Between 25 and 30
                 option(value='30-35') Between 30 and 35
                 option(value='35-40') Between 35 and 40
@@ -52,11 +53,6 @@ block content
                 option(value='50-55') Between 50 and 55
                 option(value='55-60') Between 55 and 60
                 option(value='60-') More than 60
-
-        label(for='3dgames', style={'margin-right':'10px'}) Rate your 3D game skills
-        span.glyphicon.glyphicon-question-sign(type='button', data-toggle='tooltip', data-placement='top', title='1 star if you never played any 3D games, 5 stars if you are used to 3D video games.')
-
-        input#3dgames(type='number', class='rating', min='0', max='5', step='1', default='3', name='input3dskills')
 
         .form-group
             label(for='se21', style={'margin-right':'10px'}) When is the last time you played a 3D video game ?
@@ -67,7 +63,15 @@ block content
                 option(value='1') This year
                 option(value='0') I never played a 3D video game
 
+        label(for='3dgames', style={'margin-right':'10px'}) Rate your 3D game skills
 
+        ul
+            li 1 star if you never play video games
+            li 2 stars if you rarely play games
+            li 3 stars if you are used to play console (PlayStation, Xbox, Nintendo, portable devices included)
+            li 4 stars if you are used to play first-person-view games
+            li 5 stars if you are good at first-person-view games
 
+        input#3dgames(type='number', class='rating', min='0', max='5', step='1', default='3', name='input3dskills')
 
         button.btn.btn-lg.btn-primary.btn-block(type='submit') Sign in
