@@ -1,3 +1,5 @@
+var pg = require('pg');
+var pgc = require('../../private.js');
 var mail = require('../../lib/mail.js');
 var Log = require('../../lib/NodeLog.js');
 
@@ -9,15 +11,27 @@ module.exports.index = function(req, res) {
         text += i + ' : ' + req.body[i] + '\n';
     }
 
-    mail.send({
-        from: req.session.user_id + " <" + req.session.user_id + "@toto.tata>",
-        to:   "Thomas <dragonrock.django@gmail.com>",
-        subject:  "By " + req.session.user_id,
-        text: text
-    }, function(err, message) {
-        if (err !== null) {
-            Log.mailerror(err);
-        }
+    pg.connect(pgc.url, function(err, client, release) {
+
+        client.query(
+            'SELECT Users.worker_id AS name FROM Users WHERE Users.id = $1;',
+            [req.session.userId],
+
+            function(err, result) {
+                mail.send({
+                    from: result.rows[0].name + " <" + req.session.userId + "@toto.tata>",
+                    to:   "Thomas <dragonrock.django@gmail.com>",
+                    subject:  "By " + result.rows[0].name,
+                    text: text
+                }, function(err, message) {
+                    if (err !== null) {
+                        Log.mailerror(err);
+                    }
+                });
+
+            }
+        );
+
     });
 
     res.redirect('/thankyou');
