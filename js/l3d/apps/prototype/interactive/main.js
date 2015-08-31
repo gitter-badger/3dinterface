@@ -32,12 +32,19 @@ Coin.onCoinGot = function(coin) {
         setTimeout(function() {
             $('#next').show();
             $('#next').click(function() {
-                window.location = '/prototype/game';
-                $('#next').unbind('click');
+                window.location = '/prototype/next';
             });
         }, 60*1000);
     }
 };
+
+Coin.onLastCoin = function() {
+    $('#next').show();
+    $('#next').click(function() {
+        window.location = '/prototype/next';
+    });
+
+}
 
 function main() {
 
