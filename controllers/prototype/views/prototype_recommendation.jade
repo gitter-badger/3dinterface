@@ -10,7 +10,7 @@ block configjs
             $('#next').show();
             $('#next').click(function() {
                 window.location = '/prototype/game';
-                $('#next').unbind('click');
+                $('#next').prop('disabled', true);
             });
         };
 

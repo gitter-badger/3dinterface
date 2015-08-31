@@ -33,6 +33,7 @@ Coin.onCoinGot = function(coin) {
             $('#next').show();
             $('#next').click(function() {
                 window.location = '/prototype/next';
+                $('#next').prop('disabled', true);
             });
         }, 60*1000);
     }
