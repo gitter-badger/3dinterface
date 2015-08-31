@@ -185,7 +185,7 @@ TutorialSteps.prototype.nextStep = function() {
                 break;
             case 11:
                 Coin.max = 5;
-                Coin.update();
+                Coin.set();
                 this.addCoin(new Coin(2.7378029903574026,2.953347730618792,-11.550836282321221, callback));
                 this.camera.move({
                     position: new THREE.Vector3(-0.3528994281499122,-0.026355227893303856,-0.2766844454377826),
@@ -221,9 +221,9 @@ TutorialSteps.prototype.nextStep = function() {
                 for (var i = 2; i < cams.length; i++) {
                     this.addRecommendation(cams[i]);
                 }
-                Coin.total = 1;
+                Coin.total = 0;
                 Coin.max = 8;
-                Coin.update();
+                Coin.set();
                 var coins = L3D.generateCoins(L3D.createPeachCoins());
                 for (i = 0; i < coins.length; i++) {
                     coins[i].rotating = true;
