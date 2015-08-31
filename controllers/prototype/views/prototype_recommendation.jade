@@ -5,17 +5,9 @@ block title
 
 block configjs
     script Recommendation = #{recommendationStyle}; coinsId = [#{coins}];
-    script.
-        Coin.onLastCoin = function() {
-            $('#next').show();
-            $('#next').click(function() {
-                window.location = '/prototype/game';
-                $('#next').unbind('click');
-            });
-        };
 
 block lastbutton
-    button#next.btn.btn-success.navbar-btn(style={'margin-right':'10px', 'margin-bottom':'10px', 'display':'none'})
+    a#next.btn.btn-success.navbar-btn(role="button", href='/prototype/game', style={'margin-right':'10px', 'margin-bottom':'10px', 'display':'none'})
         span Go to the next step
 
 //-block preciseDescription
