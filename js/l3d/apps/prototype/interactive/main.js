@@ -33,7 +33,7 @@ Coin.onCoinGot = function(coin) {
             $('#next').show();
             $('#next').click(function() {
                 window.location = '/prototype/game';
-                $('#next').click(function() {});
+                $('#next').unbind('click');
             });
         }, 60*1000);
     }
