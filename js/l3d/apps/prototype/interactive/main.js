@@ -31,12 +31,19 @@ Coin.onCoinGot = function(coin) {
     if (coin === 6) {
         setTimeout(function() {
             $('#next').show();
+            $('#next').click(function() {
+                window.location = '/prototype/next';
+            });
         }, 60*1000);
     }
 };
 
 Coin.onLastCoin = function() {
     $('#next').show();
+    $('#next').click(function() {
+        window.location = '/prototype/next';
+    });
+
 }
 
 function main() {
