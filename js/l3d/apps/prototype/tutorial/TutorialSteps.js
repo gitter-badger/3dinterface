@@ -210,13 +210,6 @@ TutorialSteps.prototype.nextStep = function() {
                 });
                 break;
             case 17:
-                setTimeout(function() {
-                $('#next').show();
-                $('#next').click(function() {
-                    window.location = '/before-begin';
-                });
-            }, 3*60*1000);
-
                 var cams = L3D.createPeachRecommendations(this.containerSize.width(), this.containerSize.height());
                 for (var i = 2; i < cams.length; i++) {
                     this.addRecommendation(cams[i]);

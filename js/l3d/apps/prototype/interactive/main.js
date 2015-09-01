@@ -19,7 +19,7 @@ var startCanvas;
 
 window.onbeforeunload = function() {
 
-    if (initMainScene !== L3D.initPeach && initMainScene !== L3D.initSponza && Coin.total !== 8) {
+    if (initMainScene !== L3D.initPeach && initMainScene !== L3D.initSponza && !($('#next').is(":visible"))) {
 
         return 'Warning : you are going to leave the page and abort the current test !';
 
@@ -27,25 +27,15 @@ window.onbeforeunload = function() {
 
 };
 
+var nextPage = '/prototype/game';
+
 Coin.onCoinGot = function(coin) {
     if (coin === 6) {
-        setTimeout(function() {
-            $('#next').show();
-            $('#next').click(function() {
-                window.location = '/prototype/next';
-                $('#next').prop('disabled', true);
-            });
-        }, 60*1000);
+        setTimeout(function() { setNextButton(nextPage); }, 60*1000);
     }
 };
 
-Coin.onLastCoin = function() {
-    $('#next').show();
-    $('#next').click(function() {
-        window.location = '/prototype/next';
-    });
-
-}
+Coin.onLastCoin = function() { setNextButton(nextPage); };
 
 function main() {
 

@@ -171,5 +171,5 @@ module.exports.userstudy = function(req, res) {
 };
 
 module.exports.next = function(req, res) {
-    res.redirect('/prototype/game')
+    res.redirect('/prototype/game');
 };

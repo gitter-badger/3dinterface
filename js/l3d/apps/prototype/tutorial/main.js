@@ -18,17 +18,15 @@ var pointer;
 var startCanvas;
 var tutorial;
 
+var nextPage = '/before-begin';
+
 Coin.onCoinGot = function(val) {
     if (val === 6) {
-        setTimeout(function() {
-            $('#next').show();
-            $('#next').click(function() {
-                window.location = '/prototype/game';
-                $('#next').unbind('click');
-            });
-        }, 60*1000);
+        setTimeout(function() {setNextButton(nextPage); }, 60*1000);
     }
 };
+
+Coin.onLastCoin = function() { setNextButton(nextPage); };
 
 function main() {
 

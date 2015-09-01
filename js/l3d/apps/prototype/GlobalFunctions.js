@@ -169,3 +169,11 @@ function appendTo(container) {
     };
 
 }
+
+function setNextButton(target) {
+    $('#next').show();
+    $('#next').click(function() {
+        window.location = target;
+        $('#next').prop('disabled', true);
+    });
+}
