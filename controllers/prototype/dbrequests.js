@@ -945,7 +945,6 @@ DBReq.TutorialCreator.prototype.execute = function() {
             for (var i = 0; i < 8; i++) {
                 self.finalResult.coins.push(result.rows[i].id);
             }
-            console.log(result.rows[0]);
             // Create CoinCombination
             self.client.query(
                 "INSERT INTO CoinCombination(scene_id, coin_1, coin_2, coin_3, coin_4, coin_5, coin_6, coin_7, coin_8)\n" +
@@ -963,7 +962,6 @@ DBReq.TutorialCreator.prototype.execute = function() {
                     result.rows[7].id
                 ],
                 function(err, result) {
-                    console.log(err);
                     // Create experiment
                     self.client.query(
                         "INSERT INTO Experiment(user_id, coin_combination_id)\n" +
