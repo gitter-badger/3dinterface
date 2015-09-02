@@ -49,9 +49,13 @@ function main() {
     initListeners();
 
     appendTo(container)(stats, Coin, startCanvas, pointer, previewer, renderer);
+    // appendTo(container)(startCanvas, pointer, previewer, renderer);
 
     // Set the good size of cameras
     onWindowResize();
+
+    if (locked)
+        startCanvas.render();
 
     // Some config
     if (initMainScene !== L3D.initPeach && initMainScene !== L3D.initSponza)
