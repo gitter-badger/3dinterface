@@ -11,71 +11,71 @@ var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container
 
     this.instructions = [
         {
-            text:"Welcome to this tutorial ! Click on the canvas to go start !",
+            text:"Welcome to the tutorial.  Click anywhere on the canvas to start.  You will enter into the 'pointer lock' mode",
             justclick:false
         },
         {
-            text: "You can use your mouse to move around, and press the escape key to unlock the pointer",
+            text: "Move your mouse to look around.  Press the escape key to unlock the pointer.",
             justclick: false
         },
         {
-            text: "You can also uncheck the <em>lock pointer</em> otion at the bottom of the page to rotate the camera via drag'n'drop !",
+            text: "You can also uncheck the <em>lock pointer</em> option at the bottom of the page to unlock the pointer.",
             justclick: false
         },
         {
-            text:"You can use your mouse (drag'n'drop) to rotate the camera",
+            text:"Now, the pointer is unlocked.  Click and drag your mouse to look around.",
             justclick:false
         },
         {
-            text:"Nice ! You can also use (2,4,6 and 8) keys or (k,j,l and i)",
+            text:"Nice! You can also use the (2,4,6 and 8) keys or (k,j,l and i) keys to look around.",
             justclick: true
         },
         {
-            text: "Here is a red coin, click on it !",
+            text: "Here is a red coin, click on it!",
             justclick: false
         },
         {
-            text: "Nice, there are a 3 more red coins around you, try to get them ! Check the coin counter !",
+            text: "Nice, there are a 3 more red coins around you, try to get them! Check the gauge (your score)!  You can lock the pointer if you wish.",
             justclick: false
         },
         {
-            text: "Two more ! Feel free to select the pointer lock option you prefer",
+            text: "Two more!",
             justclick: false
         },
         {
-            text: "One more !",
+            text: "One more!",
             justclick: false
         },
         {
-            text:"Nice ! You will now learn to translate the camera",
+            text:"Nice! You will now learn to navigate in the scene.",
             justclick: true
         },
         {
-            text: "Try pressing an arrow key on your keyboard to translate the camera !",
+            text: "Press one of the arrow keys on your keyboard to move!",
             justclick: false
         },
         {
-            text: "There is a red coin on the roof of the castle, just in front of you ! Go and get it !",
+            text: "There is a red coin on the roof of the castle, just in front of you! Go and get it!",
             justclick: false
         },
         {
-            text: "You got it ! Try to click on reset camera !",
+            text: "You got it! Now, click on the 'reset camera' button!",
             justclick: false
         },
         {
-            text: "Nice ! Let me introduce you to <em>recommendations</em>",
+            text: "Nice! Let me introduce you to <em>recommendations</em>",
             justclick: true
         },
         {
-            text: "This is a recommendation, by hovering it, you should see a preview, and by clicking on it, you should go to the recommended viewpoint",
+            text: "This is a recommendation, by hovering it, you should see a preview, and by clicking on it, you will automatically move towards the recommended viewpoint.  Click on this recommendation to try.",
             justclick: false
         },
         {
-            text: "The recommendation will change color once you clicked on it, just like a web link",
+            text: "The recommendation will change color once you clicked on it, just like a web link.",
             justclick:true
         },
         {
-            text: "Recommendations can be displayed as 3D arrows like the one you just saw, or as viewports like this one",
+            text: "Recommendations can be displayed as 3D arrows like the one you just saw, or as viewports like this one.  Click on this recommendation to proceed.",
             justclick: false
         },
         {
@@ -83,35 +83,35 @@ var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container
             justclick:false
         },
         {
-            text:"Tip : you can use the previous / next buttons in the bar at the bottom of the screen to go to the previous / next position",
+            text:"Tip: You can use the previous / next buttons in the control bar at the bottom of the screen to go to the previous / next position",
             justclick: false
         },
         {
-            text: "Tip : you can use the previous / next buttons in the bar at the bottom of the screen to go to the previous / next position",
+            text: "Tip: You can use the previous / next buttons in the control bar at the bottom of the screen to go to the previous / next position",
             justclick: false
         },
         {
-            text: "Tip : you can use the previous / next buttons in the bar at the bottom of the screen to go to the previous / next position",
+            text: "Tip: You can use the previous / next buttons in the control bar at the bottom of the screen to go to the previous / next position",
             justclick: false
         },
         {
-            text: "Tip : you can use the previous / next buttons in the bar at the bottom of the screen to go to the previous / next position",
+            text: "Tip: You can use the previous / next buttons in the control bar at the bottom of the screen to go to the previous / next position",
             justclick: false
         },
         {
-            text: "Tip : you can use the previous / next buttons in the bar at the bottom of the screen to go to the previous / next position",
+            text: "Tip: You can use the previous / next buttons in the control bar at the bottom of the screen to go to the previous / next position",
             justclick: false
         },
         {
-            text: "Tip : you can use the previous / next buttons in the bar at the bottom of the screen to go to the previous / next position",
+            text: "Tip: You can use the previous / next buttons in the control bar at the bottom of the screen to go to the previous / next position",
             justclick: false
         },
         {
-            text: "Tip : you can use the previous / next buttons in the bar at the bottom of the screen to go to the previous / next position",
+            text: "Tip: You can use the previous / next buttons in the control bar at the bottom of the screen to go to the previous / next position",
             justclick:false
         },
         {
-            text: "Congratulations ! You've successfully finished the tutorial ! Click on the green button to continue !",
+            text: "Congratulations! You've successfully collected all the coins and completed the tutorial ! Click on the green button to continue!",
             justclick: false
         }
     ];
@@ -266,7 +266,7 @@ TutorialSteps.prototype.notify = function(myString, justclick) {
             '<span><strong>' +
                 myString +
                 (justclick ?
-                 ' <a href="#" onclick="setTimeout(onWindowResize, 100); nextStep();"><em>(next)</em></span>' : '' ) +
+                 ' <a href="#" onclick="setTimeout(onWindowResize, 100); nextStep();"><em>Click here to continue the tutorial. </em></span>' : '' ) +
             '</strong></span>' +
         '</div>'
     );

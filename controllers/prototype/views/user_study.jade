@@ -24,7 +24,18 @@ block extrabody
                 <strong>Error</strong> : this id is already used !
 
 block content
-    form.form-signin(method="POST", action='/identification')
+    script.
+        function validateForm() {
+            if (document.getElementById('sel1').selectedIndex === -1) {
+                alert('Select a correct age please');
+                return false;
+            }
+            if (document.getElementById('sel2').selectedIndex === -1) {
+                alert('Select a correct date for the last time you played please');
+                return false;
+            }
+        }
+    form.form-signin(method="POST", action='/identification', onsubmit='return validateForm()')
         h2 Please sign in
         label(for='inputId').sr-only Id
         input#inputId.form-control(name="inputId", type="text", placeholder='Id', required, autofocus)
@@ -53,6 +64,9 @@ block content
                 option(value='50-55') Between 50 and 55
                 option(value='55-60') Between 55 and 60
                 option(value='60-') More than 60
+                script.
+                    document.getElementById('sel1').selectedIndex = -1;
+
 
         .form-group
             label(for='se21', style={'margin-right':'10px'}) When is the last time you played a 3D video game ?
@@ -62,6 +76,8 @@ block content
                 option(value='2') This month
                 option(value='1') This year
                 option(value='0') I never played a 3D video game
+                script.
+                    document.getElementById('sel2').selectedIndex = -1;
 
         label(for='3dgames', style={'margin-right':'10px'}) Rate your 3D game skills
 
