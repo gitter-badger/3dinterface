@@ -46,7 +46,23 @@ block extrahead
         }
 
 block content
-    form.form-signin(method="POST", action='/feedback-target')
+    script.
+        function checkForm() {
+            var allAnswered = true;
+            $("input:radio").each(function(){
+                var name = $(this).attr("name");
+                if($("input:radio[name="+name+"]:checked").length == 0)
+                {
+                    allAnswered = false;
+                }
+            });
+            if (!allAnswered) {
+                alert('You did not answer all the questions');
+                return false;
+            }
+        }
+
+    form.form-signin(method="POST", action='/feedback-target', onsubmit='return checkForm()')
         h2 Please give us your feedback
 
         +rate(1, "What was the difficulty level without recommendation ?")
