@@ -26,31 +26,40 @@ var sceneToFunction = function(scene) {
 
 module.exports.game = function(req, res) {
 
-    db.tryUser(req.session.userId, function(id) {
+    db.checkUserId(req.session.userId, function(ok) {
 
-        req.session.userId = id;
+        if (ok) {
 
-        db.createExp(id, function(expId, coinCombinationId, sceneId, recommendationStyle, coins) {
+            db.createExp(
+                req.session.userId,
+                function(expId, coinCombinationId, sceneId, recommendationStyle, coins) {
 
-            if (expId === undefined) {
+                    if (expId === undefined) {
 
-                res.redirect('/feedback');
-                return;
+                        res.redirect('/feedback');
+                        return;
 
-            }
+                    }
 
-            req.session.expId = expId;
-            req.session.save();
+                    req.session.expId = expId;
+                    req.session.save();
 
-            res.locals.scene = sceneToFunction(sceneId);
-            res.locals.recommendationStyle = recommendationStyle;
-            res.locals.coins = coins;
+                    res.locals.scene = sceneToFunction(sceneId);
+                    res.locals.recommendationStyle = recommendationStyle;
+                    res.locals.coins = coins;
 
-            res.setHeader('Content-Type','text/html');
-            res.render('prototype_recommendation.jade', res.locals, function(err, result) {
-                res.send(result);
-            });
-        });
+                    res.setHeader('Content-Type','text/html');
+                    res.render('prototype_recommendation.jade', res.locals, function(err, result) {
+                        res.send(result);
+                    });
+                });
+
+        } else {
+
+            res.redirect('/');
+
+        }
+
     });
 };
 
@@ -105,20 +114,36 @@ module.exports.replayIndex = function(req, res, next) {
 
 module.exports.tutorial = function(req, res) {
 
-    db.tryUser(req.session.userId, function(id) {
-        req.session.userId = id;
+    if (req.session.tutorialDone) {
 
-        // 1 is the ID of peach scene
-        db.createTutorial(id, function(id, coins) {
-            req.session.expId = id;
-            res.locals.coins = coins;
-            req.session.save();
+        res.redirect('/before-begin');
+        return;
 
-            res.setHeader('Content-Type', 'text/html');
-            res.render('tutorial.jade', res.locals, function(err, result) {
-                res.send(result);
+    }
+
+    db.checkUserId(req.session.userId, function(ok) {
+
+        if (ok) {
+
+            // 1 is the ID of peach scene
+            db.createTutorial(req.session.userId, function(id, coins) {
+                req.session.tutorialDone = true;
+                req.session.expId = id;
+                res.locals.coins = coins;
+                req.session.save();
+
+                res.setHeader('Content-Type', 'text/html');
+                res.render('tutorial.jade', res.locals, function(err, result) {
+                    res.send(result);
+                });
             });
-        });
+
+        } else {
+
+            res.redirect('/');
+
+        }
+
     });
 
 };
@@ -159,6 +184,13 @@ module.exports.checker = editorHelper('prototype_checker.jade');
 
 module.exports.userstudy = function(req, res) {
     res.setHeader('Content-Type', 'text/html');
+
+    if (req.session.userId !== undefined) {
+
+        res.redirect('/prototype/tutorial');
+        return;
+
+    }
 
     res.locals.identificationFailed = req.session.identificationFailed;
     req.session.identificationFailed = false;

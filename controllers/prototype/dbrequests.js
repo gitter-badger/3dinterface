@@ -471,12 +471,18 @@ DBReq.Info.prototype.loadRedCoins = function() {
  * @memberof DBReq
  * @constructor
  */
-DBReq.UserCreator = function(finishAction) {
+DBReq.UserCreator = function(workerId, age, male, rating, lastTime, finishAction) {
     /**
      * Callback to call on the id when the user is created
      * @type {function}
      */
     this.finishAction = finishAction;
+
+    this.workerId = workerId;
+    this.age = age;
+    this.male = male;
+    this.rating = rating;
+    this.lastTime = lastTime;
 
     // Connect to db
     var self = this;
@@ -492,25 +498,49 @@ DBReq.UserCreator = function(finishAction) {
  */
 DBReq.UserCreator.prototype.execute = function() {
     var self = this;
-    this.client.query(
-        "INSERT INTO users DEFAULT VALUES; SELECT currval('users_id_seq');",
-        [],
-        function(err, result) {
-            self.finalResult = result.rows[0].currval;
-            self.finish();
-        }
-    );
+    this.client.query("BEGIN; LOCK Users;", [], function() {
+        self.client.query(
+            "INSERT INTO users(worker_id, age, male, rating, lasttime)  VALUES($1, $2, $3, $4, $5);",
+            [
+                self.workerId,
+                self.age,
+                self.male,
+                self.rating,
+                self.lastTime
+            ],
+            function(err, result) {
+                if (err !== null) {
+                    Log.dberror(err + ' in UserCreator INSERT INTO');
+                }
+                self.client.query(
+                    "SELECT max(id) FROM Users;",
+                    [],
+                    function(err, result) {
+                        self.finalResult = result.rows[0].max;
+                        self.finish();
+                    }
+                );
+            }
+        );
+    });
 };
 
 /**
  * Release the DB connection and call the callback
  */
 DBReq.UserCreator.prototype.finish = function() {
-    this.release();
-    this.client = null;
-    this.release = null;
 
-    this.finishAction(this.finalResult);
+    var self = this;
+
+    this.client.query("COMMIT;", [], function() {
+
+        self.release();
+        self.client = null;
+        self.release = null;
+
+        self.finishAction(self.finalResult);
+
+    });
 };
 
 /**
@@ -535,8 +565,9 @@ DBReq.ExpCreator = function(userId, finishAction) {
         self.release = release;
 
         // Start transaction and lock table
-        self.client.query("BEGIN; LOCK CoinCombination; LOCK Experiment;");
-        self.execute();
+        self.client.query("BEGIN; LOCK CoinCombination; LOCK Experiment;", [], function() {
+            self.execute();
+        });
     });
 };
 
@@ -591,6 +622,9 @@ DBReq.ExpCreator.prototype.execute = function() {
         "LIMIT 1;",
         [self.userId],
         function(err, result) {
+            if (err !== null) {
+                Log.dberror(err + ' in ExpCreator first request');
+            }
             if (result.rows.length > 0) {
                 // Set the result
                 self.finalResult.coinCombinationId = result.rows[0].id;
@@ -614,6 +648,9 @@ DBReq.ExpCreator.prototype.execute = function() {
                     "RETURNING id",
                     [self.userId, result.rows[0].id, result.rows[0].name],
                     function(err, result) {
+                        if (err !== null) {
+                            Log.dberror(err + ' in ExpCreator second request (with suggested experiment)');
+                        }
                         self.finalResult.expId = result.rows[0].id;
                         self.finish();
                     }
@@ -645,6 +682,9 @@ DBReq.ExpCreator.prototype.execute = function() {
                     "LIMIT 1;",
                     [self.userId],
                     function(err, result) {
+                        if (err !== null) {
+                            Log.dberror(err + ' in ExpCreator second request (without suggested experiment');
+                        }
                         if (result.rows.length > 0) {
                             self.finalResult.sceneId = result.rows[0].sceneId;
                             self.finalResult.recommendationStyle = result.rows[0].name;
@@ -658,6 +698,9 @@ DBReq.ExpCreator.prototype.execute = function() {
                                 "LIMIT 8;",
                                 [self.finalResult.sceneId],
                                 function(err, result) {
+                                    if (err !== null) {
+                                        Log.dberror(err + ' in ExpCreator third request (without suggested experiment');
+                                    }
                                     self.finalResult.coins = [];
                                     for (var i = 0; i < 8; i++) {
                                         self.finalResult.coins.push(result.rows[i].id);
@@ -680,6 +723,9 @@ DBReq.ExpCreator.prototype.execute = function() {
                                             self.finalResult.coins[7],
                                         ],
                                         function(err, result) {
+                                            if (err !== null) {
+                                                Log.dberror(err + ' in ExpCreator fourth request (without suggested experiment');
+                                            }
                                             self.finalResult.coinCombinationId = result.rows[0].id;
 
                                             // And create the experiment
@@ -689,6 +735,9 @@ DBReq.ExpCreator.prototype.execute = function() {
                                                 "RETURNING id;",
                                                 [self.userId, self.finalResult.coinCombinationId, self.finalResult.recommendationStyle],
                                                 function(err, result) {
+                                                    if (err !== null) {
+                                                        Log.dberror(err + ' in ExpCreator fifth request (without suggested experiment');
+                                                    }
                                                     self.finalResult.expId = result.rows[0].id;
                                                     self.finish();
                                                 }
@@ -759,6 +808,10 @@ DBReq.UserIdChecker.prototype.execute = function() {
         "SELECT count(id) > 0 AS answer FROM users WHERE id = $1;",
         [self.id],
         function(err, result) {
+            if (err !== null) {
+                Log.dberror(err + ' in UserIdChecker');
+                return;
+            }
             self.finalResult = result.rows[0].answer;
             self.finish();
         }
@@ -797,8 +850,10 @@ DBReq.UserNameChecker.prototype.execute = function() {
         "SELECT count(id) > 0 AS answer FROM users WHERE worker_id = $1",
         [self.name],
         function(err, result) {
-            if (err !== null)
+            if (err !== null) {
                 Log.dberror(err + ' in UserNameChecker');
+                return;
+            }
             self.finalResult = result.rows[0].answer;
             self.finish();
         }
@@ -1022,8 +1077,8 @@ DBReq.getInfo = function(id, callback) {
  * @memberof DBReq
  * @param callback {function} callback called on the new user id
  */
-DBReq.createUser = function(callback) {
-    new DBReq.UserCreator(callback);
+DBReq.createUser = function(workerId, age, male, rating, lastTime, callback) {
+    new DBReq.UserCreator(workerId, age, male, rating, lastTime, callback);
 };
 
 /**

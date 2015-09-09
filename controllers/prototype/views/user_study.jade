@@ -35,7 +35,7 @@ block content
                 return false;
             }
         }
-    form.form-signin(method="POST", action='/identification', onsubmit='return validateForm()')
+    form#form.form-signin(method="POST", action='/identification', onsubmit='return validateForm()')
         h2 Please sign in
         label(for='inputId').sr-only Id
         input#inputId.form-control(name="inputId", type="text", placeholder='Id', required, autofocus)
@@ -90,4 +90,9 @@ block content
 
         input#3dgames(type='number', class='rating', min='0', max='5', step='1', default='3', name='input3dskills')
 
-        button.btn.btn-lg.btn-primary.btn-block(type='submit') Sign in
+        button#submitButton.btn.btn-lg.btn-primary.btn-block(type='submit') Sign in
+        script.
+            document.getElementById('submitButton').onclick = function() {
+                document.getElementById('submitButton').disabled = true;
+                document.getElementById('form').submit();
+            }

@@ -28,6 +28,16 @@ Coin.onCoinGot = function(val) {
 
 Coin.onLastCoin = function() { setNextButton(nextPage); };
 
+window.onbeforeunload = function() {
+
+    if (!($('#next').is(":visible"))) {
+
+        return "Warning : you are going to leave the tutorial, that's not good !";
+
+    }
+
+}
+
 function main() {
 
     // Main container that holds everything
