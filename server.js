@@ -94,7 +94,7 @@ app.use(function(req, res) {
 var serverPort, serverIpAddress;
 if ( isDev ) {
     serverPort = 4000;
-    serverIpAddress = '147.127.121.42';
+    serverIpAddress = 'localhost';
 } else {
     // Openhift conf
     serverPort = process.env.OPENSHIFT_NODEJS_PORT || 8080;

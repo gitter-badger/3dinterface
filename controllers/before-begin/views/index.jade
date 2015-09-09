@@ -10,4 +10,11 @@ block content
         saw in the tutorial : they are here to help you navigate in the scene.
         Use them or ignore them at your convenience.
 
-    p You can start <a href='/prototype/game'>when you're ready</a> !
+    button#next.btn.btn-success.navbar-btn(style={'margin-right':'10px', 'margin-bottom':'10px'})
+        span Go to the next step
+    script.
+        document.getElementById('next').onclick = function() {
+            document.getElementById('next').disabled = true;
+            window.location = '/prototype/game';
+        }
+
