@@ -65,8 +65,8 @@ block content
     form.form-signin(method="POST", action='/feedback-target', onsubmit='return checkForm()')
         h2 Please give us your feedback
 
-        +rate(1, "What was the difficulty level without recommendation ?")
-        +rate(2, "What was the difficulty level with recommendation ?")
+        +rate(1, "What was the difficulty level WITHOUT recommendation ?")
+        +rate(2, "What was the difficulty level WITH recommendation ?")
         +question(3, "Did the recommendations help you to find the coins ?")
         +question(4, "Did the recommendations help you to browse the scene ?")
         +question(5, "Do you think recommendations can be helpful ?")
