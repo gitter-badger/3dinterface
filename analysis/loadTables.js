@@ -122,7 +122,7 @@ function main() {
             module.exports.users = users;
             module.exports.experiments = experiments;
             module.exports.coinCombinations = coinCombinations;
-            callback(module.exports);
+            callback();
             done();
 
         }
