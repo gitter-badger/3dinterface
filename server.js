@@ -37,8 +37,13 @@ app.use(bodyParser.json());
 
 app.use(function(req, res, next) {
 
-    // Log connection
-    Log.request(req, res);
+    var start = Date.now();
+
+    res.on('finish', function() {
+        // Log connection
+        Log.request(req, res, Date.now() - start);
+
+    });
 
     res.locals.title = "3DUI";
     res.locals.urls = urls;

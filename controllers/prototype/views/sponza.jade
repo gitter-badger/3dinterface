@@ -4,9 +4,10 @@ block title
     title #{title} - Prototype - Arrows
 
 block mainjs
-    script L3D.BD.disable();
-    script initMainScene = L3D.initSponza
+    script locked = false;
     script(src="/static/js/prototypeinteractive.min.js")
+    script initMainScene = L3D.initSponza
+    script L3D.BD.disable();
 
 block configjs
     script Recommendation = L3D.ArrowRecommendation;

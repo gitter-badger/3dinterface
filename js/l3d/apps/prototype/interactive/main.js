@@ -54,7 +54,7 @@ function main() {
     // Set the good size of cameras
     onWindowResize();
 
-    if (locked)
+    if (locked !== undefined && locked)
         startCanvas.render();
 
     // Some config
