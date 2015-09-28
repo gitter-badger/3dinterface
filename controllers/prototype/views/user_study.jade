@@ -34,8 +34,9 @@ block content
                 alert('Select a correct date for the last time you played please');
                 return false;
             }
+            return true;
         }
-    form#form.form-signin(method="POST", action='/identification', onsubmit='return validateForm()')
+    form#form.form-signin(method="POST", action='/identification')
         h2 Please sign in
         label(for='inputId').sr-only Id
         input#inputId.form-control(name="inputId", type="text", placeholder='Id', required, autofocus)
@@ -92,7 +93,13 @@ block content
 
         button#submitButton.btn.btn-lg.btn-primary.btn-block(type='submit') Sign in
         script.
-            document.getElementById('submitButton').onclick = function() {
+            document.getElementById('submitButton').onclick = function(event) {
+                event.preventDefault();
                 document.getElementById('submitButton').disabled = true;
-                document.getElementById('form').submit();
+                if (validateForm()) {
+                    console.log("Ok");
+                    document.getElementById('form').submit();
+                } else {
+                    document.getElementById('submitButton').disabled = false;
+                }
             }
