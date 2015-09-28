@@ -16,7 +16,7 @@ var casper = require('casper').create({
     waitTimeout: 100000
 });
 
-var limit = 100;
+var limit = 1;
 
 casper.start('http://localhost:4000/');
 
@@ -42,10 +42,10 @@ for (var i = 0; i < limit; i++) {
 
             // }, true);
 
-            this.thenOpen('http://localhost:4000/prototype/game');
-            this.thenOpen('http://localhost:4000/prototype/game');
-            this.thenOpen('http://localhost:4000/prototype/game');
-            this.thenOpen('http://localhost:4000/prototype/game');
+            this.thenOpen('http://localhost:4000/prototype/tutorial');
+            this.thenOpen('http://localhost:4000/prototype/play');
+            this.thenOpen('http://localhost:4000/prototype/play');
+            this.thenOpen('http://localhost:4000/prototype/play');
 
             this.thenOpen('http://localhost:4000/logout');
 

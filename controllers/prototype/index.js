@@ -26,12 +26,16 @@ var sceneToFunction = function(scene) {
 
 module.exports.game = function(req, res) {
 
+    req.session.experiments = req.session.experiments || [];
+    req.session.save();
+
     db.checkUserId(req.session.userId, function(ok) {
 
         if (ok) {
 
             db.createExp(
                 req.session.userId,
+                req.session.experiments,
                 function(expId, coinCombinationId, sceneId, recommendationStyle, coins) {
 
                     // if (expId === undefined) {
@@ -73,11 +77,21 @@ module.exports.play = function(req, res) {
 
     }
 
-    db.getLastExp(req.session.userId, function(sceneId, recoStyle, coins) {
+    req.session.experiments = req.session.experiments || [];
+
+    db.getLastExp(req.session.userId, function(sceneId, coinId, recoStyle, coins) {
 
         res.locals.scene = sceneToFunction(sceneId);
         res.locals.recommendationStyle= recoStyle;
         res.locals.coins = coins;
+
+        req.session.experiments.push({
+            sceneId: sceneId,
+            recommendationStyle: recoStyle,
+            coinCombinationId : coinId
+        });
+
+        req.session.save();
 
         // Prepare next experiment
         module.exports.game(req, null);
@@ -112,6 +126,13 @@ module.exports.replayInfo = function(req, res) {
 module.exports.replay = function(req, res, next) {
     // Get id parameter
     res.locals.id = tools.filterInt(req.params.id);
+
+    if (res.locals.id <= 0) {
+        var err = new Error("This replay does not exist");
+        err.status = 404;
+        next(err);
+        return;
+    }
 
     db.checkExpId(res.locals.id, function(sceneId) {
         if (sceneId === null) {
