@@ -1,14 +1,21 @@
 var pg = require('pg');
 var async = require('async');
+var DBReq = require('../controllers/prototype/dbrequests.js');
 
-var users, client, release, scenes, coinCombinations, experiments, callback, url;
+var users, client, release, scenes, coinCombinations, experiments, callback, url, db = {};
+
+function write(str) {
+    process.stderr.write('\033[31m' + str + '\033[0m');
+}
 
 function start() {
 
     client = new pg.Client(url);
 
+    write("Connecting to the database...");
     client.connect(
         function() {
+            write(" done !\n");
             client.query(
                 'SELECT * FROM Users',
                 function(err, result) {
@@ -26,6 +33,8 @@ function main() {
 
         // Init
         function(done) {
+
+            write("Getting scenes and coin combinations...");
 
             async.parallel([
                 function(callback) {
@@ -64,13 +73,16 @@ function main() {
                 },
 
             ], function() {
+                write(" done !\n");
                 done();
             });
 
         },
 
         function(done) {
-            async.map(
+
+            write("Getting experiments for each user...");
+            async.each(
                 users,
                 function(user, callback) {
                     client.query(
@@ -83,6 +95,7 @@ function main() {
                     );
                 },
                 function(err, result) {
+                    write(' done !\n');
                     done();
                 }
             );
@@ -90,7 +103,9 @@ function main() {
 
         function(done) {
 
-            async.map(
+            write('Getting experiments...');
+
+            async.each(
                 experiments,
                 function(exp, callback) {
                     client.query(
@@ -103,7 +118,31 @@ function main() {
                         }
                     );
                 },
-                done
+                function() {
+                    write(' done !\n');
+                    done();
+                }
+            );
+
+        },
+
+        function(done) {
+
+            write('Getting interactions from experiments (might be long)');
+
+            async.each( // Don't know why each doesn't work
+                experiments,
+                function(exp, callback) {
+                    DBReq.getInfo(exp.id, function(result) {
+                        exp.elements = result;
+                        write('.');
+                        callback();
+                    });
+                },
+                function () {
+                    write(' done !\n');
+                    done();
+                }
             );
 
         },
@@ -112,17 +151,15 @@ function main() {
         function(done) {
             client.end();
 
-            console.log("Finished");
-
             done();
         },
 
         function(done) {
 
-            module.exports.users = users;
-            module.exports.experiments = experiments;
-            module.exports.coinCombinations = coinCombinations;
-            callback();
+            db.users = users;
+            db.experiments = experiments;
+            db.coinCombinations = coinCombinations;
+            callback(db);
             done();
 
         }

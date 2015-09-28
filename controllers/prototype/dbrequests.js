@@ -73,9 +73,9 @@ DBReq.Info = function(id, finishAction) {
 
     // Connect to db
     var self = this;
-    pg.connect(pgc.url, function(err, client, release) {
-        self.client = client;
-        self.release = release;
+    self.client = new pg.Client(pgc.url);
+
+    self.client.connect(function() {
         self.execute();
     });
 };
@@ -108,8 +108,9 @@ DBReq.Info.prototype.tryMerge = function() {
     }
 
     // Release db connection
-    this.release();
-    this.release = null;
+    // this.release();
+    // this.release = null;
+    this.client.end();
     this.client = null;
 
     this.merge();
