@@ -370,12 +370,15 @@ geo.MeshStreamer.prototype.nextElements = function(_camera, force) {
 
             if (!force) {
 
+                var display = false;
+                var outcodes = [];
                 var exitToContinue = false;
                 threeVertices = [vertex1, vertex2, vertex3];
 
                 for (i = 0; i < threeVertices.length; i++) {
 
                     var vertex = threeVertices[i];
+                    var currentOutcode = "";
 
                     for (var j = 0; j < planes.length;  j++) {
 
@@ -387,22 +390,32 @@ geo.MeshStreamer.prototype.nextElements = function(_camera, force) {
                             plane.normal.z * vertex.z +
                             plane.constant;
 
-                        if (distance < 0)
-                        {
-                            exitToContinue = true;
-                            break;
-                        }
+                        // if (distance < 0) {
+                        //     exitToContinue = true;
+                        //     break;
+                        // }
+
+                        currentOutcode += distance > 0 ? '0' : '1';
 
                     }
 
-                    if (exitToContinue)
-                        break;
+                    outcodes.push(parseInt(currentOutcode,2));
 
                 }
 
-                if (exitToContinue)
+                // http://vterrain.org/LOD/culling.html
+                // I have no idea what i'm doing
+                // http://i.kinja-img.com/gawker-media/image/upload/japbcvpavbzau9dbuaxf.jpg
+                // But it seems to work
+                if ( (outcodes[0] | outcodes[1]) === 0 && (outcodes[1] | outcodes[2]) === 0 ) {
+                    // all points in
+                } else if ( (outcodes[0] === outcodes[1]) && (outcodes[0] === outcodes[2]) ) {
+                    // all points out
                     continue;
-
+                }
+                else {
+                    // part of the triangle is inside the viewing volume
+                }
             }
 
             if (!this.vertices[currentFace.a]) {
