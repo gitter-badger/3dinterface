@@ -34,33 +34,60 @@ module.exports.game = function(req, res) {
                 req.session.userId,
                 function(expId, coinCombinationId, sceneId, recommendationStyle, coins) {
 
-                    if (expId === undefined) {
+                    // if (expId === undefined) {
 
-                        res.redirect('/feedback');
-                        return;
+                    //     req.session.finished = true;
+                    //     req.session.save();
+                    //     return;
 
-                    }
+                    // }
 
-                    req.session.expId = expId;
-                    req.session.save();
+                    // req.session.expId = expId;
+                    // req.session.save();
 
-                    res.locals.scene = sceneToFunction(sceneId);
-                    res.locals.recommendationStyle = recommendationStyle;
-                    res.locals.coins = coins;
+                    // res.locals.scene = sceneToFunction(sceneId);
+                    // res.locals.recommendationStyle = recommendationStyle;
+                    // res.locals.coins = coins;
 
-                    res.setHeader('Content-Type','text/html');
-                    res.render('prototype_recommendation.jade', res.locals, function(err, result) {
-                        res.send(result);
-                    });
+                    // res.setHeader('Content-Type','text/html');
+                    // res.send("Ok");
                 });
 
         } else {
 
-            res.redirect('/');
 
         }
 
     });
+};
+
+module.exports.play = function(req, res) {
+
+    req.session.counter = req.session.counter === undefined ? 0 : req.session.counter + 1;
+    req.session.save();
+
+    if (req.session.counter > 2) {
+
+        res.redirect('/feedback');
+        return;
+
+    }
+
+    db.getLastExp(req.session.userId, function(sceneId, recoStyle, coins) {
+
+        res.locals.scene = sceneToFunction(sceneId);
+        res.locals.recommendationStyle= recoStyle;
+        res.locals.coins = coins;
+
+        // Prepare next experiment
+        module.exports.game(req, null);
+
+        res.setHeader('Content-Type', 'text/html');
+        res.render('prototype_recommendation.jade', res.locals, function(err, result) {
+            res.send(result);
+        });
+    });
+
 };
 
 module.exports.sponza = function(req, res) {
@@ -127,6 +154,10 @@ module.exports.tutorial = function(req, res) {
 
             // 1 is the ID of peach scene
             db.createTutorial(req.session.userId, function(id, coins) {
+
+                // Generate next experiment
+                module.exports.game(req, null);
+
                 req.session.tutorialDone = true;
                 req.session.expId = id;
                 res.locals.coins = coins;

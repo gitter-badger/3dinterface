@@ -920,6 +920,65 @@ DBReq.ExpIdChecker.prototype.finish = function() {
     this.finishAction(this.finalResult);
 };
 
+DBReq.LastExpGetter = function(userId, finishAction) {
+
+    var self = this;
+    this.userId = userId;
+    this.finishAction = finishAction;
+    this.finalResult = {};
+
+    pg.connect(pgc.url, function(err, client, release) {
+        self.client = client;
+        self.release = release;
+        self.execute();
+    });
+};
+
+DBReq.LastExpGetter.prototype.execute = function() {
+    var self = this;
+    this.client.query(
+        'SELECT scene_id AS "sceneId", \n' +
+        '       coin_1, \n' +
+        '       coin_2, \n' +
+        '       coin_3, \n' +
+        '       coin_4, \n' +
+        '       coin_5, \n' +
+        '       coin_6, \n' +
+        '       coin_7, \n' +
+        '       coin_8, \n' +
+        '       Experiment.recommendation_style AS "recommendationStyle" \n' +
+        'FROM Experiment, CoinCombination \n' +
+        'WHERE Experiment.coin_combination_id = CoinCombination.id \n' +
+        '      AND Experiment.user_id = $1 \n' +
+        'ORDER BY Experiment.id DESC \n' +
+        'LIMIT 1;',
+        [self.userId],
+        function (err, result) {
+            self.finalResult.sceneId = result.rows[0].sceneId;
+            self.finalResult.recommendationStyle = result.rows[0].recommendationStyle;
+            self.finalResult.coins = [
+                result.rows[0].coin_1,
+                result.rows[0].coin_2,
+                result.rows[0].coin_3,
+                result.rows[0].coin_4,
+                result.rows[0].coin_5,
+                result.rows[0].coin_6,
+                result.rows[0].coin_7,
+                result.rows[0].coin_8
+            ];
+            self.finish();
+        }
+    );
+};
+
+DBReq.LastExpGetter.prototype.finish = function() {
+    this.release();
+    this.client = null;
+    this.release = null;
+
+    this.finishAction(this.finalResult.sceneId, this.finalResult.recommendationStyle, this.finalResult.coins);
+}
+
 /**
  * Class that gets the info from all experiment
  * @param finishAction {function} callback that has as a parameter which is an
@@ -1131,6 +1190,10 @@ DBReq.checkExpId = function(id, callback) {
  */
 DBReq.getAllExps = function(callback) {
     new DBReq.ExpGetter(callback);
+};
+
+DBReq.getLastExp = function(id, callback) {
+    new DBReq.LastExpGetter(id, callback);
 };
 
 module.exports = DBReq;

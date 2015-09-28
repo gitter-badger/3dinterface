@@ -10,5 +10,6 @@ module.exports = {
     '/prototype/coin-viewer/:scene': 'viewer',
     '/prototype/coin-checker/:scene': 'checker',
     '/user-study': 'userstudy',
-    '/prototype/next': 'next'
+    '/prototype/next': 'next',
+    '/prototype/play': 'play'
 };

@@ -60,6 +60,11 @@ app.use(function(req, res, next) {
         res.locals.alertCookie = true;
         res.cookie('alreadyCame', true, {maxAge: 604800000}); // One week in ms
     }
+
+    if (req.url.substr(0, 7) === '/static' || req.url === '/favicon.ico') {
+        req.static = true;
+    }
+
     next();
 });
 

@@ -27,7 +27,7 @@ window.onbeforeunload = function() {
 
 };
 
-var nextPage = '/prototype/game';
+var nextPage = '/prototype/play';
 
 Coin.onCoinGot = function(coin) {
     if (coin === 6) {
