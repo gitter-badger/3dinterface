@@ -499,7 +499,7 @@ DBReq.UserCreator = function(workerId, age, male, rating, lastTime, finishAction
  */
 DBReq.UserCreator.prototype.execute = function() {
     var self = this;
-    this.client.query("BEGIN; LOCK Users;", [], function() {
+    this.client.query("BEGIN; LOCK Users IN SHARE ROW EXCLUSIVE MODE;", [], function() {
         self.client.query(
             "INSERT INTO users(worker_id, age, male, rating, lasttime)  VALUES($1, $2, $3, $4, $5);",
             [
@@ -569,7 +569,7 @@ DBReq.ExpCreator = function(userId, experiments, finishAction) {
         self.startTime = Date.now();
 
         // Start transaction and lock table
-        self.client.query("BEGIN; LOCK CoinCombination; LOCK Experiment;", [], function() {
+        self.client.query("BEGIN; LOCK CoinCombination IN SHARE ROW EXCLUSIVE MODE; LOCK Experiment IN SHARE ROW EXCLUSIVE MODE;", [], function() {
             self.execute();
         });
     });
@@ -579,9 +579,8 @@ function predicate(line) {
 
     return function(elt, idx, arr) {
 
-        console.log(elt.recommendationStyle, line.recommendationStyle);
         return (
-            elt.recommendationStyle.trim() === line.recommendationStyle.trim() ||
+            (elt.recommendationStyle !== null && (elt.recommendationStyle.trim() === line.recommendationStyle.trim())) ||
             line.id === elt.coinCombinationId
         );
 
@@ -651,8 +650,6 @@ DBReq.ExpCreator.prototype.execute = function() {
 
                 // Look for an experiment impossible
                 var elt = self.experiments.find(predicate(line));
-
-                // console.log(elt);
 
                 // Line is a valid experiment
                 if (elt === undefined) {
@@ -995,6 +992,15 @@ DBReq.LastExpGetter.prototype.execute = function() {
         'LIMIT 1;',
         [self.userId],
         function (err, result) {
+            if (err !== null) {
+                Log.dberror(err + ' in LastExpGetter (DBReq)');
+            }
+            if (result.rows.length === 0) {
+                setTimeout(function() {
+                    self.execute();
+                }, 1000);
+                return;
+            }
             self.finalResult.sceneId = result.rows[0].sceneId;
             self.finalResult.recommendationStyle = result.rows[0].recommendationStyle;
             self.finalResult.coins = [

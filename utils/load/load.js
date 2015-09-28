@@ -16,7 +16,7 @@ var casper = require('casper').create({
     waitTimeout: 100000
 });
 
-var limit = 1;
+var limit = 100;
 
 casper.start('http://localhost:4000/');
 
