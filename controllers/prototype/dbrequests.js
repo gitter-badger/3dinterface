@@ -565,6 +565,8 @@ DBReq.ExpCreator = function(userId, finishAction) {
         self.client = client;
         self.release = release;
 
+        self.startTime = Date.now();
+
         // Start transaction and lock table
         self.client.query("BEGIN; LOCK CoinCombination; LOCK Experiment;", [], function() {
             self.execute();
@@ -664,8 +666,9 @@ DBReq.ExpCreator.prototype.execute = function() {
                     "SELECT RecommendationStyle.name, Scene.id AS \"sceneId\"\n" +
                     "FROM RecommendationStyle, Scene\n" +
                     "WHERE\n" +
+                    "    Scene.name != 'peachcastle' AND \n" +
                     "    RecommendationStyle.name NOT IN(\n" +
-                    "        SELECT Experiment.recommendation_style AS name\n" +
+                    "        SELECT DISTINCT Experiment.recommendation_style AS name\n" +
                     "        FROM Experiment\n" +
                     "        WHERE Experiment.user_id = $1\n" +
                     "        AND Experiment.recommendation_style != ''\n" +
@@ -676,8 +679,7 @@ DBReq.ExpCreator.prototype.execute = function() {
                     "        WHERE\n" +
                     "            Experiment.coin_combination_id = CoinCombination.id AND\n" +
                     "            user_id = $1\n" +
-                    "    ) AND\n" +
-                    "    Scene.name != 'peachcastle'\n" +
+                    "    ) \n" +
                     "\n" +
                     "ORDER BY RANDOM()\n" +
                     "LIMIT 1;",
@@ -765,6 +767,8 @@ DBReq.ExpCreator.prototype.finish = function() {
 
     // Commit, and then release
     this.client.query("COMMIT;", function() {
+
+        Log.debug('Exp creation took ' + (Date.now() - self.startTime) + ' ms');
 
         self.release();
         self.client = null;
