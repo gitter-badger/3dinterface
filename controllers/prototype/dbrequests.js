@@ -801,7 +801,7 @@ DBReq.ExpCreator.prototype.finish = function() {
     // Commit, and then release
     this.client.query("COMMIT;", function() {
 
-        Log.debug('Exp creation took ' + (Date.now() - self.startTime) + ' ms');
+        Log.debug('Exp creation took ' + (Date.now() - self.startTime) + ' ms', true);
 
         self.release();
         self.client = null;

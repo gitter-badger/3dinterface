@@ -1,3 +1,6 @@
+var baseUrl = 'http://localhost:4000/';
+var baseUrl = 'http://3dinterface.no-ip.org/';
+
 function makeId()
 {
     var text = "";
@@ -18,13 +21,13 @@ var casper = require('casper').create({
 
 var limit = 100;
 
-casper.start('http://localhost:4000/');
+casper.start(baseUrl);
 
 for (var i = 0; i < limit; i++) {
 
     (function(i) {
 
-        casper.thenOpen('http://localhost:4000/user-study', function() {
+        casper.thenOpen(baseUrl + 'user-study', function() {
 
             console.log(i);
 
@@ -42,12 +45,12 @@ for (var i = 0; i < limit; i++) {
 
             // }, true);
 
-            this.thenOpen('http://localhost:4000/prototype/tutorial');
-            this.thenOpen('http://localhost:4000/prototype/play');
-            this.thenOpen('http://localhost:4000/prototype/play');
-            this.thenOpen('http://localhost:4000/prototype/play');
+            this.thenOpen(baseUrl + 'prototype/tutorial');
+            this.thenOpen(baseUrl + 'prototype/play');
+            this.thenOpen(baseUrl + 'prototype/play');
+            this.thenOpen(baseUrl + 'prototype/play');
 
-            this.thenOpen('http://localhost:4000/logout');
+            this.thenOpen(baseUrl + 'logout');
 
         });
 
