@@ -79,7 +79,7 @@ module.exports.play = function(req, res) {
 
     req.session.experiments = req.session.experiments || [];
 
-    db.getLastExp(req.session.userId, function(sceneId, coinId, recoStyle, coins) {
+    db.getLastExp(req.session.userId, function(expId, sceneId, coinId, recoStyle, coins) {
 
         res.locals.scene = sceneToFunction(sceneId);
         res.locals.recommendationStyle= recoStyle;
@@ -91,6 +91,7 @@ module.exports.play = function(req, res) {
             coinCombinationId : coinId
         });
 
+        req.session.expId = expId;
         req.session.save();
 
         // Prepare next experiment

@@ -1008,6 +1008,7 @@ DBReq.LastExpGetter.prototype.execute = function() {
         '       coin_7, \n' +
         '       coin_8, \n' +
         '       Experiment.recommendation_style AS "recommendationStyle", \n' +
+        '       Experiment.id AS "expId", \n' +
         '       CoinCombination.id as "coinCombinationId" \n' +
         'FROM Experiment, CoinCombination \n' +
         'WHERE Experiment.coin_combination_id = CoinCombination.id \n' +
@@ -1038,6 +1039,7 @@ DBReq.LastExpGetter.prototype.execute = function() {
                 result.rows[0].coin_8
             ];
             self.finalResult.coinCombinationId = result.rows[0].coinCombinationId;
+            self.finalResult.expId = result.rows[0].expId;
             self.finish();
         }
     );
@@ -1049,6 +1051,7 @@ DBReq.LastExpGetter.prototype.finish = function() {
     this.release = null;
 
     this.finishAction(
+        this.finalResult.expId,
         this.finalResult.sceneId,
         this.finalResult.coinCombinationId,
         this.finalResult.recommendationStyle,
