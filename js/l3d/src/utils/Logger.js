@@ -41,7 +41,7 @@ L3D.DB.Private.sendData = function(url, data, force) {
  * @memberof L3D.DB.Private
  * @type {Boolean}
  */
-L3D.DB.Private.enabled = true;
+L3D.DB.Private.enabled = !window.DB_DISABLED;
 
 /**
  * Enables the requests
