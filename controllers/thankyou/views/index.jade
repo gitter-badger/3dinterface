@@ -6,3 +6,8 @@ block content
         source(src="/static/data/music/thankyou.ogg")
         source(src="/static/data/music/thankyou.mp3")
 
+    if (vcode !== undefined)
+        p Your vcode is #{vcode}.
+    else if (workerId !== undefined)
+        p You have no vcode because you're bad
+

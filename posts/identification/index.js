@@ -9,7 +9,7 @@ module.exports.index = function(req, res) {
         if (!ok) {
 
             db.createUser(
-                req.body.inputId,
+                req.session.workerId || req.body.inputId,
                 req.body.inputAge,
                 req.body.inputGender === 'male',
                 req.body.input3dskills,

@@ -12,7 +12,8 @@
         "serve-favicon": "2.3.0",
         "emailjs":"0.3.16",
         "three":"0.71.0",
-        "sha256":"0.2.0"
+        "sha256":"0.2.0",
+        "async":"1.4.2"
     },
     "repository" : {
         "type" : "git",

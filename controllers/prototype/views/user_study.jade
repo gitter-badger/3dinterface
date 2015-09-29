@@ -39,7 +39,10 @@ block content
     form#form.form-signin(method="POST", action='/identification')
         h2 Please sign in
         label(for='inputId').sr-only Id
-        input#inputId.form-control(name="inputId", type="text", placeholder='Id', required, autofocus)
+        if (workerId === undefined)
+            input#inputId.form-control(name="inputId", type="text", placeholder='Id', required, autofocus)
+        else
+            input#inputId.form-control(name="inputId", type="text", placeholder='Id', required, autofocus, disabled, value="#{workerId}")
 
         .form-group
             label Gender

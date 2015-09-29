@@ -1,7 +1,7 @@
 // Polyfill of find array
 if (!Array.prototype.find) {
     Array.prototype.find = function(predicate) {
-        if (this == null) {
+        if (this === null || this === undefined) {
             throw new TypeError('Array.prototype.find a été appelé sur null ou undefined');
         }
         if (typeof predicate !== 'function') {
@@ -22,9 +22,42 @@ if (!Array.prototype.find) {
     };
 }
 
+// Production steps of ECMA-262, Edition 5, 15.4.4.21
+// Reference: http://es5.github.io/#x15.4.4.21
+if (!Array.prototype.reduce) {
+    Array.prototype.reduce = function(callback /*, initialValue*/) {
+        'use strict';
+        if (this === null || this === undefined) {
+            throw new TypeError('Array.prototype.reduce called on null or undefined');
+        }
+        if (typeof callback !== 'function') {
+            throw new TypeError(callback + ' is not a function');
+        }
+        var t = Object(this), len = t.length >>> 0, k = 0, value;
+        if (arguments.length == 2) {
+            value = arguments[1];
+        } else {
+            while (k < len && !(k in t)) {
+                k++;
+            }
+            if (k >= len) {
+                throw new TypeError('Reduce of empty array with no initial value');
+            }
+            value = t[k++];
+        }
+        for (; k < len; k++) {
+            if (k in t) {
+                value = callback(value, t[k], k, t);
+            }
+        }
+        return value;
+    };
+}
+
 var pg = require('pg');
 var pgc = require('../../private.js');
 var Log = require('../../lib/NodeLog.js');
+var async = require('async');
 
 /**
  *
@@ -605,7 +638,7 @@ function predicate(line) {
 
         return (
             (elt.recommendationStyle !== null && (elt.recommendationStyle.trim() === line.recommendationStyle.trim())) ||
-            line.id === elt.coinCombinationId
+            line.sceneId === elt.sceneId
         );
 
     };
@@ -1182,6 +1215,61 @@ DBReq.TutorialCreator.prototype.finish = function() {
     this.finishAction(this.finalResult.expId, this.finalResult.coins);
 };
 
+DBReq.UserVerifier = function(userId, finishAction) {
+    this.userId = userId;
+    this.finishAction = finishAction;
+    var self = this;
+
+    pg.connect(pgc.url, function(err, client, release) {
+        self.client = client;
+        self.release = release;
+
+        self.execute();
+    });
+};
+
+DBReq.UserVerifier.prototype.execute = function() {
+
+    var self = this;
+    this.client.query(
+        "SELECT id as \"expId\" FROM Experiment WHERE user_id = $1",
+        [self.userId],
+        function(err, result) {
+            if (result.rows.length !== 4) {
+                self.finish(false);
+            }
+
+            async.map(
+                result.rows,
+                function(elt, callback) {
+                    self.client.query(
+                        "SELECT count(*) > 5 AS ok FROM CoinClicked WHERE exp_id = $1",
+                        [elt.expId],
+                        function(err, result) {
+                            callback(null, result.rows[0].ok === true);
+                        }
+                    );
+                },
+                function(err, result) {
+                    var ok = result.reduce(function(prev, next) { return prev && next; });
+                    self.finish(ok);
+                }
+            );
+        }
+    );
+
+};
+
+DBReq.UserVerifier.prototype.finish = function(finalResult) {
+    this.release();
+
+    this.client = null;
+    this.release = null;
+    this.finishAction(finalResult);
+};
+
+
+
 /**
  * Try to get a user by id, and creates it if it doesn't exists
  * @param id {Number} id to test
@@ -1274,6 +1362,10 @@ DBReq.getAllExps = function(callback) {
 
 DBReq.getLastExp = function(id, callback) {
     new DBReq.LastExpGetter(id, callback);
+};
+
+DBReq.verifyUser = function(id, callback) {
+    new DBReq.UserVerifier(id, callback);
 };
 
 module.exports = DBReq;

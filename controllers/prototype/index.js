@@ -82,7 +82,7 @@ module.exports.play = function(req, res) {
     db.getLastExp(req.session.userId, function(expId, sceneId, coinId, recoStyle, coins) {
 
         res.locals.scene = sceneToFunction(sceneId);
-        res.locals.recommendationStyle= recoStyle;
+        res.locals.recommendationStyle = recoStyle;
         res.locals.coins = coins;
 
         req.session.experiments.push({
@@ -236,7 +236,6 @@ module.exports.viewer = editorHelper('prototype_viewer.jade');
 module.exports.checker = editorHelper('prototype_checker.jade');
 
 module.exports.userstudy = function(req, res) {
-    res.setHeader('Content-Type', 'text/html');
 
     if (req.session.userId !== undefined) {
 
@@ -249,6 +248,9 @@ module.exports.userstudy = function(req, res) {
     req.session.identificationFailed = false;
     req.session.save();
 
+    res.locals.workerId = req.session.workerId;
+
+    res.setHeader('Content-Type', 'text/html');
     res.render('user_study.jade', res.locals, function(err, result) {
         res.send(result);
     });
