@@ -81,9 +81,25 @@ module.exports.play = function(req, res) {
 
     db.getLastExp(req.session.userId, function(expId, sceneId, coinId, recoStyle, coins) {
 
+        // if (coinId === undefined) {
+        //     console.log("=== ERROR : COIN_ID IS UNDEFINED ===");
+        //     process.exit(-1)
+        // }
+
         res.locals.scene = sceneToFunction(sceneId);
         res.locals.recommendationStyle = recoStyle;
         res.locals.coins = coins;
+
+        // var elt = req.session.experiments.find(function(elt) {
+        //     return elt.coinCombinationId === coinId;
+        // });
+
+        // if (elt !== undefined) {
+        //     console.log("=== ERROR DETECTED === user " + req.session.userId);
+        //     console.log(req.session.experiments);
+        //     console.log(coinId);
+        //     process.exit(-1)
+        // }
 
         req.session.experiments.push({
             sceneId: sceneId,

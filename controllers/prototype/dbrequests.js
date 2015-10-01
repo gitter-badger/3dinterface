@@ -855,6 +855,14 @@ DBReq.ExpCreator.prototype.execute = function() {
 DBReq.ExpCreator.prototype.finish = function() {
     var self = this;
 
+    // self.finishAction(
+    //     self.finalResult.expId,
+    //     self.finalResult.coinCombinationId,
+    //     self.finalResult.sceneId,
+    //     self.finalResult.recommendationStyle,
+    //     self.finalResult.coins
+    // );
+
     // Commit, and then release
     this.client.query("COMMIT;", function() {
 
@@ -1046,10 +1054,12 @@ DBReq.LastExpGetter.prototype.execute = function() {
         'FROM Experiment, CoinCombination \n' +
         'WHERE Experiment.coin_combination_id = CoinCombination.id \n' +
         '      AND Experiment.user_id = $1 \n' +
+        '      AND NOT Experiment.finished \n' +
         'ORDER BY Experiment.id DESC \n' +
         'LIMIT 1;',
         [self.userId],
         function (err, result) {
+
             if (err !== null) {
                 Log.dberror(err + ' in LastExpGetter (DBReq)');
             }
@@ -1059,21 +1069,29 @@ DBReq.LastExpGetter.prototype.execute = function() {
                 }, 1000);
                 return;
             }
-            self.finalResult.sceneId = result.rows[0].sceneId;
-            self.finalResult.recommendationStyle = result.rows[0].recommendationStyle;
-            self.finalResult.coins = [
-                result.rows[0].coin_1,
-                result.rows[0].coin_2,
-                result.rows[0].coin_3,
-                result.rows[0].coin_4,
-                result.rows[0].coin_5,
-                result.rows[0].coin_6,
-                result.rows[0].coin_7,
-                result.rows[0].coin_8
-            ];
-            self.finalResult.coinCombinationId = result.rows[0].coinCombinationId;
-            self.finalResult.expId = result.rows[0].expId;
-            self.finish();
+
+            self.client.query(
+                'UPDATE Experiment SET finished = true WHERE id = $1',
+                [result.rows[0].expId],
+                function() {
+                    self.finalResult.sceneId = result.rows[0].sceneId;
+                    self.finalResult.recommendationStyle = result.rows[0].recommendationStyle;
+                    self.finalResult.coins = [
+                        result.rows[0].coin_1,
+                        result.rows[0].coin_2,
+                        result.rows[0].coin_3,
+                        result.rows[0].coin_4,
+                        result.rows[0].coin_5,
+                        result.rows[0].coin_6,
+                        result.rows[0].coin_7,
+                        result.rows[0].coin_8
+                    ];
+                    self.finalResult.coinCombinationId = result.rows[0].coinCombinationId;
+                    self.finalResult.expId = result.rows[0].expId;
+                    self.finish();
+
+                }
+            );
         }
     );
 };
@@ -1192,8 +1210,8 @@ DBReq.TutorialCreator.prototype.execute = function() {
                 function(err, result) {
                     // Create experiment
                     self.client.query(
-                        "INSERT INTO Experiment(user_id, coin_combination_id)\n" +
-                        "VALUES($1,$2)\n" +
+                        "INSERT INTO Experiment(user_id, coin_combination_id, finished)\n" +
+                        "VALUES($1,$2, true)\n" +
                         "RETURNING id;",
                         [self.id, result.rows[0].id],
                         function(err, result) {

@@ -1,5 +1,5 @@
 var baseUrl = 'http://localhost:4000/';
-var baseUrl = 'http://3dinterface.no-ip.org/';
+// var baseUrl = 'http://3dinterface.no-ip.org/';
 
 function makeId()
 {

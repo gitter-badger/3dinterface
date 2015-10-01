@@ -73,7 +73,8 @@ CREATE TABLE Experiment(
     id SERIAL PRIMARY KEY,
     user_id SERIAL REFERENCES Users (id),
     coin_combination_id SERIAL REFERENCES CoinCombination (id),
-    recommendation_style VARCHAR(30)
+    recommendation_style VARCHAR(30),
+    finished BOOLEAN DEFAULT(false)
 );
 
 -- Init scene table
