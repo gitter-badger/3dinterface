@@ -54,6 +54,8 @@ function main() {
     // Set the good size of cameras
     onWindowResize();
 
+    Coin.update(true);
+
     if (locked !== undefined && locked)
         startCanvas.render();
 
@@ -63,7 +65,6 @@ function main() {
     else
         L3D.DB.disable();
 
-    Coin.update();
     // startCanvas.render(L3D.StartCanvas.Black);
 
     // Bind previewer to renderer (for fixed option)
@@ -185,6 +186,8 @@ function render() {
     var currentTime = Date.now() - previousTime;
     camera1.update(isNaN(currentTime) ? 20 : currentTime);
     previousTime = Date.now();
+
+    Coin.update();
 
     // Update the recommendations
     recommendations.map(function(reco) { reco.update(camera1);});

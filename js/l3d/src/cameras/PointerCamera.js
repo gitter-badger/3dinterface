@@ -339,8 +339,8 @@ L3D.PointerCamera.prototype.normalMotion = function(time) {
 
     if ( this.isLocked() || this.dragging) {
 
-        this.theta += (this.mouseMove.x * time / 20);
-        this.phi   -= (this.mouseMove.y * time / 20);
+        this.theta += (this.mouseMove.x); //  * Math.sqrt(time) / Math.sqrt(20));
+        this.phi   -= (this.mouseMove.y); //  * Math.sqrt(time) / Math.sqrt(20));
 
         this.mouseMove.x = 0;
         this.mouseMove.y = 0;
@@ -630,8 +630,8 @@ L3D.PointerCamera.prototype.onMouseMove = function(event) {
         this.mouse.x = ( ( event.clientX - this.renderer.domElement.offsetLeft ) / this.renderer.domElement.width ) * 2 - 1;
         this.mouse.y = - ( ( event.clientY - this.renderer.domElement.offsetTop ) / this.renderer.domElement.height ) * 2 + 1;
 
-        this.mouseMove.x = this.mouse.x - mouse.x;
-        this.mouseMove.y = this.mouse.y - mouse.y;
+        this.mouseMove.x = (this.mouse.x - mouse.x) * 4;
+        this.mouseMove.y = (this.mouse.y - mouse.y) * 4;
 
         this.mouseMoved = true;
     }
@@ -648,8 +648,8 @@ L3D.PointerCamera.prototype.onMouseMovePointer = function(e) {
         this.mouseMove.x = e.movementX || e.mozMovementX || e.webkitMovementX || 0;
         this.mouseMove.y = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
 
-        this.mouseMove.x *= -(this.sensitivity/5);
-        this.mouseMove.y *=  (this.sensitivity/5);
+        this.mouseMove.x *= -(this.sensitivity/10);
+        this.mouseMove.y *=  (this.sensitivity/10);
 
         this.mouseMoved = true;
 

@@ -54,7 +54,7 @@ function main() {
     // Set the good size of cameras
     onWindowResize();
 
-    Coin.update();
+    Coin.update(true);
 
     // Start tutorial
     tutorial.setCameras(recommendations);
@@ -83,6 +83,7 @@ function main() {
     setInterval(function() {logfps(stats.getFps());}, 500);
 
     Coin.onLastCoin = function() {
+        Coin.blink();
         $('#next').click(function() {
             window.location = '/before-begin';
         });

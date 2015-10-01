@@ -171,6 +171,7 @@ function appendTo(container) {
 }
 
 function setNextButton(target) {
+    Coin.blink();
     $('#next').show();
     $('#next').click(function() {
         window.location = target;

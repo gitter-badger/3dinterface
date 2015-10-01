@@ -10,6 +10,15 @@ var Coin = function(x,y,z, callback) {
     }
 };
 
+function instantToColor(instant) {
+
+    var r = Math.floor(255 * instant);
+    var g = Math.floor(255 * (1-instant));
+
+    return 'rgb(' + r + ',' + g + ',0)';
+
+}
+
 var _toto = new Audio();
 Coin.extension = _toto.canPlayType("audio/x-vorbis") === "" ? ".ogg" : ".mp3";
 
@@ -27,6 +36,9 @@ Coin.domElement.style.top = "0px";
 Coin.domElement.style.left = "0px";
 
 Coin.lvl = 0;
+Coin.blinking = false;
+Coin.blinkingToRed = true;
+Coin.colorInstant = 0;
 
 Coin.setSize = function(width,height) {
     this.domElement.width = width;
@@ -52,10 +64,31 @@ Coin.update = function() {
     var x;
     try {
         x = containerSize.width() * 4.75 / 5;
-        Coin.domElement.width = containerSize.width();
-        Coin.domElement.height = containerSize.height();
+
+        if (Coin.domElement.width === undefined) {
+            Coin.domElement.width = containerSize.width();
+            Coin.domElement.height = containerSize.height();
+        }
     } catch (e) {
         return;
+    }
+
+    if (Coin.blinking) {
+
+        Coin.colorInstant += Coin.blinkingToRed ? 0.025 : -0.025;
+
+        if (Coin.colorInstant < 0 || Coin.colorInstant > 1) {
+
+            Coin.colorInstant = Math.clamp(Coin.colorInstant, 0, 1);
+            Coin.blinkingToRed = !Coin.blinkingToRed;
+
+        }
+
+    } else {
+
+        Coin.colorInstant = 0;
+        Coin.blinkingToRed = true;
+
     }
 
     // Coin.domElement.width = Coin.domElement.width;
@@ -73,16 +106,18 @@ Coin.update = function() {
     // Coin.ctx.stroke();
     // Coin.ctx.fill();
 
-    Coin.domElement.width = Coin.domElement.width;
 
     var width = 10;
     var height = 100;
     var lvl = Coin.lvl;
-    var grd = Coin.ctx.createLinearGradient(x,20,width,height);
-    grd.addColorStop(1, "red");
-    grd.addColorStop(0.5, "green");
 
-    Coin.ctx.fillStyle = grd;
+    // if (Coin.previousLvl < lvl)
+    //     Coin.domElement.width = Coin.domElement.width;
+
+    Coin.ctx.save();
+
+    Coin.ctx.clearRect(x-70, 20, width +71, height);
+    Coin.ctx.fillStyle = instantToColor(Coin.colorInstant);
     Coin.ctx.fillRect(x,20 + (1-lvl)*height,10,(lvl*height));
 
     Coin.ctx.beginPath();
@@ -91,23 +126,36 @@ Coin.update = function() {
     Coin.ctx.lineTo(x+width,120);
     Coin.ctx.lineTo(x+width,20);
     Coin.ctx.stroke();
-    Coin.ctx.closePath();
 
     Coin.ctx.fillStyle = 'black';
     Coin.ctx.font="20px Arial";
     Coin.ctx.fillText('Score', x - 60, 25);
 
+    Coin.ctx.restore();
+
 };
+
+setInterval(function() {
+    Coin.update();
+}, 50);
 
 Coin.set = function() {
     var newLvl = Coin.total / Coin.max;
     Coin.lvl+=0.01*Math.sign(newLvl-Coin.lvl);
     if (Math.abs(Coin.lvl-newLvl) > 0.005) {
-        Coin.update();
+        Coin.shouldUpdate = true;
         setTimeout(function() {
             Coin.set(newLvl);
         },50);
+    } else {
+        Coin.shouldUpdate = Coin.blinking;
     }
+};
+
+Coin.blink = function(param) {
+    var blinking = param === undefined ? true : !!param;
+    Coin.blinking = blinking;
+    Coin.shouldUpdate = true;
 };
 
 // Coin.image.onload = Coin.update;

@@ -238,8 +238,8 @@ TutorialSteps.prototype.nextAction = function() {
         case  5: return 'rotate-keyboard';
         case 11: return 'translate-keyboard';
         case 13: return 'reset-camera';
-        case 15: // Fallthrough
-        case 16: // Fallthrough
+        case 15: return 'recommendation';
+        case 16: return;
         case 17: return 'recommendation';
     }
 };
