@@ -5,7 +5,7 @@
  * @constructor
  */
 L3D.ViewportRecommendation = function(arg1, arg2, arg3, arg4, position, target) {
-    L3D.BaseRecommendation.apply(this, arguments);
+    L3D.ArrowRecommendation.apply(this, arguments);
 
     if (target === undefined)
         target = new THREE.Vector3(0,0,0);
@@ -115,7 +115,7 @@ L3D.ViewportRecommendation = function(arg1, arg2, arg3, arg4, position, target) 
     this.add(this.object3D);
 
 };
-L3D.ViewportRecommendation.prototype = Object.create(L3D.BaseRecommendation.prototype);
+L3D.ViewportRecommendation.prototype = Object.create(L3D.ArrowRecommendation.prototype);
 L3D.ViewportRecommendation.prototype.constructor = L3D.ViewportRecommendation;
 
 L3D.ViewportRecommendation.prototype.raycast = function(raycaster, intersects) {

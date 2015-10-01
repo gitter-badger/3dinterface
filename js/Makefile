@@ -26,10 +26,9 @@ L3D:
 		--js l3d/src/canvases/Previewer.js \
 		--js l3d/src/loaders/ProgressiveLoader.js \
 		--js l3d/src/recommendations/BaseRecommendation.js \
-		--js l3d/src/recommendations/ViewportRecommendation.js \
 		--js l3d/src/recommendations/ArrowRecommendation.js \
+		--js l3d/src/recommendations/ViewportRecommendation.js \
 		--js l3d/src/recommendations/ReverseRecommendation.js \
-		--js l3d/src/recommendations/EmptyRecommendation.js \
 		--js l3d/src/cameras/ReplayCamera.js \
 		--js l3d/src/cameras/Camera.js \
 		--js l3d/src/cameras/FixedCamera.js \

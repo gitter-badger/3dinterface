@@ -83,7 +83,7 @@ INSERT INTO Scene(name, coin_number) VALUES ('bobomb'          , 44);
 INSERT INTO Scene(name, coin_number) VALUES ('coolcoolmountain', 66);
 INSERT INTO Scene(name, coin_number) VALUES ('whomp'           , 50);
 
-INSERT INTO RecommendationStyle(name) VALUES('L3D.EmptyRecommendation');
+INSERT INTO RecommendationStyle(name) VALUES('L3D.BaseRecommendation');
 INSERT INTO RecommendationStyle(name) VALUES('L3D.ArrowRecommendation');
 INSERT INTO RecommendationStyle(name) VALUES('L3D.ViewportRecommendation');
 

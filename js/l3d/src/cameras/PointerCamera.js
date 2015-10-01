@@ -630,8 +630,8 @@ L3D.PointerCamera.prototype.onMouseMove = function(event) {
         this.mouse.x = ( ( event.clientX - this.renderer.domElement.offsetLeft ) / this.renderer.domElement.width ) * 2 - 1;
         this.mouse.y = - ( ( event.clientY - this.renderer.domElement.offsetTop ) / this.renderer.domElement.height ) * 2 + 1;
 
-        this.mouseMove.x = (this.mouse.x - mouse.x) * 4;
-        this.mouseMove.y = (this.mouse.y - mouse.y) * 4;
+        this.mouseMove.x = (this.mouse.x - mouse.x) * 3;
+        this.mouseMove.y = (this.mouse.y - mouse.y) * 3;
 
         this.mouseMoved = true;
     }

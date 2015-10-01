@@ -5,9 +5,9 @@
  * @extends L3D.BaseRecommendation
  */
 L3D.ReverseRecommendation = function(arg1, arg2, arg3, arg4, position, target) {
-    L3D.BaseRecommendation.apply(this, arguments);
+    L3D.ArrowRecommendation.apply(this, arguments);
 };
-L3D.ReverseRecommendation.prototype = Object.create(L3D.BaseRecommendation.prototype);
+L3D.ReverseRecommendation.prototype = Object.create(L3D.ArrowRecommendation.prototype);
 L3D.ReverseRecommendation.prototype.constructor = L3D.ReverseRecommendation;
 
 // Overload init

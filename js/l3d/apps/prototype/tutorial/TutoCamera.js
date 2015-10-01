@@ -507,8 +507,8 @@ TutoCamera.prototype.onMouseMove = function(event) {
         this.mouse.x = ( ( event.clientX - this.renderer.domElement.offsetLeft ) / this.renderer.domElement.width ) * 2 - 1;
         this.mouse.y = - ( ( event.clientY - this.renderer.domElement.offsetTop ) / this.renderer.domElement.height ) * 2 + 1;
 
-        this.mouseMove.x = this.mouse.x - mouse.x;
-        this.mouseMove.y = this.mouse.y - mouse.y;
+        this.mouseMove.x = (this.mouse.x - mouse.x ) * 3;
+        this.mouseMove.y = (this.mouse.y - mouse.y ) * 3;
         this.mouseMoved = true;
 
         if (this.tutorial.nextAction() === 'rotate-mouse') {
