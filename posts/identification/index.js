@@ -5,11 +5,15 @@ var Log = require('../../lib/NodeLog.js');
 
 module.exports.index = function(req, res) {
 
-    db.checkUserName(req.body.inputId, function(ok) {
+    var workerId = req.session.workerId || req.body.inputId;
+
+    console.log(workerId);
+
+    db.checkUserName(workerId, function(ok) {
         if (!ok) {
 
             db.createUser(
-                req.session.workerId || req.body.inputId,
+                workerId,
                 req.body.inputAge,
                 req.body.inputGender === 'male',
                 req.body.input3dskills,
