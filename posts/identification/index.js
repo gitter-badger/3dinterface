@@ -7,8 +7,6 @@ module.exports.index = function(req, res) {
 
     var workerId = req.session.workerId || req.body.inputId;
 
-    console.log(workerId);
-
     db.checkUserName(workerId, function(ok) {
         if (!ok) {
 
