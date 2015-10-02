@@ -56,6 +56,11 @@ block content
                     allAnswered = false;
                 }
             });
+            $("input:text").each(function(){
+                if ($(this).val().length === 0) {
+                    allAnswered = false;
+                }
+            });
             if (!allAnswered) {
                 alert('You did not answer all the questions');
                 return false;
