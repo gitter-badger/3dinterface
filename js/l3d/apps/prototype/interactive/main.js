@@ -44,10 +44,10 @@ var nextPage = '/prototype/play';
 Coin.onCoinGot = function(coin) {
     if (coin === 6) {
         setTimeout(function() { setNextButton(nextPage); }, 60*1000);
+    } else if (coin === 8) {
+        setNextButton(nextPage);
     }
 };
-
-Coin.onLastCoin = function() { setNextButton(nextPage); };
 
 function main() {
 

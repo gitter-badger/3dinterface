@@ -230,43 +230,43 @@ Coin.prototype.update = function() {
 };
 
 Coin.prototype.get = function() {
-    if (!this.got) {
-        this.got = true;
-
-        if (typeof Coin.onCoinGot === 'function') {
-            Coin.onCoinGot(Coin.total + 1);
-        }
-
-        // Call the callback if any
-        if (this.callback)
-            this.callback();
-
-        this.mesh.material.transparent = true;
-        this.mesh.material.opacity = 1;
-
-        Coin.sounds[Coin.total ++].play();
-        if (Coin.total === 8) {
-            if (typeof Coin.onLastCoin === 'function') {
-                Coin.onLastCoin();
-            }
-            // You got the last coin
-            var music = document.getElementById('music');
-            if (music !== null) {
-                var wasPlaying = !music.paused;
-                music.pause();
-                setTimeout(function() {
-                    Coin.lastSound.play();
-                    setTimeout(function() {
-                        if (wasPlaying) {
-                            music.play();
-                        }
-                    }, Coin.lastSound.duration*1000);
-                }, Coin.nextSound.duration*1000);
-            }
-        }
-
-        Coin.set();
+    if (this.got) {
+        return;
     }
+    this.got = true;
+
+    if (typeof Coin.onCoinGot === 'function') {
+        Coin.onCoinGot(Coin.total + 1);
+    }
+
+    // Call the callback if any
+    if (this.callback)
+        this.callback();
+
+    this.mesh.material.transparent = true;
+    this.mesh.material.opacity = 1;
+
+    Coin.sounds[Coin.total ++].play();
+
+    if (Coin.total === Coin.max) {
+
+        // You got the last coin
+        var music = document.getElementById('music');
+        if (music !== null) {
+            var wasPlaying = !music.paused;
+            music.pause();
+            setTimeout(function() {
+                Coin.lastSound.play();
+                setTimeout(function() {
+                    if (wasPlaying) {
+                        music.play();
+                    }
+                }, Coin.lastSound.duration*1000);
+            }, Coin.nextSound.duration*1000);
+        }
+    }
+
+    Coin.set();
 };
 
 Coin.lastSound = new Audio('/static/data/music/starappears' + Coin.extension);

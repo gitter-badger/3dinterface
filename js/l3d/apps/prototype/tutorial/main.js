@@ -23,10 +23,10 @@ var nextPage = '/before-begin';
 Coin.onCoinGot = function(val) {
     if (val === 6) {
         setTimeout(function() {setNextButton(nextPage); }, 60*1000);
+    } else if (val === 8) {
+        setNextButton(nextPage);
     }
 };
-
-Coin.onLastCoin = function() { setNextButton(nextPage); };
 
 window.onbeforeunload = function() {
 
@@ -81,14 +81,6 @@ function main() {
 
     // Log fps
     setInterval(function() {logfps(stats.getFps());}, 500);
-
-    Coin.onLastCoin = function() {
-        Coin.blink();
-        $('#next').click(function() {
-            window.location = '/before-begin';
-        });
-        $('#next').show();
-    };
 
 }
 
