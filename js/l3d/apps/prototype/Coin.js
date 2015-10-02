@@ -91,6 +91,8 @@ Coin.update = function() {
 
     }
 
+    document.getElementById('next').style.background = instantToColor(Coin.colorInstant);
+
     // Coin.domElement.width = Coin.domElement.width;
 
     // Coin.ctx.drawImage(Coin.image, x + 75,25,30,30);
@@ -289,6 +291,7 @@ Coin.init = function(scale) {
             function(object) {
                 object.traverse(function (mesh) {
                     if (mesh instanceof THREE.Mesh) {
+                        mesh.visible = false;
                         mesh.scale.set(scale,scale,scale);
                         mesh.material.color.setHex(0xff0000);
                         mesh.geometry.computeVertexNormals();

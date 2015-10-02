@@ -1,6 +1,18 @@
 // Let's be sure we avoid using global variables
 var onWindowResize = (function() {
 
+L3D.ProgressiveLoader.onFinished = function() {
+
+    if (coins.length === 0 || coins[0].mesh == undefined) {
+        setTimeout(L3D.ProgressiveLoader.onFinished, 500);
+        return;
+    }
+
+    for (var i = 0; i < coins.length; i++) {
+        coins[i].mesh.visible = true;
+    }
+}
+
 // Disable scrolling
 window.onscroll = function () { window.scrollTo(0, 0); };
 

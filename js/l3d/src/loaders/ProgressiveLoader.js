@@ -382,6 +382,11 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
         if (typeof self.log === 'function')
             self.log(self.numberOfFacesReceived, self.numberOfFaces);
         self.finished = true;
+
+        if (typeof L3D.ProgressiveLoader.onFinished === 'function') {
+            L3D.ProgressiveLoader.onFinished();
+        }
+
     });
 };
 

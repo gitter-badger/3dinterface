@@ -130,6 +130,7 @@ TutorialSteps.prototype.setCameras = function(cameras) {
 
 TutorialSteps.prototype.addCoin = function(coin) {
     this.coins.push(coin);
+    coin.mesh.visible = true;
     coin.addToScene(this.scene);
     this.clickableObjects.push(coin);
 };
