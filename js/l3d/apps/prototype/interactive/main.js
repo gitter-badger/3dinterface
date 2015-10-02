@@ -11,6 +11,8 @@ L3D.ProgressiveLoader.onFinished = function() {
     for (var i = 0; i < coins.length; i++) {
         coins[i].mesh.visible = true;
     }
+
+    loadingCanvas.clear();
 }
 
 // Disable scrolling
@@ -60,13 +62,15 @@ function main() {
     initModels();
     initListeners();
 
-    appendTo(container)(stats, Coin, startCanvas, pointer, previewer, renderer);
+    appendTo(container)(stats, Coin, startCanvas, pointer, previewer, loadingCanvas, renderer);
     // appendTo(container)(startCanvas, pointer, previewer, renderer);
 
     // Set the good size of cameras
     onWindowResize();
 
     Coin.update(true);
+
+    loadingCanvas.render();
 
     if (locked !== undefined && locked)
         startCanvas.render();
@@ -138,6 +142,7 @@ function initCanvases() {
     // Init start canvas
     startCanvas = new L3D.StartCanvas(camera1);
 
+    loadingCanvas = new L3D.LoadingCanvas();
 }
 
 function initModels() {
@@ -232,7 +237,7 @@ function render() {
 
 function onWindowResize() {
 
-    resizeElements(renderer, container, previewer, Coin, pointer, startCanvas);
+    resizeElements(renderer, container, previewer, Coin, pointer, startCanvas, loadingCanvas);
 
     recommendations.forEach(function(reco) {
         resetCameraAspect(reco.camera, containerSize.width(), containerSize.height());

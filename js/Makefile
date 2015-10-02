@@ -22,6 +22,7 @@ L3D:
 		--js l3d/src/utils/Objects.js \
 		--js l3d/src/utils/History.js \
 		--js l3d/src/canvases/StartCanvas.js \
+		--js l3d/src/canvases/LoadingCanvas.js \
 		--js l3d/src/canvases/MousePointer.js \
 		--js l3d/src/canvases/Previewer.js \
 		--js l3d/src/loaders/ProgressiveLoader.js \
