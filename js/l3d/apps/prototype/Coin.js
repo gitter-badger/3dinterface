@@ -91,7 +91,9 @@ Coin.update = function() {
 
     }
 
-    document.getElementById('next').style.background = instantToColor(Coin.colorInstant);
+    if (document.getElementById('next') !== null) {
+        document.getElementById('next').style.background = instantToColor(Coin.colorInstant);
+    }
 
     // Coin.domElement.width = Coin.domElement.width;
 

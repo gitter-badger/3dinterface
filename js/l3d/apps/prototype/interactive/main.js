@@ -1,3 +1,5 @@
+L3D.DB.disable();
+
 // Let's be sure we avoid using global variables
 var onWindowResize = (function() {
 
@@ -13,6 +15,8 @@ L3D.ProgressiveLoader.onFinished = function() {
     }
 
     loadingCanvas.clear();
+    L3D.DB.enable();
+    camera1.reset();
 }
 
 // Disable scrolling
