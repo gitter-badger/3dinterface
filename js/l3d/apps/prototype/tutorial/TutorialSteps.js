@@ -39,11 +39,11 @@ var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container
             justclick: false
         },
         {
-            text: "Two more!",
+            text: "Two more! Move the camera with the mouse around you to find them !",
             justclick: false
         },
         {
-            text: "One more!",
+            text: "One more! Move the camera with the mouse around you to find them !",
             justclick: false
         },
         {
