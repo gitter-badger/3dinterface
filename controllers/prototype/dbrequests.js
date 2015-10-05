@@ -1064,6 +1064,7 @@ DBReq.LastExpGetter.prototype.execute = function() {
                 Log.dberror(err + ' in LastExpGetter (DBReq)');
             }
             if (result.rows.length === 0) {
+                Log.debug('Timeout', true);
                 setTimeout(function() {
                     self.execute();
                 }, 1000);

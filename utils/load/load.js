@@ -1,5 +1,5 @@
-var baseUrl = 'http://localhost:4000/';
-// var baseUrl = 'http://3dinterface.no-ip.org/';
+// var baseUrl = 'http://localhost:4000/';
+var baseUrl = 'http://3dinterface.no-ip.org/';
 
 function makeId()
 {
@@ -19,7 +19,7 @@ var casper = require('casper').create({
     waitTimeout: 100000
 });
 
-var limit = 100;
+var limit = 1000;
 
 casper.start(baseUrl);
 
