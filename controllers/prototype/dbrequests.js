@@ -1270,7 +1270,13 @@ DBReq.UserVerifier.prototype.execute = function() {
                 },
                 function(err, result) {
                     var ok = result.reduce(function(prev, next) { return prev && next; });
-                    self.finish(ok);
+                    self.client.query(
+                        "UPDATE Users SET valid = $1 WHERE id = $2",
+                        [ok, self.userId],
+                        function(err, result) {
+                            self.finish(ok);
+                        }
+                    );
                 }
             );
         }
@@ -1286,7 +1292,40 @@ DBReq.UserVerifier.prototype.finish = function(finalResult) {
     this.finishAction(finalResult);
 };
 
+DBReq.UserGetter = function(userId, finishAction) {
+    this.userId = userId;
+    this.finishAction = finishAction;
 
+    var self = this;
+    pg.connect(pgc.url, function(err, client, release) {
+        self.client = client;
+        self.release = release;
+
+        self.execute();
+    });
+};
+
+DBReq.UserGetter.prototype.execute = function() {
+    var self = this;
+
+    this.client.query(
+        'SELECT worker_id AS "workerId", valid FROM Users WHERE id = $1',
+        [self.userId],
+        function(err, result) {
+            self.finish(result.rows[0].workerId, result.rows[0].valid);
+        }
+    );
+};
+
+DBReq.UserGetter.prototype.finish = function(workerId, valid) {
+
+    this.release();
+    this.release = null;
+    this.client = null;
+
+    this.finishAction(workerId, valid);
+
+};
 
 /**
  * Try to get a user by id, and creates it if it doesn't exists
@@ -1385,5 +1424,9 @@ DBReq.getLastExp = function(id, callback) {
 DBReq.verifyUser = function(id, callback) {
     new DBReq.UserVerifier(id, callback);
 };
+
+DBReq.getUser = function(id, callback) {
+    new DBReq.UserGetter(id, callback);
+}
 
 module.exports = DBReq;

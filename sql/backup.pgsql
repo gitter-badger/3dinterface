@@ -42,7 +42,8 @@ CREATE TABLE Users(
     age VARCHAR(10),
     rating INT,
     lasttime INT,
-    male BOOLEAN
+    male BOOLEAN,
+    valid BOOLEAN DEFAULT NULL
 );
 
 CREATE TABLE Scene(
