@@ -1029,6 +1029,10 @@ DBReq.LastExpGetter = function(userId, finishAction) {
     this.finishAction = finishAction;
     this.finalResult = {};
 
+    if (this.userId === undefined) {
+        return;
+    }
+
     pg.connect(pgc.url, function(err, client, release) {
         self.client = client;
         self.release = release;
@@ -1063,6 +1067,7 @@ DBReq.LastExpGetter.prototype.execute = function() {
             if (err !== null) {
                 Log.dberror(err + ' in LastExpGetter (DBReq)');
             }
+
             if (result.rows.length === 0) {
                 Log.debug('Timeout', true);
                 setTimeout(function() {
