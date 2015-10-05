@@ -6,8 +6,6 @@ var Log = require('../../lib/NodeLog.js');
 
 module.exports.index = function(req, res) {
 
-    db.verifyUser(req.session.userId, function() {});
-
     var text = '';
 
     for (var i in req.body) {
