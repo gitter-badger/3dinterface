@@ -5,7 +5,7 @@ var onWindowResize = (function() {
 
 L3D.ProgressiveLoader.onFinished = function() {
 
-    if (coins.length === 0 || coins[0].mesh == undefined) {
+    if (coins.length === 0 || coins[0].mesh === undefined) {
         setTimeout(L3D.ProgressiveLoader.onFinished, 500);
         return;
     }
@@ -17,7 +17,7 @@ L3D.ProgressiveLoader.onFinished = function() {
     loadingCanvas.clear();
     L3D.DB.enable();
     camera1.reset();
-}
+};
 
 // Disable scrolling
 window.onscroll = function () { window.scrollTo(0, 0); };

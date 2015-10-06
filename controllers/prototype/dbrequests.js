@@ -1616,6 +1616,6 @@ DBReq.verifyUser = function() { construct(DBReq.UserVerifier, arguments); };
  * </ol>
  * @memberof DBReq
  */
-DBReq.getUser = function() { construct(DBReq.UserGetter, arguments); }
+DBReq.getUser = function() { construct(DBReq.UserGetter, arguments); };
 
 module.exports = DBReq;

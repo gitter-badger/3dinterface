@@ -1,5 +1,5 @@
-// var baseUrl = 'http://localhost:4000/';
-var baseUrl = 'http://3dinterface.no-ip.org/';
+var baseUrl = 'http://localhost:4000/';
+// var baseUrl = 'http://3dinterface.no-ip.org/';
 
 function makeId()
 {
@@ -23,38 +23,39 @@ var limit = 1000;
 
 casper.start(baseUrl);
 
-for (var i = 0; i < limit; i++) {
+function addLevel(i) {
 
-    (function(i) {
+    casper.thenOpen(baseUrl + 'user-study', function() {
 
-        casper.thenOpen(baseUrl + 'user-study', function() {
+        console.log(i);
 
-            console.log(i);
+        this.getHTML();
 
-            this.getHTML();
+        // this.waitForSelector('form#form', function() {
 
-            // this.waitForSelector('form#form', function() {
-
-                this.fillSelectors(
-                    'form#form', {
-                        '#inputId': makeId(),
-                        '#sel1': '-15',
-                        '#sel2': '3'
-                    }, true
+        this.fillSelectors(
+                'form#form', {
+                    '#inputId': makeId(),
+                    '#sel1': '-15',
+                    '#sel2': '3'
+                }, true
                 );
 
-            // }, true);
+        // }, true);
 
-            this.thenOpen(baseUrl + 'prototype/tutorial');
-            this.thenOpen(baseUrl + 'prototype/play');
-            this.thenOpen(baseUrl + 'prototype/play');
-            this.thenOpen(baseUrl + 'prototype/play');
+        this.thenOpen(baseUrl + 'prototype/tutorial');
+        this.thenOpen(baseUrl + 'prototype/play');
+        this.thenOpen(baseUrl + 'prototype/play');
+        this.thenOpen(baseUrl + 'prototype/play');
 
-            this.thenOpen(baseUrl + 'logout');
+        this.thenOpen(baseUrl + 'logout');
 
-        });
+    });
+}
 
-    })(i);
+for (var i = 0; i < limit; i++) {
+
+    addLevel(i);
 
 }
 

@@ -36,7 +36,7 @@ window.onbeforeunload = function() {
 
     }
 
-}
+};
 
 function main() {
 
