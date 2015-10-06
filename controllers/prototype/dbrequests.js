@@ -271,7 +271,8 @@ DBReq.Info.prototype.loadCoins = function() {
                 Log.dberror(err + ' in loadCoins');
             } else {
                 self.results.coins = [];
-                for (var i in result.rows) {
+                var i = 0;
+                for (; i < result.rows.length; i++) {
                     self.results.coins.push(
                         {
                             type: 'coin',
@@ -301,7 +302,8 @@ DBReq.Info.prototype.loadArrows = function() {
                 Log.dberror(err + ' in loadArrows');
             } else {
                 self.results.arrows = [];
-                for (var i in result.rows) {
+                var i = 0;
+                for (; i < result.rows.length; i++) {
                     self.results.arrows.push(
                         {
                             type: 'arrow',
@@ -331,7 +333,8 @@ DBReq.Info.prototype.loadResets = function() {
                 Log.dberror(err + ' in loadResets');
             } else {
                 self.results.resets = [];
-                for (var i in result.rows) {
+                var i = 0;
+                for (; i < result.rows.length; i++) {
                     self.results.resets.push(
                         {
                             type: 'reset',
@@ -367,7 +370,8 @@ DBReq.Info.prototype.loadPreviousNext = function () {
                 Log.dberror(err + ' in loadPreviousNext');
             } else {
                 self.results.previousNext = [];
-                for (var i in result.rows) {
+                var i = 0;
+                for (; i < result.rows.length; i++) {
                     self.results.previousNext.push(
                         {
                             type: 'previousnext',
@@ -407,7 +411,8 @@ DBReq.Info.prototype.loadHovered = function() {
                 Log.dberror(err + ' in loadHovered');
             } else {
                 self.results.hovered = [];
-                for (var i in result.rows) {
+                var i = 0;
+                for (; i < result.rows.length; i++) {
                     self.results.hovered.push(
                         {
                             type: "hovered",
@@ -438,7 +443,8 @@ DBReq.Info.prototype.loadPointerLocked = function() {
                 Log.dberror(err + ' in loadPointerLocked');
             } else {
                 self.results.pointerlocked = [];
-                for (var i in result.rows) {
+                var i = 0;
+                for (; i < result.rows.length; i++) {
                     self.results.pointerlocked.push(
                         {
                             type: "pointerlocked",
@@ -468,7 +474,8 @@ DBReq.Info.prototype.loadSwitchedLockOption = function() {
                 Log.dberror(err + ' in loadSwitchedLockOption');
             } else {
                 self.results.switchedlockoption = [];
-                for (var i in result.rows) {
+                var i = 0;
+                for (; i < result.rows.length; i++) {
                     self.results.switchedlockoption.push(
                         {
                             type: "switchedlockoption",
