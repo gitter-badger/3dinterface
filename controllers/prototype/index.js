@@ -36,7 +36,7 @@ module.exports.game = function(req, res) {
             db.createExp(
                 req.session.userId,
                 req.session.experiments,
-                function(expId, coinCombinationId, sceneId, recommendationStyle, coins) {
+                function(expId, sceneId, coinCombinationId, recommendationStyle, coins) {
 
                     // if (expId === undefined) {
 

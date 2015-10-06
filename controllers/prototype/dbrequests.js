@@ -72,7 +72,7 @@ var DBReq = {};
  * finished
  * @memberof DBReq
  * @constructor
- *
+ * @private
  */
 DBReq.Info = function(id, finishAction) {
 
@@ -531,10 +531,22 @@ DBReq.Info.prototype.loadRedCoins = function() {
 
 /**
  * Class that creates a user
+ * @param workerId {string} the name of the person doing the experiment
+ * @param age {string} a string representing an age range
+ * @param male {boolean} indicates if the user is a man or a woman
+ * @param rating {Number} between 1 and 5, describes the level of the user
+ * @param lastTime {Number} between 0 and 3 such that
+ * <ol start="0">
+ *  <li>never played</li>
+ *  <li>this year</li>
+ *  <li>this month</li>
+ *  <li>this week</li>
+ * </ol>
  * @param finishAction {function} callback that has as a parameter the id of
  * the new user
  * @memberof DBReq
  * @constructor
+ * @private
  */
 DBReq.UserCreator = function(workerId, age, male, rating, lastTime, finishAction) {
     /**
@@ -611,11 +623,19 @@ DBReq.UserCreator.prototype.finish = function() {
 /**
  * Class that creates an experiment
  * @param userId {Number} id of the user that does the experiment
- * @param sceneId {Number} id of the scene the experiment is based on
- * @param finishAction {function} callback that has as a parameter the id of
- * the new experiment
+ * @param experiments {Object[]} array of objects representing the experiments
+ * that the user has already done <code>{sceneId: Number, recommendationStyle: string, coins Number[]}</code>
+ * @param finishAction {function} callback that has as parameters
+ * <ol>
+ *  <li>the id of the experiment (Number)</li>
+ *  <li>the id of the coin combination (Number)</li>
+ *  <li>the id of the scene (Number)</li>
+ *  <li>the recommendation style (string)</li>
+ *  <li>the coins (Number[])</li>
+ * </ol>
  * @memberof DBReq
  * @constructor
+ * @private
  */
 DBReq.ExpCreator = function(userId, experiments, finishAction) {
     this.finishAction = finishAction;
@@ -881,8 +901,8 @@ DBReq.ExpCreator.prototype.finish = function() {
 
         self.finishAction(
             self.finalResult.expId,
-            self.finalResult.coinCombinationId,
             self.finalResult.sceneId,
+            self.finalResult.coinCombinationId,
             self.finalResult.recommendationStyle,
             self.finalResult.coins
         );
@@ -890,12 +910,13 @@ DBReq.ExpCreator.prototype.finish = function() {
 };
 
 /**
- * Class that creates an experiment
- * @param id {Number} id of the user that does the experiment
+ * Class that checks if an user id exists
+ * @param id {Number} id of the user to check
  * @param finishAction {function} callback that has as a parameter which is a
  * boolean indicating wether the user id exists or not
  * @memberof DBReq
  * @constructor
+ * @private
  */
 DBReq.UserIdChecker = function(id, finishAction) {
     this.id = id;
@@ -939,6 +960,15 @@ DBReq.UserIdChecker.prototype.finish = function() {
     this.finishAction(this.finalResult);
 };
 
+/**
+ * Class that checks if a workerId exists
+ * @param id {string} workerId of to test
+ * @param finishAction {function} callback that has as a parameter which is a
+ * boolean indicating wether the user id exists or not
+ * @memberof DBReq
+ * @constructor
+ * @private
+ */
 DBReq.UserNameChecker = function(name, finishAction) {
     this.name = name;
     this.finishAction = finishAction;
@@ -954,6 +984,9 @@ DBReq.UserNameChecker = function(name, finishAction) {
     });
 };
 
+/**
+ * Executes the SQL request and calls the callback
+ */
 DBReq.UserNameChecker.prototype.execute = function() {
     var self = this;
     this.client.query(
@@ -971,6 +1004,9 @@ DBReq.UserNameChecker.prototype.execute = function() {
 
 };
 
+/**
+ * Release the DB connection and call the callback
+ */
 DBReq.UserNameChecker.prototype.finish = function() {
     this.release();
     this.client = null;
@@ -980,12 +1016,13 @@ DBReq.UserNameChecker.prototype.finish = function() {
 };
 
 /**
- * Class that creates an experiment
+ * Class that checks if an experiment exists
  * @param id {Number} id of the experiment to check
  * @param finishAction {function} callback that has as a parameter which is the
  * id of the scene if the experiment exists, or null otherwise
  * @memberof DBReq
  * @constructor
+ * @private
  */
 DBReq.ExpIdChecker = function(id, finishAction) {
     this.id = id;
@@ -1029,6 +1066,21 @@ DBReq.ExpIdChecker.prototype.finish = function() {
     this.finishAction(this.finalResult);
 };
 
+/**
+ * Class that gives access to the last not finished experiment
+ * @param id {Number} id of the user of who you want the last experiment
+ * @param finishAction {function} callback that has as parameters
+ * <ol>
+ *  <li>the id of the experiment (Number)</li>
+ *  <li>the id of the coin combination (Number)</li>
+ *  <li>the id of the scene (Number)</li>
+ *  <li>the recommendation style (string)</li>
+ *  <li>the coins (Number[])</li>
+ * </ol>xperiment exists, or null otherwise
+ * @memberof DBReq
+ * @private
+ * @constructor
+ */
 DBReq.LastExpGetter = function(userId, finishAction) {
 
     var self = this;
@@ -1047,6 +1099,9 @@ DBReq.LastExpGetter = function(userId, finishAction) {
     });
 };
 
+/**
+ * Executes the SQL request and calls the callback
+ */
 DBReq.LastExpGetter.prototype.execute = function() {
     var self = this;
     this.client.query(
@@ -1109,6 +1164,9 @@ DBReq.LastExpGetter.prototype.execute = function() {
     );
 };
 
+/**
+ * Release the DB connection and call the callback
+ */
 DBReq.LastExpGetter.prototype.finish = function() {
     this.release();
     this.client = null;
@@ -1130,6 +1188,7 @@ DBReq.LastExpGetter.prototype.finish = function() {
  * the id of the user.
  * @memberof DBReq
  * @constructor
+ * @private
  */
 DBReq.ExpGetter = function(finishAction) {
     this.finishAction = finishAction;
@@ -1176,6 +1235,18 @@ DBReq.ExpGetter.prototype.finish = function() {
     this.finishAction(this.finalResult);
 };
 
+/**
+ * Class that creates a tutorial
+ * @param id {Number} id of the user doing the tutorial
+ * @param finishAction {function} callback that has as parameters
+ * <ol>
+ *  <li>the id of the experiment (Number)</li>
+ *  <li>the id of the generated coins (Number[])</li>
+ * </ol>
+ * @memberof DBReq
+ * @constructor
+ * @private
+ */
 DBReq.TutorialCreator = function(id, finishAction) {
     this.id = id;
     this.finishAction = finishAction;
@@ -1189,6 +1260,9 @@ DBReq.TutorialCreator = function(id, finishAction) {
     });
 };
 
+/**
+ * Executes the SQL request and calls the callback
+ */
 DBReq.TutorialCreator.prototype.execute = function() {
     var self = this;
     this.client.query(
@@ -1238,6 +1312,9 @@ DBReq.TutorialCreator.prototype.execute = function() {
     );
 };
 
+/**
+ * Release the DB connection and call the callback
+ */
 DBReq.TutorialCreator.prototype.finish = function() {
     this.release();
     this.release = null;
@@ -1246,6 +1323,15 @@ DBReq.TutorialCreator.prototype.finish = function() {
     this.finishAction(this.finalResult.expId, this.finalResult.coins);
 };
 
+/**
+ * Class that verifies that a user has correctly done all the experiments
+ * @param userId {Number} id of the user to verify
+ * @param finishAction {function} callback that has as parameter a boolean
+ * which is true is the verification was a success
+ * @memberof DBReq
+ * @constructor
+ * @private
+ */
 DBReq.UserVerifier = function(userId, finishAction) {
     this.userId = userId;
     this.finishAction = finishAction;
@@ -1259,6 +1345,9 @@ DBReq.UserVerifier = function(userId, finishAction) {
     });
 };
 
+/**
+ * Executes the SQL request and calls the callback
+ */
 DBReq.UserVerifier.prototype.execute = function() {
 
     var self = this;
@@ -1297,6 +1386,9 @@ DBReq.UserVerifier.prototype.execute = function() {
 
 };
 
+/**
+ * Release the DB connection and call the callback
+ */
 DBReq.UserVerifier.prototype.finish = function(finalResult) {
     this.release();
 
@@ -1305,6 +1397,18 @@ DBReq.UserVerifier.prototype.finish = function(finalResult) {
     this.finishAction(finalResult);
 };
 
+/**
+ * Class that gets the "valid" attribute of a user in the databse
+ * @param userId {Number} id of the user
+ * @param finishAction {function} callback that has as parameters :
+ * <ol>
+ *  <li>the workerId of the user (string)</li>
+ *  <li>the "valid" attribute of the database (boolean)</li>
+ * </ol>
+ * @memberof DBReq
+ * @constructor
+ * @private
+ */
 DBReq.UserGetter = function(userId, finishAction) {
     this.userId = userId;
     this.finishAction = finishAction;
@@ -1318,6 +1422,9 @@ DBReq.UserGetter = function(userId, finishAction) {
     });
 };
 
+/**
+ * Executes the SQL request and calls the callback
+ */
 DBReq.UserGetter.prototype.execute = function() {
     var self = this;
 
@@ -1330,6 +1437,9 @@ DBReq.UserGetter.prototype.execute = function() {
     );
 };
 
+/**
+ * Release the DB connection and call the callback
+ */
 DBReq.UserGetter.prototype.finish = function(workerId, valid) {
 
     this.release();
@@ -1369,85 +1479,143 @@ function construct(constr, args) {
 }
 
 /**
- * Get all the info from an experiment
+ * Loads every information from an experiment
+ * (wraps the {@link DBReq.Info} constructor)
+ * @param id {Number} id of the experiment to load
+ * @param finishAction {function} callback on the result when loading is
+ * finished
  * @memberof DBReq
- * @param id {Number} id of the experiment to get the info
- * @param callback {function} callback called on the result of all the SQL requests
  */
-DBReq.getInfo = function() {
-    construct(DBReq.Info, arguments);
-};
+DBReq.getInfo = function() { construct(DBReq.Info, arguments); };
 
 /**
- * Creates a user
+ * Creates an user
+ * (wraps the {@link DBReq.UserCreator} constructor)
+ * @param workerId {string} the name of the person doing the experiment
+ * @param age {string} a string representing an age range
+ * @param male {boolean} indicates if the user is a man or a woman
+ * @param rating {Number} between 1 and 5, describes the level of the user
+ * @param lastTime {Number} between 0 and 3 such that
+ * <ol start="0">
+ *  <li>never played</li>
+ *  <li>this year</li>
+ *  <li>this month</li>
+ *  <li>this week</li>
+ * </ol>
+ * @param finishAction {function} callback that has as a parameter the id of
+ * the new user
  * @memberof DBReq
- * @param callback {function} callback called on the new user id
  */
-DBReq.createUser = function(workerId, age, male, rating, lastTime, callback) {
-    construct(DBReq.UserCreator, arguments);
-};
+DBReq.createUser = function() { construct(DBReq.UserCreator, arguments); };
 
 /**
  * Creates an experiment
+ * (wraps the {@link DBReq.ExpCreator} constructor)
+ * @param userId {Number} id of the user that does the experiment
+ * @param experiments {Object[]} array of objects representing the experiments
+ * that the user has already done <code>{sceneId: Number, recommendationStyle: string, coins Number[]}</code>
+ * @param finishAction {function} callback that has as parameters
+ * <ol>
+ *  <li>the id of the experiment (Number)</li>
+ *  <li>the id of the coin combination (Number)</li>
+ *  <li>the id of the scene (Number)</li>
+ *  <li>the recommendation style (string)</li>
+ *  <li>the coins (Number[])</li>
+ * </ol>
  * @memberof DBReq
- * @param id {Number} id of the user doing the experiment
- * @param sceneId {Number} id of the scene on which the experiment is
- * @param callback {function} callback called on the new experiment id
  */
-DBReq.createExp = function(id, experiments, callback) {
-    construct(DBReq.ExpCreator, arguments);
-};
-
-DBReq.createTutorial = function(id, callback) {
-    construct(DBReq.TutorialCreator, arguments);
-};
+DBReq.createExp = function() { construct(DBReq.ExpCreator, arguments); };
 
 /**
- * Checks the user id
+ * Creates a tutorial
+ * (wraps the {@link DBReq.TurorialCreator} constructor)
+ * @param id {Number} id of the user doing the tutorial
+ * @param finishAction {function} callback that has as parameters
+ * <ol>
+ *  <li>the id of the experiment (Number)</li>
+ *  <li>the id of the generated coins (Number[])</li>
+ * </ol>
  * @memberof DBReq
- * @param id {Number} id to check
- * @param callback {function} callback called on a boolean (true if the user id
- * exists, false otherwise)
  */
-DBReq.checkUserId = function(id, callback) {
-    construct(DBReq.UserIdChecker, arguments);
-};
-
-DBReq.checkUserName = function(name, callback) {
-    construct(DBReq.UserNameChecker, arguments);
-};
+DBReq.createTutorial = function() { construct(DBReq.TutorialCreator, arguments); };
 
 /**
- * Checks if an experiment id exists
+ * Checks if an user id exists
+ * (wraps the {@link DBReq.UserIdChecker} constructor)
+ * @param id {Number} id of the user to check
+ * @param finishAction {function} callback that has as a parameter which is a
+ * boolean indicating wether the user id exists or not
  * @memberof DBReq
+ */
+DBReq.checkUserId = function() { construct(DBReq.UserIdChecker, arguments); };
+
+/**
+ * Checks if a workerId exists
+ * (wraps the {@link DBReq.UserNameChecker} constructor)
+ * @param id {string} workerId of to test
+ * @param finishAction {function} callback that has as a parameter which is a
+ * boolean indicating wether the user id exists or not
+ * @memberof DBReq
+ */
+DBReq.checkUserName = function() { construct(DBReq.UserNameChecker, arguments); };
+
+/**
+ * Checks if an experiment exists
+ * (wraps the {@link DBReq.ExpIdChecker} constructor)
  * @param id {Number} id of the experiment to check
- * @param callback {function} callback called on an object (null if the
- * experiment doesn't exist, an object containing username, sceneId,
- * scenename, and expId if it exists
+ * @param finishAction {function} callback that has as a parameter which is the
+ * id of the scene if the experiment exists, or null otherwise
+ * @memberof DBReq
  */
-DBReq.checkExpId = function(id, callback) {
-    construct(DBReq.ExpIdChecker, arguments);
-};
+DBReq.checkExpId = function() { construct(DBReq.ExpIdChecker, arguments); };
 
 /**
- * Gets a list of all experiments
+ * Gets the info from all experiment
+ * (wraps the {@link DBReq.ExpGetter} constructor)
+ * @param finishAction {function} callback that has as a parameter which is an
+ * array of objects containing the id, the username, the name of the scene and
+ * the id of the user.
  * @memberof DBReq
- * @param callback {function} callback called on an array containing all experiments
  */
-DBReq.getAllExps = function(callback) {
-    construct(DBReq.ExpGetter, arguments);
-};
+DBReq.getAllExps = function() { construct(DBReq.ExpGetter, arguments); };
 
-DBReq.getLastExp = function(id, callback) {
-    construct(DBReq.LastExpGetter, arguments);
-};
+/**
+ * Gives access to the last not finished experiment
+ * (wraps the {@link DBReq.LastExpGetter} constructor)
+ * @param id {Number} id of the user of who you want the last experiment
+ * @param finishAction {function} callback that has as parameters
+ * <ol>
+ *  <li>the id of the experiment (Number)</li>
+ *  <li>the id of the coin combination (Number)</li>
+ *  <li>the id of the scene (Number)</li>
+ *  <li>the recommendation style (string)</li>
+ *  <li>the coins (Number[])</li>
+ * </ol>xperiment exists, or null otherwise
+ * @memberof DBReq
+ */
+DBReq.getLastExp = function() { construct(DBReq.LastExpGetter, arguments); };
 
-DBReq.verifyUser = function(id, callback) {
-    construct(DBReq.UserVerifier, arguments);
-};
+/**
+ * Verifies that a user has correctly done all the experiments
+ * (wraps the {@link DBReq.UserVerifier} constructor)
+ * @param userId {Number} id of the user to verify
+ * @param finishAction {function} callback that has as parameter a boolean
+ * which is true is the verification was a success
+ * @memberof DBReq
+ */
+DBReq.verifyUser = function() { construct(DBReq.UserVerifier, arguments); };
 
-DBReq.getUser = function(id, callback) {
-    construct(DBReq.UserGetter, arguments);
-}
+/**
+ * Gets the "valid" attribute of a user in the databse
+ * (wraps the {@link DBReq.UserGetter} constructor)
+ * @param userId {Number} id of the user
+ * @param finishAction {function} callback that has as parameters :
+ * <ol>
+ *  <li>the workerId of the user (string)</li>
+ *  <li>the "valid" attribute of the database (boolean)</li>
+ * </ol>
+ * @memberof DBReq
+ */
+DBReq.getUser = function() { construct(DBReq.UserGetter, arguments); }
 
 module.exports = DBReq;
