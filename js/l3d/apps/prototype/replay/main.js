@@ -24,6 +24,9 @@ function main() {
 
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 200) {
+            coins.forEach(function(elt) {
+                elt.mesh.visible = true;
+            });
             init(JSON.parse(xhr.responseText));
             onWindowResize();
             setInterval(render, 20);
