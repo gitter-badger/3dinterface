@@ -46,7 +46,7 @@ repository (especially the heavy ones).
 If you want to dev on this project, the `utils/demon.sh` may help you : it is
 based on [nodemon](https://github.com/remy/nodemon) (that basically restarts
 the server everytime there is a change in the code) and
-[inotify](http://man7.org/linux/man-pages/man7/inotify.7.html) (that basically
+[inotifywait](http://linux.die.net/man/1/inotifywait) (that basically
 recompiles everything when there is a modification). To use it, just `cd` to
 `utils` and run `demon.sh` (note that it doesn't minify the code since this
 operation is heavy and too long to redo everytime there is a change).
