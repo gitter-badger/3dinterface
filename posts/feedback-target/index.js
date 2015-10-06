@@ -6,12 +6,7 @@ var Log = require('../../lib/NodeLog.js');
 
 module.exports.index = function(req, res) {
 
-    var text = '';
-
-    for (var i in req.body) {
-        text += i + ' : ' + req.body[i] + '\n';
-    }
-
+    var text = 'id : ' + req.session.userId + '\n';
 
     pg.connect(pgc.url, function(err, client, release) {
 
@@ -20,6 +15,13 @@ module.exports.index = function(req, res) {
             [req.session.userId],
 
             function(err, result) {
+
+                text += 'workerId : ' + result.rows[0].name + '\n';
+
+                for (var i in req.body) {
+                    text += i + ' : ' + req.body[i] + '\n';
+                }
+
                 mail.send({
                     from: result.rows[0].name + " <" + req.session.userId + "@toto.tata>",
                     to:   "Thomas <dragonrock.django@gmail.com>",
