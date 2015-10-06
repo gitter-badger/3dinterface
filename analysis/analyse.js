@@ -2,7 +2,7 @@ function main(path) {
 
     var db = JSON.parse(require('fs').readFileSync(path, 'utf8'));
 
-    console.log('There were ' + db.users.length + ' users for ' + db.experiments.length + ' experiments');
+    console.log(`There were ${db.users.length} users for ${db.experiments.length} experiments`);
 
     var meanTimeNoReco = 0;
     var meanTimeArrow = 0;
@@ -21,8 +21,6 @@ function main(path) {
 
         }
 
-        // console.log(exp.user.worker_id + ' : ' + exp.user.rating + ' -> ' + timeToString(timeDifference(events[0].time, events[events.length-1].time)));
-
         var coins = [];
         for (var j = 0; j < exp.elements.events.length; j++) {
 
@@ -37,7 +35,7 @@ function main(path) {
             }
 
         }
-        console.log(exp.id + ' -> ' + coins.length + ' (on ' + exp.coinCombination.scene_id + ')');
+        console.log(`${exp.id} -> ${coins.length} (on ${exp.coinCombination.scene_id} )`);
     }
 
     console.log();
@@ -45,7 +43,7 @@ function main(path) {
     for (var i = 0; i < db.users.length; i++) {
 
         var user = db.users[i];
-        console.log(user.worker_id + ' has done ' + user.experiments.length + ' experiments with rating ' + user.rating);
+        console.log(`${user.worker_id} has done ${user.experiments.length} experiments with rating ${user.rating}`);
 
     }
 

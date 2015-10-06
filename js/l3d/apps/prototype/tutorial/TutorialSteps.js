@@ -111,7 +111,7 @@ var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container
             justclick:false
         },
         {
-            text: "Congratulations! You've successfully collected all the coins and completed the tutorial ! Click on the green button to continue!",
+            text: "Congratulations! You've successfully collected all the coins and completed the tutorial ! Click on the colored button at the bottom of the page to continue!",
             justclick: false
         }
     ];
