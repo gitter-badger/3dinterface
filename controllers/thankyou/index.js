@@ -6,7 +6,7 @@ module.exports.index = function(req, res) {
     // If not micro-worker
     if (req.session.workerId === undefined) {
 
-        res.setHead('Content-Type', 'text/html');
+        res.setHeader('Content-Type', 'text/html');
 
         res.render('normal.jade', res.locals, function(err, result) {
             res.send(result);
