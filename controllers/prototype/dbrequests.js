@@ -1360,14 +1360,22 @@ DBReq.tryUser = function(id, callback) {
     }
 };
 
+// Helper for the rest
+// http://stackoverflow.com/questions/9830359/apply-an-array-to-a-constructor-function-in-javascript
+function construct(constr, args) {
+  var instance = Object.create(constr.prototype);
+  var result = constr.apply(instance, args);
+  return typeof result === 'object' ? result : instance;  // yes, this is what 'new' does
+}
+
 /**
  * Get all the info from an experiment
  * @memberof DBReq
  * @param id {Number} id of the experiment to get the info
  * @param callback {function} callback called on the result of all the SQL requests
  */
-DBReq.getInfo = function(id, callback) {
-    new DBReq.Info(id, callback);
+DBReq.getInfo = function() {
+    construct(DBReq.Info, arguments);
 };
 
 /**
@@ -1376,7 +1384,7 @@ DBReq.getInfo = function(id, callback) {
  * @param callback {function} callback called on the new user id
  */
 DBReq.createUser = function(workerId, age, male, rating, lastTime, callback) {
-    new DBReq.UserCreator(workerId, age, male, rating, lastTime, callback);
+    construct(DBReq.UserCreator, arguments);
 };
 
 /**
@@ -1387,11 +1395,11 @@ DBReq.createUser = function(workerId, age, male, rating, lastTime, callback) {
  * @param callback {function} callback called on the new experiment id
  */
 DBReq.createExp = function(id, experiments, callback) {
-    new DBReq.ExpCreator(id, experiments, callback);
+    construct(DBReq.ExpCreator, arguments);
 };
 
 DBReq.createTutorial = function(id, callback) {
-    new DBReq.TutorialCreator(id, callback);
+    construct(DBReq.TutorialCreator, arguments);
 };
 
 /**
@@ -1402,11 +1410,11 @@ DBReq.createTutorial = function(id, callback) {
  * exists, false otherwise)
  */
 DBReq.checkUserId = function(id, callback) {
-    new DBReq.UserIdChecker(id, callback);
+    construct(DBReq.UserIdChecker, arguments);
 };
 
 DBReq.checkUserName = function(name, callback) {
-    new DBReq.UserNameChecker(name, callback);
+    construct(DBReq.UserNameChecker, arguments);
 };
 
 /**
@@ -1418,7 +1426,7 @@ DBReq.checkUserName = function(name, callback) {
  * scenename, and expId if it exists
  */
 DBReq.checkExpId = function(id, callback) {
-    new DBReq.ExpIdChecker(id, callback);
+    construct(DBReq.ExpIdChecker, arguments);
 };
 
 /**
@@ -1427,19 +1435,19 @@ DBReq.checkExpId = function(id, callback) {
  * @param callback {function} callback called on an array containing all experiments
  */
 DBReq.getAllExps = function(callback) {
-    new DBReq.ExpGetter(callback);
+    construct(DBReq.ExpGetter, arguments);
 };
 
 DBReq.getLastExp = function(id, callback) {
-    new DBReq.LastExpGetter(id, callback);
+    construct(DBReq.LastExpGetter, arguments);
 };
 
 DBReq.verifyUser = function(id, callback) {
-    new DBReq.UserVerifier(id, callback);
+    construct(DBReq.UserVerifier, arguments);
 };
 
 DBReq.getUser = function(id, callback) {
-    new DBReq.UserGetter(id, callback);
+    construct(DBReq.UserGetter, arguments);
 }
 
 module.exports = DBReq;
