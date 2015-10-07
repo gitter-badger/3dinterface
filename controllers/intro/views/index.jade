@@ -12,7 +12,8 @@ block content
 
 block extrajs
     script.
-        if ($.browser.chrome || $.browser.mozilla) {
+        var isOpera = window.navigator.userAgent.indexOf("OPR") > -1 || window.navigator.userAgent.indexOf("Opera") > -1;
+        if (($.browser.chrome || $.browser.mozilla) && !isOpera) {
             $('#start').html('You can now <a href="/user-study">start when you are ready</a>');
         } else {
             $('#start').html('Sorry, your browser is not compatible... please try again with Firefox or Chrome');

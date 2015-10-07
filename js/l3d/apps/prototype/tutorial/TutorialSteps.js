@@ -258,7 +258,7 @@ TutorialSteps.prototype.alert = function(myString, justclicked) {
 
 TutorialSteps.prototype.notify = function(myString, justclick) {
     $('#alert-placeholder').html(
-        '<div id="toto" class="alert alert-warning alert-dismissable">' +
+        '<div id="toto" class="alert alert-info alert-dismissable">' +
             (justclick ?
             '<button type="button" class="close" aria-hidden="true"' +
                      'onclick="setTimeout(onWindowResize, 100); nextStep();' + '">' +
@@ -275,6 +275,12 @@ TutorialSteps.prototype.notify = function(myString, justclick) {
     $('#toto').removeClass('alert-info').addClass('alert-danger');
 
     setTimeout(function() {
-        $('#toto').removeClass('alert-danger').addClass('alert-warning');
-    }, 500);
+        $('#toto').removeClass('alert-danger').addClass('alert-info');
+        setTimeout(function() {
+            $('#toto').removeClass('alert-info').addClass('alert-danger');
+            setTimeout(function() {
+                $('#toto').removeClass('alert-danger').addClass('alert-info');
+            }, 700);
+        }, 700);
+    }, 700);
 };
