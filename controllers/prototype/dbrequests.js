@@ -697,6 +697,7 @@ DBReq.ExpCreator.prototype.execute = function() {
         "    Scene.name != 'peachcastle' AND\n" +
         "    CoinCombination.id = Experiment.coin_combination_id AND\n" +
         "    Other.id = Experiment.user_id AND\n" +
+        "    Experiment.finished = true AND\n" +
         "    Other.rating = U.rating AND\n" +
         "    Other.id != U.id AND\n" +
         "    U.id = $1 \n" +
