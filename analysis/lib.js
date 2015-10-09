@@ -174,9 +174,28 @@ Lib.numberOfInteraction = function(exp) {
         }
     }
 
-
-
-
     return i;
+
+};
+
+Lib.durationBetweenCoins = function(exp) {
+
+    var ret = [];
+    var events = exp.elements.events;
+    var lastTime = events[0].time;
+    var ids = [];
+
+    for (var i = 0; i < events.length; i++) {
+        var event = events[i];
+        if (event.type === 'coin') {
+            if (ids.indexOf(event.id) === -1) {
+                ids.push(event.id);
+                ret.push(Lib.timeDifference(lastTime, event.time));
+                lastTime = event.time;
+            }
+        }
+    }
+
+    return ret;
 
 };
