@@ -1,3 +1,4 @@
+#!/usr/bin/node
 // Shows with and without : time to last coin = f(CoinCombination)
 
 var lib = require('./lib.js');

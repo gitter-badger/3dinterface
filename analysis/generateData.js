@@ -1,3 +1,4 @@
+#!/usr/bin/node
 var pgc = require('../private.js');
 
 var url = pgc.url;
