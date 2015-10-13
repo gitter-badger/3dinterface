@@ -2,7 +2,6 @@ var http = require('http');
 var express = require('express');
 var jade = require('jade');
 var pg = require('pg');
-var ip = require('ip');
 
 var favicon = require('serve-favicon');
 
@@ -105,7 +104,7 @@ app.use(function(req, res) {
 var serverPort, serverIpAddress;
 if ( isDev ) {
     serverPort = 4000;
-    serverIpAddress = ip.address();
+    serverIpAddress = require('ip').address();
 } else {
     // Openhift conf
     serverPort = process.env.OPENSHIFT_NODEJS_PORT || 8080;
