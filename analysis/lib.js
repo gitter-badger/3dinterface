@@ -1,8 +1,7 @@
 var Lib = module.exports;
 
 // http://codereview.stackexchange.com/questions/37028/grouping-elements-in-array-by-multiple-properties
-Lib.groupBy = function(array, f)
-{
+Lib.groupBy = function(array, f) {
     var groups = {};
     array.forEach(function(o) {
         var group = JSON.stringify(f(o));
@@ -20,7 +19,7 @@ function letterToInt(letter) {
         case 'B': return 0;
         case 'V': return 1;
         case 'A': return 2;
-        default:  return null;
+        default : return null;
     }
 }
 

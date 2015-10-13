@@ -17,7 +17,7 @@ function start() {
         function() {
             write(" done !\n");
             client.query(
-                'SELECT * FROM Users',
+                'SELECT * FROM Users WHERE valid',
                 function(err, result) {
                     users = result.rows;
                     main();
