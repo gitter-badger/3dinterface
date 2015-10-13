@@ -100,7 +100,7 @@ geo.MeshStreamer = function(path) {
 /**
  * Compute a function that can compare two faces
  * @param {Camera} camera a camera seeing or not face
- * @returns the function that compares two faces : the higher face is the most interesting for the camera
+ * @returns {function} the function that compares two faces : the higher face is the most interesting for the camera
  */
 geo.MeshStreamer.prototype.faceComparator = function(camera) {
 
