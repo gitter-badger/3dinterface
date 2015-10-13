@@ -44,9 +44,15 @@ function addLevel(i) {
         // }, true);
 
         this.thenOpen(baseUrl + 'prototype/tutorial');
-        this.thenOpen(baseUrl + 'prototype/play');
-        this.thenOpen(baseUrl + 'prototype/play');
-        this.thenOpen(baseUrl + 'prototype/play');
+        this.wait(1000, function() {
+            this.thenOpen(baseUrl + 'prototype/play');
+            this.wait(1000, function() {
+                this.thenOpen(baseUrl + 'prototype/play');
+                this.wait(1000, function() {
+                    this.thenOpen(baseUrl + 'prototype/play');
+                });
+            });
+        });
 
         this.thenOpen(baseUrl + 'logout');
 
