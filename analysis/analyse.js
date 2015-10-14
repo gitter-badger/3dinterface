@@ -7,10 +7,16 @@ function main(path) {
     var groups = lib.makeGroups(db);
 
     // Erase groups that are not usable
+    var invalid = 0;
     groups = groups.filter(function(elt) {
 
         // An elt is valid if it contains at least 2 exp, BaseRecommendation included
-        return elt.length > 1 && elt.find(function(e) { return e.recommendation_style[4] === 'B'; }) !== undefined;
+        if (elt.length > 1 && elt.find(function(e) { return e.recommendation_style[4] === 'B'; }) !== undefined) {
+            return true
+        } else {
+            invalid++;
+            return false;
+        }
 
     });
 
@@ -18,7 +24,13 @@ function main(path) {
         elt.sort(lib.compareRecommendationStyle);
     });
 
-    console.log(`There were ${db.users.length} users for ${db.experiments.length} experiments`);
+    var nbExp = 0;
+
+    groups.forEach(function(elt) {
+        nbExp += elt.length;
+    });
+
+    console.log(`There were ${db.users.length} users for ${nbExp} experiments (${invalid} invalid)`);
     console.log(`There were ${groups.length} groups that were made.`);
 
     groups.forEach(function(elt) {

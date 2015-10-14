@@ -1,6 +1,6 @@
 var pg = require('pg');
 var async = require('async');
-var DBReq = require('../controllers/prototype/dbrequests.js');
+var DBReq = require('./dbrequests.js');
 
 var users, client, release, scenes, coinCombinations, experiments, callback, url, db = {};
 
@@ -63,7 +63,7 @@ function main() {
                 function(callback) {
 
                     client.query(
-                        'SELECT * FROM Experiment;',
+                        'SELECT * FROM Experiment WHERE finished;',
                         function(err, result) {
                             experiments = result.rows;
                             callback();
@@ -86,7 +86,7 @@ function main() {
                 users,
                 function(user, callback) {
                     client.query(
-                        'SELECT * FROM Experiment WHERE user_id = $1',
+                        'SELECT * FROM Experiment WHERE user_id = $1 AND finished',
                         [user.id],
                         function(err, result) {
                             user.experiments = result.rows;
@@ -134,8 +134,8 @@ function main() {
                 experiments,
                 function(exp, callback) {
                     DBReq.getInfo(exp.id, function(result) {
-                        exp.elements = result;
                         write('.');
+                        exp.elements = result;
                         callback();
                     });
                 },
