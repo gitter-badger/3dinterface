@@ -280,7 +280,7 @@ var availableMeshNames = {
 
 for (var i = 1; i < 26; i++) {
 
-    availableMeshNames['/static/data/spheres/' + i + '.obj'] = false;
+    availableMeshNames['/static/data/spheres/' + i + '.obj'] = { done: false};
 
 }
 
