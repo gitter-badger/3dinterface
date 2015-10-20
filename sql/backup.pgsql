@@ -1,3 +1,7 @@
+#!/bin/sh
+
+psql interface 3dinterface << E_O_SQL
+
 -- Clear database from previous tables (just in case...)
 DROP TABLE IF EXISTS Users CASCADE;
 DROP TABLE IF EXISTS Arrowclicked CASCADE;
@@ -154,3 +158,5 @@ CREATE TABLE SwitchedLockOption(
     time TIMESTAMP DEFAULT NOW(),
     locked BOOLEAN
 );
+
+E_O_SQL

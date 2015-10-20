@@ -46,7 +46,17 @@ Lib.experimentDuration = function(exp) {
         }
     }
 
-    return Lib.timeDifference(exp.elements.events[0].time, lastCoin.time);
+    if (lastCoin === null) {
+        console.log(exp.id);
+    }
+
+    if (Lib.coinsGot(exp) === 8)
+        return Lib.timeDifference(exp.elements.events[0].time, lastCoin.time);
+    else
+        return Lib.timeDifference(
+            exp.elements.events[0].time,
+            exp.elements.events[exp.elements.events.length-1].time
+        );
 
 };
 
@@ -88,6 +98,21 @@ Lib.timeToString = function(_time) {
 
 };
 
+Lib.coinsGot = function(exp) {
+    var counter = 0;
+
+    for (var i = 0; i < exp.elements.events.length; i++) {
+
+        if (exp.elements.events[i].type === 'coin') {
+
+            counter ++;
+
+        }
+    }
+
+    return counter;
+}
+
 Lib.makeGroups = function(db) {
 
     var elements = [];
@@ -96,7 +121,17 @@ Lib.makeGroups = function(db) {
 
         if (db.experiments[i].coinCombination.scene_id !== 1 && db.experiments[i].elements.events.length !== 0) {
 
-            elements.push(db.experiments[i]);
+            if (db.experiments[i].finished === true && Lib.coinsGot(db.experiments[i]) > 5) {
+
+                if (db.experiments[i].user === undefined) {
+                    db.experiments[i].user = {};
+                }
+
+                elements.push(db.experiments[i]);
+
+                // }
+
+            }
 
         }
 
@@ -126,6 +161,19 @@ Lib.toMatlabArray = function(name, array) {
 
 };
 
+Lib.toLaTeXCoordinate = function(name, array) {
+    var str = '\\addplot coordinates {';
+
+    for (var i = 0; i < array.length; i++) {
+
+        str += '(' + i + ',' + array[i] + ') ';
+
+    }
+
+    return str + '};\n';
+
+}
+
 // http://stackoverflow.com/questions/3895478/
 Lib.range = function(start, stop, step, computation) {
 
@@ -150,7 +198,10 @@ Lib.range = function(start, stop, step, computation) {
 
     var a = [];
     while (start < stop) {
-        a.push(computation(start));
+        var e = computation(start);
+        if (e === undefined)
+            e = NaN;
+        a.push(e);
         start += step;
     }
     return a;
@@ -198,3 +249,18 @@ Lib.durationBetweenCoins = function(exp) {
     return ret;
 
 };
+
+Lib.toLaTeXMatrix = function(mat) {
+    var str = 'x,y,r\n';
+
+    for (var i = 0; i < mat.length; i++) {
+
+        for (var j = 0; j < mat[i].length; j++) {
+            str += i + ',' + j + ',' + mat[i][j] + '\n';
+        }
+
+        // str += i === mat.length - 1 ? '' : '\n';
+    }
+
+    return str;
+}

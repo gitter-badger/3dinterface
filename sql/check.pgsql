@@ -1,3 +1,7 @@
+#!/bin/bash
+
+psql interface 3dinterface << E_O_SQL
+
 -- Checks that each user has never twice either the same scene or the same recommendation style
 SELECT count(*) = 0
 FROM
@@ -32,3 +36,5 @@ FROM (
     GROUP BY Experiment.coin_combination_id
     HAVING count(CoinCombination.id) != 1
 ) AS T;
+
+E_O_SQL

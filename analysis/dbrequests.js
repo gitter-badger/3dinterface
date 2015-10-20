@@ -55,8 +55,8 @@ if (!Array.prototype.reduce) {
 }
 
 var pg = require('pg');
-var pgc = require('../../private.js');
-var Log = require('../../lib/NodeLog.js');
+var pgc = require('../private.js');
+var Log = require('../lib/NodeLog.js');
 var async = require('async');
 
 /**

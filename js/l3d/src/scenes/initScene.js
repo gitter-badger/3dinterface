@@ -180,8 +180,8 @@ L3D.initBobombScene = function(scene, collidableObjects, recommendation, clickab
     );
 
     loader.load();
-    var theta = 0.27;
-    loader.obj.rotation.y = Math.PI - theta;
+    // var theta = 0.27;
+    // loader.obj.rotation.y = Math.PI - theta;
 
     loader.obj.up = new THREE.Vector3(0,0,1);
     collidableObjects.push(loader.obj);
@@ -377,9 +377,9 @@ L3D.initWhompScene = function(scene, collidableObjects, recommendation, clickabl
 
     loader.load();
 
-    loader.obj.rotation.x = -Math.PI/2;
-    loader.obj.rotation.z = Math.PI/2;
-    loader.obj.scale.set(0.1,0.1,0.1);
+    // loader.obj.rotation.x = -Math.PI/2;
+    // loader.obj.rotation.z = Math.PI/2;
+    // loader.obj.scale.set(0.1,0.1,0.1);
 
     // loader.getRecommendation = function() {
     //     var ret = loader.recommendation.toList();
