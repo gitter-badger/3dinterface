@@ -163,13 +163,13 @@ var ProgressiveLoader = function(path, scene, camera, callback, log) {
      * Loader for the material file
      * @type {THREE.MTLLoader}
      */
-    this.loader = new THREE.MTLLoader(this.texturesPath);
+    this.loader = typeof THREE.MTLLoader === 'function' ? new THREE.MTLLoader(this.texturesPath) : null;
 
     /**
      * Socket to connect to get the mesh
      * @type {socket}
      */
-    this.socket = io();
+    this.socket = typeof io === 'function' ? io() : require('socket.io-client').connect('http://localhost:4000');
 
     this.initIOCallbacks();
 
@@ -210,19 +210,27 @@ var ProgressiveLoader = function(path, scene, camera, callback, log) {
 /**
  * Starts the loading of the mesh
  */
-ProgressiveLoader.prototype.load = function() {
+ProgressiveLoader.prototype.load = function(callback) {
 
     var self = this;
+    this._callback = callback;
 
-    this.loader.load(self.mtlPath, function(materialCreator) {
+    if (this.loader !== null) {
+        this.loader.load(self.mtlPath, function(materialCreator) {
 
-        self.materialCreator = materialCreator;
+            self.materialCreator = materialCreator;
 
-        materialCreator.preload();
+            materialCreator.preload();
+
+            self.start();
+
+        });
+
+    } else {
 
         self.start();
 
-    });
+    }
 };
 
 /**
@@ -287,7 +295,7 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
                 // Create mesh material
                 var material;
 
-                if (elt.materialName === null) {
+                if (elt.materialName === null || self.materialCreator === undefined) {
 
                     // If no material, create a default material
                     material = new THREE.MeshLambertMaterial({color: 'red'});
@@ -378,13 +386,16 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
     });
 
     this.socket.on('disconnect', function() {
-        console.log('Finished !');
         if (typeof self.log === 'function')
             self.log(self.numberOfFacesReceived, self.numberOfFaces);
         self.finished = true;
 
         if (typeof L3D.ProgressiveLoader.onFinished === 'function') {
             L3D.ProgressiveLoader.onFinished();
+        }
+
+        if (typeof self._callback === 'function') {
+            self._callback();
         }
 
     });

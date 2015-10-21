@@ -13,6 +13,7 @@ L3D.ReplayCamera = function() {
     this.newTarget = new THREE.Vector3();
 
     this.data = arguments[5];
+    this.callback = arguments[6];
 
     this.started = true;
     this.path = this.data.events;
@@ -94,11 +95,15 @@ L3D.ReplayCamera.prototype.nextEvent = function() {
     // Finished
     if (this.counter >= this.path.length) {
         this.started = false;
-        console.log('The replay is finished');
+        // console.log('The replay is finished');
+        if (typeof this.callback === 'function') {
+            this.callback();
+        }
         return;
     }
 
     this.event = this.path[this.counter];
+    // console.log(this.event.type);
 
     if (this.event.type == 'camera') {
         this.move(this.event);

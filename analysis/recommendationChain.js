@@ -42,7 +42,7 @@ function normalize(mat) {
 function main(path) {
 
     // Generated with ./test.pgsql | tail -n+3 | head -n-2 | cut -d '|' -f 2 | sort -g | tr '\n' ' ' | tr -s ' ' | tr ' ' ','
-    var recoExps = [10,27,28,57,68,83,127,129,145,192,205,206,209,210,212,214,236,240];
+    var recoExps = [10,27,28,57,68,83,127,129,145,192,205,206,209,210,212,214,236,240,247,259];
 
     var db = lib.loadFromFile(path);
     var mat1 = zeros(12); // Bombomb

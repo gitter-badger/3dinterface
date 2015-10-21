@@ -3,6 +3,9 @@ extends ../../../views/withjs
 block title
     title #{title} - Prototype
 
+block prepend js
+    script DB_DISABLED = true;
+
 block extrajs
     script Recommendation = L3D.ArrowRecommendation;
     script var params = params || {}; params.get = params.get || {}; params.get.id = #{id};
