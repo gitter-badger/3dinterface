@@ -88,7 +88,7 @@ var _parseList = function(arr) {
  * @constructor
  * @memberOf L3D
  */
-var ProgressiveLoader = function(path, scene, camera, callback, log) {
+var ProgressiveLoader = function(path, scene, camera, callback, log, laggy) {
 
     /**
      * Path to the .obj file
@@ -117,6 +117,11 @@ var ProgressiveLoader = function(path, scene, camera, callback, log) {
      * Callback to call on the object when they're created
      */
     this.callback = callback;
+
+    /**
+     * Boolean indicate that we want extra lag for testing purposes
+     */
+    this.laggy = laggy;
 
     /**
      * Group where the sub-objects will be added
@@ -169,7 +174,7 @@ var ProgressiveLoader = function(path, scene, camera, callback, log) {
      * Socket to connect to get the mesh
      * @type {socket}
      */
-    this.socket = typeof io === 'function' ? io() : require('socket.io-client').connect('http://localhost:4000');
+    this.socket = typeof io === 'function' ? io() : require('socket.io-client').connect('http://localhost:4000', {multiplex: false});
 
     this.initIOCallbacks();
 
@@ -240,7 +245,7 @@ ProgressiveLoader.prototype.getCamera = function() {
     if (this.camera === null)
         return null;
 
-    return this.toList();
+    return this.camera.toList();
 };
 
 /**
@@ -365,7 +370,7 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
                 self.meshes[elt.mesh].geometry.normalsNeedUpdate = true;
                 self.meshes[elt.mesh].geometry.groupsNeedUpdate = true;
 
-                if (self.meshes[elt.mesh].faceNumber === self.meshes[elt.mesh].geometry.faces.length) {
+                if (self.meshes[elt.mesh].faceNumber === self.meshes[elt.mesh].geometry.faces.length || typeof module === 'object') {
 
                     self.meshes[elt.mesh].geometry.computeBoundingSphere();
 
@@ -382,7 +387,11 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
         }
 
         // Ask for next elements
-        self.socket.emit('next', self.getCamera());
+        if (!self.laggy) {
+            self.socket.emit('next', self.getCamera());
+        } else {
+            setTimeout(function() { self.socket.emit('next', self.getCamera());}, 100);
+        }
     });
 
     this.socket.on('disconnect', function() {
@@ -405,7 +414,7 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
  * Starts the communication with the server
  */
 ProgressiveLoader.prototype.start = function() {
-    this.socket.emit('request', this.objPath);
+    this.socket.emit('request', this.objPath, this.laggy);
 };
 
 return ProgressiveLoader;

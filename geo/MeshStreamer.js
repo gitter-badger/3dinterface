@@ -121,9 +121,9 @@ geo.MeshStreamer.prototype.faceComparator = function(camera) {
     return function(face1, face2) {
 
         var center1 = {
-            x: (self.vertices[face1.a].x + self.vertices[face1.b].x + self.vertices[face1.b].x) / 3,
-            y: (self.vertices[face1.a].y + self.vertices[face1.b].y + self.vertices[face1.b].y) / 3,
-            z: (self.vertices[face1.a].z + self.vertices[face1.b].z + self.vertices[face1.b].z) / 3
+            x: (self.mesh.vertices[face1.a].x + self.mesh.vertices[face1.b].x + self.mesh.vertices[face1.b].x) / 3,
+            y: (self.mesh.vertices[face1.a].y + self.mesh.vertices[face1.b].y + self.mesh.vertices[face1.b].y) / 3,
+            z: (self.mesh.vertices[face1.a].z + self.mesh.vertices[face1.b].z + self.mesh.vertices[face1.b].z) / 3
 
         };
 
@@ -142,9 +142,9 @@ geo.MeshStreamer.prototype.faceComparator = function(camera) {
         var dot1 = direction.x * dir1.x + direction.y * dir1.y + direction.z * dir1.z;
 
         var center2 = {
-            x: (self.vertices[face2.a].x + self.vertices[face2.b].x + self.vertices[face2.b].x) / 3,
-            y: (self.vertices[face2.a].y + self.vertices[face2.b].y + self.vertices[face2.b].y) / 3,
-            z: (self.vertices[face2.a].z + self.vertices[face2.b].z + self.vertices[face2.b].z) / 3
+            x: (self.mesh.vertices[face2.a].x + self.mesh.vertices[face2.b].x + self.mesh.vertices[face2.b].x) / 3,
+            y: (self.mesh.vertices[face2.a].y + self.mesh.vertices[face2.b].y + self.mesh.vertices[face2.b].y) / 3,
+            z: (self.mesh.vertices[face2.a].z + self.mesh.vertices[face2.b].z + self.mesh.vertices[face2.b].z) / 3
         };
 
         var dir2 = {
@@ -184,7 +184,11 @@ geo.MeshStreamer.prototype.start = function(socket) {
 
     var self = this;
 
-    socket.on('request', function(path) {
+    socket.on('request', function(path, laggy) {
+
+        if (laggy === true) {
+            self.chunk = 1;
+        }
 
         self.mesh = geo.availableMeshes[path];
 
@@ -337,12 +341,15 @@ geo.MeshStreamer.prototype.nextElements = function(_camera, force) {
     var sent = 0;
     var data = [];
 
-    // Sort faces
     var mightBeCompletetlyFinished = true;
 
     for (var meshIndex = 0; meshIndex < this.mesh.meshes.length; meshIndex++) {
 
         var currentMesh = this.mesh.meshes[meshIndex];
+
+        // Sort faces
+        // if (camera !== undefined && camera !== null)
+        //     currentMesh.faces.sort(this.faceComparator(camera))
 
         if (this.isFinished(meshIndex)) {
 
@@ -506,7 +513,7 @@ geo.MeshStreamer.prototype.nextElements = function(_camera, force) {
 
             sent++;
 
-            if (sent > 500) {
+            if (sent > this.chunk) {
 
                 return {data: data, finished: false};
 

@@ -139,6 +139,10 @@ function resizeElements() {
 
         var obj = arguments[i];
 
+        if (obj == null) {
+            return;
+        }
+
         if (obj instanceof Element) {
 
             obj.style.width = width + 'px';
@@ -162,7 +166,8 @@ function appendTo(container) {
 
         for (var i = 0; i < arguments.length; i++) {
 
-            container.appendChild(arguments[i].domElement);
+            if (arguments[i] != null)
+                container.appendChild(arguments[i].domElement);
 
         }
 

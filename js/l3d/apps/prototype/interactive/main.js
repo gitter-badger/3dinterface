@@ -14,7 +14,9 @@ L3D.ProgressiveLoader.onFinished = function() {
         coins[i].mesh.visible = true;
     }
 
-    loadingCanvas.clear();
+    if (initMainScene !== L3D.initSponza)
+        loadingCanvas.clear();
+
     L3D.DB.enable();
     camera1.reset();
 };
@@ -34,6 +36,7 @@ var coins = [];
 var previousTime;
 var pointer;
 var startCanvas;
+var loadingCanvas;
 
 window.onbeforeunload = function() {
 
@@ -74,7 +77,8 @@ function main() {
 
     Coin.update(true);
 
-    loadingCanvas.render();
+    if (initMainScene !== L3D.initSponza)
+        loadingCanvas.render();
 
     if (locked !== undefined && locked)
         startCanvas.render();
@@ -146,7 +150,8 @@ function initCanvases() {
     // Init start canvas
     startCanvas = new L3D.StartCanvas(camera1);
 
-    loadingCanvas = new L3D.LoadingCanvas();
+    if (initMainScene !== L3D.initSponza)
+        loadingCanvas = new L3D.LoadingCanvas();
 }
 
 function initModels() {

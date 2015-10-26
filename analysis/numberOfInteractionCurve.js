@@ -49,7 +49,8 @@ function main(path) {
     // console.log(lib.toMatlabArray('X', lib.range(0, groups.length)));
 
     var header =
-        '\\begin{axis}[\n'
+        '% This file has been automatically generated\n'
+        + '\\begin{axis}[\n'
         + '    ybar,\n'
         + '    enlargelimits=0.05,\n'
         + '    legend style={at={(0.5,-0.15)},\n'
@@ -61,13 +62,12 @@ function main(path) {
     for (var i = 0; i < groups.length; i++) {
         header += i + (i === groups.length -1 ? '' : ',');
     }
-            1,2,3,4,5,6,7,8,9,10
 
     header += '},\n'
         + '    xtick=data,\n'
         + '    nodes near coords,\n'
-        + '    width=32cm,\n'
-        + '    height=10cm,\n'
+        + '    width=60cm,\n'
+        + '    height=20cm,\n'
         + '    % nodes near coords align5={vertical},\n'
         + ']\n';
 

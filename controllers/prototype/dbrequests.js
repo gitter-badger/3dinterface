@@ -96,7 +96,8 @@ DBReq.Info = function(id, finishAction) {
         hovered: false,
         pointerLocked: false,
         switchedLockOption: false,
-        redCoins: false
+        redCoins: false,
+        sceneInfo: false
     };
 
     /**
@@ -150,6 +151,7 @@ DBReq.Info.prototype.execute = function() {
     this.loadSwitchedLockOption();
     this.loadPointerLocked();
     this.loadRedCoins();
+    this.loadSceneInfo();
 };
 
 /**
@@ -209,6 +211,8 @@ DBReq.Info.prototype.merge = function() {
     for (i = 0; i < this.redCoins.length; i++) {
         this.finalResult.redCoins.push(this.redCoins[i]);
     }
+
+    this.finalResult.sceneInfo = this.sceneInfo;
 };
 
 /**
@@ -524,6 +528,30 @@ DBReq.Info.prototype.loadRedCoins = function() {
                 self.redCoins.push(result.rows[0].coin8);
             }
             self.ready.redCoins = true;
+            self.tryMerge();
+        }
+    );
+};
+
+DBReq.Info.prototype.loadSceneInfo = function() {
+    var self = this;
+    this.client.query(
+        'SELECT Experiment.recommendation_style AS "recommendationStyle", \n' +
+        '       CoinCombination.scene_id AS "sceneId" \n' +
+        'FROM Experiment, CoinCombination \n' +
+        'WHERE Experiment.coin_combination_id = CoinCombination.id AND Experiment.id = $1;',
+        [self.id],
+        function(err, result) {
+            if (err !== null) {
+                Log.dberror(err + ' in loadSceneInfo');
+                console.log(err);
+            } else {
+                self.sceneInfo = {
+                    recommendationStyle : result.rows[0].recommendationStyle,
+                    sceneId : result.rows[0].sceneId
+                };
+            }
+            self.ready.sceneInfo = true;
             self.tryMerge();
         }
     );

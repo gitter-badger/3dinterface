@@ -1,3 +1,6 @@
+var Reco = (typeof Recommendation !== 'undefined' ? Recommendation : L3D.BaseRecommendation);
+var Recommendation = Reco;
+
 L3D.LogFunction = function(a,b) {
     var val = 100*a/b;
     $('.progress-bar').css('width', val+'%').attr('aria-valuenow', val);
@@ -112,7 +115,7 @@ L3D.initZeldaScene = function(scene, collidableObjects, loader) {
 
 L3D.createPeachRecommendations = function(width, height, rec) {
     var recos = [];
-    var Reco = rec !== undefined ? rec : Recommendation;
+    var Reco = rec !== undefined ? rec : (typeof Recommendation !== 'undefined' ? Recommendation : L3D.BaseRecommendation);
 
     var createRecommendation = function(position, target) {
         return new Reco(

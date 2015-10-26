@@ -251,12 +251,27 @@ Lib.durationBetweenCoins = function(exp) {
 };
 
 Lib.toLaTeXMatrix = function(mat) {
-    var str = 'x,y,r\n';
+    var str = 'x,y,r,g\n';
+    var colSums = [];
+
+    for (var i = 0; i < mat.length; i++) {
+
+        colSums[i] = 0;
+
+        for (var j = 0; j < mat[i].length; j++) {
+
+            colSums[i] += mat[i][j];
+
+        }
+
+    }
 
     for (var i = 0; i < mat.length; i++) {
 
         for (var j = 0; j < mat[i].length; j++) {
-            str += i + ',' + j + ',' + mat[i][j] + '\n';
+
+            str += i + ',' + j + ',' + mat[i][j] + ',' + (mat[i][j] > colSums[i] / 3 ? '1' : '0' ) + ' \n';
+
         }
 
         // str += i === mat.length - 1 ? '' : '\n';

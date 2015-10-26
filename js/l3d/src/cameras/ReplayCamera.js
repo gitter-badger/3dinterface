@@ -52,6 +52,8 @@ L3D.ReplayCamera.prototype.update = function(time) {
         //     // Nothing to do
         // }
     }
+
+    return this.finished;
 };
 
 L3D.ReplayCamera.prototype.linearMotion = function(time) {
@@ -95,6 +97,7 @@ L3D.ReplayCamera.prototype.nextEvent = function() {
     // Finished
     if (this.counter >= this.path.length) {
         this.started = false;
+        this.finished = true;
         // console.log('The replay is finished');
         if (typeof this.callback === 'function') {
             this.callback();
@@ -113,21 +116,23 @@ L3D.ReplayCamera.prototype.nextEvent = function() {
             if (this.coins[i].id === this.event.id)
                 this.coins[i].get();
         }
+        this.nextEvent();
         // Wait a little before launching nextEvent
-        (function(self) {
-            setTimeout(function() {
-                self.nextEvent();
-            },500);
-        })(this);
+        // (function(self) {
+        //     setTimeout(function() {
+        //         self.nextEvent();
+        //     },500);
+        // })(this);
     } else if (this.event.type == 'arrow') {
         this.moveHermite(this.cameras[this.event.id]);
     } else if (this.event.type == 'reset') {
         this.reset();
-        (function (self) {
-            setTimeout(function() {
-                self.nextEvent();
-            },500);
-        })(this);
+        this.nextEvent();
+        //(function (self) {
+        //    setTimeout(function() {
+        //        self.nextEvent();
+        //    },500);
+        //})(this);
     } else if (this.event.type == 'previousnext') {
         this.move(this.event);
     } else {
@@ -205,3 +210,38 @@ L3D.ReplayCamera.prototype.moveHermite = function(recommendation) {
 };
 
 L3D.ReplayCamera.prototype.save = function() {};
+
+/**
+ * Creates a list containing all the elements to send to the server to stream visible part
+ * @return {Array} A list containing <ol start="0">
+ * <li>the position of the camera</li>
+ * <li>the target of the camera</li>
+ * <li>and planes defining the frustum of the camera (a,b,c, and d from ax+by+cz+d=0)</li>
+ * </ol>
+ */
+L3D.ReplayCamera.prototype.toList = function() {
+    this.updateMatrix();
+    this.updateMatrixWorld();
+
+    var frustum = new THREE.Frustum();
+    var projScreenMatrix = new THREE.Matrix4();
+    projScreenMatrix.multiplyMatrices(this.projectionMatrix, this.matrixWorldInverse);
+
+    frustum.setFromMatrix(new THREE.Matrix4().multiplyMatrices(this.projectionMatrix, this.matrixWorldInverse));
+
+    var ret =
+        [[this.position.x, this.position.y, this.position.z],
+         [this.target.x,   this.target.y,   this.target.z]];
+
+    for (var i = 0; i < frustum.planes.length; i++) {
+
+        var p = frustum.planes[i];
+
+        ret.push([
+            p.normal.x, p.normal.y, p.normal.z, p.constant
+        ]);
+
+    }
+
+    return ret;
+};

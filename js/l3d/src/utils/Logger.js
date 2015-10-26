@@ -43,7 +43,7 @@ L3D.DB.Private.sendData = function(url, data, force) {
  */
 if (typeof module === 'object')
     DB_DISABLED = true;
-L3D.DB.Private.enabled = !DB_DISABLED;
+L3D.DB.Private.enabled = typeof DB_DISABLED === 'undefined' ? true : !DB_DISABLED;
 
 /**
  * Enables the requests
