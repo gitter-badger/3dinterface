@@ -343,181 +343,170 @@ geo.MeshStreamer.prototype.nextElements = function(_camera, force) {
 
     var mightBeCompletetlyFinished = true;
 
-    for (var meshIndex = 0; meshIndex < this.mesh.meshes.length; meshIndex++) {
+    // BOOM
+    if (camera != null)
+        this.mesh.faces.sort(this.faceComparator(camera));
 
-        var currentMesh = this.mesh.meshes[meshIndex];
+    for (var faceIndex = 0; faceIndex < this.mesh.faces.length; faceIndex++) {
 
-        // Sort faces
-        // if (camera !== undefined && camera !== null)
-        //     currentMesh.faces.sort(this.faceComparator(camera))
+        var currentFace = this.mesh.faces[faceIndex];
 
-        if (this.isFinished(meshIndex)) {
+        if (this.faces[currentFace.index] === true) {
 
             continue;
 
-        }  else {
+        } else {
 
             mightBeCompletetlyFinished = false;
 
         }
 
-        for (var faceIndex = 0; faceIndex < currentMesh.faces.length; faceIndex++) {
+        var vertex1 = this.mesh.vertices[currentFace.a];
+        var vertex2 = this.mesh.vertices[currentFace.b];
+        var vertex3 = this.mesh.vertices[currentFace.c];
 
-            var currentFace = currentMesh.faces[faceIndex];
+        if (!force) {
 
-            if (this.meshFaces[meshIndex].array[faceIndex] === true) {
+            var display = false;
+            var outcodes = [];
+            var exitToContinue = false;
+            threeVertices = [vertex1, vertex2, vertex3];
 
+            for (i = 0; i < threeVertices.length; i++) {
+
+                var vertex = threeVertices[i];
+                var currentOutcode = "";
+
+                for (var j = 0; j < planes.length;  j++) {
+
+                    var plane = planes[j];
+
+                    distance =
+                        plane.normal.x * vertex.x +
+                        plane.normal.y * vertex.y +
+                        plane.normal.z * vertex.z +
+                        plane.constant;
+
+                    // if (distance < 0) {
+                    //     exitToContinue = true;
+                    //     break;
+                    // }
+
+                    currentOutcode += distance > 0 ? '0' : '1';
+
+                }
+
+                outcodes.push(parseInt(currentOutcode,2));
+
+            }
+
+            // http://vterrain.org/LOD/culling.html
+            // I have no idea what i'm doing
+            // http://i.kinja-img.com/gawker-media/image/upload/japbcvpavbzau9dbuaxf.jpg
+            // But it seems to work
+            if ( (outcodes[0] | outcodes[1]) === 0 && (outcodes[1] | outcodes[2]) === 0 ) {
+                // all points in
+            } else if ( (outcodes[0] === outcodes[1]) && (outcodes[0] === outcodes[2]) ) {
+                // all points out
                 continue;
-
             }
-
-            var vertex1 = this.mesh.vertices[currentFace.a];
-            var vertex2 = this.mesh.vertices[currentFace.b];
-            var vertex3 = this.mesh.vertices[currentFace.c];
-
-            if (!force) {
-
-                var display = false;
-                var outcodes = [];
-                var exitToContinue = false;
-                threeVertices = [vertex1, vertex2, vertex3];
-
-                for (i = 0; i < threeVertices.length; i++) {
-
-                    var vertex = threeVertices[i];
-                    var currentOutcode = "";
-
-                    for (var j = 0; j < planes.length;  j++) {
-
-                        var plane = planes[j];
-
-                        distance =
-                            plane.normal.x * vertex.x +
-                            plane.normal.y * vertex.y +
-                            plane.normal.z * vertex.z +
-                            plane.constant;
-
-                        // if (distance < 0) {
-                        //     exitToContinue = true;
-                        //     break;
-                        // }
-
-                        currentOutcode += distance > 0 ? '0' : '1';
-
-                    }
-
-                    outcodes.push(parseInt(currentOutcode,2));
-
-                }
-
-                // http://vterrain.org/LOD/culling.html
-                // I have no idea what i'm doing
-                // http://i.kinja-img.com/gawker-media/image/upload/japbcvpavbzau9dbuaxf.jpg
-                // But it seems to work
-                if ( (outcodes[0] | outcodes[1]) === 0 && (outcodes[1] | outcodes[2]) === 0 ) {
-                    // all points in
-                } else if ( (outcodes[0] === outcodes[1]) && (outcodes[0] === outcodes[2]) ) {
-                    // all points out
-                    continue;
-                }
-                else {
-                    // part of the triangle is inside the viewing volume
-                }
+            else {
+                // part of the triangle is inside the viewing volume
             }
+        }
 
-            if (!this.vertices[currentFace.a]) {
+        if (!this.vertices[currentFace.a]) {
 
-                data.push(vertex1.toList());
-                this.vertices[currentFace.a] = true;
-                sent++;
-
-            }
-
-            if (!this.vertices[currentFace.b]) {
-
-                data.push(vertex2.toList());
-                this.vertices[currentFace.b] = true;
-                sent++;
-
-            }
-
-            if (!this.vertices[currentFace.c]) {
-
-                data.push(vertex3.toList());
-                this.vertices[currentFace.c] = true;
-                sent++;
-
-            }
-
-            var normal1 = this.mesh.normals[currentFace.aNormal];
-            var normal2 = this.mesh.normals[currentFace.bNormal];
-            var normal3 = this.mesh.normals[currentFace.cNormal];
-
-            if (normal1 !== undefined && !this.normals[currentFace.aNormal]) {
-
-                data.push(normal1.toList());
-                this.normals[currentFace.aNormal] = true;
-                sent++;
-
-            }
-
-            if (normal2 !== undefined && !this.normals[currentFace.bNormal]) {
-
-                data.push(normal2.toList());
-                this.normals[currentFace.bNormal] = true;
-                sent++;
-
-            }
-
-            if (normal3 !== undefined && !this.normals[currentFace.cNormal]) {
-
-                data.push(normal3.toList());
-                this.normals[currentFace.cNormal] = true;
-                sent++;
-
-            }
-
-            var tex1 = this.mesh.texCoords[currentFace.aTexture];
-            var tex2 = this.mesh.texCoords[currentFace.bTexture];
-            var tex3 = this.mesh.texCoords[currentFace.cTexture];
-
-            if (tex1 !== undefined && !this.texCoords[currentFace.aTexture]) {
-
-                data.push(tex1.toList());
-                this.texCoords[currentFace.aTexture] = true;
-                sent++;
-
-            }
-
-            if (tex2 !== undefined && !this.texCoords[currentFace.bTexture]) {
-
-                data.push(tex2.toList());
-                this.texCoords[currentFace.bTexture] = true;
-                sent++;
-
-            }
-
-            if (tex3 !== undefined && !this.texCoords[currentFace.cTexture]) {
-
-                data.push(tex3.toList());
-                this.texCoords[currentFace.cTexture] = true;
-                sent++;
-
-            }
-
-            data.push(currentFace.toList());
-            // this.meshFaces[meshIndex] = this.meshFaces[meshIndex] || [];
-            this.meshFaces[meshIndex].array[faceIndex] = true;
-            this.meshFaces[meshIndex].counter++;
-            currentMesh.faceIndex++;
-
+            data.push(vertex1.toList());
+            this.vertices[currentFace.a] = true;
             sent++;
 
-            if (sent > this.chunk) {
+        }
 
-                return {data: data, finished: false};
+        if (!this.vertices[currentFace.b]) {
 
-            }
+            data.push(vertex2.toList());
+            this.vertices[currentFace.b] = true;
+            sent++;
+
+        }
+
+        if (!this.vertices[currentFace.c]) {
+
+            data.push(vertex3.toList());
+            this.vertices[currentFace.c] = true;
+            sent++;
+
+        }
+
+        var normal1 = this.mesh.normals[currentFace.aNormal];
+        var normal2 = this.mesh.normals[currentFace.bNormal];
+        var normal3 = this.mesh.normals[currentFace.cNormal];
+
+        if (normal1 !== undefined && !this.normals[currentFace.aNormal]) {
+
+            data.push(normal1.toList());
+            this.normals[currentFace.aNormal] = true;
+            sent++;
+
+        }
+
+        if (normal2 !== undefined && !this.normals[currentFace.bNormal]) {
+
+            data.push(normal2.toList());
+            this.normals[currentFace.bNormal] = true;
+            sent++;
+
+        }
+
+        if (normal3 !== undefined && !this.normals[currentFace.cNormal]) {
+
+            data.push(normal3.toList());
+            this.normals[currentFace.cNormal] = true;
+            sent++;
+
+        }
+
+        var tex1 = this.mesh.texCoords[currentFace.aTexture];
+        var tex2 = this.mesh.texCoords[currentFace.bTexture];
+        var tex3 = this.mesh.texCoords[currentFace.cTexture];
+
+        if (tex1 !== undefined && !this.texCoords[currentFace.aTexture]) {
+
+            data.push(tex1.toList());
+            this.texCoords[currentFace.aTexture] = true;
+            sent++;
+
+        }
+
+        if (tex2 !== undefined && !this.texCoords[currentFace.bTexture]) {
+
+            data.push(tex2.toList());
+            this.texCoords[currentFace.bTexture] = true;
+            sent++;
+
+        }
+
+        if (tex3 !== undefined && !this.texCoords[currentFace.cTexture]) {
+
+            data.push(tex3.toList());
+            this.texCoords[currentFace.cTexture] = true;
+            sent++;
+
+        }
+
+        data.push(currentFace.toList());
+        // this.meshFaces[meshIndex] = this.meshFaces[meshIndex] || [];
+        this.faces[currentFace.index] = true;
+        // this.meshFaces[meshIndex].counter++;
+        // currentMesh.faceIndex++;
+
+        sent++;
+
+        if (sent > this.chunk) {
+
+            return {data: data, finished: false};
+
         }
     }
 

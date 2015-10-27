@@ -153,7 +153,6 @@ function loop() {
 
     if (!testDistance(old, camera) && !finished && !forceFinished) {
         process.nextTick(loop);
-        finish();
         return;
     }
 
@@ -168,6 +167,7 @@ function loop() {
 
     let score = 0;
 
+    var totalPixel = 0;
     for (let i = 0; i < width; i++) {
 
         buf[i] = [];
@@ -186,11 +186,15 @@ function loop() {
             let intersects = raycaster.intersectObject(loader.obj, true);
 
             if (intersectsProg.length === 0 && intersects.length === 0) {
-                score++;
+                // Not good
             } else if (intersectsProg.length !== intersects.length) {
                 // Not good
+                totalPixel++;
             } else if (equalFaces(intersectsProg[0].face, intersects[0].face)) {
                 score++;
+                totalPixel++;
+            } else {
+                totalPixel++;
             }
 
             if (intersectsProg.length > 0) {
@@ -202,7 +206,7 @@ function loop() {
 
     }
 
-    score /= width * height;
+    score /= totalPixel;
 
     // for (let i = 0; i < 255; i++) {
     //     colorsOccurence[i+1] += colorsOccurence[i];
@@ -237,9 +241,4 @@ function loop() {
 
     if (!finished && !forceFinished)
         setTimeout(loop,50);
-    else
-        finish();
 }
-
-function finish() { console.log('];') }
-
