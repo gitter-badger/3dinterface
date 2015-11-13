@@ -1,4 +1,6 @@
 var Log = require('../lib/NodeLog.js');
+var L3D = require('../../static/js/l3d.min.js');
+var THREE = require('three');
 
 function clone(vec) {
     return {x : vec.x, y : vec.y, z : vec.z};
@@ -110,7 +112,7 @@ geo.MeshContainer = function(path, transfo, callback) {
 
     if (path !== undefined) {
 
-        this.loadFromFile(path);
+        this.loadFromFile('../' + path);
 
     }
 
@@ -233,12 +235,18 @@ function trySetLoaded() {
 
 var availableMeshNames = {
     '/static/data/castle/princess peaches castle (outside).obj': {
-        done: false
+        done: false,
+        recommendations : L3D.createPeachRecommendations(1134, 768)
+
     },
     '/static/data/mountain/coocoolmountain.obj': {
-        done: false
+        done: false,
+        recommendations : L3D.createMountainRecommendations(1134, 768)
     },
-
+    '/static/data/mountain/coocoolmountain_sub.obj': {
+        done: false,
+        recommendations : L3D.createMountainRecommendations(1134, 768)
+    },
     '/static/data/whomp/Whomps Fortress.obj': {
         done: false,
         transfo: {
@@ -253,9 +261,26 @@ var availableMeshNames = {
                 z: 0
             },
             scale: 0.1
-        }
+        },
+        recommendations : L3D.createWhompRecommendations(1134, 768)
     },
-
+    '/static/data/whomp/Whomps Fortress_sub.obj': {
+        done: false,
+        transfo: {
+            rotation: {
+                x: -Math.PI / 2,
+                y: 0,
+                z: Math.PI / 2
+            },
+            translation: {
+                x: 0,
+                y: 0,
+                z: 0
+            },
+            scale: 0.1
+        },
+        recommendations : L3D.createWhompRecommendations(1134, 768)
+    },
     '/static/data/bobomb/bobomb battlefeild.obj': {
         done: false,
         transfo: {
@@ -269,7 +294,25 @@ var availableMeshNames = {
                 y: 0,
                 z: 0
             }
-        }
+        },
+        recommendations : L3D.createBobombRecommendations(1134, 768)
+    },
+
+    '/static/data/bobomb/bobomb battlefeild_sub.obj': {
+        done: false,
+        transfo: {
+            rotation: {
+                x: 0,
+                y: Math.PI - 0.27,
+                z: 0
+            },
+            translation: {
+                x: 0,
+                y: 0,
+                z: 0
+            }
+        },
+        recommendations : L3D.createBobombRecommendations(1134, 768)
     },
 
     '/static/data/sponza/sponza.obj': {
@@ -294,6 +337,36 @@ function pushMesh(name) {
         name.substring(1, name.length),
         availableMeshNames[name].transfo,
         function() {
+            geo.availableMeshes[name].recommendations = [];
+
+            if (availableMeshNames[name].recommendations !== undefined) {
+
+                for (var i = 0; i < availableMeshNames[name].recommendations.length; i++) {
+
+                    var reco = availableMeshNames[name].recommendations[i].camera;
+
+                    reco.lookAt(reco.target);
+
+                    reco.updateMatrix();
+                    reco.updateProjectionMatrix();
+                    reco.updateMatrixWorld();
+
+                    reco.matrixWorldInverse.getInverse( reco.matrixWorld );
+
+                    var frustum = new THREE.Frustum();
+                    var projScreenMatrix = new THREE.Matrix4();
+                    projScreenMatrix.multiplyMatrices(reco.projectionMatrix, reco.matrixWorldInverse);
+
+                    frustum.setFromMatrix(new THREE.Matrix4().multiplyMatrices(reco.projectionMatrix, reco.matrixWorldInverse));
+
+                    geo.availableMeshes[name].recommendations.push({
+                        position: reco.position,
+                        frustum: frustum.planes
+                    });
+
+                }
+            }
+
             availableMeshNames[name].done = true;
             trySetLoaded();
         }

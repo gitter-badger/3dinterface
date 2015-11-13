@@ -24,7 +24,8 @@ inotifywait -r -e close_write -m . |
         fi
     done &
 
-cd ../geo
+cd ../server/geo
+# cd server/geo
 inotifywait -r -e close_write -m . |
     while read path action file; do
         if [ `find . -name $file | wc -l` -ne 0 ]; then

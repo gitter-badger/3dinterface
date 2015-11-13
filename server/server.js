@@ -75,10 +75,10 @@ require('./lib/controllers')(app);
 require('./lib/posts')(app);
 
 // Static files
-app.use('/static', express.static('static'));
+app.use('/static', express.static('../static'));
 
 // Favicon
-app.use(favicon(__dirname + '/static/ico/favicon.ico'));
+app.use(favicon(__dirname + '/../static/ico/favicon.ico'));
 
 // When error raised
 app.use(function(err, req, res, next) {

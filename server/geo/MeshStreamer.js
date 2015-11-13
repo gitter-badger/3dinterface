@@ -1,3 +1,59 @@
+var THREE = require('three');
+var L3D = require('../../static/js/l3d.min.js');
+
+function isInFrustum(element, planes) {
+
+    if (element instanceof Array) {
+
+        var outcodes = [];
+
+        for (var i = 0; i < element.length; i++) {
+
+            var vertex = element[i];
+            var currentOutcode = "";
+
+            for (var j = 0; j < planes.length;  j++) {
+
+                var plane = planes[j];
+
+                distance =
+                    plane.normal.x * vertex.x +
+                    plane.normal.y * vertex.y +
+                    plane.normal.z * vertex.z +
+                    plane.constant;
+
+                // if (distance < 0) {
+                //     exitToContinue = true;
+                //     break;
+                // }
+
+                currentOutcode += distance > 0 ? '0' : '1';
+
+            }
+
+            outcodes.push(parseInt(currentOutcode,2));
+
+        }
+
+        // http://vterrain.org/LOD/culling.html
+        // I have no idea what i'm doing
+        // http://i.kinja-img.com/gawker-media/image/upload/japbcvpavbzau9dbuaxf.jpg
+        // But it seems to work
+        // EDIT : Not, this should be ok http://www.cs.unc.edu/~blloyd/comp770/Lecture07.pdf
+
+        if ((outcodes[0] | outcodes[1] | outcodes[2]) === 0) {
+            return true;
+        } else if ((outcodes[0] & outcodes[1] & outcodes[2]) !== 0) {
+            return false;
+        } else {
+            // part of the triangle is inside the viewing volume
+            return true;
+        }
+
+    }
+
+}
+
 /**
  * @private
  */
@@ -97,6 +153,18 @@ geo.MeshStreamer = function(path) {
 
 };
 
+geo.MeshStreamer.prototype.isBackFace = function(camera, face) {
+
+    var directionCamera = L3D.Tools.diff(camera.target, camera.position);
+
+    var v1 = L3D.Tools.diff(this.mesh.vertices[face.b], this.mesh.vertices[face.a]);
+    var v2 = L3D.Tools.diff(this.mesh.vertices[face.c], this.mesh.vertices[face.a]);
+
+    var normal = L3D.Tools.cross(v1, v2);
+
+    return L3D.Tools.dot(directionCamera, normal) > 0;
+};
+
 /**
  * Compute a function that can compare two faces
  * @param {Camera} camera a camera seeing or not face
@@ -192,6 +260,13 @@ geo.MeshStreamer.prototype.start = function(socket) {
 
         self.mesh = geo.availableMeshes[path];
 
+        if (self.mesh === undefined) {
+            process.stderr.write('Wrong path for model : ' + path);
+            socket.emit('refused');
+            socket.disconnect();
+            return;
+        }
+
         self.meshFaces = new Array(self.mesh.meshes.length);
 
         for (var i = 0; i < self.meshFaces.length; i++) {
@@ -201,15 +276,6 @@ geo.MeshStreamer.prototype.start = function(socket) {
                 array: new Array(self.mesh.meshes[i].faces.length)
             };
 
-        }
-
-        var regex = /.*\.\..*/;
-        var filePath = path.substring(1, path.length);
-
-        if (regex.test(filePath)) {
-            socket.emit('refused');
-            socket.disconnect();
-            return;
         }
 
         socket.emit('ok');
@@ -344,8 +410,8 @@ geo.MeshStreamer.prototype.nextElements = function(_camera, force) {
     var mightBeCompletetlyFinished = true;
 
     // BOOM
-    if (camera != null)
-        this.mesh.faces.sort(this.faceComparator(camera));
+    // if (camera != null)
+    //     this.mesh.faces.sort(this.faceComparator(camera));
 
     for (var faceIndex = 0; faceIndex < this.mesh.faces.length; faceIndex++) {
 
@@ -355,64 +421,30 @@ geo.MeshStreamer.prototype.nextElements = function(_camera, force) {
 
             continue;
 
-        } else {
-
-            mightBeCompletetlyFinished = false;
-
         }
+
+        mightBeCompletetlyFinished = false;
 
         var vertex1 = this.mesh.vertices[currentFace.a];
         var vertex2 = this.mesh.vertices[currentFace.b];
         var vertex3 = this.mesh.vertices[currentFace.c];
 
-        if (!force) {
+        if (!force && camera !== null) {
 
             var display = false;
-            var outcodes = [];
             var exitToContinue = false;
             threeVertices = [vertex1, vertex2, vertex3];
 
-            for (i = 0; i < threeVertices.length; i++) {
-
-                var vertex = threeVertices[i];
-                var currentOutcode = "";
-
-                for (var j = 0; j < planes.length;  j++) {
-
-                    var plane = planes[j];
-
-                    distance =
-                        plane.normal.x * vertex.x +
-                        plane.normal.y * vertex.y +
-                        plane.normal.z * vertex.z +
-                        plane.constant;
-
-                    // if (distance < 0) {
-                    //     exitToContinue = true;
-                    //     break;
-                    // }
-
-                    currentOutcode += distance > 0 ? '0' : '1';
-
-                }
-
-                outcodes.push(parseInt(currentOutcode,2));
-
-            }
-
-            // http://vterrain.org/LOD/culling.html
-            // I have no idea what i'm doing
-            // http://i.kinja-img.com/gawker-media/image/upload/japbcvpavbzau9dbuaxf.jpg
-            // But it seems to work
-            if ( (outcodes[0] | outcodes[1]) === 0 && (outcodes[1] | outcodes[2]) === 0 ) {
-                // all points in
-            } else if ( (outcodes[0] === outcodes[1]) && (outcodes[0] === outcodes[2]) ) {
-                // all points out
+            // Frustum culling
+            if (!isInFrustum(threeVertices, planes)) {
                 continue;
             }
-            else {
-                // part of the triangle is inside the viewing volume
+
+            // Backface culling
+            if (this.isBackFace(camera, currentFace)) {
+                continue;
             }
+
         }
 
         if (!this.vertices[currentFace.a]) {

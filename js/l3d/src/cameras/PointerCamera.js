@@ -138,6 +138,8 @@ L3D.PointerCamera = function() {
      */
     this.listenerTarget = listenerTarget;
 
+    this.movingToRecommendation = null;
+
     // Set events from the document
     var self = this;
     var onKeyDown = function(event) {self.onKeyDown(event);};

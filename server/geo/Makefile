@@ -1,9 +1,9 @@
 OPT=--compilation_level SIMPLE_OPTIMIZATIONS
 
 ifeq ($(TYPE),RELEASE)
-	CLOSURE=java -jar ../utils/closure-compiler/closure-compiler.jar
+	CLOSURE=java -jar ../../utils/closure-compiler/closure-compiler.jar
 else
-	CLOSURE=../utils/simple-compiler/compiler.sh
+	CLOSURE=../../utils/simple-compiler/compiler.sh
 endif
 
 all: Geo
