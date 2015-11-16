@@ -712,11 +712,27 @@ L3D.initSponzaScene = function(scene, collidableObjects, recommendation, clickab
 
 };
 
-L3D.createSponzaCoins = function() {
-    return [];
+L3D.createSponzaRecommendations = function(width, height) {
+   var createRecommendation = function(position, target) {
+        return new Recommendation(
+            50,
+            width / height,
+            1,
+            100000,
+            position,
+            target
+        );
+    };
+
+    return [
+        createRecommendation(
+                new THREE.Vector3(97.36225946503932,10.925697484337014,12.852363038244272),
+                new THREE.Vector3(133.315101552449,18.576354168001703,-2.9229530646577633)
+            )
+    ];
 };
 
-L3D.createSponzaRecommendations = function() {
+L3D.createSponzaCoins = function() {
     return [];
 };
 

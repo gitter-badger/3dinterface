@@ -2,7 +2,7 @@
 
 let fs = require('fs');
 let THREE = require('three');
-let L3D = require('../static/js/l3d.min.js');
+let L3D = require('../../static/js/l3d.min.js');
 
 function serialize(object) {
 

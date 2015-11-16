@@ -22,6 +22,10 @@ L3D.ReplayCamera = function() {
     this.theta = Math.PI;
     this.phi = Math.PI;
 
+    this.shouldRecover = false;
+
+    this.recommendationClicked = null;
+
 };
 L3D.ReplayCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 L3D.ReplayCamera.prototype.constructor = L3D.ReplayCamera;
@@ -71,10 +75,17 @@ L3D.ReplayCamera.prototype.cameraMotion = function(time) {
     var tmp = L3D.Tools.sum(L3D.Tools.mul(this.oldPosition, 1-this.t), L3D.Tools.mul(this.newPosition, this.t));
     this.position.copy(tmp);
     this.target = L3D.Tools.sum(L3D.Tools.mul(this.oldTarget, 1-this.t), L3D.Tools.mul(this.newTarget, this.t));
-    this.t += 1 / (((new Date(this.path[this.counter].time)).getTime() - (new Date(this.path[this.counter-1].time)).getTime()) / 20);
+    this.t += this.recovering ? 0.01 : 1 / (((new Date(this.path[this.counter].time)).getTime() - (new Date(this.path[this.counter-1].time)).getTime()) / 20);
 
     if (this.t > 1) {
-        this.nextEvent();
+        this.recommendationClicked = null;
+        if (typeof this.recoverCallback === 'function') {
+            this.recoverCallback();
+            this.recoverCallback = null;
+        } else {
+            this.nextEvent();
+        }
+
     }
 };
 
@@ -87,11 +98,15 @@ L3D.ReplayCamera.prototype.hermiteMotion = function(time) {
     this.t += 0.01 * time / 20;
 
     if (this.t > 1) {
+        this.recommendationClicked = null;
         this.nextEvent();
     }
 };
 
 L3D.ReplayCamera.prototype.nextEvent = function() {
+
+    var self = this;
+
     this.counter++;
 
     // Finished
@@ -124,7 +139,22 @@ L3D.ReplayCamera.prototype.nextEvent = function() {
         //     },500);
         // })(this);
     } else if (this.event.type == 'arrow') {
-        this.moveHermite(this.cameras[this.event.id]);
+        if (this.shouldRecover) {
+            (function(self, tmp) {
+                self.event.type = 'camera';
+                self.recovering = true;
+                self.move({
+                    position: self.position.clone(),
+                    target: self.cameras[self.event.id].camera.position.clone()
+                }, function() {
+                    self.recovering = false;
+                    self.event.type = 'arrow';
+                    self.moveReco(tmp);
+                });
+            })(this, this.event.id);
+        } else {
+            this.moveReco(this.event.id);
+        }
     } else if (this.event.type == 'reset') {
         this.reset();
         this.nextEvent();
@@ -176,7 +206,13 @@ L3D.ReplayCamera.prototype.anglesFromVectors = function() {
     this.theta = Math.atan2(forward.x, forward.z);
 };
 
-L3D.ReplayCamera.prototype.move = function(recommendation) {
+L3D.ReplayCamera.prototype.move = function(recommendation, callback) {
+
+    if (typeof callback === 'function') {
+
+        this.recoverCallback = callback;
+
+    }
 
     var otherCamera = recommendation.camera || recommendation;
 
@@ -185,11 +221,16 @@ L3D.ReplayCamera.prototype.move = function(recommendation) {
     this.oldPosition = this.position.clone();
     this.newTarget =   new THREE.Vector3(otherCamera.target.x, otherCamera.target.y, otherCamera.target.z);
     this.newPosition = new THREE.Vector3(otherCamera.position.x, otherCamera.position.y, otherCamera.position.z);
+
     this.t = 0;
 
 };
 
 L3D.ReplayCamera.prototype.moveHermite = function(recommendation) {
+
+    if (this.shouldRecover === false) {
+        this.shouldRecover = true;
+    }
 
     var otherCamera = recommendation.camera || recommendation;
 
@@ -209,6 +250,14 @@ L3D.ReplayCamera.prototype.moveHermite = function(recommendation) {
     );
 };
 
+L3D.ReplayCamera.prototype.moveReco = function(recommendationId) {
+
+    this.recommendationClicked = this.cameras[recommendationId].camera;
+
+    this.moveHermite(this.cameras[recommendationId]);
+
+};
+
 L3D.ReplayCamera.prototype.save = function() {};
 
 /**
@@ -220,18 +269,23 @@ L3D.ReplayCamera.prototype.save = function() {};
  * </ol>
  */
 L3D.ReplayCamera.prototype.toList = function() {
-    this.updateMatrix();
-    this.updateMatrixWorld();
+
+    var camera = (this.recommendationClicked === null ? this : this.recommendationClicked);
+
+    camera.updateMatrix();
+    camera.updateMatrixWorld();
 
     var frustum = new THREE.Frustum();
     var projScreenMatrix = new THREE.Matrix4();
-    projScreenMatrix.multiplyMatrices(this.projectionMatrix, this.matrixWorldInverse);
+    projScreenMatrix.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
 
-    frustum.setFromMatrix(new THREE.Matrix4().multiplyMatrices(this.projectionMatrix, this.matrixWorldInverse));
+    frustum.setFromMatrix(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
 
     var ret =
-        [[this.position.x, this.position.y, this.position.z],
-         [this.target.x,   this.target.y,   this.target.z]];
+        [[camera.position.x, camera.position.y, camera.position.z],
+         [camera.target.x,   camera.target.y,   camera.target.z],
+         this.recommendationClicked !== null
+        ];
 
     for (var i = 0; i < frustum.planes.length; i++) {
 

@@ -316,7 +316,8 @@ var availableMeshNames = {
     },
 
     '/static/data/sponza/sponza.obj': {
-        done: false
+        done: false,
+        recommendations : L3D.createSponzaRecommendations(1134,768)
     }
 
 };
@@ -361,7 +362,8 @@ function pushMesh(name) {
 
                     geo.availableMeshes[name].recommendations.push({
                         position: reco.position,
-                        frustum: frustum.planes
+                        target: reco.target,
+                        planes: frustum.planes
                     });
 
                 }

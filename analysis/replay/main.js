@@ -7,7 +7,6 @@ let height = Math.floor(768 /10);
 let XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 let THREE = require('three');
 let L3D = require('../../static/js/l3d.min.js');
-let math = require('mathjs');
 let fs = require('fs');
 
 let scene = new THREE.Scene();

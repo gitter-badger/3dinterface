@@ -7,7 +7,7 @@
  */
 L3D.ArrowRecommendation = function(arg1, arg2, arg3, arg4, position, target) {
 
-    L3D.BaseRecommendation.apply(this);
+    L3D.BaseRecommendation.apply(this, arguments);
 
     /**
      * @type {L3D.FixedCamera}

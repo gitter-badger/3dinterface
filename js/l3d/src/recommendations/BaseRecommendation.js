@@ -5,7 +5,7 @@
  */
 L3D.BaseRecommendation = function() {
 
-    THREE.Object3D.apply(this);
+    THREE.Object3D.apply(this, arguments);
 
     this.camera = new THREE.PerspectiveCamera();
     this.camera.position.copy(arguments[4]);

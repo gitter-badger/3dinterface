@@ -90,6 +90,8 @@ var _parseList = function(arr) {
  */
 var ProgressiveLoader = function(path, scene, camera, callback, log, laggy) {
 
+    var self = this;
+
     /**
      * Path to the .obj file
      * @type {string}
@@ -184,6 +186,12 @@ var ProgressiveLoader = function(path, scene, camera, callback, log, laggy) {
      */
     this.camera = camera;
 
+    this.camera._moveReco = this.camera.moveReco;
+
+    this.camera.moveReco = function(param) {
+        self.socket.emit('reco', param);
+        self.camera._moveReco.apply(self.camera, arguments);
+    };
 
     /**
      * Number of total elements for loading
@@ -209,6 +217,14 @@ var ProgressiveLoader = function(path, scene, camera, callback, log, laggy) {
      * @type {function}
      */
     this.log = log;
+
+    this.mapFace = {};
+
+};
+
+ProgressiveLoader.prototype.hasFace = function(face) {
+
+    return this.mapFace[(face.a) + '-' + (face.b) + '-' + (face.c)] === true;
 
 };
 
@@ -376,6 +392,8 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
 
                 }
 
+                self.mapFace[elt.a + '-' + elt.b + '-' + elt.c] = true;
+
 
             } else if (elt.type === 'global') {
 
@@ -384,6 +402,10 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
 
             }
 
+        }
+
+        if (typeof self.onBeforeEmit === 'function') {
+            self.onBeforeEmit();
         }
 
         // Ask for next elements
@@ -396,7 +418,7 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
 
     this.socket.on('disconnect', function() {
         if (typeof self.log === 'function')
-            self.log(self.numberOfFacesReceived, self.numberOfFaces);
+            self.log(self.numberOfFaces, self.numberOfFaces);
         self.finished = true;
 
         if (typeof L3D.ProgressiveLoader.onFinished === 'function') {
