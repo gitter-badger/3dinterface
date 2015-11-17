@@ -5,9 +5,12 @@ var L3D = require('../../static/js/l3d.min.js');
 try
 {
     var predictionTables = [
-        JSON.parse(fs.readFileSync('./mat1.json')),
-        JSON.parse(fs.readFileSync('./mat2.json')),
-        JSON.parse(fs.readFileSync('./mat3.json'))
+        JSON.parse(fs.readFileSync('./geo/mat1.json')),
+        JSON.parse(fs.readFileSync('./geo/mat2.json')),
+        JSON.parse(fs.readFileSync('./geo/mat3.json')),
+        [[1,1,0],
+         [1,2,0],
+         [2,1,0]]
     ];
 } catch (e) {
     process.stderr.write('No prefetching will be done !');
@@ -25,7 +28,7 @@ function isInFrustum(element, planes) {
             var vertex = element[i];
             var currentOutcode = "";
 
-            for (var j = 0; j < planes.length;  j++) {
+            for (var j = 0; j < planes.length; j++) {
 
                 var plane = planes[j];
 
@@ -156,7 +159,7 @@ geo.MeshStreamer = function(path) {
      * Number of element to send by packet
      * @type {Number}
      */
-    this.chunk = 500;
+    this.chunk = 5000;
 
     this.previousReco = 0;
 
@@ -278,11 +281,13 @@ geo.MeshStreamer.prototype.start = function(socket) {
 
     var self = this;
 
-    socket.on('request', function(path, laggy) {
+    socket.on('request', function(path, laggy, prefetch) {
 
         if (laggy === true) {
             self.chunk = 1;
         }
+
+        self.prefetch = prefetch;
 
         self.mesh = geo.availableMeshes[path];
 
@@ -299,6 +304,8 @@ geo.MeshStreamer.prototype.start = function(socket) {
             case '/static/data/whomp/Whomps Fortress_sub.obj':
                 self.predictionTable = predictionTables[2];
                 break;
+            default:
+                self.predictionTable = predictionTables[3];
         };
 
         if (self.mesh === undefined) {
@@ -358,7 +365,7 @@ geo.MeshStreamer.prototype.start = function(socket) {
                 planes: []
             };
 
-            var shouldPrefetch = _camera[2];
+            var fullFrustum = _camera[2];
 
             for (i = 3; i < _camera.length; i++) {
 
@@ -375,59 +382,121 @@ geo.MeshStreamer.prototype.start = function(socket) {
 
         }
 
-        // Find best recommendation
-        var bestReco;
-        var bestScore = -Infinity;
-        var bestIndex = null;
+        // Create config for proportions of chunks
+        var config;
 
+        if (self.prefetch) {
 
-        if (self.predictionTable !== undefined) {
+            config = [{ frustum: cameraFrustum, proportion : 0.5}];
 
-            for (var i = 0; i < self.mesh.recommendations.length; i++) {
+            // Find best recommendation
+            var bestReco;
+            var bestScore = -Infinity;
+            var bestIndex = null;
 
-                if (self.predictionTable[self.previousReco][i+1] > bestScore) {
+            if (self.predictionTable !== undefined) {
 
-                    bestReco = self.mesh.recommendations[i];
-                    bestScore = self.predictionTable[self.previousReco][i+1];
-                    bestIndex = i;
+                var sum = 0;
+
+                for (var i = 0; i < self.mesh.recommendations.length; i++) {
+
+                    sum += self.predictionTable[self.previousReco][i];
 
                 }
+
+                for (var i = 0; i < self.mesh.recommendations.length; i++) {
+
+                    if (self.predictionTable[self.previousReco][i] > 0) {
+
+                        config.push({
+
+                            proportion : self.predictionTable[self.previousReco][i] / (2 * sum),
+                            frustum : self.mesh.recommendations[i]
+
+                        });
+
+                    }
+
+                }
+
+                // console.log(config.map(function(o) { return o.proportion; }));
+
+            } else {
+
+                // For sponza
+                bestReco = self.mesh.recommendations[0];
+
+            }
+
+            if (!fullFrustum) {
+
+                // console.log('Frustum and prefetch : ' + (cameraFrustum !== undefined) + ' ' + (bestReco !== undefined));
+
+            } else {
+
+                // console.log('Full frustum fetching (reco clicked)');
+
+                config = [{
+                    proportion: 1,
+                    frustum: cameraFrustum
+                }];
 
             }
 
         } else {
 
-            // For sponza
-            bestReco = self.mesh.recommendations[0];
-
-        }
-
-        // Create config for proportions of chunks
-        var config = [];
-
-        if (shouldPrefetch) {
-
-            // Camera cull
-            config.push({
-                proportion: 0.5,
-                frustum: cameraFrustum
-            });
-
-            config.push({
-                proportion: 0.5,
-                frustum: bestReco
-            });
+            config = [{frustum: cameraFrustum, proportion: 1}];
 
         }
 
         // Send next elements
+        var oldTime = Date.now();
         var next = self.nextElements(config);
+
+        // console.log(next.configSizes);
+
+        // console.log('Time to generate chunk : ' + (Date.now() - oldTime) + 'ms');
 
         if (next.data.length === 0) {
 
             // If nothing, just serve stuff
-            var tmp = self.nextElements();
+            var tmp = self.nextElements([
+                // {
+                //     proportion: 1,
+                //     frustum: cameraFrustum
+                // }
+            ]);
             next.data = tmp.data;
+
+        } else if (!self.prefetch && next.size < this.chunk) {
+
+            // Recompute config
+            var newConfig = [];
+            var sum = 0;
+
+            for (var i = 0; i < config.length; i++) {
+
+                // Check if config was full
+                if (next.configSizes[i] < this.chunk * config[i].proportion) {
+
+                    newConfig.push(config[i]);
+                    sum += config[i].proportion;
+
+                }
+
+            }
+
+            for (var i = 0; i < newConfig.length; i++) {
+
+                newConfig[i].proportion /= sum;
+
+            }
+
+            // Normalize config probabilities
+
+            var newData = self.nextElements(newConfig, this.chunk - next.size);
+
+            next.data = next.data.push.apply(next.data, newData.data);
 
         }
 
@@ -479,11 +548,16 @@ geo.MeshStreamer.prototype.nextMaterials = function() {
  * only interesting parts according to the camera
  * @returns {array} an array of elements ready to send
  */
-geo.MeshStreamer.prototype.nextElements = function(config) {
+geo.MeshStreamer.prototype.nextElements = function(config, chunk) {
+
+    if (chunk === undefined)
+        chunk = this.chunk;
 
     var i;
 
     var data = [];
+
+    var configSizes = [];
 
     var mightBeCompletetlyFinished = true;
 
@@ -491,163 +565,169 @@ geo.MeshStreamer.prototype.nextElements = function(config) {
     // if (camera != null)
     //     this.mesh.faces.sort(this.faceComparator(camera));
 
-    if (config === undefined) { config = [] }
+    if (config.length === 0) {
+        config.push({
+            proportion: 1
+        });
+    }
 
-    configloop:
-    for (var configIndex = 0; configIndex < config.length + 1; configIndex++) {
+    totalSize = 0;
+    for (var configIndex = 0; configIndex < config.length; configIndex++) {
 
-        var sent = 0;
+        configSizes[configIndex] = 0;
 
-        // config[0] should always be cameraFrustum, with eventually 0 proportion
-        var currentConfig = configIndex !== config.length ? config[configIndex] : config[0];
-        if (currentConfig === undefined) {
-            currentConfig = {
-                proportion : Infinity,
-            }
+    }
+
+    faceloop:
+    for (var faceIndex = 0; faceIndex < this.mesh.faces.length; faceIndex++) {
+
+        var currentFace = this.mesh.faces[faceIndex];
+
+        if (this.faces[currentFace.index] === true) {
+
+            continue;
+
         }
 
-        for (var faceIndex = 0; faceIndex < this.mesh.faces.length; faceIndex++) {
+        mightBeCompletetlyFinished = false;
 
-            var currentFace = this.mesh.faces[faceIndex];
+        var vertex1 = this.mesh.vertices[currentFace.a];
+        var vertex2 = this.mesh.vertices[currentFace.b];
+        var vertex3 = this.mesh.vertices[currentFace.c];
 
-            if (this.faces[currentFace.index] === true) {
+        for (var configIndex = 0; configIndex < config.length; configIndex++) {
 
-                continue;
+            var currentConfig = config[configIndex];
 
-            }
-
-            mightBeCompletetlyFinished = false;
-
-            var vertex1 = this.mesh.vertices[currentFace.a];
-            var vertex2 = this.mesh.vertices[currentFace.b];
-            var vertex3 = this.mesh.vertices[currentFace.c];
-
-            if (currentConfig.frustum !== undefined) {
+            if ( configSizes[configIndex] < chunk * currentConfig.proportion) {
 
                 var display = false;
                 var exitToContinue = false;
-                threeVertices = [vertex1, vertex2, vertex3];
+                var threeVertices = [vertex1, vertex2, vertex3];
 
                 // Frustum culling
-                if (!isInFrustum(threeVertices, currentConfig.frustum.planes)) {
-                    continue;
+                if (currentConfig.frustum === undefined || (isInFrustum(threeVertices, currentConfig.frustum.planes) && !this.isBackFace(currentConfig.frustum, currentFace))) {
+
+                    // Send face
+                    if (!this.vertices[currentFace.a]) {
+
+                        data.push(vertex1.toList());
+                        this.vertices[currentFace.a] = true;
+                        configSizes[configIndex]++;
+
+                    }
+
+                    if (!this.vertices[currentFace.b]) {
+
+                        data.push(vertex2.toList());
+                        this.vertices[currentFace.b] = true;
+                        configSizes[configIndex]++;
+
+                    }
+
+                    if (!this.vertices[currentFace.c]) {
+
+                        data.push(vertex3.toList());
+                        this.vertices[currentFace.c] = true;
+                        configSizes[configIndex]++;
+
+                    }
+
+                    var normal1 = this.mesh.normals[currentFace.aNormal];
+                    var normal2 = this.mesh.normals[currentFace.bNormal];
+                    var normal3 = this.mesh.normals[currentFace.cNormal];
+
+                    if (normal1 !== undefined && !this.normals[currentFace.aNormal]) {
+
+                        data.push(normal1.toList());
+                        this.normals[currentFace.aNormal] = true;
+                        configSizes[configIndex]++;
+                        totalSize++;
+
+                    }
+
+                    if (normal2 !== undefined && !this.normals[currentFace.bNormal]) {
+
+                        data.push(normal2.toList());
+                        this.normals[currentFace.bNormal] = true;
+                        configSizes[configIndex]++;
+                        totalSize++;
+
+                    }
+
+                    if (normal3 !== undefined && !this.normals[currentFace.cNormal]) {
+
+                        data.push(normal3.toList());
+                        this.normals[currentFace.cNormal] = true;
+                        configSizes[configIndex]++;
+                        totalSize++;
+
+                    }
+
+                    var tex1 = this.mesh.texCoords[currentFace.aTexture];
+                    var tex2 = this.mesh.texCoords[currentFace.bTexture];
+                    var tex3 = this.mesh.texCoords[currentFace.cTexture];
+
+                    if (tex1 !== undefined && !this.texCoords[currentFace.aTexture]) {
+
+                        data.push(tex1.toList());
+                        this.texCoords[currentFace.aTexture] = true;
+                        configSizes[configIndex]++;
+                        totalSize++;
+
+                    }
+
+                    if (tex2 !== undefined && !this.texCoords[currentFace.bTexture]) {
+
+                        data.push(tex2.toList());
+                        this.texCoords[currentFace.bTexture] = true;
+                        configSizes[configIndex]++;
+                        totalSize++;
+
+                    }
+
+                    if (tex3 !== undefined && !this.texCoords[currentFace.cTexture]) {
+
+                        data.push(tex3.toList());
+                        this.texCoords[currentFace.cTexture] = true;
+                        configSizes[configIndex]++;
+                        totalSize++;
+
+                    }
+
+                    data.push(currentFace.toList());
+                    // this.meshFaces[meshIndex] = this.meshFaces[meshIndex] || [];
+                    this.faces[currentFace.index] = true;
+                    configSizes[configIndex]+=3;
+                    totalSize+=3;
+                    // this.meshFaces[meshIndex].counter++;
+                    // currentMesh.faceIndex++;
+
+                    // if (totalSize > chunk) {
+
+                    //     // console.log(configIndex, sent/(chunk * currentConfig.proportion));
+                    //     return {data: data, finsihed:false, configSizes: configSizes, size: totalSize};
+
+                    // }
+
+                    // Loop on next face
+                    continue faceloop;
+
                 }
-
-                // Backface culling
-                if (this.isBackFace(currentConfig.frustum, currentFace)) {
-                    continue;
-                }
-
             }
 
-            if (!this.vertices[currentFace.a]) {
+            if (totalSize > chunk) {
 
-                data.push(vertex1.toList());
-                this.vertices[currentFace.a] = true;
-                sent++;
-
-            }
-
-            if (!this.vertices[currentFace.b]) {
-
-                data.push(vertex2.toList());
-                this.vertices[currentFace.b] = true;
-                sent++;
-
-            }
-
-            if (!this.vertices[currentFace.c]) {
-
-                data.push(vertex3.toList());
-                this.vertices[currentFace.c] = true;
-                sent++;
-
-            }
-
-            var normal1 = this.mesh.normals[currentFace.aNormal];
-            var normal2 = this.mesh.normals[currentFace.bNormal];
-            var normal3 = this.mesh.normals[currentFace.cNormal];
-
-            if (normal1 !== undefined && !this.normals[currentFace.aNormal]) {
-
-                data.push(normal1.toList());
-                this.normals[currentFace.aNormal] = true;
-                sent++;
-
-            }
-
-            if (normal2 !== undefined && !this.normals[currentFace.bNormal]) {
-
-                data.push(normal2.toList());
-                this.normals[currentFace.bNormal] = true;
-                sent++;
-
-            }
-
-            if (normal3 !== undefined && !this.normals[currentFace.cNormal]) {
-
-                data.push(normal3.toList());
-                this.normals[currentFace.cNormal] = true;
-                sent++;
-
-            }
-
-            var tex1 = this.mesh.texCoords[currentFace.aTexture];
-            var tex2 = this.mesh.texCoords[currentFace.bTexture];
-            var tex3 = this.mesh.texCoords[currentFace.cTexture];
-
-            if (tex1 !== undefined && !this.texCoords[currentFace.aTexture]) {
-
-                data.push(tex1.toList());
-                this.texCoords[currentFace.aTexture] = true;
-                sent++;
-
-            }
-
-            if (tex2 !== undefined && !this.texCoords[currentFace.bTexture]) {
-
-                data.push(tex2.toList());
-                this.texCoords[currentFace.bTexture] = true;
-                sent++;
-
-            }
-
-            if (tex3 !== undefined && !this.texCoords[currentFace.cTexture]) {
-
-                data.push(tex3.toList());
-                this.texCoords[currentFace.cTexture] = true;
-                sent++;
-
-            }
-
-            data.push(currentFace.toList());
-            // this.meshFaces[meshIndex] = this.meshFaces[meshIndex] || [];
-            this.faces[currentFace.index] = true;
-            // this.meshFaces[meshIndex].counter++;
-            // currentMesh.faceIndex++;
-
-            sent++;
-
-            if (data.length > this.chunk) {
-
-                // console.log(configIndex, sent/(this.chunk * currentConfig.proportion));
-                return {data: data, finsihed:false};
-
-            }
-
-            if (sent > this.chunk * currentConfig.proportion) {
-
-                // console.log(configIndex, sent/(this.chunk * currentConfig.proportion));
-                continue configloop;
+                // console.log(configIndex, sent/(chunk * currentConfig.proportion));
+                return {data: data, finsihed:false, configSizes: configSizes, size: totalSize};
 
             }
 
         }
 
-        return {data: data, finished: mightBeCompletetlyFinished};
     }
 
-    return {data: data, finished: mightBeCompletetlyFinished};
+    return {data: data, finished: mightBeCompletetlyFinished, configSizes: configSizes};
 
 };
 

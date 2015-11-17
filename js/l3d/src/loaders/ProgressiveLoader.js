@@ -1,5 +1,15 @@
 L3D.ProgressiveLoader = (function() {
 
+if (typeof process === 'undefined') {
+    process = {
+        stderr : {
+            write: function(str) {
+                console.log(str);
+            }
+        }
+    };
+}
+
 /**
  * Parse a list as it is sent by the server and gives a slightly more comprehensible result
  * @param Array array corresponding to the line of the mesh file
@@ -88,7 +98,7 @@ var _parseList = function(arr) {
  * @constructor
  * @memberOf L3D
  */
-var ProgressiveLoader = function(path, scene, camera, callback, log, laggy) {
+var ProgressiveLoader = function(path, scene, camera, callback, log, laggy, prefetch) {
 
     var self = this;
 
@@ -186,12 +196,24 @@ var ProgressiveLoader = function(path, scene, camera, callback, log, laggy) {
      */
     this.camera = camera;
 
-    this.camera._moveReco = this.camera.moveReco;
+    if (this.camera instanceof L3D.ReplayCamera) {
+        this.camera._moveReco = this.camera.moveReco;
 
-    this.camera.moveReco = function(param) {
-        self.socket.emit('reco', param);
-        self.camera._moveReco.apply(self.camera, arguments);
-    };
+        this.camera.moveReco = function(param) {
+            self.socket.emit('reco', param);
+            self.camera._moveReco.apply(self.camera, arguments);
+        };
+    } else if (this.camera instanceof L3D.PointerCamera) {
+        // Only good for sponza model
+        this.camera._moveHermite = this.camera.moveHermite;
+
+        this.camera.moveHermite = function(param) {
+            var toSend = param.position.x > 0 ? 0 : 1;
+            self.socket.emit('reco', toSend);
+            self.camera._moveHermite.apply(self.camera, arguments);
+        };
+
+    }
 
     /**
      * Number of total elements for loading
@@ -219,6 +241,9 @@ var ProgressiveLoader = function(path, scene, camera, callback, log, laggy) {
     this.log = log;
 
     this.mapFace = {};
+
+    this.prefetch = prefetch === undefined ? true : (!!prefetch);
+    console.log(this.prefetch);
 
 };
 
@@ -276,6 +301,8 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
     });
 
     this.socket.on('elements', function(arr) {
+
+        process.stderr.write('Received ' + arr.length + '\n');
 
         for (var i = 0; i < arr.length; i++) {
 
@@ -360,6 +387,8 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
 
                 self.numberOfFacesReceived++;
 
+                self.mapFace[elt.a + '-' + elt.b + '-' + elt.c] = true;
+
                 if (!self.meshes[elt.mesh].added) {
 
                     self.meshes[elt.mesh].added = true;
@@ -392,7 +421,6 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
 
                 }
 
-                self.mapFace[elt.a + '-' + elt.b + '-' + elt.c] = true;
 
 
             } else if (elt.type === 'global') {
@@ -436,7 +464,7 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
  * Starts the communication with the server
  */
 ProgressiveLoader.prototype.start = function() {
-    this.socket.emit('request', this.objPath, this.laggy);
+    this.socket.emit('request', this.objPath, this.laggy, this.prefetch);
 };
 
 return ProgressiveLoader;

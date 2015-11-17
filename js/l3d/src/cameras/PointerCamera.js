@@ -181,6 +181,8 @@ L3D.PointerCamera = function() {
      * @param {Object}
      */
     this.resetElements = {position: new THREE.Vector3(0,1,1), target: new THREE.Vector3()};
+
+    this.recommendationClicked = null;
 };
 L3D.PointerCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 L3D.PointerCamera.prototype.constructor = L3D.PointerCamera;
@@ -323,6 +325,7 @@ L3D.PointerCamera.prototype.hermiteMotion = function(time) {
 
     if (this.t > 1) {
         this.movingHermite = false;
+        this.recommendationClicked = null;
         this.anglesFromVectors();
     }
 };
@@ -490,6 +493,8 @@ L3D.PointerCamera.prototype.moveHermite = function(recommendation, toSave) {
         toSave = true;
 
     var otherCamera = recommendation.camera || recommendation;
+
+    this.recommendationClicked = otherCamera;
 
     this.moving = false;
     this.movingHermite = true;
@@ -762,7 +767,9 @@ L3D.PointerCamera.prototype.toList = function() {
 
     var ret =
         [[this.position.x, this.position.y, this.position.z],
-         [this.target.x,   this.target.y,   this.target.z]];
+         [this.target.x,   this.target.y,   this.target.z],
+         this.recommendationClicked !== null
+        ];
 
     for (var i = 0; i < frustum.planes.length; i++) {
 

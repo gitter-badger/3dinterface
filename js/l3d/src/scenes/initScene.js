@@ -726,9 +726,13 @@ L3D.createSponzaRecommendations = function(width, height) {
 
     return [
         createRecommendation(
-                new THREE.Vector3(97.36225946503932,10.925697484337014,12.852363038244272),
-                new THREE.Vector3(133.315101552449,18.576354168001703,-2.9229530646577633)
-            )
+            new THREE.Vector3(97.36225946503932,10.925697484337014,12.852363038244272),
+            new THREE.Vector3(133.315101552449,18.576354168001703,-2.9229530646577633)
+        ),
+        createRecommendation(
+            new THREE.Vector3(-110.4869853758238,17.692671522169423,14.022902297589127),
+            new THREE.Vector3(-147.9067343700736,16.890814116754584,-0.08806541935797796)
+        )
     ];
 };
 
