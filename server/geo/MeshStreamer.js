@@ -457,18 +457,7 @@ geo.MeshStreamer.prototype.start = function(socket) {
 
         // console.log('Time to generate chunk : ' + (Date.now() - oldTime) + 'ms');
 
-        if (next.data.length === 0) {
-
-            // If nothing, just serve stuff
-            var tmp = self.nextElements([
-                // {
-                //     proportion: 1,
-                //     frustum: cameraFrustum
-                // }
-            ]);
-            next.data = tmp.data;
-
-        } else if (!self.prefetch && next.size < this.chunk) {
+         if (self.prefetch && next.size < self.chunk) {
 
             // Recompute config
             var newConfig = [];
@@ -477,7 +466,7 @@ geo.MeshStreamer.prototype.start = function(socket) {
             for (var i = 0; i < config.length; i++) {
 
                 // Check if config was full
-                if (next.configSizes[i] < this.chunk * config[i].proportion) {
+                if (next.configSizes[i] >= self.chunk * config[i].proportion) {
 
                     newConfig.push(config[i]);
                     sum += config[i].proportion;
@@ -494,11 +483,31 @@ geo.MeshStreamer.prototype.start = function(socket) {
 
             // Normalize config probabilities
 
-            var newData = self.nextElements(newConfig, this.chunk - next.size);
+            var newData = self.nextElements(newConfig, self.chunk - next.size);
 
-            next.data = next.data.push.apply(next.data, newData.data);
+            next.data.push.apply(next.data, newData.data);
+
+            // console.log('Adding ' + newData.size + ' for newConfig : ' + JSON.stringify(newConfig.map(function(o) { return o.proportion})));
+
+            next.size = next.size + newData.size;
 
         }
+
+        if (next.data.length === 0) {
+
+            // If nothing, just serve stuff
+            var tmp = self.nextElements([
+                // {
+                //     proportion: 1,
+                //     frustum: cameraFrustum
+                // }
+            ]);
+            next.data = tmp.data;
+            next.size = tmp.size;
+
+        }
+
+        // console.log('Chunk of size ' + next.size);
 
         socket.emit('elements', next.data);
 
@@ -599,7 +608,7 @@ geo.MeshStreamer.prototype.nextElements = function(config, chunk) {
 
             var currentConfig = config[configIndex];
 
-            if ( configSizes[configIndex] < chunk * currentConfig.proportion) {
+            if (configSizes[configIndex] < chunk * currentConfig.proportion) {
 
                 var display = false;
                 var exitToContinue = false;
@@ -614,6 +623,7 @@ geo.MeshStreamer.prototype.nextElements = function(config, chunk) {
                         data.push(vertex1.toList());
                         this.vertices[currentFace.a] = true;
                         configSizes[configIndex]++;
+                        totalSize++;
 
                     }
 
@@ -622,6 +632,7 @@ geo.MeshStreamer.prototype.nextElements = function(config, chunk) {
                         data.push(vertex2.toList());
                         this.vertices[currentFace.b] = true;
                         configSizes[configIndex]++;
+                        totalSize++;
 
                     }
 
@@ -630,6 +641,7 @@ geo.MeshStreamer.prototype.nextElements = function(config, chunk) {
                         data.push(vertex3.toList());
                         this.vertices[currentFace.c] = true;
                         configSizes[configIndex]++;
+                        totalSize++;
 
                     }
 
@@ -714,6 +726,7 @@ geo.MeshStreamer.prototype.nextElements = function(config, chunk) {
                     continue faceloop;
 
                 }
+
             }
 
             if (totalSize > chunk) {
@@ -727,7 +740,7 @@ geo.MeshStreamer.prototype.nextElements = function(config, chunk) {
 
     }
 
-    return {data: data, finished: mightBeCompletetlyFinished, configSizes: configSizes};
+    return {data: data, finished: mightBeCompletetlyFinished, configSizes: configSizes, size:totalSize};
 
 };
 
