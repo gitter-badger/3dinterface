@@ -243,7 +243,6 @@ var ProgressiveLoader = function(path, scene, camera, callback, log, laggy, pref
     this.mapFace = {};
 
     this.prefetch = prefetch === undefined ? true : (!!prefetch);
-    console.log(this.prefetch);
 
 };
 

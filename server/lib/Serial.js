@@ -1,7 +1,7 @@
 "use strict";
 
 let fs = require('fs');
-let THREE = require('three');
+let THREE = require('../../analysis/server-replay/three.js');
 let L3D = require('../../static/js/l3d.min.js');
 
 function serialize(object) {

@@ -159,7 +159,7 @@ geo.MeshStreamer = function(path) {
      * Number of element to send by packet
      * @type {Number}
      */
-    this.chunk = 5000;
+    this.chunk = 1250;
 
     this.previousReco = 0;
 
@@ -203,24 +203,24 @@ geo.MeshStreamer.prototype.faceComparator = function(camera) {
 
     var self = this;
 
-    var direction = {
-        x: camera.target.x - camera.position.x,
-        y: camera.target.y - camera.position.y,
-        z: camera.target.z - camera.position.z
-    };
+    // var direction = {
+    //     x: camera.target.x - camera.position.x,
+    //     y: camera.target.y - camera.position.y,
+    //     z: camera.target.z - camera.position.z
+    // };
 
-    var norm = Math.sqrt(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
+    // var norm = Math.sqrt(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
 
-    direction.x /= norm;
-    direction.y /= norm;
-    direction.z /= norm;
+    // direction.x /= norm;
+    // direction.y /= norm;
+    // direction.z /= norm;
 
     return function(face1, face2) {
 
         var center1 = {
-            x: (self.mesh.vertices[face1.a].x + self.mesh.vertices[face1.b].x + self.mesh.vertices[face1.b].x) / 3,
-            y: (self.mesh.vertices[face1.a].y + self.mesh.vertices[face1.b].y + self.mesh.vertices[face1.b].y) / 3,
-            z: (self.mesh.vertices[face1.a].z + self.mesh.vertices[face1.b].z + self.mesh.vertices[face1.b].z) / 3
+            x: (self.mesh.vertices[face1.a].x + self.mesh.vertices[face1.b].x + self.mesh.vertices[face1.c].x) / 3,
+            y: (self.mesh.vertices[face1.a].y + self.mesh.vertices[face1.b].y + self.mesh.vertices[face1.c].y) / 3,
+            z: (self.mesh.vertices[face1.a].z + self.mesh.vertices[face1.b].z + self.mesh.vertices[face1.c].z) / 3
 
         };
 
@@ -230,18 +230,18 @@ geo.MeshStreamer.prototype.faceComparator = function(camera) {
             z: center1.z - camera.position.z
         };
 
-        var norm1 = Math.sqrt(dir1.x * dir1.x + dir1.y * dir1.y + dir1.z + dir1.z);
+        // var norm1 = Math.sqrt(dir1.x * dir1.x + dir1.y * dir1.y + dir1.z + dir1.z);
 
-        dir1.x /= norm1;
-        dir1.y /= norm1;
-        dir1.z /= norm1;
+        // dir1.x /= norm1;
+        // dir1.y /= norm1;
+        // dir1.z /= norm1;
 
-        var dot1 = direction.x * dir1.x + direction.y * dir1.y + direction.z * dir1.z;
+        var dot1 = dir1.x * dir1.x + dir1.y * dir1.y + dir1.z * dir1.z;
 
         var center2 = {
-            x: (self.mesh.vertices[face2.a].x + self.mesh.vertices[face2.b].x + self.mesh.vertices[face2.b].x) / 3,
-            y: (self.mesh.vertices[face2.a].y + self.mesh.vertices[face2.b].y + self.mesh.vertices[face2.b].y) / 3,
-            z: (self.mesh.vertices[face2.a].z + self.mesh.vertices[face2.b].z + self.mesh.vertices[face2.b].z) / 3
+            x: (self.mesh.vertices[face2.a].x + self.mesh.vertices[face2.b].x + self.mesh.vertices[face2.c].x) / 3,
+            y: (self.mesh.vertices[face2.a].y + self.mesh.vertices[face2.b].y + self.mesh.vertices[face2.c].y) / 3,
+            z: (self.mesh.vertices[face2.a].z + self.mesh.vertices[face2.b].z + self.mesh.vertices[face2.c].z) / 3
         };
 
         var dir2 = {
@@ -250,19 +250,19 @@ geo.MeshStreamer.prototype.faceComparator = function(camera) {
             z: center2.z - camera.position.z
         };
 
-        var norm2 = Math.sqrt(dir2.x * dir2.x + dir2.y * dir2.y + dir2.z + dir2.z);
+        // var norm2 = Math.sqrt(dir2.x * dir2.x + dir2.y * dir2.y + dir2.z + dir2.z);
 
-        dir2.x /= norm2;
-        dir2.y /= norm2;
-        dir2.z /= norm2;
+        // dir2.x /= norm2;
+        // dir2.y /= norm2;
+        // dir2.z /= norm2;
 
-        var dot2 = direction.x * dir2.x + direction.y * dir2.y + direction.z * dir2.z;
+        var dot2 = dir2.x * dir2.x + dir2.y * dir2.y + dir2.z * dir2.z;
 
         // Decreasing order
-        if (dot1 > dot2) {
+        if (dot1 < dot2) {
             return -1;
         }
-        if (dot1 < dot2) {
+        if (dot1 > dot2) {
             return 1;
         }
         return 0;
@@ -457,7 +457,7 @@ geo.MeshStreamer.prototype.start = function(socket) {
 
         // console.log('Time to generate chunk : ' + (Date.now() - oldTime) + 'ms');
 
-         if (self.prefetch && next.size < self.chunk) {
+        if (self.prefetch && next.size < self.chunk) {
 
             // Recompute config
             var newConfig = [];
@@ -493,7 +493,7 @@ geo.MeshStreamer.prototype.start = function(socket) {
 
         }
 
-        if (next.data.length === 0) {
+        if (next.size < self.chunk) {
 
             // If nothing, just serve stuff
             var tmp = self.nextElements([
@@ -501,19 +501,23 @@ geo.MeshStreamer.prototype.start = function(socket) {
                 //     proportion: 1,
                 //     frustum: cameraFrustum
                 // }
-            ]);
-            next.data = tmp.data;
-            next.size = tmp.size;
+            ], self.chunk - next.size);
+
+            next.data.push.apply(next.data, tmp.data);
+            next.size += tmp.size;
 
         }
 
         // console.log('Chunk of size ' + next.size);
+        // console.log('Time to generate chunk : ' + (Date.now() - oldTime) + 'ms');
 
-        socket.emit('elements', next.data);
-
-        if (next.finished) {
+        if (next.data.length === 0) {
 
             socket.disconnect();
+
+        } else {
+
+            socket.emit('elements', next.data);
 
         }
 
@@ -567,6 +571,7 @@ geo.MeshStreamer.prototype.nextElements = function(config, chunk) {
     var data = [];
 
     var configSizes = [];
+    var buffers = [];
 
     var mightBeCompletetlyFinished = true;
 
@@ -584,6 +589,7 @@ geo.MeshStreamer.prototype.nextElements = function(config, chunk) {
     for (var configIndex = 0; configIndex < config.length; configIndex++) {
 
         configSizes[configIndex] = 0;
+        buffers[configIndex] = [];
 
     }
 
@@ -608,131 +614,15 @@ geo.MeshStreamer.prototype.nextElements = function(config, chunk) {
 
             var currentConfig = config[configIndex];
 
-            if (configSizes[configIndex] < chunk * currentConfig.proportion) {
+            var display = false;
+            var exitToContinue = false;
+            var threeVertices = [vertex1, vertex2, vertex3];
 
-                var display = false;
-                var exitToContinue = false;
-                var threeVertices = [vertex1, vertex2, vertex3];
+            // Frustum culling
+            if (currentConfig.frustum === undefined || (isInFrustum(threeVertices, currentConfig.frustum.planes) && !this.isBackFace(currentConfig.frustum, currentFace))) {
 
-                // Frustum culling
-                if (currentConfig.frustum === undefined || (isInFrustum(threeVertices, currentConfig.frustum.planes) && !this.isBackFace(currentConfig.frustum, currentFace))) {
-
-                    // Send face
-                    if (!this.vertices[currentFace.a]) {
-
-                        data.push(vertex1.toList());
-                        this.vertices[currentFace.a] = true;
-                        configSizes[configIndex]++;
-                        totalSize++;
-
-                    }
-
-                    if (!this.vertices[currentFace.b]) {
-
-                        data.push(vertex2.toList());
-                        this.vertices[currentFace.b] = true;
-                        configSizes[configIndex]++;
-                        totalSize++;
-
-                    }
-
-                    if (!this.vertices[currentFace.c]) {
-
-                        data.push(vertex3.toList());
-                        this.vertices[currentFace.c] = true;
-                        configSizes[configIndex]++;
-                        totalSize++;
-
-                    }
-
-                    var normal1 = this.mesh.normals[currentFace.aNormal];
-                    var normal2 = this.mesh.normals[currentFace.bNormal];
-                    var normal3 = this.mesh.normals[currentFace.cNormal];
-
-                    if (normal1 !== undefined && !this.normals[currentFace.aNormal]) {
-
-                        data.push(normal1.toList());
-                        this.normals[currentFace.aNormal] = true;
-                        configSizes[configIndex]++;
-                        totalSize++;
-
-                    }
-
-                    if (normal2 !== undefined && !this.normals[currentFace.bNormal]) {
-
-                        data.push(normal2.toList());
-                        this.normals[currentFace.bNormal] = true;
-                        configSizes[configIndex]++;
-                        totalSize++;
-
-                    }
-
-                    if (normal3 !== undefined && !this.normals[currentFace.cNormal]) {
-
-                        data.push(normal3.toList());
-                        this.normals[currentFace.cNormal] = true;
-                        configSizes[configIndex]++;
-                        totalSize++;
-
-                    }
-
-                    var tex1 = this.mesh.texCoords[currentFace.aTexture];
-                    var tex2 = this.mesh.texCoords[currentFace.bTexture];
-                    var tex3 = this.mesh.texCoords[currentFace.cTexture];
-
-                    if (tex1 !== undefined && !this.texCoords[currentFace.aTexture]) {
-
-                        data.push(tex1.toList());
-                        this.texCoords[currentFace.aTexture] = true;
-                        configSizes[configIndex]++;
-                        totalSize++;
-
-                    }
-
-                    if (tex2 !== undefined && !this.texCoords[currentFace.bTexture]) {
-
-                        data.push(tex2.toList());
-                        this.texCoords[currentFace.bTexture] = true;
-                        configSizes[configIndex]++;
-                        totalSize++;
-
-                    }
-
-                    if (tex3 !== undefined && !this.texCoords[currentFace.cTexture]) {
-
-                        data.push(tex3.toList());
-                        this.texCoords[currentFace.cTexture] = true;
-                        configSizes[configIndex]++;
-                        totalSize++;
-
-                    }
-
-                    data.push(currentFace.toList());
-                    // this.meshFaces[meshIndex] = this.meshFaces[meshIndex] || [];
-                    this.faces[currentFace.index] = true;
-                    configSizes[configIndex]+=3;
-                    totalSize+=3;
-                    // this.meshFaces[meshIndex].counter++;
-                    // currentMesh.faceIndex++;
-
-                    // if (totalSize > chunk) {
-
-                    //     // console.log(configIndex, sent/(chunk * currentConfig.proportion));
-                    //     return {data: data, finsihed:false, configSizes: configSizes, size: totalSize};
-
-                    // }
-
-                    // Loop on next face
-                    continue faceloop;
-
-                }
-
-            }
-
-            if (totalSize > chunk) {
-
-                // console.log(configIndex, sent/(chunk * currentConfig.proportion));
-                return {data: data, finsihed:false, configSizes: configSizes, size: totalSize};
+                buffers[configIndex].push(currentFace);
+                continue faceloop;
 
             }
 
@@ -740,8 +630,142 @@ geo.MeshStreamer.prototype.nextElements = function(config, chunk) {
 
     }
 
+    var totalSize = 0;
+    var configSize = 0;
+
+    for (var configIndex = 0; configIndex < config.length; configIndex++) {
+
+        // Sort buffer
+        if (config[configIndex].frustum !== undefined) {
+            buffers[configIndex].sort(this.faceComparator(config[configIndex].frustum));
+        } else {
+            // console.log("Did not sort");
+        }
+
+        // Fill chunk
+        for(var i = 0; i < buffers[configIndex].length; i++) {
+
+            var size = this.pushFace(buffers[configIndex][i], data);
+
+            totalSize += size;
+            configSize += size;
+
+            if (configSize > chunk * config[configIndex].proportion) {
+
+                break;
+
+            }
+
+        }
+
+        if (totalSize > chunk) {
+
+            // console.log(configIndex, sent/(chunk * currentConfig.proportion));
+            return {data: data, finsihed:false, configSizes: configSizes, size: totalSize};
+
+        }
+
+    }
+
     return {data: data, finished: mightBeCompletetlyFinished, configSizes: configSizes, size:totalSize};
 
+};
+
+geo.MeshStreamer.prototype.pushFace = function(face, buffer) {
+
+    var totalSize = 0;
+
+    var vertex1 = this.mesh.vertices[face.a];
+    var vertex2 = this.mesh.vertices[face.b];
+    var vertex3 = this.mesh.vertices[face.c];
+
+    // Send face
+    if (!this.vertices[face.a]) {
+
+        buffer.push(vertex1.toList());
+        this.vertices[face.a] = true;
+        totalSize++;
+
+    }
+
+    if (!this.vertices[face.b]) {
+
+        buffer.push(vertex2.toList());
+        this.vertices[face.b] = true;
+        totalSize++;
+
+    }
+
+    if (!this.vertices[face.c]) {
+
+        buffer.push(vertex3.toList());
+        this.vertices[face.c] = true;
+        totalSize++;
+
+    }
+
+    var normal1 = this.mesh.normals[face.aNormal];
+    var normal2 = this.mesh.normals[face.bNormal];
+    var normal3 = this.mesh.normals[face.cNormal];
+
+    if (normal1 !== undefined && !this.normals[face.aNormal]) {
+
+        buffer.push(normal1.toList());
+        this.normals[face.aNormal] = true;
+        totalSize++;
+
+    }
+
+    if (normal2 !== undefined && !this.normals[face.bNormal]) {
+
+        buffer.push(normal2.toList());
+        this.normals[face.bNormal] = true;
+        totalSize++;
+
+    }
+
+    if (normal3 !== undefined && !this.normals[face.cNormal]) {
+
+        buffer.push(normal3.toList());
+        this.normals[face.cNormal] = true;
+        totalSize++;
+
+    }
+
+    var tex1 = this.mesh.texCoords[face.aTexture];
+    var tex2 = this.mesh.texCoords[face.bTexture];
+    var tex3 = this.mesh.texCoords[face.cTexture];
+
+    if (tex1 !== undefined && !this.texCoords[face.aTexture]) {
+
+        buffer.push(tex1.toList());
+        this.texCoords[face.aTexture] = true;
+        totalSize++;
+
+    }
+
+    if (tex2 !== undefined && !this.texCoords[face.bTexture]) {
+
+        buffer.push(tex2.toList());
+        this.texCoords[face.bTexture] = true;
+        totalSize++;
+
+    }
+
+    if (tex3 !== undefined && !this.texCoords[face.cTexture]) {
+
+        buffer.push(tex3.toList());
+        this.texCoords[face.cTexture] = true;
+        totalSize++;
+
+    }
+
+    buffer.push(face.toList());
+    // this.meshFaces[meshIndex] = this.meshFaces[meshIndex] || [];
+    this.faces[face.index] = true;
+    totalSize+=3;
+
+    return totalSize;
 };
 
 geo.MeshStreamer.prototype.isFinished = function(i) {

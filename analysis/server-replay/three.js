@@ -24,6 +24,9 @@ Canvas.Image.prototype.addEventListener = function(type, listener, useCapture) {
   this['on' + type] = listener;
 };
 
+Canvas.prototype.addEventListener = function(type, listener, useCapture) {
+  this['on' + type] = listener;
+};
 eval('(function(window, document) {'
   + src.toString('utf-8').replace('var THREE', 'var THREE = window.THREE')
   + '})(window, document);'
@@ -1068,6 +1071,7 @@ THREE.CanvasRenderer = function ( parameters ) {
 	_normal = new THREE.Vector3(),
 	_normalViewMatrix = new THREE.Matrix3();
 
+    _context.antialias = 'none';
 	// dash+gap fallbacks for Firefox and everything else
 
 	if ( _context.setLineDash === undefined ) {
@@ -1261,12 +1265,12 @@ THREE.CanvasRenderer = function ( parameters ) {
 
 	this.render = function ( scene, camera ) {
 
-		if ( camera instanceof THREE.Camera === false ) {
+		// if ( camera instanceof THREE.Camera === false ) {
 
-			console.error( 'THREE.CanvasRenderer.render: camera is not an instance of THREE.Camera.' );
-			return;
+		// 	console.error( 'THREE.CanvasRenderer.render: camera is not an instance of THREE.Camera.' );
+		// 	return;
 
-		}
+		// }
 
 		if ( this.autoClear === true ) this.clear();
 

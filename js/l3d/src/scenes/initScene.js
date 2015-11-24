@@ -169,7 +169,7 @@ L3D.initBobombScene = function(scene, collidableObjects, recommendation, clickab
     var loader = new L3D.ProgressiveLoader(
         '/static/data/bobomb/bobomb battlefeild.obj',
         scene,
-        null,
+        recommendation,
         function(object) {
             if (clickable !== undefined)
                 clickable.push(object);

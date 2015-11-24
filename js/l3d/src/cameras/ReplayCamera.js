@@ -275,9 +275,9 @@ L3D.ReplayCamera.prototype.toList = function() {
     camera.updateMatrix();
     camera.updateMatrixWorld();
 
+    camera.matrixWorldInverse.getInverse(camera.matrixWorld);
+
     var frustum = new THREE.Frustum();
-    var projScreenMatrix = new THREE.Matrix4();
-    projScreenMatrix.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
 
     frustum.setFromMatrix(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
 
