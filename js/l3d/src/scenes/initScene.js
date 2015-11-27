@@ -25,7 +25,7 @@ L3D.initPeachCastle = function(scene, collidableObjects, recommendation, clickab
     var loader = new L3D.ProgressiveLoader(
         '/static/data/castle/princess peaches castle (outside).obj',
         scene,
-        null,
+        recommendation,
         function(object) {
             if (clickable !== undefined)
                 clickable.push(object);
@@ -356,7 +356,7 @@ L3D.initWhompScene = function(scene, collidableObjects, recommendation, clickabl
     var loader = new L3D.ProgressiveLoader(
         '/static/data/whomp/Whomps Fortress.obj',
         scene,
-        null,
+        recommendation,
         function(object) {
             if (clickable !== undefined)
                 clickable.push(object);
@@ -512,7 +512,7 @@ L3D.initMountainScene = function(scene, collidableObjects, recommendation, click
     var loader = new L3D.ProgressiveLoader(
         '/static/data/mountain/coocoolmountain.obj',
         scene,
-        null,
+        recommendation,
         function(object) {
             // object.rotation.x = -Math.PI/2;
             // object.rotation.z = Math.PI/2;

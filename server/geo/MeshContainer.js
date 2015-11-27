@@ -355,9 +355,6 @@ function pushMesh(name) {
                     reco.matrixWorldInverse.getInverse( reco.matrixWorld );
 
                     var frustum = new THREE.Frustum();
-                    var projScreenMatrix = new THREE.Matrix4();
-                    projScreenMatrix.multiplyMatrices(reco.projectionMatrix, reco.matrixWorldInverse);
-
                     frustum.setFromMatrix(new THREE.Matrix4().multiplyMatrices(reco.projectionMatrix, reco.matrixWorldInverse));
 
                     geo.availableMeshes[name].recommendations.push({

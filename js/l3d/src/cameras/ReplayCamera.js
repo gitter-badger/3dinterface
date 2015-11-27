@@ -26,6 +26,8 @@ L3D.ReplayCamera = function() {
 
     this.recommendationClicked = null;
 
+    this.isArrow = false;
+
 };
 L3D.ReplayCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 L3D.ReplayCamera.prototype.constructor = L3D.ReplayCamera;
@@ -107,6 +109,11 @@ L3D.ReplayCamera.prototype.nextEvent = function() {
 
     var self = this;
 
+    if (self.isArrow) {
+        self.isArrow = false;
+        process.stderr.write('\033[31mArrowclicked finished !\033[0m\n');
+    }
+
     this.counter++;
 
     // Finished
@@ -139,6 +146,8 @@ L3D.ReplayCamera.prototype.nextEvent = function() {
         //     },500);
         // })(this);
     } else if (this.event.type == 'arrow') {
+        self.isArrow = true;
+        process.stderr.write('\033[33mArrowclicked ! ' + JSON.stringify(self.cameras[self.event.id].camera.position) + '\033[0m\n');
         if (this.shouldRecover) {
             (function(self, tmp) {
                 self.event.type = 'camera';
@@ -252,7 +261,7 @@ L3D.ReplayCamera.prototype.moveHermite = function(recommendation) {
 
 L3D.ReplayCamera.prototype.moveReco = function(recommendationId) {
 
-    this.recommendationClicked = this.cameras[recommendationId].camera;
+    this.recommendationClicked = recommendationId;
 
     this.moveHermite(this.cameras[recommendationId]);
 
@@ -270,7 +279,7 @@ L3D.ReplayCamera.prototype.save = function() {};
  */
 L3D.ReplayCamera.prototype.toList = function() {
 
-    var camera = (this.recommendationClicked === null ? this : this.recommendationClicked);
+    var camera = this; // (this.recommendationClicked === null ? this : this.cameras[this.recommendationClicked].camera);
 
     camera.updateMatrix();
     camera.updateMatrixWorld();
@@ -284,7 +293,7 @@ L3D.ReplayCamera.prototype.toList = function() {
     var ret =
         [[camera.position.x, camera.position.y, camera.position.z],
          [camera.target.x,   camera.target.y,   camera.target.z],
-         this.recommendationClicked !== null
+         this.recommendationClicked
         ];
 
     for (var i = 0; i < frustum.planes.length; i++) {

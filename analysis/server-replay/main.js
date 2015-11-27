@@ -24,6 +24,7 @@ let modelMap;
 let smallMap;
 let smallModel;
 let triangleMeshes = [];
+let colorToFace = [];
 
 let renderer = new THREE.CanvasRenderer();
 renderer.domElement.style = renderer.domElement;
@@ -45,6 +46,7 @@ scene.add(mesh);
 scene.add(camera);
 
 let counter = 0;
+let forceFinished = false;
 
 init()
 
@@ -78,7 +80,7 @@ function init() {
             }
 
             progLoader = new L3D.ProgressiveLoader(
-                buildPathBigObj(path), scene, info.camera, null, function(a,b) { /* process.stderr.write((100*a/b) + '%\n'); */ }, false, info.sort
+                buildPathBigObj(path), new THREE.Object3D(), info.camera, null, function(a,b) { /* process.stderr.write((100*a/b) + '%\n'); */ }, false, info.sort
             );
 
             // Init variables
@@ -104,6 +106,7 @@ function init() {
 
                     face3.materialIndex = counter;
                     material.materials.push(new THREE.MeshBasicMaterial({color: counter, overdraw: true}));
+                    colorToFace[counter] = face3;
 
                     geometry.faces.push(face3);
 
@@ -116,12 +119,12 @@ function init() {
 
             }
 
-            process.stderr.write('Loading complete.\n');
+            process.stderr.write('--> Loading complete.\n');
 
             progLoader.onBeforeEmit = loop;
 
             progLoader.load(function() {
-                process.stderr.write("Loading complete\n");
+                process.stderr.write("--> Loading complete\n");
                 forceFinished = true;
             });
 
@@ -144,19 +147,50 @@ function buildPathMap(path) { return './maps/' + path.name + '.json'; }
 
 function loop() {
 
-    process.stderr.write(imageNumber + '\n');
+    process.stderr.write('--> ' + imageNumber + '\n');
 
-    camera.update(20);
+    for (let i = 0; i < 10; i++)
+        camera.update(20);
 
     camera.look();
 
-    process.stderr.write('Rendering...\n');
+    process.stderr.write('--> Rendering...\n');
     let lastTime = Date.now();
     renderer.render(scene, camera);
-    process.stderr.write('Renderered in ' + (Date.now() - lastTime) + '\n');
+    process.stderr.write('--> Renderered in ' + (Date.now() - lastTime) + '\n');
 
-    fs.writeFileSync(__dirname + '/img/' + pad(imageNumber++, 5) + '.png', renderer.domElement.toBuffer());
+    fs.writeFileSync(__dirname + '/img' + (info.sort ? '1' : '') + '/'  + pad(imageNumber++, 5) + '.png', renderer.domElement.toBuffer());
 
+    let score = 0;
+    let denom = 0;
+
+    // Traverse image to find faces
+    lastTime = Date.now();
+    let pixelData = renderer.getContext()
+                            .getImageData(0, 0, renderer.domElement.width, renderer.domElement.height).data;
+
+    for (let i = 0; i < pixelData.length; i += 4) {
+
+        let pixelNumber = (pixelData[i] << 16) + (pixelData[i+1] << 8) + (pixelData[i+2]);
+
+        if (pixelNumber !== 0) {
+            denom++;
+            try {
+                if (progLoader.hasFace(colorToFace[pixelNumber])) {
+                    score++;
+                }
+            } catch(e) {
+                process.stderr.write('--> ' + pixelNumber + '\n');
+            }
+        }
+    }
+
+    process.stderr.write('--> Computed pixels in ' + (Date.now() - lastTime) + 'ms\n');
+
+    score /= denom;
+
+    process.stderr.write('--> Score : ' + score + '\n');
+    console.log(score);
 }
 
 
@@ -187,7 +221,7 @@ function initElements(camera, sceneInfo, redCoins) {
             // camera.coins = L3D.generateCoins(L3D.createWhompCoins(), redCoins);
             return {name:'Whomps Fortress', folder:'whomp'};
         default:
-            process.stderr.write('This sceneId doesn\'t exist\n');
+            process.stderr.write('--> This sceneId doesn\'t exist\n');
             process.exit(-1);
 
 

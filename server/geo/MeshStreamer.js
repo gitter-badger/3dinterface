@@ -159,7 +159,7 @@ geo.MeshStreamer = function(path) {
      * Number of element to send by packet
      * @type {Number}
      */
-    this.chunk = 1250;
+    this.chunk = 1250 / 2;
 
     this.previousReco = 0;
 
@@ -344,7 +344,7 @@ geo.MeshStreamer.prototype.start = function(socket) {
 
     });
 
-    socket.on('next', function(_camera) {
+    socket.on('next', function(_camera, score) {
 
         var cameraFrustum = {};
 
@@ -365,7 +365,7 @@ geo.MeshStreamer.prototype.start = function(socket) {
                 planes: []
             };
 
-            var fullFrustum = _camera[2];
+            var recommendationClicked = _camera[2];
 
             for (i = 3; i < _camera.length; i++) {
 
@@ -384,10 +384,25 @@ geo.MeshStreamer.prototype.start = function(socket) {
 
         // Create config for proportions of chunks
         var config;
+        var didPrefetch = false;
 
-        if (self.prefetch) {
+        if (!self.prefetch || (recommendationClicked === null && score < 0.85)) {
 
+            console.log("Score not good enough, no prefetch");
+            config = [{ frustum: cameraFrustum, proportion: 1}];
+
+        } else if (recommendationClicked !== null) {
+
+            console.log("Recommendation is clicking : full for " + JSON.stringify(self.mesh.recommendations[recommendationClicked].position));
+            config = [{frustum: cameraFrustum, proportion:0.5}, {frustum : self.mesh.recommendations[recommendationClicked], proportion: 0.5}];
+
+        } else {
+
+            console.log("Good % (" + score + "), allow some prefetching");
+
+            didPrefetch = true;
             config = [{ frustum: cameraFrustum, proportion : 0.5}];
+            // config = [];
 
             // Find best recommendation
             var bestReco;
@@ -398,20 +413,20 @@ geo.MeshStreamer.prototype.start = function(socket) {
 
                 var sum = 0;
 
-                for (var i = 0; i < self.mesh.recommendations.length; i++) {
+                for (var i = 1; i <= self.mesh.recommendations.length; i++) {
 
                     sum += self.predictionTable[self.previousReco][i];
 
                 }
 
-                for (var i = 0; i < self.mesh.recommendations.length; i++) {
+                for (var i = 1; i <= self.mesh.recommendations.length; i++) {
 
                     if (self.predictionTable[self.previousReco][i] > 0) {
 
                         config.push({
 
                             proportion : self.predictionTable[self.previousReco][i] / (2 * sum),
-                            frustum : self.mesh.recommendations[i]
+                            frustum : self.mesh.recommendations[i-1]
 
                         });
 
@@ -428,72 +443,103 @@ geo.MeshStreamer.prototype.start = function(socket) {
 
             }
 
-            if (!fullFrustum) {
-
-                // console.log('Frustum and prefetch : ' + (cameraFrustum !== undefined) + ' ' + (bestReco !== undefined));
-
-            } else {
-
-                // console.log('Full frustum fetching (reco clicked)');
-
-                config = [{
-                    proportion: 1,
-                    frustum: cameraFrustum
-                }];
-
-            }
-
-        } else {
-
-            config = [{frustum: cameraFrustum, proportion: 1}];
-
         }
 
         // Send next elements
         var oldTime = Date.now();
         var next = self.nextElements(config);
 
-        // console.log(next.configSizes);
+        // console.log(
+        //     'Adding ' +
+        //     next.size +
+        //     ' for newConfig : '
+        //     + JSON.stringify(config.map(function(o) { return o.proportion}))
+        // );
+
+
+        console.log(next.configSizes);
 
         // console.log('Time to generate chunk : ' + (Date.now() - oldTime) + 'ms');
 
         if (self.prefetch && next.size < self.chunk) {
 
+            console.log("Chunk not full : prefetch reco");
+
             // Recompute config
             var newConfig = [];
             var sum = 0;
 
-            for (var i = 0; i < config.length; i++) {
+            if (!didPrefetch) {
 
-                // Check if config was full
-                if (next.configSizes[i] >= self.chunk * config[i].proportion) {
+                if (self.predictionTable !== undefined) {
 
-                    newConfig.push(config[i]);
-                    sum += config[i].proportion;
+                    var sum = 0;
+
+                    for (var i = 1; i <= self.mesh.recommendations.length; i++) {
+
+                        sum += self.predictionTable[self.previousReco][i];
+
+                    }
+
+                    for (var i = 1; i <= self.mesh.recommendations.length; i++) {
+
+                        if (self.predictionTable[self.previousReco][i] > 0) {
+
+                            newConfig.push({
+
+                                proportion : self.predictionTable[self.previousReco][i] / (sum),
+                                frustum : self.mesh.recommendations[i-1]
+
+                            });
+
+                        }
+
+                    }
+
+                }
+
+            } else {
+
+                for (var i = 0; i < config.length; i++) {
+
+                    // Check if config was full
+                    if (next.configSizes[i] >= self.chunk * config[i].proportion) {
+
+                        newConfig.push(config[i]);
+                        sum += config[i].proportion;
+
+                    }
+
+                }
+
+                // Normalize config probabilities
+                for (var i = 0; i < newConfig.length; i++) {
+
+                    newConfig[i].proportion /= sum;
 
                 }
 
             }
 
-            for (var i = 0; i < newConfig.length; i++) {
-
-                newConfig[i].proportion /= sum;
-
-            }
-
-            // Normalize config probabilities
 
             var newData = self.nextElements(newConfig, self.chunk - next.size);
 
             next.data.push.apply(next.data, newData.data);
 
-            // console.log('Adding ' + newData.size + ' for newConfig : ' + JSON.stringify(newConfig.map(function(o) { return o.proportion})));
+            // console.log(
+            //     'Adding ' +
+            //     newData.size +
+            //     ' for newConfig : '
+            //     + JSON.stringify(newConfig.map(function(o) { return o.proportion}))
+            // );
 
             next.size = next.size + newData.size;
 
         }
 
         if (next.size < self.chunk) {
+
+            console.log("Chunk not full : fill linear");
 
             // If nothing, just serve stuff
             var tmp = self.nextElements([
@@ -508,7 +554,7 @@ geo.MeshStreamer.prototype.start = function(socket) {
 
         }
 
-        // console.log('Chunk of size ' + next.size);
+        console.log('Chunk of size ' + next.size + ' (generated in ' + (Date.now() - oldTime) + 'ms)');
         // console.log('Time to generate chunk : ' + (Date.now() - oldTime) + 'ms');
 
         if (next.data.length === 0) {
@@ -637,9 +683,13 @@ geo.MeshStreamer.prototype.nextElements = function(config, chunk) {
 
         // Sort buffer
         if (config[configIndex].frustum !== undefined) {
+
             buffers[configIndex].sort(this.faceComparator(config[configIndex].frustum));
+
         } else {
+
             // console.log("Did not sort");
+
         }
 
         // Fill chunk
@@ -648,9 +698,9 @@ geo.MeshStreamer.prototype.nextElements = function(config, chunk) {
             var size = this.pushFace(buffers[configIndex][i], data);
 
             totalSize += size;
-            configSize += size;
+            configSizes[configIndex] += size;
 
-            if (configSize > chunk * config[configIndex].proportion) {
+            if (configSizes[configIndex] > chunk * config[configIndex].proportion) {
 
                 break;
 

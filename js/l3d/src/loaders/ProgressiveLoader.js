@@ -301,7 +301,7 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
 
     this.socket.on('elements', function(arr) {
 
-        process.stderr.write('Received ' + arr.length + '\n');
+        // process.stderr.write('Received ' + arr.length + '\n');
 
         for (var i = 0; i < arr.length; i++) {
 
@@ -431,15 +431,23 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
 
         }
 
+        var param;
         if (typeof self.onBeforeEmit === 'function') {
-            self.onBeforeEmit();
-        }
 
-        // Ask for next elements
-        if (!self.laggy) {
-            self.socket.emit('next', self.getCamera());
+            for (var m of self.meshes) {
+                m.geometry.computeBoundingSphere();
+            }
+            param = self.onBeforeEmit();
+            setTimeout(function() { self.socket.emit('next', self.getCamera(), param);}, 100);
+
         } else {
-            setTimeout(function() { self.socket.emit('next', self.getCamera());}, 100);
+
+            // Ask for next elements
+            if (!self.laggy) {
+                self.socket.emit('next', self.getCamera(), param);
+            } else {
+                setTimeout(function() { self.socket.emit('next', self.getCamera());}, 100);
+            }
         }
     });
 
