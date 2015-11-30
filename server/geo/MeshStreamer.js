@@ -155,11 +155,15 @@ geo.MeshStreamer = function(path) {
      */
     this.texCoords = [];
 
+    this.minThreshold = 0.75;
+    this.maxThreshold = 0.85;
+    this.currentlyPrefetching = false;
+
     /**
      * Number of element to send by packet
      * @type {Number}
      */
-    this.chunk = 1250 / 2;
+    this.chunk = 1250;
 
     this.previousReco = 0;
 
@@ -386,22 +390,35 @@ geo.MeshStreamer.prototype.start = function(socket) {
         var config;
         var didPrefetch = false;
 
-        if (!self.prefetch || (recommendationClicked === null && score < 0.85)) {
-
-            console.log("Score not good enough, no prefetch");
+        if (!self.prefetch) {
+            // Case without prefetch
+            console.log("No prefetching");
             config = [{ frustum: cameraFrustum, proportion: 1}];
 
         } else if (recommendationClicked !== null) {
 
+            // Case full reco
             console.log("Recommendation is clicking : full for " + JSON.stringify(self.mesh.recommendations[recommendationClicked].position));
-            config = [{frustum: cameraFrustum, proportion:0.5}, {frustum : self.mesh.recommendations[recommendationClicked], proportion: 0.5}];
+            // config = [{frustum: cameraFrustum, proportion:0.5}, {frustum : self.mesh.recommendations[recommendationClicked], proportion: 0.5}];
+            config = [{frustum : self.mesh.recommendations[recommendationClicked], proportion: 1}];
 
-        } else {
 
-            console.log("Good % (" + score + "), allow some prefetching");
+        } else if (score < self.minThreshold || (!self.currentlyPrefetching && score < self.maxThreshold)) {
+
+            // Case no prefetch
+            console.log("Not good % (" + score + ", prefetch = " + self.currentlyPrefetching + "), full frustum");
+            config = [{ frustum: cameraFrustum, proportion: 1}];
+
+            if (score < self.minThreshold)
+                self.currentlyPrefetching = false;
+
+        } else { // if (score > self.maxThreshold || (self.currentlyPrefetching && score > self.minThreshold) {
+
+            // Case full prefetch
+            console.log("Good % (" + score + ", prefetch = " + self.currentlyPrefetching + "), allow some prefetching");
 
             didPrefetch = true;
-            config = [{ frustum: cameraFrustum, proportion : 0.5}];
+            config = []; // [{ frustum: cameraFrustum, proportion : 0.5}];
             // config = [];
 
             // Find best recommendation
@@ -425,7 +442,7 @@ geo.MeshStreamer.prototype.start = function(socket) {
 
                         config.push({
 
-                            proportion : self.predictionTable[self.previousReco][i] / (2 * sum),
+                            proportion : self.predictionTable[self.previousReco][i] / sum,
                             frustum : self.mesh.recommendations[i-1]
 
                         });
@@ -434,12 +451,12 @@ geo.MeshStreamer.prototype.start = function(socket) {
 
                 }
 
-                // console.log(config.map(function(o) { return o.proportion; }));
+                if (score > self.maxThreshold)
+                    self.currentlyPrefetching = true;
 
             } else {
 
-                // For sponza
-                bestReco = self.mesh.recommendations[0];
+                process.stderr.write('ERROR : PREDICTION TABLE IF UNDEFINED');
 
             }
 

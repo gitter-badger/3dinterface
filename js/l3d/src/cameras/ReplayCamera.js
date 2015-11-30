@@ -28,6 +28,10 @@ L3D.ReplayCamera = function() {
 
     this.isArrow = false;
 
+    this.totalTime = 0;
+
+    this.quittingTime = Infinity;
+
 };
 L3D.ReplayCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
 L3D.ReplayCamera.prototype.constructor = L3D.ReplayCamera;
@@ -44,6 +48,10 @@ L3D.ReplayCamera.prototype.start = function() {
 
 // Update function
 L3D.ReplayCamera.prototype.update = function(time) {
+    this.totalTime += time;
+    if (this.totalTime > this.quittingTime) {
+        process.exit(0);
+    }
     if (this.started) {
         if (this.event.type == 'camera') {
             this.cameraMotion(time);
@@ -111,6 +119,10 @@ L3D.ReplayCamera.prototype.nextEvent = function() {
 
     if (self.isArrow) {
         self.isArrow = false;
+        if (typeof self.logReco === 'function') {
+            var info = self.logReco(false, self.totalTime);
+            require('fs').appendFileSync(info.path, info.value);
+        }
         process.stderr.write('\033[31mArrowclicked finished !\033[0m\n');
     }
 
@@ -147,7 +159,12 @@ L3D.ReplayCamera.prototype.nextEvent = function() {
         // })(this);
     } else if (this.event.type == 'arrow') {
         self.isArrow = true;
+        if (typeof self.logReco === 'function') {
+            var info = self.logReco(true, self.totalTime);
+            require('fs').appendFileSync(info.path, info.value);
+        }
         process.stderr.write('\033[33mArrowclicked ! ' + JSON.stringify(self.cameras[self.event.id].camera.position) + '\033[0m\n');
+        self.quittingTime = self.totalTime + 6000;
         if (this.shouldRecover) {
             (function(self, tmp) {
                 self.event.type = 'camera';
