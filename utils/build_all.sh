@@ -14,6 +14,6 @@ fi
 
 cd ../js
 make -j TYPE=$type
-cd ../geo
+cd ../server/geo
 make -j TYPE=$type
 

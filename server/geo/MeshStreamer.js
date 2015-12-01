@@ -2,6 +2,28 @@ var fs = require('fs');
 var THREE = require('three');
 var L3D = require('../../static/js/l3d.min.js');
 
+function readIt(sceneNumber, recoId) {
+    return {
+        triangles :
+            JSON.parse(fs.readFileSync('./geo/generated/scene' + sceneNumber + '/triangles' + recoId + '.json')),
+        areas :
+            JSON.parse(fs.readFileSync('./geo/generated/scene' + sceneNumber + '/areas' + recoId + '.json'))
+    };
+}
+
+numberOfReco = [0, 0, 12, 12, 11];
+
+function readAll(sceneNumber) {
+    var ret = [];
+
+    for (var i = 0; i < numberOfReco[sceneNumber]; i++) {
+        ret.push(readIt(sceneNumber, i));
+    }
+
+    return ret;
+
+}
+
 try
 {
     var predictionTables = [
@@ -12,6 +34,13 @@ try
          [1,2,0],
          [2,1,0]]
     ];
+
+    var facesToSend = [
+        readAll(2),
+        readAll(3),
+        readAll(4)
+    ];
+
 } catch (e) {
     process.stderr.write('No prefetching will be done !');
     predictionTables = [];
@@ -159,6 +188,13 @@ geo.MeshStreamer = function(path) {
     this.maxThreshold = 0.85;
     this.currentlyPrefetching = false;
 
+    this.begining = true;
+
+    this.beginingThreshold = 0.9;
+
+    this.frustumPercentage = 0.6;
+    this.prefetchPercentage = 1 - this.frustumPercentage;
+
     /**
      * Number of element to send by packet
      * @type {Number}
@@ -299,14 +335,17 @@ geo.MeshStreamer.prototype.start = function(socket) {
             case '/static/data/bobomb/bobomb battlefeild.obj':
             case '/static/data/bobomb/bobomb battlefeild_sub.obj':
                 self.predictionTable = predictionTables[0];
+                self.facesToSend = facesToSend[0];
                 break;
             case '/static/data/mountain/coocoolmountain.obj':
             case '/static/data/mountain/coocoolmountain_sub.obj':
                 self.predictionTable = predictionTables[1];
+                self.facesToSend = facesToSend[1];
                 break;
             case '/static/data/whomp/Whomps Fortress.obj':
             case '/static/data/whomp/Whomps Fortress_sub.obj':
                 self.predictionTable = predictionTables[2];
+                self.facesToSend = facesToSend[2];
                 break;
             default:
                 self.predictionTable = predictionTables[3];
@@ -348,9 +387,10 @@ geo.MeshStreamer.prototype.start = function(socket) {
 
     });
 
-    socket.on('next', function(_camera, score) {
+    socket.on('next', function(_camera) { // score) {
 
         var cameraFrustum = {};
+        var begining = self.begining;
 
         // Clean camera attribute
         if (_camera !== null) {
@@ -390,7 +430,12 @@ geo.MeshStreamer.prototype.start = function(socket) {
         var config;
         var didPrefetch = false;
 
-        if (!self.prefetch) {
+        if (self.begining === true) {
+
+            console.log('Begining : full init');
+            config = [{recommendationId : 0, proportion:1, smart: true}];
+
+        } else if (!self.prefetch) {
             // Case without prefetch
             console.log("No prefetching");
             config = [{ frustum: cameraFrustum, proportion: 1}];
@@ -398,28 +443,28 @@ geo.MeshStreamer.prototype.start = function(socket) {
         } else if (recommendationClicked !== null) {
 
             // Case full reco
+            console.log("Going to " + recommendationClicked);
             console.log("Recommendation is clicking : full for " + JSON.stringify(self.mesh.recommendations[recommendationClicked].position));
             // config = [{frustum: cameraFrustum, proportion:0.5}, {frustum : self.mesh.recommendations[recommendationClicked], proportion: 0.5}];
-            config = [{frustum : self.mesh.recommendations[recommendationClicked], proportion: 1}];
+            config = [{recommendationId : recommendationClicked + 1, proportion: 1, smart:true}];
 
 
-        } else if (score < self.minThreshold || (!self.currentlyPrefetching && score < self.maxThreshold)) {
+        // } else if (score < self.minThreshold || (!self.currentlyPrefetching && score < self.maxThreshold)) {
 
-            // Case no prefetch
-            console.log("Not good % (" + score + ", prefetch = " + self.currentlyPrefetching + "), full frustum");
-            config = [{ frustum: cameraFrustum, proportion: 1}];
+        //     // Case no prefetch
+        //     console.log("Not good % (" + score + ", prefetch = " + self.currentlyPrefetching + "), full frustum");
+        //     config = [{ frustum: cameraFrustum, proportion: 1}];
 
-            if (score < self.minThreshold)
-                self.currentlyPrefetching = false;
+        //     if (score < self.minThreshold)
+        //         self.currentlyPrefetching = false;
 
         } else { // if (score > self.maxThreshold || (self.currentlyPrefetching && score > self.minThreshold) {
 
             // Case full prefetch
-            console.log("Good % (" + score + ", prefetch = " + self.currentlyPrefetching + "), allow some prefetching");
+            console.log("Allow some prefetching");
 
             didPrefetch = true;
-            config = []; // [{ frustum: cameraFrustum, proportion : 0.5}];
-            // config = [];
+            config = [{ frustum: cameraFrustum, proportion : self.frustumPercentage}];
 
             // Find best recommendation
             var bestReco;
@@ -442,8 +487,9 @@ geo.MeshStreamer.prototype.start = function(socket) {
 
                         config.push({
 
-                            proportion : self.predictionTable[self.previousReco][i] / sum,
-                            frustum : self.mesh.recommendations[i-1]
+                            proportion : self.predictionTable[self.previousReco][i] * self.prefetchPercentage / sum,
+                            recommendationId : i,
+                            smart: true
 
                         });
 
@@ -451,8 +497,8 @@ geo.MeshStreamer.prototype.start = function(socket) {
 
                 }
 
-                if (score > self.maxThreshold)
-                    self.currentlyPrefetching = true;
+                // if (score > self.maxThreshold)
+                //     self.currentlyPrefetching = true;
 
             } else {
 
@@ -505,7 +551,8 @@ geo.MeshStreamer.prototype.start = function(socket) {
                             newConfig.push({
 
                                 proportion : self.predictionTable[self.previousReco][i] / (sum),
-                                frustum : self.mesh.recommendations[i-1]
+                                recommendationId : i,
+                                smart : true
 
                             });
 
@@ -551,6 +598,23 @@ geo.MeshStreamer.prototype.start = function(socket) {
             // );
 
             next.size = next.size + newData.size;
+
+        }
+
+        if (begining && !self.prefetch && next.size < self.chunk) {
+
+            console.log("Chunk not full (begining) : fill frustum");
+
+            // If nothing, just serve stuff
+            var tmp = self.nextElements([
+               {
+                   proportion: 1,
+                   frustum: cameraFrustum
+               }
+            ], self.chunk - next.size);
+
+            next.data.push.apply(next.data, tmp.data);
+            next.size += tmp.size;
 
         }
 
@@ -682,7 +746,7 @@ geo.MeshStreamer.prototype.nextElements = function(config, chunk) {
             var threeVertices = [vertex1, vertex2, vertex3];
 
             // Frustum culling
-            if (currentConfig.frustum === undefined || (isInFrustum(threeVertices, currentConfig.frustum.planes) && !this.isBackFace(currentConfig.frustum, currentFace))) {
+            if (!currentConfig.smart && (currentConfig.frustum === undefined || (isInFrustum(threeVertices, currentConfig.frustum.planes) && !this.isBackFace(currentConfig.frustum, currentFace)))) {
 
                 buffers[configIndex].push(currentFace);
                 continue faceloop;
@@ -690,6 +754,64 @@ geo.MeshStreamer.prototype.nextElements = function(config, chunk) {
             }
 
         }
+
+    }
+
+    // Fill smart recos
+    for (var configIndex = 0; configIndex < config.length; configIndex++) {
+
+        var currentConfig = config[configIndex];
+
+        if (!currentConfig.smart) {
+
+            continue;
+
+        }
+
+        var area = 0;
+        var currentArea = 0;
+
+        // Fill buffer using facesToSend
+        for (var faceIndex = 0; faceIndex < this.facesToSend[currentConfig.recommendationId].triangles.length; faceIndex++) {
+
+            var faceInfo = {
+                index:this.facesToSend[currentConfig.recommendationId].triangles[faceIndex],
+                area: this.facesToSend[currentConfig.recommendationId].areas[faceIndex]
+            };
+
+            area += faceInfo.area;
+
+            if (this.faces[faceInfo.index] !== true) {
+
+                var face = this.mesh.faces[faceInfo.index];
+
+                if (face === undefined) {
+                    console.log(faceInfo.index, this.mesh.faces.length);
+                    console.log('ERROR !!!');
+                }
+
+                buffers[configIndex].push(face);
+
+            } else if (this.begining === true) {
+
+                currentArea += faceInfo.area;
+
+                if (currentArea > this.beginingThreshold) {
+
+                    this.begining = false;
+
+                }
+
+            }
+
+            if (area > 0.9) {
+                break;
+            }
+
+
+
+        }
+
 
     }
 
@@ -712,6 +834,7 @@ geo.MeshStreamer.prototype.nextElements = function(config, chunk) {
         // Fill chunk
         for(var i = 0; i < buffers[configIndex].length; i++) {
 
+            // console.log(buffers[configIndex][i]);
             var size = this.pushFace(buffers[configIndex][i], data);
 
             totalSize += size;

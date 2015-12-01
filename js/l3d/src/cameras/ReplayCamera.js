@@ -164,7 +164,8 @@ L3D.ReplayCamera.prototype.nextEvent = function() {
             require('fs').appendFileSync(info.path, info.value);
         }
         process.stderr.write('\033[33mArrowclicked ! ' + JSON.stringify(self.cameras[self.event.id].camera.position) + '\033[0m\n');
-        self.quittingTime = self.totalTime + 6000;
+        if (self.quittingTime === Infinity)
+            self.quittingTime = self.totalTime + 6000;
         if (this.shouldRecover) {
             (function(self, tmp) {
                 self.event.type = 'camera';
@@ -280,6 +281,7 @@ L3D.ReplayCamera.prototype.moveReco = function(recommendationId) {
 
     this.recommendationClicked = recommendationId;
 
+    // process.stderr.write('Moving to ' + JSON.stringify(this.cameras[recommendationId].camera.position) + '\n');
     this.moveHermite(this.cameras[recommendationId]);
 
 };
