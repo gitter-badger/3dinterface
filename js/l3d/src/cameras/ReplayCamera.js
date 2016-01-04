@@ -121,7 +121,7 @@ L3D.ReplayCamera.prototype.nextEvent = function() {
         self.isArrow = false;
         if (typeof self.logReco === 'function') {
             var info = self.logReco(false, self.totalTime);
-            require('fs').appendFileSync(info.path, info.value);
+            // require('fs').appendFileSync(info.path, info.value);
         }
         process.stderr.write('\033[31mArrowclicked finished !\033[0m\n');
     }
@@ -161,7 +161,7 @@ L3D.ReplayCamera.prototype.nextEvent = function() {
         self.isArrow = true;
         if (typeof self.logReco === 'function') {
             var info = self.logReco(true, self.totalTime);
-            require('fs').appendFileSync(info.path, info.value);
+            // require('fs').appendFileSync(info.path, info.value);
         }
         process.stderr.write('\033[33mArrowclicked ! ' + JSON.stringify(self.cameras[self.event.id].camera.position) + '\033[0m\n');
         if (self.quittingTime === Infinity)

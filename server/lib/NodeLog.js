@@ -66,6 +66,13 @@ Log.dberror = function(error) {
     );
 };
 
+Log.prefetcherror = function(error) {
+    log(
+        '[PFE] ' + new Date() + ' ' + error,
+        Colors.RED
+    );
+};
+
 Log.mailerror = function(error) {
     log(
         '[MLE] ' + new Date() + ' ' + error,

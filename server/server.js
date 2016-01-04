@@ -1,118 +1,124 @@
-var http = require('http');
-var express = require('express');
-var jade = require('jade');
-var pg = require('pg');
+function main() {
 
-var favicon = require('serve-favicon');
+    var http = require('http');
+    var express = require('express');
+    var jade = require('jade');
+    var pg = require('pg');
 
-// secret variables
-var secret = require('./private');
+    var favicon = require('serve-favicon');
 
-var app = express();
+    // secret variables
+    var secret = require('./private');
 
-// Socket.io initialization
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
-require('./socket.js')(io);
+    var app = express();
 
-var bodyParser = require('body-parser');
-var session = require('cookie-session');
-var cookieParser = require('cookie-parser');
-var urls = require('./urls');
-var Log = require('./lib/NodeLog.js');
+    // Socket.io initialization
+    var http = require('http').Server(app);
+    var io = require('socket.io')(http);
+    require('./socket.js')(io);
 
-var isDev = app.get('env') === 'development';
+    var bodyParser = require('body-parser');
+    var session = require('cookie-session');
+    var cookieParser = require('cookie-parser');
+    var urls = require('./urls');
+    var Log = require('./lib/NodeLog.js');
 
-app.set('view engine', 'jade');
-app.set('trust proxy', 1);
+    var isDev = app.get('env') === 'development';
 
-app.use(cookieParser(secret.secret));
-app.use(session({
-    keys: [secret.secret]
-}));
+    app.set('view engine', 'jade');
+    app.set('trust proxy', 1);
 
-app.use(bodyParser.text());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+    app.use(cookieParser(secret.secret));
+    app.use(session({
+        keys: [secret.secret]
+    }));
 
-app.use(function(req, res, next) {
+    app.use(bodyParser.text());
+    app.use(bodyParser.urlencoded({ extended: false }));
+    app.use(bodyParser.json());
 
-    var start = Date.now();
+    app.use(function(req, res, next) {
 
-    res.on('finish', function() {
-        // Log connection
-        Log.request(req, res, Date.now() - start);
+        var start = Date.now();
 
+        res.on('finish', function() {
+            // Log connection
+            Log.request(req, res, Date.now() - start);
+
+        });
+
+        res.locals.title = "3DUI";
+        res.locals.urls = urls;
+        res.locals.session = req.session;
+        next();
     });
 
-    res.locals.title = "3DUI";
-    res.locals.urls = urls;
-    res.locals.session = req.session;
-    next();
-});
+    // Set a cookie to know if already came. If not, France laws force to
+    // warn the user that the website uses cookies.
+    app.use(function(req, res, next) {
+        if (req.cookies.alreadyCame) {
+            res.locals.alertCookie = false;
+        } else {
+            res.locals.alertCookie = true;
+            res.cookie('alreadyCame', true, {maxAge: 604800000}); // One week in ms
+        }
 
-// Set a cookie to know if already came. If not, France laws force to
-// warn the user that the website uses cookies.
-app.use(function(req, res, next) {
-    if (req.cookies.alreadyCame) {
-        res.locals.alertCookie = false;
-    } else {
-        res.locals.alertCookie = true;
-        res.cookie('alreadyCame', true, {maxAge: 604800000}); // One week in ms
-    }
+        if (req.url.substr(0, 7) === '/static' || req.url === '/favicon.ico') {
+            req.static = true;
+        }
 
-    if (req.url.substr(0, 7) === '/static' || req.url === '/favicon.ico') {
-        req.static = true;
-    }
+        next();
+    });
 
-    next();
-});
+    // Load controllers
+    require('./lib/controllers')(app);
 
-// Load controllers
-require('./lib/controllers')(app);
+    // Load post to log data from user study
+    require('./lib/posts')(app);
 
-// Load post to log data from user study
-require('./lib/posts')(app);
+    // Static files
+    app.use('/static', express.static('../static'));
 
-// Static files
-app.use('/static', express.static('../static'));
+    // Favicon
+    app.use(favicon(__dirname + '/../static/ico/favicon.ico'));
 
-// Favicon
-app.use(favicon(__dirname + '/../static/ico/favicon.ico'));
+    // When error raised
+    app.use(function(err, req, res, next) {
+        if (err.status === 404) {
+            res.setHeader('Content-Type', 'text/html');
 
-// When error raised
-app.use(function(err, req, res, next) {
-    if (err.status === 404) {
+            res.render('404.jade', res.locals, function(err, result) {
+                res.send(result);
+            });
+        }
+    });
+
+    // When route not found, raise not found
+    app.use(function(req, res) {
         res.setHeader('Content-Type', 'text/html');
 
         res.render('404.jade', res.locals, function(err, result) {
             res.send(result);
         });
-    }
-});
-
-// When route not found, raise not found
-app.use(function(req, res) {
-    res.setHeader('Content-Type', 'text/html');
-
-    res.render('404.jade', res.locals, function(err, result) {
-        res.send(result);
     });
-});
 
-// Set ports and ip address
-var serverPort, serverIpAddress;
-if ( isDev ) {
-    serverPort = 4000;
-    // serverIpAddress = require('ip').address();
-    serverIpAddress = '0.0.0.0';
-} else {
-    // Openhift conf
-    serverPort = process.env.OPENSHIFT_NODEJS_PORT || 8080;
-    serverIpAddress = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
+    // Set ports and ip address
+    var serverPort, serverIpAddress;
+    if ( isDev ) {
+        serverPort = 4000;
+        // serverIpAddress = require('ip').address();
+        serverIpAddress = '0.0.0.0';
+    } else {
+        // Openhift conf
+        serverPort = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+        serverIpAddress = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
+    }
+
+    // Start server
+    http.listen(serverPort, serverIpAddress, function() {
+        Log.ready("Now listening " + serverIpAddress + ":" + serverPort);
+    });
+
 }
 
-// Start server
-http.listen(serverPort, serverIpAddress, function() {
-    Log.ready("Now listening " + serverIpAddress + ":" + serverPort);
-});
+module.exports = main;

@@ -100,12 +100,13 @@ function objectClickerOnClick(camera1, buttonManager, recommendations, coins) {
         } else if (obj instanceof L3D.BaseRecommendation) {
 
             obj.check();
-            camera1.moveHermite(obj);
 
             // Send event to DB
             event = new L3D.DB.Event.ArrowClicked();
             event.arrowId = recommendations.indexOf(obj);
             event.send();
+
+            camera1.moveHermite(obj, undefined, event.arrowId);
         }
 
         // Update the button manager

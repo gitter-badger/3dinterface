@@ -83,9 +83,12 @@ module.exports.loadFromFile = loadFromFile;
 function main() {
 
     let loader = new L3D.ProgressiveLoader(
-        '/static/data/castle/princess peaches castle (outside).obj',
+        // '/static/data/castle/princess peaches castle (outside).obj',
+        '/static/data/sponza/sponza.obj',
         new THREE.Object3D(),
-        null
+        null,
+        undefined,
+        function(a,b) { console.log(100*a/b + '%'); }
     );
 
     loader.load(function() {

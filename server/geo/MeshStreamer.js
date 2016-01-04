@@ -11,7 +11,7 @@ function readIt(sceneNumber, recoId) {
     };
 }
 
-numberOfReco = [0, 0, 12, 12, 11];
+numberOfReco = [0, 0, 12, 12, 11, 2];
 
 function readAll(sceneNumber) {
     var ret = [];
@@ -30,15 +30,15 @@ try
         JSON.parse(fs.readFileSync('./geo/mat1.json')),
         JSON.parse(fs.readFileSync('./geo/mat2.json')),
         JSON.parse(fs.readFileSync('./geo/mat3.json')),
-        [[1,1,0],
-         [1,2,0],
-         [2,1,0]]
+        [[1,1],
+         [1,2]]
     ];
 
     var facesToSend = [
         readAll(2),
         readAll(3),
-        readAll(4)
+        readAll(4),
+        readAll(5)
     ];
 
 } catch (e) {
@@ -188,9 +188,9 @@ geo.MeshStreamer = function(path) {
     this.maxThreshold = 0.85;
     this.currentlyPrefetching = false;
 
-    this.begining = true;
+    this.beginning = false;
 
-    this.beginingThreshold = 0.9;
+    this.beginningThreshold = 0.9;
 
     this.frustumPercentage = 0.6;
     this.prefetchPercentage = 1 - this.frustumPercentage;
@@ -199,6 +199,7 @@ geo.MeshStreamer = function(path) {
      * Number of element to send by packet
      * @type {Number}
      */
+    // this.chunk = 100000;
     this.chunk = 1250;
 
     this.previousReco = 0;
@@ -347,6 +348,10 @@ geo.MeshStreamer.prototype.start = function(socket) {
                 self.predictionTable = predictionTables[2];
                 self.facesToSend = facesToSend[2];
                 break;
+            case '/static/data/sponza/sponza.obj':
+                self.predictionTable = predictionTables[3];
+                self.facesToSend = facesToSend[3];
+                break;
             default:
                 self.predictionTable = predictionTables[3];
         };
@@ -390,7 +395,8 @@ geo.MeshStreamer.prototype.start = function(socket) {
     socket.on('next', function(_camera) { // score) {
 
         var cameraFrustum = {};
-        var begining = self.begining;
+        var beginning = self.beginning;
+        var cameraExists = false;
 
         // Clean camera attribute
         if (_camera !== null) {
@@ -424,219 +430,126 @@ geo.MeshStreamer.prototype.start = function(socket) {
 
             }
 
+            cameraExists = true;
+
         }
 
         // Create config for proportions of chunks
         var config;
         var didPrefetch = false;
 
-        if (self.begining === true) {
+        // if (false) {
 
-            console.log('Begining : full init');
-            config = [{recommendationId : 0, proportion:1, smart: true}];
+            if (cameraExists) {
 
-        } else if (!self.prefetch) {
-            // Case without prefetch
-            console.log("No prefetching");
-            config = [{ frustum: cameraFrustum, proportion: 1}];
-
-        } else if (recommendationClicked !== null) {
-
-            // Case full reco
-            console.log("Going to " + recommendationClicked);
-            console.log("Recommendation is clicking : full for " + JSON.stringify(self.mesh.recommendations[recommendationClicked].position));
-            // config = [{frustum: cameraFrustum, proportion:0.5}, {frustum : self.mesh.recommendations[recommendationClicked], proportion: 0.5}];
-            config = [{recommendationId : recommendationClicked + 1, proportion: 1, smart:true}];
-
-
-        // } else if (score < self.minThreshold || (!self.currentlyPrefetching && score < self.maxThreshold)) {
-
-        //     // Case no prefetch
-        //     console.log("Not good % (" + score + ", prefetch = " + self.currentlyPrefetching + "), full frustum");
-        //     config = [{ frustum: cameraFrustum, proportion: 1}];
-
-        //     if (score < self.minThreshold)
-        //         self.currentlyPrefetching = false;
-
-        } else { // if (score > self.maxThreshold || (self.currentlyPrefetching && score > self.minThreshold) {
-
-            // Case full prefetch
-            console.log("Allow some prefetching");
-
-            didPrefetch = true;
-            config = [{ frustum: cameraFrustum, proportion : self.frustumPercentage}];
-
-            // Find best recommendation
-            var bestReco;
-            var bestScore = -Infinity;
-            var bestIndex = null;
-
-            if (self.predictionTable !== undefined) {
-
-                var sum = 0;
-
-                for (var i = 1; i <= self.mesh.recommendations.length; i++) {
-
-                    sum += self.predictionTable[self.previousReco][i];
+                switch (self.prefetch) {
+                    case 'V-PP':
+                        config = self.generateConfig_V_PP(cameraFrustum, recommendationClicked);
+                        break;
+                    case 'V-PD':
+                        config = self.generateConfig_V_PD(cameraFrustum, recommendationClicked);
+                        break;
+                    case 'V-PP+PD':
+                        config = self.generateConfig_V_PP_PD(cameraFrustum, recommendationClicked);
+                        break;
+                    case 'NV-PN':
+                    default:
+                        config = self.generateConfig_NV_PN(cameraFrustum, recommendationClicked);
+                        break;
+                        // console.log(self.prefetch)
+                        // process.exit(-1);
 
                 }
 
-                for (var i = 1; i <= self.mesh.recommendations.length; i++) {
+                // Send next elements
+                var oldTime = Date.now();
+                var next = self.nextElements(config);
 
-                    if (self.predictionTable[self.previousReco][i] > 0) {
+                // console.log(
+                //     'Adding ' +
+                //     next.size +
+                //     ' for newConfig : '
+                //     + JSON.stringify(config.map(function(o) { return o.proportion}))
+                // );
 
-                        config.push({
 
-                            proportion : self.predictionTable[self.previousReco][i] * self.prefetchPercentage / sum,
-                            recommendationId : i,
-                            smart: true
+                if (self.beginning === true && next.size < self.chunk) {
+                    self.beginning = false;
 
-                        });
-
+                    switch (self.prefetch) {
+                        case 'V-PP':
+                            config = self.generateConfig_V_PP(cameraFrustum, recommendationClicked);
+                            break;
+                        case 'V-PD':
+                            config = self.generateConfig_V_PD(cameraFrustum, recommendationClicked);
+                            break;
+                        case 'V-PP+PD':
+                            config = self.generateConfig_V_PP_PD(cameraFrustum, recommendationClicked);
+                            break;
+                        case 'NV-PN':
+                        default:
+                            config = self.generateConfig_NV_PN(cameraFrustum, recommendationClicked);
+                            break;
                     }
 
+                    var fillElements = self.nextElements(config, self.chunk - next.size);
+
+                    next.configSizes = fillElements.configSizes;
+                    next.data.push.apply(next.data, fillElements.data);
+                    next.size += fillElements.size;
                 }
 
-                // if (score > self.maxThreshold)
-                //     self.currentlyPrefetching = true;
 
-            } else {
+                // Chunk is not empty, compute fill config
+                if (next.size < self.chunk) {
 
-                process.stderr.write('ERROR : PREDICTION TABLE IF UNDEFINED');
-
-            }
-
-        }
-
-        // Send next elements
-        var oldTime = Date.now();
-        var next = self.nextElements(config);
-
-        // console.log(
-        //     'Adding ' +
-        //     next.size +
-        //     ' for newConfig : '
-        //     + JSON.stringify(config.map(function(o) { return o.proportion}))
-        // );
-
-
-        console.log(next.configSizes);
-
-        // console.log('Time to generate chunk : ' + (Date.now() - oldTime) + 'ms');
-
-        if (self.prefetch && next.size < self.chunk) {
-
-            console.log("Chunk not full : prefetch reco");
-
-            // Recompute config
-            var newConfig = [];
-            var sum = 0;
-
-            if (!didPrefetch) {
-
-                if (self.predictionTable !== undefined) {
-
-                    var sum = 0;
-
-                    for (var i = 1; i <= self.mesh.recommendations.length; i++) {
-
-                        sum += self.predictionTable[self.previousReco][i];
+                    switch (self.prefetch) {
+                        case 'V-PP':
+                            config = self.generateFillConfig_V_PP(config, next, cameraFrustum, recommendationClicked);
+                            break;
+                        case 'V-PD':
+                            config = self.generateFillConfig_V_PD(config, next, cameraFrustum, recommendationClicked);
+                            break;
+                        case 'V-PP+PD':
+                            config = self.generateFillConfig_V_PP_PD(config, next, cameraFrustum, recommendationClicked);
+                            break;
+                        case 'NV-PN':
+                        default:
+                            config = self.generateFillConfig_NV_PN(config, next, cameraFrustum, recommendationClicked);
+                            break;
 
                     }
 
-                    for (var i = 1; i <= self.mesh.recommendations.length; i++) {
 
-                        if (self.predictionTable[self.previousReco][i] > 0) {
+                    fillElements = self.nextElements(config, self.chunk - next.size);
 
-                            newConfig.push({
-
-                                proportion : self.predictionTable[self.previousReco][i] / (sum),
-                                recommendationId : i,
-                                smart : true
-
-                            });
-
-                        }
-
-                    }
+                    next.data.push.apply(next.data, fillElements.data);
+                    next.size += fillElements.size;
 
                 }
 
             } else {
 
-                for (var i = 0; i < config.length; i++) {
-
-                    // Check if config was full
-                    if (next.configSizes[i] >= self.chunk * config[i].proportion) {
-
-                        newConfig.push(config[i]);
-                        sum += config[i].proportion;
-
-                    }
-
-                }
-
-                // Normalize config probabilities
-                for (var i = 0; i < newConfig.length; i++) {
-
-                    newConfig[i].proportion /= sum;
-
-                }
+                next = { data : [], size : 0 };
 
             }
 
+            // If still not empty, fill linear
+            if (next.size < self.chunk) {
 
-            var newData = self.nextElements(newConfig, self.chunk - next.size);
+                fillElements = self.nextElements([], self.chunk - next.size);
 
-            next.data.push.apply(next.data, newData.data);
+                next.data.push.apply(next.data, fillElements.data);
+                next.size += fillElements.size;
 
-            // console.log(
-            //     'Adding ' +
-            //     newData.size +
-            //     ' for newConfig : '
-            //     + JSON.stringify(newConfig.map(function(o) { return o.proportion}))
-            // );
+            }
 
-            next.size = next.size + newData.size;
+        // }
 
-        }
-
-        if (begining && !self.prefetch && next.size < self.chunk) {
-
-            console.log("Chunk not full (begining) : fill frustum");
-
-            // If nothing, just serve stuff
-            var tmp = self.nextElements([
-               {
-                   proportion: 1,
-                   frustum: cameraFrustum
-               }
-            ], self.chunk - next.size);
-
-            next.data.push.apply(next.data, tmp.data);
-            next.size += tmp.size;
-
-        }
-
-        if (next.size < self.chunk) {
-
-            console.log("Chunk not full : fill linear");
-
-            // If nothing, just serve stuff
-            var tmp = self.nextElements([
-                // {
-                //     proportion: 1,
-                //     frustum: cameraFrustum
-                // }
-            ], self.chunk - next.size);
-
-            next.data.push.apply(next.data, tmp.data);
-            next.size += tmp.size;
-
-        }
+        // var config = [{proportion: 1, smart: true, recommendationId: 1}];
+        // var next = self.nextElements(config);
 
         console.log('Chunk of size ' + next.size + ' (generated in ' + (Date.now() - oldTime) + 'ms)');
-        // console.log('Time to generate chunk : ' + (Date.now() - oldTime) + 'ms');
 
         if (next.data.length === 0) {
 
@@ -679,6 +592,236 @@ geo.MeshStreamer.prototype.nextMaterials = function() {
     }
 
     return data;
+
+};
+
+geo.MeshStreamer.prototype.generateConfig_NV_PN = function(cameraFrustum) {
+
+    var config;
+
+    // if (this.beginning === true) {
+
+    //     console.log('Begining : full init');
+    //     config = [{recommendationId : 0, proportion:1, smart: true}];
+
+
+    // } else {
+
+        // Case without prefetch
+        console.log("No prefetching");
+        config = [{ frustum: cameraFrustum, proportion: 1}];
+
+    // }
+
+    return config;
+};
+
+geo.MeshStreamer.prototype.generateConfig_V_PD = function(cameraFrustum, recommendationClicked) {
+
+    var config;
+    if (recommendationClicked != null) {
+
+        if (this.beginning === true) {
+            this.beginning = false;
+        }
+
+        // Case full reco
+        console.log("Going to " + recommendationClicked);
+        console.log("Recommendation is clicking : full for " + JSON.stringify(this.mesh.recommendations[recommendationClicked].position));
+        config = [{recommendationId : recommendationClicked + 1, proportion: 1, smart:true}];
+
+    } else if (this.beginning === true) {
+
+        console.log('Begining : full init');
+        config = [{recommendationId : 0, proportion:1, smart: true}];
+
+
+    } else {
+
+        // Case without prefetch
+        console.log("No prefetching");
+        config = [{ frustum: cameraFrustum, proportion: 1}];
+
+    }
+
+    return config;
+};
+
+geo.MeshStreamer.prototype.generateConfig_V_PP = function(cameraFrustum) {
+
+    var config;
+
+    if (this.beginning === true) {
+
+        console.log('Begining : full init');
+        config = [{recommendationId : 0, proportion:1, smart: true}];
+
+    } else {
+
+        // Case full prefetch
+        console.log("Allow some prefetching");
+
+        didPrefetch = true;
+        config = [{ frustum: cameraFrustum, proportion : this.frustumPercentage}];
+
+        if (this.predictionTable !== undefined) {
+
+            var sum = 0;
+
+            for (var i = 1; i <= this.mesh.recommendations.length; i++) {
+
+                sum += this.predictionTable[this.previousReco][i];
+
+            }
+
+            for (var i = 1; i <= this.mesh.recommendations.length; i++) {
+
+                if (this.predictionTable[this.previousReco][i] > 0) {
+
+                    config.push({
+
+                        proportion : this.predictionTable[this.previousReco][i] * this.prefetchPercentage / sum,
+                        recommendationId : i,
+                        smart: true
+
+                    });
+
+                }
+
+            }
+
+        } else {
+
+            process.stderr.write('ERROR : PREDICTION TABLE IF UNDEFINED');
+
+        }
+
+    }
+
+    return config;
+
+};
+
+geo.MeshStreamer.prototype.generateConfig_V_PP_PD = function(cameraFrustum, recommendationClicked) {
+
+    var config;
+
+    if (recommendationClicked != null) {
+
+        if (this.beginning === true) {
+            this.beginning = false;
+        }
+
+        // Case full reco
+        console.log("Going to " + recommendationClicked);
+        console.log("Recommendation is clicking : full for " + JSON.stringify(this.mesh.recommendations[recommendationClicked].position));
+        config = [{recommendationId : recommendationClicked + 1, proportion: 1, smart:true}];
+
+
+
+    } else if (this.beginning === true) {
+
+        console.log('Begining : full init');
+        config = [{recommendationId : 0, proportion:1, smart: true}];
+
+
+    } else {
+
+        // Case full prefetch
+        console.log("Allow some prefetching");
+
+        config = [{ frustum: cameraFrustum, proportion : this.frustumPercentage}];
+
+        // Find best recommendation
+        var bestReco;
+        var bestScore = -Infinity;
+        var bestIndex = null;
+
+        if (this.predictionTable !== undefined) {
+
+            var sum = 0;
+
+            for (var i = 1; i <= this.mesh.recommendations.length; i++) {
+
+                sum += this.predictionTable[this.previousReco][i];
+
+            }
+
+            for (var i = 1; i <= this.mesh.recommendations.length; i++) {
+
+                if (this.predictionTable[this.previousReco][i] > 0) {
+
+                    config.push({
+
+                        proportion : this.predictionTable[this.previousReco][i] * this.prefetchPercentage / sum,
+                        recommendationId : i,
+                        smart: true
+
+                    });
+
+                }
+
+            }
+
+            // if (score > this.maxThreshold)
+            //     this.currentlyPrefetching = true;
+
+        } else {
+
+            process.stderr.write('ERROR : PREDICTION TABLE IF UNDEFINED');
+
+        }
+
+    }
+
+    return config;
+
+};
+
+geo.MeshStreamer.prototype.generateFillConfig_NV_PN =
+    function(previousConfig, previousResult, cameraFrustum, recommendationClicked) {
+
+    // Nothing to do better than linear, let default fill do its work
+    return {data:[], size: 0};
+
+};
+
+geo.MeshStreamer.prototype.generateFillConfig_V_PP =
+    function(previousConfig, previousResult, cameraFrustum, recommendationClicked) {
+
+    var sum = 0;
+    var newConfig = [];
+
+    for (var i = 0; i < previousConfig.length; i++) {
+
+        // Check if previousConfig was full
+        if (previousResult.configSizes[i] >= this.chunk * previousConfig[i].proportion) {
+
+            newConfig.push(previousConfig[i]);
+            sum += previousConfig[i].proportion;
+
+        }
+
+    }
+
+    // Normalize previousConfig probabilities
+    for (var i = 0; i < newConfig.length; i++) {
+
+        newConfig[i].proportion /= sum;
+
+    }
+
+    return newConfig;
+
+};
+
+geo.MeshStreamer.prototype.generateFillConfig_V_PP_PD =
+    geo.MeshStreamer.prototype.generateFillConfig_V_PP;
+
+geo.MeshStreamer.prototype.generateFillConfig_V_PD =
+    function(previousConfig, previousResult, cameraFrustum, recommendationClicked) {
+
+    return [{proportion:1, frustum: cameraFrustum}];
 
 };
 
@@ -781,6 +924,10 @@ geo.MeshStreamer.prototype.nextElements = function(config, chunk) {
 
             area += faceInfo.area;
 
+            // if (area > 0.6) {
+            //     break;
+            // }
+
             if (this.faces[faceInfo.index] !== true) {
 
                 var face = this.mesh.faces[faceInfo.index];
@@ -788,30 +935,23 @@ geo.MeshStreamer.prototype.nextElements = function(config, chunk) {
                 if (face === undefined) {
                     console.log(faceInfo.index, this.mesh.faces.length);
                     console.log('ERROR !!!');
+                } else {
+                    buffers[configIndex].push(face);
                 }
 
-                buffers[configIndex].push(face);
-
-            } else if (this.begining === true) {
+            } else if (this.beginning === true) {
 
                 currentArea += faceInfo.area;
 
-                if (currentArea > this.beginingThreshold) {
+                if (currentArea > this.beginningThreshold) {
 
-                    this.begining = false;
+                    this.beginning = false;
 
                 }
 
             }
 
-            if (area > 0.9) {
-                break;
-            }
-
-
-
         }
-
 
     }
 

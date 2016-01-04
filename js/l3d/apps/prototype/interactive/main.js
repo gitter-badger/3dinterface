@@ -38,15 +38,15 @@ var pointer;
 var startCanvas;
 var loadingCanvas;
 
-window.onbeforeunload = function() {
-
-    if (initMainScene !== L3D.initPeach && initMainScene !== L3D.initSponza && !($('#next').is(":visible"))) {
-
-        return 'Warning : you are going to leave the page and abort the current test !';
-
-    }
-
-};
+// window.onbeforeunload = function() {
+//
+//     if (initMainScene !== L3D.initPeach && initMainScene !== L3D.initSponza && !($('#next').is(":visible"))) {
+//
+//         return 'Warning : you are going to leave the page and abort the current test !';
+//
+//     }
+//
+// };
 
 var nextPage = '/prototype/play';
 
@@ -69,7 +69,7 @@ function main() {
     initModels();
     initListeners();
 
-    appendTo(container)(stats, Coin, startCanvas, pointer, previewer, loadingCanvas, renderer);
+    appendTo(container)(stats, Coin, startCanvas, pointer, previewer, /*loadingCanvas,*/ renderer);
     // appendTo(container)(startCanvas, pointer, previewer, renderer);
 
     // Set the good size of cameras
@@ -116,6 +116,32 @@ function initThreeElements() {
     scene = new THREE.Scene();
     renderer = new THREE.WebGLRenderer({alpha:true, antialias:true});
     renderer.setClearColor(0x87ceeb);
+
+    var loader = new THREE.OBJLoader();
+
+    loader.load(
+        '/static/data/coin/Coin.obj',
+        function(object) {
+            object.traverse(function (mesh) {
+                if (mesh instanceof THREE.Mesh) {
+                    mesh.scale.set(0.01,0.01,0.01);
+                    mesh.material.color.setHex(0xffff00);
+                    mesh.geometry.computeVertexNormals();
+                    mesh.raycastable = true;
+                    mesh.position.copy(new THREE.Vector3(-23.85237224023958,12.30017484578007,2.883526209796364));
+                    scene.add(mesh);
+
+                    newMesh = mesh.clone();
+                    newMesh.position.copy(new THREE.Vector3(-8.225753727064939,11.932703941399415,8.637544772060489));
+                    scene.add(newMesh);
+
+                    newMesh.position.copy(new THREE.Vector3(18.198980821370327,2.5219742652442885,10.741621475827422));
+                    scene.add(newMesh);
+
+                }
+            });
+        }
+    );
 
     // Initialize pointer camera
     camera1 = new L3D.PointerCamera(

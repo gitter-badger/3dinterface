@@ -207,9 +207,9 @@ var ProgressiveLoader = function(path, scene, camera, callback, log, laggy, pref
         // Only good for sponza model
         this.camera._moveHermite = this.camera.moveHermite;
 
-        this.camera.moveHermite = function(param) {
-            var toSend = param.position.x > 0 ? 0 : 1;
-            self.socket.emit('reco', toSend);
+        this.camera.moveHermite = function() {
+            console.log(arguments);
+            self.socket.emit('reco', arguments[2]);
             self.camera._moveHermite.apply(self.camera, arguments);
         };
 
@@ -242,7 +242,7 @@ var ProgressiveLoader = function(path, scene, camera, callback, log, laggy, pref
 
     this.mapFace = {};
 
-    this.prefetch = prefetch === undefined ? true : (!!prefetch);
+    this.prefetch = prefetch;
 
 };
 
@@ -434,11 +434,8 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
         var param;
         if (typeof self.onBeforeEmit === 'function') {
 
-            for (var m of self.meshes) {
-                m.geometry.computeBoundingSphere();
-            }
             param = self.onBeforeEmit();
-            setTimeout(function() { self.socket.emit('next', self.getCamera(), param);}, 100);
+            self.socket.emit('next', self.getCamera(), param);
 
         } else {
 
@@ -465,6 +462,13 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
         }
 
     });
+};
+
+ProgressiveLoader.prototype.computeBoundingSphere = function() {
+    for (var m of this.meshes) {
+        m.geometry.computeBoundingSphere();
+    }
+
 };
 
 /**

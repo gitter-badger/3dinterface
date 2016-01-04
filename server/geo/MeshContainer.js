@@ -317,6 +317,19 @@ var availableMeshNames = {
 
     '/static/data/sponza/sponza.obj': {
         done: false,
+        transfo : {
+            rotation: {
+                x: 0,
+                y: 0,
+                z: 0
+            },
+            translation: {
+                x: 0,
+                y: 0,
+                z: 0
+            },
+            scale: 0.02
+        },
         recommendations : L3D.createSponzaRecommendations(1134,768)
     }
 
@@ -345,6 +358,8 @@ function pushMesh(name) {
                 for (var i = 0; i < availableMeshNames[name].recommendations.length; i++) {
 
                     var reco = availableMeshNames[name].recommendations[i].camera;
+
+                    reco.aspect = 1134 / 768;
 
                     reco.lookAt(reco.target);
 

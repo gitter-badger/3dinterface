@@ -11,12 +11,12 @@ L3D.LogFunction = function(a,b) {
 };
 
 L3D.addLight = function(scene) {
-    var directionalLight = new THREE.DirectionalLight(0xdddddd);
-    directionalLight.position.set(1, 2.5, 1).normalize();
+    var directionalLight = new THREE.DirectionalLight(0x777777);
+    directionalLight.position.set(1, 1, 0).normalize();
     directionalLight.castShadow = false;
     scene.add(directionalLight);
 
-    var ambientLight = new THREE.AmbientLight(0x555555);
+    var ambientLight = new THREE.AmbientLight(0xbbbbbb);
     scene.add(ambientLight);
 };
 
@@ -167,7 +167,7 @@ L3D.createPeachRecommendations = function(width, height, rec) {
 L3D.initBobombScene = function(scene, collidableObjects, recommendation, clickable) {
 
     var loader = new L3D.ProgressiveLoader(
-        '/static/data/bobomb/bobomb battlefeild.obj',
+        '/static/data/bobomb/bobomb battlefeild_sub.obj',
         scene,
         recommendation,
         function(object) {
@@ -179,7 +179,9 @@ L3D.initBobombScene = function(scene, collidableObjects, recommendation, clickab
                 THREEx.Transparency.push(object);
             }
         },
-        L3D.LogFunction
+        L3D.LogFunction,
+        false,
+        prefetch
     );
 
     loader.load();
@@ -199,6 +201,8 @@ L3D.resetBobombElements = function() {
 };
 
 L3D.generateCoins = function(totalCoins, coinIds) {
+
+    return [];
 
     var i = 0;
     var tmp = [];
@@ -354,7 +358,7 @@ L3D.initBobomb = function(camera, scene, coins, clickable, coinIds) {
 L3D.initWhompScene = function(scene, collidableObjects, recommendation, clickable) {
 
     var loader = new L3D.ProgressiveLoader(
-        '/static/data/whomp/Whomps Fortress.obj',
+        '/static/data/whomp/Whomps Fortress_sub.obj',
         scene,
         recommendation,
         function(object) {
@@ -375,7 +379,10 @@ L3D.initWhompScene = function(scene, collidableObjects, recommendation, clickabl
             }
 
         },
-        L3D.LogFunction
+        L3D.LogFunction,
+        false,
+        prefetch
+
     );
 
     loader.load();
@@ -510,7 +517,7 @@ L3D.initWhomp = function(recommendation, scene, coins, clickable, coinIds) {
 L3D.initMountainScene = function(scene, collidableObjects, recommendation, clickable) {
 
     var loader = new L3D.ProgressiveLoader(
-        '/static/data/mountain/coocoolmountain.obj',
+        '/static/data/mountain/coocoolmountain_sub.obj',
         scene,
         recommendation,
         function(object) {
@@ -535,7 +542,10 @@ L3D.initMountainScene = function(scene, collidableObjects, recommendation, click
                 object.material.opacity = 0.5;
             }
         },
-        L3D.LogFunction
+        L3D.LogFunction,
+        false,
+        prefetch
+
     );
 
     loader.load();
@@ -670,26 +680,26 @@ L3D.initSponzaScene = function(scene, collidableObjects, recommendation, clickab
     loader.load();
 
 
-    loader.getCamera = function() {
-        var ret = loader.camera.toList();
-        ret[0][0] *= 10;
-        ret[0][1] *= 10;
-        ret[0][2] *= 10;
+    // loader.getCamera = function() {
+    //     var ret = loader.camera.toList();
+    //     ret[0][0] *= 10;
+    //     ret[0][1] *= 10;
+    //     ret[0][2] *= 10;
 
-        ret[1][0] *= 10;
-        ret[1][1] *= 10;
-        ret[1][2] *= 10;
+    //     ret[1][0] *= 10;
+    //     ret[1][1] *= 10;
+    //     ret[1][2] *= 10;
 
-        // Planes
-        for (var i = 2; i < ret.length; i++) {
+    //     // Planes
+    //     for (var i = 3; i < ret.length; i++) {
 
-            ret[i][3] *= 10;
+    //         ret[i][3] *= 10;
 
-        }
+    //     }
 
-        return ret;
-    };
-    loader.obj.scale.set(0.1,0.1,0.1);
+    //     return ret;
+    // };
+    // loader.obj.scale.set(0.1,0.1,0.1);
 
     collidableObjects.push(loader.obj);
     loader.obj.raycastable = true;
@@ -724,6 +734,38 @@ L3D.createSponzaRecommendations = function(width, height) {
         );
     };
 
+   return [
+// createRecommendation(
+// new THREE.Vector3(-2.591997650227227,4.652225309342689,-2.815524195264902),
+// new THREE.Vector3(-40.87987891143996,10.202406707437795,7.344871219063935)
+// )
+// ,createRecommendation(
+// new THREE.Vector3(-20.507451191489245,1.7638914167988349,1.9557104822169127),
+// new THREE.Vector3(-58.90750279083062,7.314072814893941,-7.772163058087716)
+// )
+// ,
+// createRecommendation(
+// new THREE.Vector3(-23.383482289183434,14.264152490508069,-1.2119079930928534),
+// new THREE.Vector3(-1.7847952083517313,1.9364343472313017,30.117376738037517)
+// ),
+// createRecommendation(
+// new THREE.Vector3(2.327317420088316,0.3629147522258326,-0.3325792884643282),
+// new THREE.Vector3(1.3934131694970663,-0.8288981685786133,3.369771966148228)
+// ),
+// createRecommendation(
+// new THREE.Vector3(22.983553977938616,3.829033470023654,0.7135547783419287),
+// new THREE.Vector3(1.9041126108599506,-8.375131998286331,32.4423350397072)
+// )
+// createRecommendation(
+// new THREE.Vector3(-12.939581055355553,3.796374966524073,-2.463006239142574),
+// new THREE.Vector3(-51.61901925503118,-1.1193807374029414,6.466518183623911)
+// )
+createRecommendation(
+new THREE.Vector3(1.3571661176961554,4.934280286310308,-4.294700794239404),
+new THREE.Vector3(-31.49512083496389,15.286798072464663,16.04129235749628)
+)
+   ];
+
     return [
         createRecommendation(
             new THREE.Vector3(97.36225946503932,10.925697484337014,12.852363038244272),
@@ -742,8 +784,8 @@ L3D.createSponzaCoins = function() {
 
 L3D.resetSponzaElements = function() {
     return {
-        position: new THREE.Vector3(92.98373669520107,60.8877777990862,11.130138641670737),
-        target: new THREE.Vector3(53.76696417668598,56.09739213575453,4.877382575136091)
+        position: new THREE.Vector3(9.298373669520107,6.08877777990862,1.1130138641670737),
+        target: new THREE.Vector3(5.376696417668598,5.609739213575453,0.4877382575136091)
     };
 };
 
@@ -757,7 +799,7 @@ L3D.initSponza = function(recommendation, scene, coins, clickable) {
     recommendation.resetElements = L3D.resetSponzaElements();
     recommendation.collidableObjects = collidableObjects;
 
-    recommendation.speed = 0.05;
+    recommendation.speed = 0.005;
     recommendation.reset();
     recommendation.save();
 

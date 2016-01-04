@@ -3,7 +3,6 @@
 type="RELEASE"
 
 if [ "$1" == "--dev" ] || [ "$1" == "-d" ]; then
-    echo yes
     type="DEV"
 elif [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
     echo -e "This is the 3dinterface builder"

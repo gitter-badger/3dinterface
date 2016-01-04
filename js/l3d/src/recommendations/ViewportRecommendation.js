@@ -40,7 +40,7 @@ L3D.ViewportRecommendation = function(arg1, arg2, arg3, arg4, position, target) 
                         );
 
     (function(self, direction, left, other) {
-        var material = new THREE.LineBasicMaterial({ color: '0x000000'});
+        var material = new THREE.LineBasicMaterial({ color: '0x000000', linewidth: 3});
         var geometry = new THREE.Geometry();
         var tmpDirection = L3D.Tools.mul(direction, -2);
         var target = L3D.Tools.sum(self.camera.position, tmpDirection);

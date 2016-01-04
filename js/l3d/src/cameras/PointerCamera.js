@@ -167,7 +167,7 @@ L3D.PointerCamera = function() {
      * Option to enable or disable the collisions
      * @type {Boolean}
      */
-    this.collisions = true;
+    this.collisions = false;
 
     /**
      * Is true when we should log the camera angles. It will be set to false
@@ -457,7 +457,7 @@ L3D.PointerCamera.prototype.anglesFromVectors = function() {
  * @param {Camera} camera Camera to move to
  * @param {Boolean} [toSave=true] true if you want to save the current state of the camera
  */
-L3D.PointerCamera.prototype.move = function(recommendation, toSave) {
+L3D.PointerCamera.prototype.move = function(recommendation, toSave, recommendationId) {
     if (toSave === undefined)
         toSave = true;
 
@@ -488,13 +488,13 @@ L3D.PointerCamera.prototype.move = function(recommendation, toSave) {
  * @param {Camera} camera Camera to move to
  * @param {Boolean} [toSave=true] true if you want to save the current state of the camera
  */
-L3D.PointerCamera.prototype.moveHermite = function(recommendation, toSave) {
+L3D.PointerCamera.prototype.moveHermite = function(recommendation, toSave, recommendationId) {
     if (toSave === undefined)
         toSave = true;
 
-    var otherCamera = recommendation.camera || recommendation;
+    this.recommendationClicked = recommendationId;
 
-    this.recommendationClicked = otherCamera;
+    var otherCamera = recommendation.camera || recommendation;
 
     this.moving = false;
     this.movingHermite = true;
@@ -756,19 +756,22 @@ L3D.PointerCamera.prototype.redoable = function() {
  * </ol>
  */
 L3D.PointerCamera.prototype.toList = function() {
-    this.updateMatrix();
-    this.updateMatrixWorld();
+
+    var camera = this; // (this.recommendationClicked === null ? this : this.cameras[this.recommendationClicked].camera);
+
+    camera.updateMatrix();
+    camera.updateMatrixWorld();
+
+    camera.matrixWorldInverse.getInverse(camera.matrixWorld);
 
     var frustum = new THREE.Frustum();
-    var projScreenMatrix = new THREE.Matrix4();
-    projScreenMatrix.multiplyMatrices(this.projectionMatrix, this.matrixWorldInverse);
 
-    frustum.setFromMatrix(new THREE.Matrix4().multiplyMatrices(this.projectionMatrix, this.matrixWorldInverse));
+    frustum.setFromMatrix(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
 
     var ret =
-        [[this.position.x, this.position.y, this.position.z],
-         [this.target.x,   this.target.y,   this.target.z],
-         this.recommendationClicked !== null
+        [[camera.position.x, camera.position.y, camera.position.z],
+         [camera.target.x,   camera.target.y,   camera.target.z],
+         this.recommendationClicked
         ];
 
     for (var i = 0; i < frustum.planes.length; i++) {
@@ -782,5 +785,6 @@ L3D.PointerCamera.prototype.toList = function() {
     }
 
     return ret;
+
 };
 
