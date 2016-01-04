@@ -1,16 +1,53 @@
 /**
- * Reprensents a mesh
+ * Reprensents an elementary mesh (only one material)
  * @constructor
  * @memberOf geo
  */
 geo.Mesh = function() {
+    /**
+     * @type {geo.Vertex[]}
+     * @description All the vertices of the mesh
+     * @deprecated Prefer the use of {@link geo.MeshContainer}.vertices
+     */
     this.vertices = [];
+
+    /**
+     * @type {geo.Face[]}
+     * @description All the faces of the mesh
+     */
     this.faces = [];
+
+    /**
+     * @type {geo.TexCoord[]}
+     * @description All the textures coordinates of the mesh
+     */
     this.texCoords = [];
+
+    /**
+     * @type {geo.Normal[]}
+     * @description All the normals of the mesh
+     */
     this.normals = [];
+
+    /**
+     * @deprecated You should use your own counter
+     */
     this.faceIndex = 0;
+
+    /**
+     * @type {String}
+     * @description Name of the material of the current mesh
+     */
     this.material = null;
+
+    /**
+     * @deprecated You should use your own attributes
+     */
     this.started = false;
+
+    /**
+     * @deprecated You should use your own attributes
+     */
     this.finished = false;
 };
 
@@ -58,7 +95,7 @@ geo.Mesh.prototype.addFaces = function(face) {
     if (face instanceof geo.Face) {
         this.faces.push(face);
     } else if (typeof face === 'string' || face instanceof String) {
-        faces = parseFace(face);
+        faces = geo.parseFace(face);
         this.faces = this.faces.concat(faces);
     } else {
         console.error("Can only add face from geo.Face or string");
@@ -106,6 +143,9 @@ geo.Mesh.prototype.addNormal = function(normal) {
     return this.normals[this.normals.length - 1];
 };
 
+/**
+ * @deprecated
+ */
 geo.Mesh.prototype.isFinished = function() {
     return this.faceIndex === this.faces.length;
 };
@@ -113,6 +153,7 @@ geo.Mesh.prototype.isFinished = function() {
 /**
  * Represent a 3D vertex
  * @constructor
+ * @param {String} A string like in the .obj file (e.g. 'v 1.1 0.2 3.4')
  * @memberOf geo
  */
 geo.Vertex = function() {
@@ -175,6 +216,7 @@ geo.Vertex.prototype.toString = function() {
  * @constructor
  * @memberOf geo
  * @augments geo.Vertex
+ * @param {String} A string like in the .obj file (e.g. 'vn 1.1 2.2 3.3')
  */
 geo.Normal = function() {
     geo.Vertex.apply(this, arguments);
@@ -216,6 +258,7 @@ geo.Normal.prototype.toString = function() {
  * Represent a texture coordinate element
  * @constructor
  * @memberOf geo
+ * @param {String} a string like in the .obj file (e.g. 'vt 0.5 0.5')
  */
 geo.TexCoord = function() {
     if (typeof arguments[0] === 'string' || arguments[0] instanceof String) {
@@ -268,9 +311,10 @@ geo.TexCoord.prototype.toString = function() {
 
 
 /**
- * Represents a face
+ * Represents a face. Only triangles are supported. For quadrangular polygons, see {@link geo.parseFace}
  * @constructor
  * @memberOf geo
+ * @param {String} A string like in a .obj file (e.g. 'f 1/1/1 2/2/2 3/3/3' or 'f 1 2 3').
  */
 geo.Face = function() {
     var split;
@@ -368,7 +412,7 @@ geo.Face = function() {
  * @returns {Face[]} a single 3-vertices face or two 3-vertices face if it was
  * a 4-vertices face
  */
-var parseFace = function(arg) {
+geo.parseFace = function(arg) {
 
     var split = arg.trim().split(' ');
     var ret = [];

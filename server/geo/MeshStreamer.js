@@ -3,12 +3,23 @@ var THREE = require('three');
 var L3D = require('../../static/js/l3d.min.js');
 
 function readIt(sceneNumber, recoId) {
-    return {
+    var toZip = {
         triangles :
             JSON.parse(fs.readFileSync('./geo/generated/scene' + sceneNumber + '/triangles' + recoId + '.json')),
         areas :
             JSON.parse(fs.readFileSync('./geo/generated/scene' + sceneNumber + '/areas' + recoId + '.json'))
     };
+
+    var ret = [];
+
+    for (var i = 0; i < toZip.triangles.length; i++) {
+        ret.push({
+            index: toZip.triangles[i],
+            area:  toZip.areas[i]
+        });
+    }
+
+    return ret;
 }
 
 numberOfReco = [0, 0, 12, 12, 11, 2];
@@ -46,6 +57,13 @@ try
     predictionTables = [];
 }
 
+/**
+ * Checks quickly if a triangle might be in a frustum
+ * @private
+ * @param {Object[]} element array of thre 3 vertices of the triangle to test
+ * @param {Object[]} planes array of planes (Object with normal and constant values)
+ * @return {Boolean} false if we can be sure that the triangle is not in the frustum, true oherwise
+ */
 function isInFrustum(element, planes) {
 
     if (element instanceof Array) {
@@ -100,47 +118,6 @@ function isInFrustum(element, planes) {
 }
 
 /**
- * @private
- */
-function bisect(items, x, lo, hi) {
-    var mid;
-    if (typeof(lo) == 'undefined') lo = 0;
-    if (typeof(hi) == 'undefined') hi = items.length;
-    while (lo < hi) {
-        mid = Math.floor((lo + hi) / 2);
-        if (x < items[mid]) hi = mid;
-        else lo = mid + 1;
-    }
-    return lo;
-}
-
-/**
- * @private
- */
-function insort(items, x) {
-    items.splice(bisect(items, x), 0, x);
-}
-
-/**
- * @private
- */
-function partialSort(items, k, comparator) {
-    var smallest = items.slice(0, k).sort(),
-        max = smallest[k-1];
-
-    for (var i = k, len = items.length; i < len; ++i) {
-        var item = items[i];
-        var cond = comparator === undefined ? item < max : comparator(item, max) < 0;
-        if (cond) {
-            insort(smallest, item);
-            smallest.length = k;
-            max = smallest[k-1];
-        }
-    }
-    return smallest;
-}
-
-/**
  * A class that streams easily a mesh via socket.io
  * @memberOf geo
  * @constructor
@@ -184,12 +161,6 @@ geo.MeshStreamer = function(path) {
      */
     this.texCoords = [];
 
-    this.minThreshold = 0.75;
-    this.maxThreshold = 0.85;
-    this.currentlyPrefetching = false;
-
-    this.beginning = false;
-
     this.beginningThreshold = 0.9;
 
     this.frustumPercentage = 0.6;
@@ -212,6 +183,12 @@ geo.MeshStreamer = function(path) {
 
 };
 
+/**
+ * Checks if a face is oriented towards the camera
+ * @param {Object} camera a camera (with a position, and a direction)
+ * @param {geo.Face} the face to test
+ * @return {Boolean} true if the face is in the good orientation, face otherwise
+ */
 geo.MeshStreamer.prototype.isBackFace = function(camera, face) {
 
     var directionCamera = L3D.Tools.diff(
@@ -244,18 +221,6 @@ geo.MeshStreamer.prototype.faceComparator = function(camera) {
 
     var self = this;
 
-    // var direction = {
-    //     x: camera.target.x - camera.position.x,
-    //     y: camera.target.y - camera.position.y,
-    //     z: camera.target.z - camera.position.z
-    // };
-
-    // var norm = Math.sqrt(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
-
-    // direction.x /= norm;
-    // direction.y /= norm;
-    // direction.z /= norm;
-
     return function(face1, face2) {
 
         var center1 = {
@@ -271,12 +236,6 @@ geo.MeshStreamer.prototype.faceComparator = function(camera) {
             z: center1.z - camera.position.z
         };
 
-        // var norm1 = Math.sqrt(dir1.x * dir1.x + dir1.y * dir1.y + dir1.z + dir1.z);
-
-        // dir1.x /= norm1;
-        // dir1.y /= norm1;
-        // dir1.z /= norm1;
-
         var dot1 = dir1.x * dir1.x + dir1.y * dir1.y + dir1.z * dir1.z;
 
         var center2 = {
@@ -290,12 +249,6 @@ geo.MeshStreamer.prototype.faceComparator = function(camera) {
             y: center2.y - camera.position.y,
             z: center2.z - camera.position.z
         };
-
-        // var norm2 = Math.sqrt(dir2.x * dir2.x + dir2.y * dir2.y + dir2.z + dir2.z);
-
-        // dir2.x /= norm2;
-        // dir2.y /= norm2;
-        // dir2.z /= norm2;
 
         var dot2 = dir2.x * dir2.x + dir2.y * dir2.y + dir2.z * dir2.z;
 
@@ -312,12 +265,11 @@ geo.MeshStreamer.prototype.faceComparator = function(camera) {
 };
 
 /**
- * Initialize the socket.io callback
+ * Initialize the socket.io callbacks
  * @param {socket} socket the socket to initialize
  */
 geo.MeshStreamer.prototype.start = function(socket) {
 
-    this.meshIndex = 0;
     this.socket = socket;
 
     var self = this;
@@ -327,8 +279,6 @@ geo.MeshStreamer.prototype.start = function(socket) {
         if (laggy === true) {
             self.chunk = 1;
         }
-
-        self.prefetch = prefetch;
 
         self.mesh = geo.availableMeshes[path];
 
@@ -355,6 +305,9 @@ geo.MeshStreamer.prototype.start = function(socket) {
             default:
                 self.predictionTable = predictionTables[3];
         };
+
+        self.generator = geo.ConfigGenerator.createFromString(prefetch, self);
+        self.backupGenerator = new geo.ConfigGenerator(self);
 
         if (self.mesh === undefined) {
             process.stderr.write('Wrong path for model : ' + path);
@@ -434,103 +387,45 @@ geo.MeshStreamer.prototype.start = function(socket) {
 
         }
 
-        // Create config for proportions of chunks
-        var config;
-        var didPrefetch = false;
+        if (cameraExists) {
 
-        // if (false) {
+            // Create config for proportions of chunks
+            var didPrefetch = false;
+            var config = self.generator.generateMainConfig(cameraFrustum, recommendationClicked);
 
-            if (cameraExists) {
+            // Send next elements
+            var oldTime = Date.now();
+            var next = self.nextElements(config);
 
-                switch (self.prefetch) {
-                    case 'V-PP':
-                        config = self.generateConfig_V_PP(cameraFrustum, recommendationClicked);
-                        break;
-                    case 'V-PD':
-                        config = self.generateConfig_V_PD(cameraFrustum, recommendationClicked);
-                        break;
-                    case 'V-PP+PD':
-                        config = self.generateConfig_V_PP_PD(cameraFrustum, recommendationClicked);
-                        break;
-                    case 'NV-PN':
-                    default:
-                        config = self.generateConfig_NV_PN(cameraFrustum, recommendationClicked);
-                        break;
-                        // console.log(self.prefetch)
-                        // process.exit(-1);
-
-                }
-
-                // Send next elements
-                var oldTime = Date.now();
-                var next = self.nextElements(config);
-
-                // console.log(
-                //     'Adding ' +
-                //     next.size +
-                //     ' for newConfig : '
-                //     + JSON.stringify(config.map(function(o) { return o.proportion}))
-                // );
+            // console.log(
+            //     'Adding ' +
+            //     next.size +
+            //     ' for newConfig : '
+            //     + JSON.stringify(config.map(function(o) { return o.proportion}))
+            // );
 
 
-                if (self.beginning === true && next.size < self.chunk) {
-                    self.beginning = false;
+            if (self.beginning === true && next.size < self.chunk) {
 
-                    switch (self.prefetch) {
-                        case 'V-PP':
-                            config = self.generateConfig_V_PP(cameraFrustum, recommendationClicked);
-                            break;
-                        case 'V-PD':
-                            config = self.generateConfig_V_PD(cameraFrustum, recommendationClicked);
-                            break;
-                        case 'V-PP+PD':
-                            config = self.generateConfig_V_PP_PD(cameraFrustum, recommendationClicked);
-                            break;
-                        case 'NV-PN':
-                        default:
-                            config = self.generateConfig_NV_PN(cameraFrustum, recommendationClicked);
-                            break;
-                    }
+                self.beginning = false;
+                config = self.generator.generateMainConfig(cameraFrustum, recommendationClicked);
 
-                    var fillElements = self.nextElements(config, self.chunk - next.size);
+            }
 
-                    next.configSizes = fillElements.configSizes;
-                    next.data.push.apply(next.data, fillElements.data);
-                    next.size += fillElements.size;
-                }
+            var fillElements = self.nextElements(config, self.chunk - next.size);
 
+            next.configSizes = fillElements.configSizes;
+            next.data.push.apply(next.data, fillElements.data);
+            next.size += fillElements.size;
 
-                // Chunk is not empty, compute fill config
-                if (next.size < self.chunk) {
+            // Chunk is not empty, compute fill config
+            if (next.size < self.chunk) {
 
-                    switch (self.prefetch) {
-                        case 'V-PP':
-                            config = self.generateFillConfig_V_PP(config, next, cameraFrustum, recommendationClicked);
-                            break;
-                        case 'V-PD':
-                            config = self.generateFillConfig_V_PD(config, next, cameraFrustum, recommendationClicked);
-                            break;
-                        case 'V-PP+PD':
-                            config = self.generateFillConfig_V_PP_PD(config, next, cameraFrustum, recommendationClicked);
-                            break;
-                        case 'NV-PN':
-                        default:
-                            config = self.generateFillConfig_NV_PN(config, next, cameraFrustum, recommendationClicked);
-                            break;
+                config = self.generator.generateFillingConfig(config, next, cameraFrustum, recommendationClicked);
+                fillElements = self.nextElements(config, self.chunk - next.size);
 
-                    }
-
-
-                    fillElements = self.nextElements(config, self.chunk - next.size);
-
-                    next.data.push.apply(next.data, fillElements.data);
-                    next.size += fillElements.size;
-
-                }
-
-            } else {
-
-                next = { data : [], size : 0 };
+                next.data.push.apply(next.data, fillElements.data);
+                next.size += fillElements.size;
 
             }
 
@@ -544,10 +439,12 @@ geo.MeshStreamer.prototype.start = function(socket) {
 
             }
 
-        // }
+        } else {
 
-        // var config = [{proportion: 1, smart: true, recommendationId: 1}];
-        // var next = self.nextElements(config);
+            config = self.backupGenerator.generateMainConfig();
+            next = self.nextElements(config, self.chunk);
+
+        }
 
         console.log('Chunk of size ' + next.size + ' (generated in ' + (Date.now() - oldTime) + 'ms)');
 
@@ -595,241 +492,11 @@ geo.MeshStreamer.prototype.nextMaterials = function() {
 
 };
 
-geo.MeshStreamer.prototype.generateConfig_NV_PN = function(cameraFrustum) {
-
-    var config;
-
-    // if (this.beginning === true) {
-
-    //     console.log('Begining : full init');
-    //     config = [{recommendationId : 0, proportion:1, smart: true}];
-
-
-    // } else {
-
-        // Case without prefetch
-        console.log("No prefetching");
-        config = [{ frustum: cameraFrustum, proportion: 1}];
-
-    // }
-
-    return config;
-};
-
-geo.MeshStreamer.prototype.generateConfig_V_PD = function(cameraFrustum, recommendationClicked) {
-
-    var config;
-    if (recommendationClicked != null) {
-
-        if (this.beginning === true) {
-            this.beginning = false;
-        }
-
-        // Case full reco
-        console.log("Going to " + recommendationClicked);
-        console.log("Recommendation is clicking : full for " + JSON.stringify(this.mesh.recommendations[recommendationClicked].position));
-        config = [{recommendationId : recommendationClicked + 1, proportion: 1, smart:true}];
-
-    } else if (this.beginning === true) {
-
-        console.log('Begining : full init');
-        config = [{recommendationId : 0, proportion:1, smart: true}];
-
-
-    } else {
-
-        // Case without prefetch
-        console.log("No prefetching");
-        config = [{ frustum: cameraFrustum, proportion: 1}];
-
-    }
-
-    return config;
-};
-
-geo.MeshStreamer.prototype.generateConfig_V_PP = function(cameraFrustum) {
-
-    var config;
-
-    if (this.beginning === true) {
-
-        console.log('Begining : full init');
-        config = [{recommendationId : 0, proportion:1, smart: true}];
-
-    } else {
-
-        // Case full prefetch
-        console.log("Allow some prefetching");
-
-        didPrefetch = true;
-        config = [{ frustum: cameraFrustum, proportion : this.frustumPercentage}];
-
-        if (this.predictionTable !== undefined) {
-
-            var sum = 0;
-
-            for (var i = 1; i <= this.mesh.recommendations.length; i++) {
-
-                sum += this.predictionTable[this.previousReco][i];
-
-            }
-
-            for (var i = 1; i <= this.mesh.recommendations.length; i++) {
-
-                if (this.predictionTable[this.previousReco][i] > 0) {
-
-                    config.push({
-
-                        proportion : this.predictionTable[this.previousReco][i] * this.prefetchPercentage / sum,
-                        recommendationId : i,
-                        smart: true
-
-                    });
-
-                }
-
-            }
-
-        } else {
-
-            process.stderr.write('ERROR : PREDICTION TABLE IF UNDEFINED');
-
-        }
-
-    }
-
-    return config;
-
-};
-
-geo.MeshStreamer.prototype.generateConfig_V_PP_PD = function(cameraFrustum, recommendationClicked) {
-
-    var config;
-
-    if (recommendationClicked != null) {
-
-        if (this.beginning === true) {
-            this.beginning = false;
-        }
-
-        // Case full reco
-        console.log("Going to " + recommendationClicked);
-        console.log("Recommendation is clicking : full for " + JSON.stringify(this.mesh.recommendations[recommendationClicked].position));
-        config = [{recommendationId : recommendationClicked + 1, proportion: 1, smart:true}];
-
-
-
-    } else if (this.beginning === true) {
-
-        console.log('Begining : full init');
-        config = [{recommendationId : 0, proportion:1, smart: true}];
-
-
-    } else {
-
-        // Case full prefetch
-        console.log("Allow some prefetching");
-
-        config = [{ frustum: cameraFrustum, proportion : this.frustumPercentage}];
-
-        // Find best recommendation
-        var bestReco;
-        var bestScore = -Infinity;
-        var bestIndex = null;
-
-        if (this.predictionTable !== undefined) {
-
-            var sum = 0;
-
-            for (var i = 1; i <= this.mesh.recommendations.length; i++) {
-
-                sum += this.predictionTable[this.previousReco][i];
-
-            }
-
-            for (var i = 1; i <= this.mesh.recommendations.length; i++) {
-
-                if (this.predictionTable[this.previousReco][i] > 0) {
-
-                    config.push({
-
-                        proportion : this.predictionTable[this.previousReco][i] * this.prefetchPercentage / sum,
-                        recommendationId : i,
-                        smart: true
-
-                    });
-
-                }
-
-            }
-
-            // if (score > this.maxThreshold)
-            //     this.currentlyPrefetching = true;
-
-        } else {
-
-            process.stderr.write('ERROR : PREDICTION TABLE IF UNDEFINED');
-
-        }
-
-    }
-
-    return config;
-
-};
-
-geo.MeshStreamer.prototype.generateFillConfig_NV_PN =
-    function(previousConfig, previousResult, cameraFrustum, recommendationClicked) {
-
-    // Nothing to do better than linear, let default fill do its work
-    return {data:[], size: 0};
-
-};
-
-geo.MeshStreamer.prototype.generateFillConfig_V_PP =
-    function(previousConfig, previousResult, cameraFrustum, recommendationClicked) {
-
-    var sum = 0;
-    var newConfig = [];
-
-    for (var i = 0; i < previousConfig.length; i++) {
-
-        // Check if previousConfig was full
-        if (previousResult.configSizes[i] >= this.chunk * previousConfig[i].proportion) {
-
-            newConfig.push(previousConfig[i]);
-            sum += previousConfig[i].proportion;
-
-        }
-
-    }
-
-    // Normalize previousConfig probabilities
-    for (var i = 0; i < newConfig.length; i++) {
-
-        newConfig[i].proportion /= sum;
-
-    }
-
-    return newConfig;
-
-};
-
-geo.MeshStreamer.prototype.generateFillConfig_V_PP_PD =
-    geo.MeshStreamer.prototype.generateFillConfig_V_PP;
-
-geo.MeshStreamer.prototype.generateFillConfig_V_PD =
-    function(previousConfig, previousResult, cameraFrustum, recommendationClicked) {
-
-    return [{proportion:1, frustum: cameraFrustum}];
-
-};
-
 /**
  * Prepare the next elements
- * @param {camera} _camera a camera that can be usefull to do smart streaming (stream
- * only interesting parts according to the camera
+ * @param {Object[]} config a configuration list
  * @returns {array} an array of elements ready to send
+ * @see {@link https://github.com/DragonRock/3dinterface/wiki/Streaming-configuration|Configuration list documentation}
  */
 geo.MeshStreamer.prototype.nextElements = function(config, chunk) {
 
@@ -915,18 +582,15 @@ geo.MeshStreamer.prototype.nextElements = function(config, chunk) {
         var currentArea = 0;
 
         // Fill buffer using facesToSend
-        for (var faceIndex = 0; faceIndex < this.facesToSend[currentConfig.recommendationId].triangles.length; faceIndex++) {
+        for (var faceIndex = 0; faceIndex < this.facesToSend[currentConfig.recommendationId].length; faceIndex++) {
 
-            var faceInfo = {
-                index:this.facesToSend[currentConfig.recommendationId].triangles[faceIndex],
-                area: this.facesToSend[currentConfig.recommendationId].areas[faceIndex]
-            };
+            var faceInfo = this.facesToSend[currentConfig.recommendationId][faceIndex];
 
             area += faceInfo.area;
 
-            // if (area > 0.6) {
-            //     break;
-            // }
+            if (area > 0.9) {
+                break;
+            }
 
             if (this.faces[faceInfo.index] !== true) {
 
@@ -1091,7 +755,6 @@ geo.MeshStreamer.prototype.pushFace = function(face, buffer) {
     }
 
     buffer.push(face.toList());
-    // this.meshFaces[meshIndex] = this.meshFaces[meshIndex] || [];
     this.faces[face.index] = true;
     totalSize+=3;
 

@@ -2,10 +2,25 @@ var Log = require('../lib/NodeLog.js');
 var L3D = require('../../static/js/l3d.min.js');
 var THREE = require('three');
 
+/**
+ * Clones a vector
+ * @private
+ * @param {Object} vec an object with attributes x, y, and z
+ * @return {Object} a new object with the same x, y, and z attributes
+ */
 function clone(vec) {
     return {x : vec.x, y : vec.y, z : vec.z};
 }
 
+/**
+ * Rotates a vector, three.js style
+ * @private
+ * @param {Object} vec1 an object with attributes x, y, and z
+ * @param {Number} x three.js's rotateX value
+ * @param {Number} y three.js's rotateY value
+ * @param {Number} z three.js's rotateZ value
+ * @return {Object} a new vector corresponding to the rotated vector
+ */
 function rotation(vec1, x, y, z) {
 
     var cos = Math.cos(z);
@@ -39,6 +54,18 @@ function rotation(vec1, x, y, z) {
     return clone(newVec);
 }
 
+/**
+ * Applies a transformation to a vector
+ * @param {Object} vector an object with attributes x, y, and z
+ * @param {Object} transfo an object with attributes
+ *   <ul>
+ *      <li><code>translation</code> : an object with attributes x, y, and z representing the translation</li>
+ *      <li><code>rotation</code> : an object with attributes x, y, and z representing the rotation</li>
+ *      <li><code>scale</code> : a number representing the scaling </li>
+ *   </ul>
+ * @see {@link rotation}
+ * @return {Object} a new object with attributes x, y and z corresponding to the transformation applied to <code>vector</code>
+ */
 function applyTransformation(vector, transfo) {
 
     var ret = rotation(vector, transfo.rotation.x, transfo.rotation.y, transfo.rotation.z);
@@ -57,6 +84,9 @@ function applyTransformation(vector, transfo) {
  * Represents a mesh. All meshes are loaded once in geo.availableMesh to avoid
  * loading at each mesh request
  * @constructor
+ * @param {String} path path to the .obj file
+ * @param {Object} transfo a transformation object to apply during the loading
+ * @param {function} callback callback to call on the mesh
  * @memberOf geo
  */
 geo.MeshContainer = function(path, transfo, callback) {
@@ -71,31 +101,31 @@ geo.MeshContainer = function(path, transfo, callback) {
     }
 
     /**
-     * array of each part of the mesh
+     * Array of each part of the mesh
      * @type {geo.Mesh[]}
      */
     this.meshes = [];
 
     /**
-     * array of the vertices of the meshes (all merged)
+     * Array of the vertices of the meshes (all merged)
      * @type {geo.Vertex[]}
      */
     this.vertices = [];
 
     /**
-     * array of the faces of the meshes (all merged)
+     * Array of the faces of the meshes (all merged)
      * @type {geo.Face[]}
      */
     this.faces = [];
 
     /**
-     * array of the normals of the meshes (all merged)
+     * Array of the normals of the meshes (all merged)
      * @type {geo.Normal[]}
      */
     this.normals = [];
 
     /**
-     * array of the texture coordinates (all merged)
+     * Array of the texture coordinates (all merged)
      * @type {geo.TexCoord[]}
      */
     this.texCoords = [];
@@ -106,8 +136,17 @@ geo.MeshContainer = function(path, transfo, callback) {
      */
     this.numberOfFaces = 0;
 
+    /**
+     * Transformation that should be applied to the mesh when loading it
+     * @type {Object}
+     * @see {@link applyTransformation}
+     */
     this.transfo = transfo;
 
+    /**
+     * Function to call on the mesh once it is loaded
+     * @type {function}
+     */
     this.callback = callback;
 
     if (path !== undefined) {
@@ -119,7 +158,7 @@ geo.MeshContainer = function(path, transfo, callback) {
 };
 
 /**
- * Loads a obj file
+ * Loads a obj file and apply the transformation
  * @param {string} path the path to the file
  */
 geo.MeshContainer.prototype.loadFromFile = function(path) {
@@ -195,10 +234,7 @@ geo.MeshContainer.prototype.loadFromFile = function(path) {
 
             } else if (line[0] === 'u') {
 
-                // usemtl
-                // If a current mesh exists, finish it
-
-                // Create a new mesh
+                // usemtl : create a new mesh
                 currentMesh = new geo.Mesh();
                 self.meshes.push(currentMesh);
                 currentMesh.material = (new geo.Material(line)).name;
