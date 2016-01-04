@@ -12,13 +12,15 @@ where you want, and you can initialize it by running the script
 
 ## Nodejs configuration
 Then, you have to set up nodejs to access to your database. Basically, you have
-to create a file `private.js` at the root of the repository looking like this :
+to create a file `private.js` in the `server` directory at the root of the
+repository looking like this :
 
 ``` javascript
 module.exports.url = ... // the url to connect to your database
 
 module.exports.secret = ... // A secret string used to hash stuff
 ```
+
 ## Compiling the static js files
 First, `cd` to `utils/`. Here you'll find a script `build_all.sh` that, as its
 name suggests, builds all. By default, it minifies the code, but you can pass
@@ -32,9 +34,13 @@ As usual with NodeJS, it's quite easy to test. Just ensure you have `node`
 installed on your machine, clone this repo somewhere, and then, in the repo do
 
 ``` sh
+cd server
 npm install
 node server.js
 ```
+
+*Note : you will need to compile the static js files first in order to start
+the server*
 
 You should be able to go to [localhost:4000](http://localhost:4000) and see the
 result.
