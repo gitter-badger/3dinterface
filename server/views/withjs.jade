@@ -1,5 +1,8 @@
 extends ./main
 
+block append extrahead
+    script GLOB = typeof GLOB !== 'undefined' ? GLOB : {};
+
 block js
     script(src="/static/js/three.min.js")
     script(src="/static/js/stats.min.js")

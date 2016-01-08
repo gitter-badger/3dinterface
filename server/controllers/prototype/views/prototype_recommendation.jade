@@ -4,7 +4,9 @@ block title
     title #{title} - Prototype - Arrows
 
 block configjs
-    script Recommendation = #{recommendationStyle}; coinsId = [#{coins}];
+    script GLOB.Recommendation = #{recommendationStyle}; GLOB.coinConfig = {type : Coin.Config.SOME, ids : [#{coins}]};
+    if (lowRes === true)
+        script GLOB.lowRes = true; GLOB.hideBeforeLoading = true;
 
 block lastbutton
     button#next.btn.btn-success.navbar-btn(style={'margin-right':'10px', 'margin-bottom':'10px', 'display':'none'})

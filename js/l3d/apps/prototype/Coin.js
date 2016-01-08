@@ -3,12 +3,20 @@ var Coin = function(x,y,z, callback) {
     this.children = [];
     this.ready = false;
     this.got = false;
-    this.init(x,y,z);
+
+    if (typeof x === 'object') {
+        this.init(x.x, x.y, x.z)
+    } else {
+        this.init(x,y,z);
+    }
+
     this.rotating = true;
     if (callback) {
         this.callback = callback;
     }
 };
+
+Coin.toAdd = [];
 
 function instantToColor(instant) {
 
@@ -204,7 +212,12 @@ Coin.prototype.raycast = function(raycaster, intersects) {
 };
 
 Coin.prototype.addToScene = function(scene) {
-    scene.add(this.mesh);
+
+    if (this.mesh === undefined) {
+        Coin.toAdd.push(this, this.mesh, scene);
+    } else {
+        scene.add(this.mesh);
+    }
 };
 
 Coin.prototype.update = function() {
@@ -307,3 +320,9 @@ Coin.init = function(scale) {
         Coin.nextSound = new Audio('/static/data/music/redcoins/1' + Coin.extension);
     }
 };
+
+Coin.Config = {
+    SOME : 1,
+    ALL : 2,
+    NONE : 3
+}

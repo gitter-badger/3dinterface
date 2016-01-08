@@ -4,8 +4,8 @@ block title
     title #{title} - Prototype
 
 block mainjs
-    script initMainScene = #{scene};
-    script locked = #{session.locked === undefined ? 'true' : session.locked};
+    script GLOB.SceneClass = #{scene};
+    script GLOB.locked = #{session.locked === undefined ? 'true' : session.locked};
     script(src="/static/js/prototypeinteractive.min.js")
 
 block description

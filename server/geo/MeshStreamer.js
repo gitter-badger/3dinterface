@@ -306,6 +306,7 @@ geo.MeshStreamer.prototype.start = function(socket) {
                 self.predictionTable = predictionTables[3];
         };
 
+        console.log(prefetch);
         self.generator = geo.ConfigGenerator.createFromString(prefetch, self);
         self.backupGenerator = new geo.ConfigGenerator(self);
 

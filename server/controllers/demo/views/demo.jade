@@ -4,17 +4,22 @@ block title
     title #{title} - Prototype
 
 block prepend js
-    script BD_DISABLED = true;
+    script.
+        GLOB = typeof GLOB !== 'undefined' ? GLOB : {};
+        GLOB.BD_DISABLED = true;
 
 block extrajs
     script(src="/static/js/l3dp.min.js")
+    script.
+        GLOB = typeof GLOB !== 'undefined' ? GLOB : {};
+        GLOB.SceneClass = #{scene};
+        GLOB.Recommendation = #{bookmark};
+        GLOB.prefetch = "#{prefetch}";
+        GLOB.locked = #{session.locked === undefined ? 'true' : session.locked};
     block configjs
     script.
-        initMainScene = #{scene};
-        Recommendation = #{bookmark};
-        prefetch = "#{prefetch}";
-        locked = #{session.locked === undefined ? 'true' : session.locked};
-        coinsId=[];
+        GLOB = typeof GLOB !== 'undefined' ? GLOB : {};
+        GLOB.coinConfig={ids:[], type: Coin.Config.NONE};
 
     script(src="/static/js/prototypeinteractive.min.js")
     script document.getElementById('music').volume = 0.5;

@@ -208,7 +208,6 @@ var ProgressiveLoader = function(path, scene, camera, callback, log, laggy, pref
         this.camera._moveHermite = this.camera.moveHermite;
 
         this.camera.moveHermite = function() {
-            console.log(arguments);
             self.socket.emit('reco', arguments[2]);
             self.camera._moveHermite.apply(self.camera, arguments);
         };
@@ -282,10 +281,157 @@ ProgressiveLoader.prototype.load = function(callback) {
  * Will return a list representation of the camera (to be sent to the server)
  */
 ProgressiveLoader.prototype.getCamera = function() {
-    if (this.camera === null)
+    if (this.camera === null || typeof this.camera.toList !== 'function')
         return null;
 
     return this.camera.toList();
+};
+
+ProgressiveLoader.prototype.addElement = function(elt) {
+
+    var self = this;
+
+    if (elt.type === 'vertex') {
+
+        // New vertex arrived
+
+        // Fill the array of vertices with null vector (to avoid undefined)
+        while (elt.index > self.vertices.length) {
+
+            self.vertices.push(new THREE.Vector3());
+
+        }
+
+        self.vertices[elt.index] = new THREE.Vector3(elt.x, elt.y, elt.z);
+        self.currentMesh.geometry.verticesNeedUpdate = true;
+
+    } else if (elt.type === 'texCoord') {
+
+        // New texCoord arrived
+        self.texCoords[elt.index] = new THREE.Vector2(elt.x, elt.y);
+        self.currentMesh.geometry.uvsNeedUpdate = true;
+
+    } else if (elt.type === 'normal') {
+
+        // New normal arrived
+        self.normals[elt.index] = new THREE.Vector3(elt.x, elt.y, elt.z);
+
+    } else if (elt.type === 'usemtl') {
+
+        // Create mesh material
+        var material;
+
+        if (elt.materialName === null || self.materialCreator === undefined) {
+
+            // If no material, create a default material
+            material = new THREE.MeshLambertMaterial({color: 'red'});
+
+        } else {
+
+            // If material name exists, load if from material, and do a couple of settings
+            material = self.materialCreator.materials[elt.materialName.trim()];
+
+            material.side = THREE.DoubleSide;
+
+            if (material.map)
+                material.map.wrapS = material.map.wrapT = THREE.RepeatWrapping;
+        }
+
+        // Create mesh geometry
+        self.uvs = [];
+        var geometry = new THREE.Geometry();
+        geometry.vertices = self.vertices;
+        geometry.faces = [];
+
+        // If texture coords, init faceVertexUvs attribute
+        if (elt.texCoordsExist) {
+            geometry.faceVertexUvs = [self.uvs];
+        }
+
+        geometry.dynamic = true;
+
+        // Create mesh
+        var mesh = new THREE.Mesh(geometry, material);
+        mesh.faceNumber = elt.fLength;
+        self.meshes.push(mesh);
+
+        self.currentMesh = mesh;
+
+        if (typeof self.callback === 'function') {
+            self.callback(mesh);
+        }
+
+    } else if (elt.type === 'face') {
+
+        self.numberOfFacesReceived++;
+
+        self.mapFace[elt.a + '-' + elt.b + '-' + elt.c] = true;
+
+        if (!self.meshes[elt.mesh].added) {
+
+            self.meshes[elt.mesh].added = true;
+            self.obj.add(self.meshes[elt.mesh]);
+
+        }
+
+        if (elt.aNormal !== undefined) {
+            self.meshes[elt.mesh].geometry.faces.push(new THREE.Face3(elt.a, elt.b, elt.c, [self.normals[elt.aNormal], self.normals[elt.bNormal], self.normals[elt.cNormal]]));
+        } else {
+            self.meshes[elt.mesh].geometry.faces.push(new THREE.Face3(elt.a, elt.b, elt.c));
+            self.meshes[elt.mesh].geometry.computeFaceNormals();
+            self.meshes[elt.mesh].geometry.computeVertexNormals();
+        }
+
+        if (elt.aTexture !== undefined) {
+
+            self.meshes[elt.mesh].geometry.faceVertexUvs[0].push([self.texCoords[elt.aTexture], self.texCoords[elt.bTexture], self.texCoords[elt.cTexture]]);
+
+        }
+
+        self.meshes[elt.mesh].geometry.verticesNeedUpdate = true;
+        self.meshes[elt.mesh].geometry.uvsNeedUpdate = true;
+        self.meshes[elt.mesh].geometry.normalsNeedUpdate = true;
+        self.meshes[elt.mesh].geometry.groupsNeedUpdate = true;
+
+        if (self.meshes[elt.mesh].faceNumber === self.meshes[elt.mesh].geometry.faces.length || typeof module === 'object') {
+
+            self.meshes[elt.mesh].geometry.computeBoundingSphere();
+
+        }
+
+    } else if (elt.type === 'global') {
+
+        self.numberOfFaces = elt.numberOfFaces;
+        self.modulus = Math.floor(self.numberOfFaces / 200);
+
+    }
+}
+
+ProgressiveLoader.prototype.addElements = function(arr, callback) {
+
+    var self = this;
+
+    var currentTime = Date.now();
+    for (var i = 0; i < 100; i++) {
+
+        if (typeof self.log === 'function' && self.numberOfFacesReceived % self.modulus === 0) {
+            self.log(self.numberOfFacesReceived, self.numberOfFaces);
+        }
+
+        if (arr.length === 0) {
+            // console.log('Time to add : ' + (Date.now() - currentTime) + 'ms');
+            callback();
+            return;
+        }
+
+        elt = _parseList(arr.shift());
+        this.addElement(elt);
+
+    }
+
+    // console.log('Time to add : ' + (Date.now() - currentTime) + 'ms');
+    setTimeout(function() { self.addElements(arr, callback); }, 50);
+
 };
 
 /**
@@ -303,149 +449,26 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
 
         // process.stderr.write('Received ' + arr.length + '\n');
 
-        for (var i = 0; i < arr.length; i++) {
+        self.addElements(arr, function() {
 
-            if (typeof self.log === 'function' && self.numberOfFacesReceived % self.modulus === 0) {
-                self.log(self.numberOfFacesReceived, self.numberOfFaces);
-            }
+            var param;
+            if (typeof self.onBeforeEmit === 'function') {
 
-            var elt = _parseList(arr[i]);
-
-            // console.log(elts);
-            if (elt.type === 'vertex') {
-
-                // New vertex arrived
-
-                // Fill the array of vertices with null vector (to avoid undefined)
-                while (elt.index > self.vertices.length) {
-
-                    self.vertices.push(new THREE.Vector3());
-
-                }
-
-                self.vertices[elt.index] = new THREE.Vector3(elt.x, elt.y, elt.z);
-                self.currentMesh.geometry.verticesNeedUpdate = true;
-
-            } else if (elt.type === 'texCoord') {
-
-                // New texCoord arrived
-                self.texCoords[elt.index] = new THREE.Vector2(elt.x, elt.y);
-                self.currentMesh.geometry.uvsNeedUpdate = true;
-
-            } else if (elt.type === 'normal') {
-
-                // New normal arrived
-                self.normals[elt.index] = new THREE.Vector3(elt.x, elt.y, elt.z);
-
-            } else if (elt.type === 'usemtl') {
-
-                // Create mesh material
-                var material;
-
-                if (elt.materialName === null || self.materialCreator === undefined) {
-
-                    // If no material, create a default material
-                    material = new THREE.MeshLambertMaterial({color: 'red'});
-
-                } else {
-
-                    // If material name exists, load if from material, and do a couple of settings
-                    material = self.materialCreator.materials[elt.materialName.trim()];
-
-                    material.side = THREE.DoubleSide;
-
-                    if (material.map)
-                        material.map.wrapS = material.map.wrapT = THREE.RepeatWrapping;
-                }
-
-                // Create mesh geometry
-                self.uvs = [];
-                var geometry = new THREE.Geometry();
-                geometry.vertices = self.vertices;
-                geometry.faces = [];
-
-                // If texture coords, init faceVertexUvs attribute
-                if (elt.texCoordsExist) {
-                    geometry.faceVertexUvs = [self.uvs];
-                }
-
-                geometry.dynamic = true;
-
-                // Create mesh
-                var mesh = new THREE.Mesh(geometry, material);
-                mesh.faceNumber = elt.fLength;
-                self.meshes.push(mesh);
-
-                self.currentMesh = mesh;
-
-                if (typeof self.callback === 'function') {
-                    self.callback(mesh);
-                }
-
-            } else if (elt.type === 'face') {
-
-                self.numberOfFacesReceived++;
-
-                self.mapFace[elt.a + '-' + elt.b + '-' + elt.c] = true;
-
-                if (!self.meshes[elt.mesh].added) {
-
-                    self.meshes[elt.mesh].added = true;
-                    self.obj.add(self.meshes[elt.mesh]);
-
-                }
-
-                if (elt.aNormal !== undefined) {
-                    self.meshes[elt.mesh].geometry.faces.push(new THREE.Face3(elt.a, elt.b, elt.c, [self.normals[elt.aNormal], self.normals[elt.bNormal], self.normals[elt.cNormal]]));
-                } else {
-                    self.meshes[elt.mesh].geometry.faces.push(new THREE.Face3(elt.a, elt.b, elt.c));
-                    self.meshes[elt.mesh].geometry.computeFaceNormals();
-                    self.meshes[elt.mesh].geometry.computeVertexNormals();
-                }
-
-                if (elt.aTexture !== undefined) {
-
-                    self.meshes[elt.mesh].geometry.faceVertexUvs[0].push([self.texCoords[elt.aTexture], self.texCoords[elt.bTexture], self.texCoords[elt.cTexture]]);
-
-                }
-
-                self.meshes[elt.mesh].geometry.verticesNeedUpdate = true;
-                self.meshes[elt.mesh].geometry.uvsNeedUpdate = true;
-                self.meshes[elt.mesh].geometry.normalsNeedUpdate = true;
-                self.meshes[elt.mesh].geometry.groupsNeedUpdate = true;
-
-                if (self.meshes[elt.mesh].faceNumber === self.meshes[elt.mesh].geometry.faces.length || typeof module === 'object') {
-
-                    self.meshes[elt.mesh].geometry.computeBoundingSphere();
-
-                }
-
-
-
-            } else if (elt.type === 'global') {
-
-                self.numberOfFaces = elt.numberOfFaces;
-                self.modulus = Math.floor(self.numberOfFaces / 200);
-
-            }
-
-        }
-
-        var param;
-        if (typeof self.onBeforeEmit === 'function') {
-
-            param = self.onBeforeEmit();
-            self.socket.emit('next', self.getCamera(), param);
-
-        } else {
-
-            // Ask for next elements
-            if (!self.laggy) {
+                param = self.onBeforeEmit();
                 self.socket.emit('next', self.getCamera(), param);
+
             } else {
-                setTimeout(function() { self.socket.emit('next', self.getCamera());}, 100);
+
+                // Ask for next elements
+                if (!self.laggy) {
+                    self.socket.emit('next', self.getCamera(), param);
+                } else {
+                    self.socket.emit('next', self.getCamera());
+                    // setTimeout(function() { self.socket.emit('next', self.getCamera());}, 100);
+                }
             }
-        }
+
+        });
     });
 
     this.socket.on('disconnect', function() {
@@ -455,6 +478,10 @@ ProgressiveLoader.prototype.initIOCallbacks = function() {
 
         if (typeof L3D.ProgressiveLoader.onFinished === 'function') {
             L3D.ProgressiveLoader.onFinished();
+        }
+
+        if (typeof self.onFinished === 'function') {
+            self.onFinished();
         }
 
         if (typeof self._callback === 'function') {

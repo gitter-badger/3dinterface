@@ -21,23 +21,23 @@ var startCanvas;
 var name;
 
 function sceneName() {
-    switch (initMainScene) {
-        case L3D.initPeach:
-            return 'L3D.initPeach';
-        case L3D.initWhomp:
-            return 'L3D.initWhomp';
-        case L3D.initBobomb:
-            return 'L3D.initBobomb';
-        case L3D.initMountain:
-            return 'L3D.initMountain';
+    switch (SceneClass) {
+        case PeachScene:
+            return 'PeachScene';
+        case Whomp:
+            return 'WhompScene';
+        case Bobomb:
+            return 'BobombScene';
+        case Mountain:
+            return 'MountainScene';
     }
 }
 
 saveCoins = function() {
 
     var tmp = 0;
-    for (var i = 0; i < coins.length; i++) {
-        if (coins[i].mesh.visible)
+    for (var i = 0; i < scene.coins.length; i++) {
+        if (scene.coins[i].visible)
             tmp++;
     }
 
@@ -48,6 +48,7 @@ saveCoins = function() {
 };
 
 function main() {
+
     // Some config
     L3D.DB.disable();
 
@@ -90,7 +91,7 @@ function main() {
 function initThreeElements() {
 
     // Initialize scene
-    scene = new THREE.Scene();
+    scene = new SceneClass();
     renderer = new THREE.WebGLRenderer({alpha:true, antialias:true});
     renderer.setClearColor(0x87ceeb);
 
@@ -100,6 +101,10 @@ function initThreeElements() {
         containerSize.width() / containerSize.height(),
         0.01, 100000, renderer, container
     );
+
+    scene.setCamera(camera1);
+    scene.load();
+    scene.addCoins({type: Coin.Config.ALL});
 
     camera1.collisions = false;
 
@@ -128,22 +133,22 @@ function initCanvases() {
 
 function initModels() {
 
-    var i = 0;
+    // var i = 0;
 
-    // Init recommendations
-    recommendations = initMainScene(camera1, scene, coins, clickableObjects, []);
+    // // Init recommendations
+    // recommendations = initMainScene(camera1, scene, coins, clickableObjects, []);
 
-    for (i = 0; i < coins.length; i++) {
-        coins[i].rotating = true;
-        clickableObjects.push(coins[i]);
-    }
+    // for (i = 0; i < coins.length; i++) {
+    //     coins[i].rotating = true;
+    //     clickableObjects.push(coins[i]);
+    // }
 
-    setTimeout(saveCoins, 1000);
+    // setTimeout(saveCoins, 1000);
 
-    // Erase recommendations
-    for (i =0; i < recommendations.length; i++)
-        recommendations[i].traverse(function(obj) {obj.visible = false;});
-    recommendations = [];
+    // // Erase recommendations
+    // for (i =0; i < recommendations.length; i++)
+    //     recommendations[i].traverse(function(obj) {obj.visible = false;});
+    // recommendations = [];
 
 }
 
@@ -153,14 +158,14 @@ function initListeners() {
     window.addEventListener('resize', onWindowResize, false);
 
     // HTML Bootstrap buttons
-    buttonManager = new ButtonManager(camera1, recommendations, previewer);
+    buttonManager = new ButtonManager(camera1, scene.recommendations, previewer);
 
     // Object clicker for hover and clicking recommendations
     objectClicker = new L3D.ObjectClicker(
         renderer,
         camera1,
-        clickableObjects,
-        objectClickerOnHover(camera1, previewer, recommendations, container), // Create onHover function
+        scene.collidableObjects,
+        objectClickerOnHover(camera1, previewer, scene.recommendations, container), // Create onHover function
 
         // onclick
         function(c, x, y, event) {
@@ -180,7 +185,7 @@ function initListeners() {
 
                 if (c.object instanceof Coin) {
 
-                    c.object.mesh.visible = false;
+                    c.object.visible = false;
                     c.object.raycastable = false;
 
                 } else {
@@ -214,7 +219,7 @@ function render() {
     objectClicker.update();
 
     // Update recommendations (set raycastable if shown)
-    recommendations.map(function(reco) {
+    scene.recommendations.map(function(reco) {
         if (reco instanceof Recommendation) {
             reco.traverse(function(elt) {
                 elt.visible = elt.raycastable = buttonManager.showArrows;
@@ -223,7 +228,7 @@ function render() {
     });
 
     // Update coins
-    coins.forEach(function(coin) { coin.update(); });
+    scene.coins.forEach(function(coin) { coin.update(); });
 
     // Update main camera
     var currentTime = Date.now() - previousTime;
@@ -231,7 +236,7 @@ function render() {
     previousTime = Date.now();
 
     // Update the recommendations
-    recommendations.map(function(reco) { reco.update(camera1);});
+    scene.recommendations.map(function(reco) { reco.update(camera1);});
 
     // Set current position of camera
     camera1.look();
@@ -246,7 +251,7 @@ function render() {
     previewer.clear();
 
     // Hide arrows in recommendation
-    recommendations.map(function(reco) { if (reco instanceof Recommendation) hide(reco); });
+    scene.recommendations.map(function(reco) { if (reco instanceof Recommendation) hide(reco); });
 
     // Update transparent elements
     THREEx.Transparency.update(camera1);
@@ -263,7 +268,7 @@ function onWindowResize() {
 
     resizeElements(renderer, container, previewer, pointer, startCanvas);
 
-    recommendations.forEach(function(reco) {
+    scene.recommendations.forEach(function(reco) {
         resetCameraAspect(reco.camera, containerSize.width(), containerSize.height());
     });
 

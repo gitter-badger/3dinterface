@@ -200,9 +200,23 @@ L3D.resetBobombElements = function() {
     };
 };
 
-L3D.generateCoins = function(totalCoins, coinIds) {
+L3D.generateCoins = function(totalCoins, coinConfig) {
 
-    return [];
+    // return [];
+
+    if (coinConfig === undefined) {
+
+        return [];
+
+    }
+
+    switch (coinConfig.type) {
+
+        case Coin.Config.SOME: return coinConfig.ids;
+        case Coin.Config.ALL:  return [];
+        case Coin.Config.NONE: return [];
+
+    }
 
     var i = 0;
     var tmp = [];
@@ -248,7 +262,7 @@ L3D.generateCoins = function(totalCoins, coinIds) {
     var indices = [];
     var coins = [];
 
-    var bound = (coinIds instanceof Array && coinIds.length === 0) ? totalCoins.length : 8;
+    var bound = (coinIds instanceof Array && coinIds.length === 0) ? 0 : 8;
 
     for (i = 0; i < bound; i++) {
         coins.push(totalCoins[i].coin);

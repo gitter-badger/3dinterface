@@ -12,9 +12,9 @@ module.exports.demo = function(req, res) {
     res.setHeader('Content-Type', 'text/html');
 
     switch (req.query.scene) {
-        case '2': res.locals.scene = 'L3D.initBobomb'; break;
-        case '3': res.locals.scene = 'L3D.initMountain'; break;
-        case '4': res.locals.scene = 'L3D.initWhomp'; break;
+        case '2': res.locals.scene = 'BobombScene'; break;
+        case '3': res.locals.scene = 'MountainScene'; break;
+        case '4': res.locals.scene = 'WhompScene'; break;
     }
 
     switch (req.query.bookmark) {

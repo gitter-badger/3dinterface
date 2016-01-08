@@ -14,13 +14,13 @@ module.exports.index = function(req, res) {
 var sceneToFunction = function(scene) {
     switch (scene) {
         case 2:
-            return 'L3D.initBobomb';
+            return 'BobombScene';
         case 3:
-            return 'L3D.initMountain';
+            return 'MountainScene';
         case 4:
-            return 'L3D.initWhomp';
+            return 'WhompScene';
         default:
-            return 'L3D.initPeach';
+            return 'PeachScene';
     }
 };
 
@@ -109,6 +109,8 @@ module.exports.play = function(req, res) {
 
         req.session.expId = expId;
         req.session.save();
+
+        res.locals.lowRes = true;
 
         // Prepare next experiment
         module.exports.game(req, null);
@@ -225,10 +227,10 @@ function editorHelper(templateName) {
 
         switch (scene) {
 
-            case 'peach':            res.locals.scene = "L3D.initPeach";    break;
-            case 'coolcoolmountain': res.locals.scene = "L3D.initMountain"; break;
-            case 'whomp':            res.locals.scene = "L3D.initWhomp";    break;
-            case 'bobomb':           res.locals.scene = "L3D.initBobomb";   break;
+            case 'peach':            res.locals.scene = "PeachScene";    break;
+            case 'coolcoolmountain': res.locals.scene = "MountainScene"; break;
+            case 'whomp':            res.locals.scene = "WhompScene";    break;
+            case 'bobomb':           res.locals.scene = "BobombScene";   break;
             default:
                 // 404
                 var err = new Error('Incorrect scene');

@@ -107,6 +107,7 @@ function objectClickerOnClick(camera1, buttonManager, recommendations, coins) {
             event.send();
 
             camera1.moveHermite(obj, undefined, event.arrowId);
+
         }
 
         // Update the button manager
@@ -176,8 +177,11 @@ function appendTo(container) {
 
 }
 
-function setNextButton(target) {
-    Coin.blink();
+function setNextButton(target, coinCanvas) {
+
+    if (coinCanvas !== 'undefined')
+        coinCanvas.blink();
+
     $('#next').show();
     $('#next').click(function() {
         window.location = target;

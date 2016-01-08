@@ -54,7 +54,7 @@ geo.V_PD_Generator.prototype.generateMainConfig = function(cameraFrustum, recomm
  * Generates a configuration with only the camera frustum, with proportion of 1
  * @returns {Object[]} an array with one element corresponding to the camera frustum
  */
-geo.V_PD_Generator.prototype.generateFillingConfig = function() {
+geo.V_PD_Generator.prototype.generateFillingConfig = function(a,b,cameraFrustum) {
 
     return [{proportion:1, frustum: cameraFrustum}];
 

@@ -6,7 +6,7 @@ else
 	CLOSURE=../utils/simple-compiler/compiler.sh
 endif
 
-all: L3D L3DP Socket Three Stats Bouncing Multisphere StreamingSimulator PrototypeReplay PrototypeInteractive Tutorial TestList CoinCreator CoinViewer CoinChecker StarRating
+all: L3D L3DP Socket Three Stats Bouncing Multisphere StreamingSimulator PrototypeReplay PrototypeInteractive Tutorial TestList CoinCreator CoinViewer CoinChecker StarRating Test
 
 StarRating:
 	cp star-rating.min.js ../static/js/
@@ -35,7 +35,6 @@ L3D:
 		--js l3d/src/cameras/FixedCamera.js \
 		--js l3d/src/cameras/PointerCamera.js \
 		--js l3d/src/scenes/createCoins.js \
-		--js l3d/src/scenes/initScene.js \
 		--js_output_file ../static/js/l3d.min.js
 
 TestList:
@@ -48,8 +47,18 @@ TestList:
 L3DP:
 	$(CLOSURE) $(OPT) \
 		--js l3d/apps/prototype/ButtonManager.js \
-		--js l3d/apps/prototype/Coin.js \
+		--js l3d/apps/prototype/Coin2.js \
+		--js l3d/apps/prototype/CoinCanvas.js \
 		--js l3d/apps/prototype/GlobalFunctions.js \
+		--js l3d/src/scenes/Scene.js \
+		--js l3d/src/scenes/SceneWithCoins.js \
+		--js l3d/src/scenes/PeachScene.js \
+		--js l3d/src/scenes/BobombScene.js \
+		--js l3d/src/scenes/MountainScene.js \
+		--js l3d/src/scenes/WhompScene.js \
+		--js l3d/src/scenes/SponzaScene.js \
+		--js l3d/src/scenes/Coins.js \
+		--js l3d/src/scenes/Recommendations.js \
 		--js_output_file ../static/js/l3dp.min.js
 
 Socket:
@@ -107,18 +116,23 @@ CoinChecker:
 PrototypeReplay:
 	$(CLOSURE) $(OPT) \
 		--js l3d/apps/prototype/ButtonManager.js \
-		--js l3d/apps/prototype/Coin.js \
+		\ # --js l3d/apps/prototype/Coin.js \
 		--js l3d/apps/prototype/replay/main.js \
 		--js_output_file ../static/js/replay.min.js
 
 Tutorial:
 	$(CLOSURE) $(OPT) \
 		--js l3d/apps/prototype/ButtonManager.js \
-		--js l3d/apps/prototype/Coin.js \
+		--js l3d/apps/prototype/Coin2.js \
 		--js l3d/apps/prototype/tutorial/TutoCamera.js \
 		--js l3d/apps/prototype/tutorial/TutorialSteps.js \
 		--js l3d/apps/prototype/tutorial/main.js \
 		--js_output_file ../static/js/tutorial.min.js
+
+Test:
+	$(CLOSURE) $(OPT) \
+		--js l3d/apps/prototype/test/main.js \
+		--js_output_file ../static/js/test.min.js
 
 clean:
 	rm -rf ../static/js/*

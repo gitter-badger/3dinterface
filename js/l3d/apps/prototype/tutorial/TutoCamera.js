@@ -405,15 +405,15 @@ TutoCamera.prototype.moveHermite = function(recommendation, toSave) {
 };
 
 TutoCamera.prototype.isColliding = function(direction) {
-    this.raycaster.set(this.position, direction.clone().normalize());
-    var intersects = this.raycaster.intersectObjects(this.collidableObjects, true);
+    // this.raycaster.set(this.position, direction.clone().normalize());
+    // var intersects = this.raycaster.intersectObjects(this.collidableObjects, true);
 
-    for (var i in intersects) {
-        if (intersects[i].distance < L3D.Tools.norm(direction) + this.speed * 300 &&
-            intersects[i].object.raycastable) {
-            return intersects[i];
-        }
-    }
+    // for (var i in intersects) {
+    //     if (intersects[i].distance < L3D.Tools.norm(direction) + this.speed * 300 &&
+    //         intersects[i].object.raycastable) {
+    //         return intersects[i];
+    //     }
+    // }
 };
 
 // Look function

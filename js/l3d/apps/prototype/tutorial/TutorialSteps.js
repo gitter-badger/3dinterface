@@ -121,24 +121,26 @@ var TutorialSteps = function(tutoCamera, scene, coins, onWindowResize, container
 
     this.scene = scene;
 
-    Coin.domElement.style.display = "none";
+    window.coinCanvas = this.coinCanvas = new CoinCanvas();
 };
 
 TutorialSteps.prototype.setCameras = function(cameras) {
     this.cameras = cameras;
 };
 
-TutorialSteps.prototype.addCoin = function(coin) {
-    this.coins.push(coin);
-    coin.mesh.visible = true;
-    coin.addToScene(this.scene);
-    this.clickableObjects.push(coin);
+TutorialSteps.prototype.addCoin = function(x,y,z,callback) {
+    this.scene.createCoin({x:x, y:y, z:z}, undefined, undefined, callback);
+    // this.scene.addCoin(coin);
+    // this.coins.push(coin);
+    // coin.visible = true;
+    // coin.addToScene(this.scene);
+    // this.clickableObjects.push(coin);
 };
 
-TutorialSteps.prototype.addRecommendation = function(reco) {
-    this.cameras.push(reco);
-    reco.addToScene(this.scene);
-    this.clickableObjects.push(reco);
+TutorialSteps.prototype.addRecommendation = function(Class, recoId) {
+
+    this.scene.createRecommendation(Class, this.containerSize.width(), this.containerSize.height(), recoId);
+
 };
 
 TutorialSteps.prototype.nextStep = function() {
@@ -164,19 +166,25 @@ TutorialSteps.prototype.nextStep = function() {
                     this.camera.motion[key] = false;
                 }
 
-                Coin.domElement.style.display = "";
+                this.coinCanvas.domElement.style.display = "";
                 Coin.max = 1;
-                Coin.update();
+                this.coinCanvas.update();
                 this.camera.allowed.keyboardRotate    = true;
-                this.addCoin(new Coin(0.4911245636058468,1.225621525492101,-5.11526684540265, callback));
-                document.getElementById('container').appendChild(Coin.domElement);
+                this.addCoin(0.4911245636058468,1.225621525492101,-5.11526684540265, callback);
+
+                // Initialize coin counter
+                $('#container').prepend(this.coinCanvas.domElement);
+                // document.getElementById('container').preppendChild(this.coinCanvas.domElement);
+                this.coinCanvas.domElement.style.position = 'absolute';
+                this.coinCanvas.domElement.style.cssFloat = 'top-left';
+                this.coinCanvas.setSize(containerSize.width(), containerSize.height());
                 break;
             case 6:
                 Coin.max = 4;
-                Coin.update();
-                this.addCoin(new Coin(1.4074130964382279,0.6458319586843252,-6.75244526999632, callback));
-                this.addCoin(new Coin(-4.2701659473968965,0.6745750513698942,-0.484545726832743, callback));
-                this.addCoin(new Coin(-4.336597108439718,0.4203578350484251,-8.447211342176862, callback));
+                this.coinCanvas.update();
+                this.addCoin(1.4074130964382279,0.6458319586843252,-6.75244526999632, callback);
+                this.addCoin(-4.2701659473968965,0.6745750513698942,-0.484545726832743, callback);
+                this.addCoin(-4.336597108439718,0.4203578350484251,-8.447211342176862, callback);
                 break;
             case 9:
                 this.camera.move(this.camera.resetElements);
@@ -186,43 +194,40 @@ TutorialSteps.prototype.nextStep = function() {
                 break;
             case 11:
                 Coin.max = 5;
-                Coin.set();
-                this.addCoin(new Coin(2.7378029903574026,2.953347730618792,-11.550836282321221, callback));
+                this.coinCanvas.setLevel(Coin.total / Coin.max);
+                this.addCoin(2.7378029903574026,2.953347730618792,-11.550836282321221, callback);
                 this.camera.move({
                     position: new THREE.Vector3(-0.3528994281499122,-0.026355227893303856,-0.2766844454377826),
                     target: new THREE.Vector3(13.645394042405439,12.337463485871524,-35.64876053273249)
                 });
                 break;
             case 14:
-                this.firstReco = L3D.createPeachRecommendations(this.containerSize.width(), this.containerSize.height())[0];
-                this.addRecommendation(this.firstReco);
+                this.addRecommendation(L3D.ArrowRecommendation, 0);
+                this.firstReco = this.scene.recommendations[0];
                 this.camera.move({
                     position: new THREE.Vector3(-9.157274598933608,3.6852142459329533,2.1820896816244444),
                     target: new THREE.Vector3(28.719309042259358,-7.287186618613339,-4.523939765031559)
                 });
                 break;
             case 16:
-                this.secondReco = L3D.createPeachRecommendations(this.containerSize.width(), this.containerSize.height(), L3D.ViewportRecommendation)[1];
-                this.addRecommendation(this.secondReco);
-                this.secondReco.raycastable = true;
+                this.addRecommendation(L3D.ViewportRecommendation, 1);
+                this.secondReco = this.scene.recommendations[1];
                 this.camera.move({
                     position: new THREE.Vector3(-4.450089930098798,1.9849620256150362,-6.290933967410013),
                     target: new THREE.Vector3(-41.36549967804652,3.333580368597787,-21.63478458275742)
                 });
                 break;
             case 17:
-                var cams = L3D.createPeachRecommendations(this.containerSize.width(), this.containerSize.height());
-                for (var i = 2; i < cams.length; i++) {
-                    this.addRecommendation(cams[i]);
+                for (var i = 2; i < PeachScene.recommendations.length; i++) {
+                    this.addRecommendation(L3D.ArrowRecommendation, i);
                 }
                 Coin.total = 0;
                 Coin.max = 8;
-                Coin.set();
-                var coins = L3D.generateCoins(L3D.createPeachCoins());
-                for (i = 0; i < coins.length; i++) {
-                    coins[i].rotating = true;
-                    coins[i].callback = callback;
-                    this.addCoin(coins[i]);
+                this.coinCanvas.setLevel(Coin.total / Coin.max);
+                var currentCoin = this.scene.coins;
+                this.scene.addCoins(GLOB.coinConfig);
+                for (i = currentCoin; i < this.scene.coins.length; i++) {
+                    this.scene.coins[i].callback = callback;
                 }
                 break;
         }

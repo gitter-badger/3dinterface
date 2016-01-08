@@ -107,7 +107,6 @@ L3D.ViewportRecommendation = function(arg1, arg2, arg3, arg4, position, target) 
     });
 
     this.mesh = new THREE.Mesh(geometry, material);
-    this.mesh.raycastable = true;
 
     this.object3D = new THREE.Object3D();
     this.object3D.add(this.mesh);

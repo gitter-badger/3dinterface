@@ -16,15 +16,20 @@ var coins = [];
 var previousTime;
 var pointer;
 var startCanvas;
+var coinCanvas;
+var loadingCanvas;
 var tutorial;
 
 var nextPage = '/before-begin';
 
 Coin.onCoinGot = function(val) {
+
+    coinCanvas.setLevel(Coin.total / Coin.max);
+
     if (val === 6) {
-        setTimeout(function() {setNextButton(nextPage); }, 60*1000);
+        setTimeout(function() {setNextButton(nextPage, coinCanvas); }, 60*1000);
     } else if (val === 8) {
-        setNextButton(nextPage);
+        setNextButton(nextPage, coinCanvas);
     }
 };
 
@@ -49,12 +54,12 @@ function main() {
     initModels();
     initListeners();
 
-    appendTo(container)(stats, Coin, startCanvas, pointer, previewer, renderer);
+    appendTo(container)(stats, startCanvas, pointer, previewer, loadingCanvas, renderer);
+
+    loadingCanvas.render();
 
     // Set the good size of cameras
     onWindowResize();
-
-    Coin.update(true);
 
     // Start tutorial
     tutorial.setCameras(recommendations);
@@ -87,7 +92,9 @@ function main() {
 function initThreeElements() {
 
     // Initialize scene
-    scene = new THREE.Scene();
+    scene = new PeachScene();
+    scene.addEventListener('onload', function() { loadingCanvas.clear(); });
+
     renderer = new THREE.WebGLRenderer({alpha:true, antialias:true});
     renderer.setClearColor(0x87ceeb);
 
@@ -95,8 +102,13 @@ function initThreeElements() {
     camera1 = new TutoCamera(
         50,
         containerSize.width() / containerSize.height(),
-        0.01, 100000, renderer, scene, onWindowResize, containerSize, coins, container, clickableObjects
+        0.01, 100000, renderer, scene, onWindowResize, containerSize, scene.coins, container, clickableObjects
     );
+
+    coinCanvas = camera1.tutorial.coinCanvas;
+
+    scene.setCamera(camera1);
+    scene.load();
 
     tutorial = camera1.tutorial;
 
@@ -115,6 +127,9 @@ function initCanvases() {
     stats.domElement.style.position = 'absolute';
     stats.domElement.style.cssFloat = "top-left";
 
+
+    loadingCanvas = new L3D.LoadingCanvas();
+
     // Initialize pointer for pointer lock
     pointer = new L3D.MousePointer(camera1);
 
@@ -126,7 +141,7 @@ function initCanvases() {
 function initModels() {
 
     // Init recommendations
-    recommendations = L3D.initPeach(camera1, scene, coins, clickableObjects, null);
+    // recommendations = L3D.initPeach(camera1, scene, coins, clickableObjects, null);
 
     // init clickable objects
     // var i;
@@ -150,9 +165,9 @@ function initListeners() {
     objectClicker = new L3D.ObjectClicker(
         renderer,
         camera1,
-        clickableObjects,
-        objectClickerOnHover(camera1, previewer, recommendations, container), // Create onHover function
-        objectClickerOnClick(camera1, buttonManager, recommendations, coins), // Create onClick function
+        scene.children,
+        objectClickerOnHover(camera1, previewer, scene.recommendations, container), // Create onHover function
+        objectClickerOnClick(camera1, buttonManager, scene.recommendations, scene.coins), // Create onClick function
         container
     );
 
@@ -166,8 +181,8 @@ function render() {
     objectClicker.update();
 
     // Update recommendations (set raycastable if shown)
-    recommendations.map(function(reco) {
-        if (reco instanceof Recommendation) {
+    scene.recommendations.map(function(reco) {
+        if (reco instanceof L3D.BaseRecommendation) {
             reco.traverse(function(elt) {
                 elt.visible = elt.raycastable = buttonManager.showArrows;
             });
@@ -175,15 +190,18 @@ function render() {
     });
 
     // Update coins
-    coins.forEach(function(coin) { coin.update(); });
+    scene.coins.forEach(function(coin) { coin.update(); });
 
     // Update main camera
     var currentTime = Date.now() - previousTime;
     camera1.update(isNaN(currentTime) ? 20 : currentTime);
     previousTime = Date.now();
 
+    coinCanvas.update();
+    coinCanvas.render();
+
     // Update the recommendations
-    recommendations.map(function(reco) { reco.update(camera1);});
+    scene.recommendations.map(function(reco) { reco.update(camera1);});
 
     // Set current position of camera
     camera1.look();
@@ -198,7 +216,7 @@ function render() {
     previewer.clear();
 
     // Hide arrows in recommendation
-    recommendations.map(function(reco) { if (reco instanceof Recommendation) hide(reco); });
+    scene.recommendations.map(function(reco) { if (reco instanceof L3D.BaseRecommendation) hide(reco); });
 
     // Update transparent elements
     THREEx.Transparency.update(camera1);
@@ -213,9 +231,9 @@ function render() {
 
 function onWindowResize() {
 
-    resizeElements(renderer, container, previewer, Coin, pointer, startCanvas);
+    resizeElements(renderer, container, previewer, coinCanvas, pointer, startCanvas);
 
-    recommendations.forEach(function(reco) {
+    scene.recommendations.forEach(function(reco) {
         resetCameraAspect(reco.camera, containerSize.width(), containerSize.height());
     });
 
