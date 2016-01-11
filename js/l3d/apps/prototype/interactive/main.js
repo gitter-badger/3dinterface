@@ -164,6 +164,7 @@ function initThreeElements() {
     scene.addCoins(GLOB.coinConfig);
 
     camera1.collidableObjects = scene.collidableObjects;
+    camera1.collisions = true;
 
     // Get default param for camera lock
     document.getElementById('lock').checked = GLOB.locked;
