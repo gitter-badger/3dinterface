@@ -1,24 +1,49 @@
 module geo {
 
+    /**
+     * Represents a face. Only triangles are supported. For quadrangular polygons, see {@link parseFace}
+     */
     export class Face implements Sendable {
 
+        /** Index of the first vertex of the face */
         a : number;
+
+        /** Index of the second vertex of the face */
         b : number;
+
+        /** Index of the third vertex of the face */
         c : number;
 
+        /** Index of the texture coordinate for the first vertex of the face */
         aTexture : number;
+
+        /** Index of the texture coordinate for the second vertex of the face */
         bTexture : number;
+
+        /** Index of the texture coordinate for the third vertex of the face */
         cTexture : number;
 
+        /** Index of the normal for the first vertex of the face */
         aNormal : number;
+
+        /** Index of the normal for the second vertex of the face */
         bNormal : number;
+
+        /** Index of the normal for the third vertex of the face */
         cNormal : number;
 
+        /** Index of the current face in the model */
         index : number;
+
+        /** Indicates wether the face has been send or not */
         sent : boolean;
 
+        /** Index of the mesh this face belongs to */
         meshIndex : number;
 
+        /**
+         * @param {String} A string like in a .obj file (e.g. 'f 1/1/1 2/2/2 3/3/3' or 'f 1 2 3').
+         */
         constructor(arg : string) {
 
             if (arg.indexOf('/') === -1) {
@@ -63,31 +88,58 @@ module geo {
 
         }
 
-        max() : number {
-            return Math.max(this.a, this.b, this.c);
-        }
-
-        maxTexture() : number {
-            return Math.max(this.aTexture, this.bTexture, this.cTexture);
-        }
-
-        toList() : any[] {
+        /**
+         * Gives a list representation of the face
+         * @returns An array representing the texture coordinate
+         *  <ol start=0>
+         *    <li>'f'</li>
+         *    <li>the index of the face</li>
+         *    <li>the index of the mesh that contains the face</li>
+         *    <li>a list containing the indices of the vertex of the face</li>
+         *    <li>a list containing the indices of the texture coordinates</li>
+         *    <li>a list containing the indices of the normals</li>
+         *  </ol>
+         * @example
+         * ``` js
+         *
+         * var face = new geo.Face('f 1/2/3 4/5/6 7/8/9');
+         * texture coordinate.index = 5;
+         * console.log(texture coordinate.toList()); // Prints ['f', 5, null, [1,4,7], [2,5,8], [3,6,9]]
+         * ```
+         */
+        toList() : [string, number, number, number[], number[], number[]] {
             return [
                 'f', this.index, this.meshIndex,
-                                            [this.a,        this.b,        this.c       ],
+                [this.a,        this.b,        this.c       ],
                 isNaN(this.aTexture) ? [] : [this.aTexture, this.bTexture, this.cTexture],
                 isNaN(this.aNormal ) ? [] : [this.aNormal,  this.bNormal,  this.cNormal ]
 
             ];
         }
 
+        /**
+         * Gives a string representation of the face
+         * @returns {string} A string representing the face
+         *
+         * @example
+         * ```js
+         *
+         * var face = new geo.Face('f 3 5 6');
+         * console.log(face.toString()); // Prints f 3 5 6
+         * ```
+         */
         toString() : string {
-
             return 'f ' + this.a + ' ' + this.b + ' ' + this.c;
-
         }
-
-        static parseFace(arg : string) : Face[] {
+        /**
+         * Parse a face line and returns an array of faces
+         *
+         * @private
+         * @param arg a string representing a face
+         * @returns a single 3-vertices face or two 3-vertices face if the
+         * input was a 4-vertices face
+         */
+         static parseFace(arg : string) : Face[] {
 
             let split = arg.trim().split(' ');
             let ret : Face[] = [];

@@ -6,26 +6,59 @@ module geo {
     let THREE = require('three');
     let L3D = require('../../static/js/l3d.min.js');
 
-
+    /**
+     * Anything that can be considered as a camera
+     */
     export interface CameraItf {
+        /** The optical center of the camera */
         position : Vector;
+
+        /** The point that the camera is facing*/
         target : Vector;
     }
 
-    export interface Frustum {
+    /** Represents the frustum of a camera */
+    export interface Frustum extends CameraItf {
+
+        /** Center of the frustum */
         position : Vector;
+
+        /** Vector that the frustum is facing */
         target : Vector;
+
+        /** Planes that delimitates the frustum */
         planes : Plane[];
     }
 
+    /**
+     * Represents the data that will be sent to the client
+     */
     export interface Data {
+
+        /** Raw data, array of the result of {@link Sendable.toString} */
         data : any[];
+
+        /** Indicates wether the data is the last packet to send */
         finished: boolean;
+
+        /** Sizes of the config */
         configSizes? : number[];
+
+        /** Size of the data */
         size : number;
     }
 
-    export type Plane = { normal : Vector, constant : number };
+    /**
+     * A plane in space
+     */
+    export interface Plane  {
+        /** A vector representing the normal of the plane*/
+        normal : Vector;
+
+        /** The d in ax + by + cz + d = 0 */
+        constant : number;
+
+    };
 
     function readIt(sceneNumber : number, recoId : number) : {index : number, area : number}[] {
         var toZip = {
@@ -85,9 +118,9 @@ module geo {
     /**
      * Checks quickly if a triangle might be in a frustum
      * @private
-     * @param {Object[]} element array of thre 3 vertices of the triangle to test
-     * @param {Object[]} planes array of planes (Object with normal and constant values)
-     * @return {Boolean} false if we can be sure that the triangle is not in the frustum, true oherwise
+     * @param element array of thre 3 vertices of the triangle to test
+     * @param planes array of planes (Object with normal and constant values)
+     * @return false if we can be sure that the triangle is not in the frustum, true oherwise
      */
     function isInFrustum(element : Vector[], planes : Plane[]) {
 
@@ -144,9 +177,6 @@ module geo {
 
     /**
      * A class that streams easily a mesh via socket.io
-     * @memberOf geo
-     * @constructor
-     * @param {string} path to the mesh
      */
     export class MeshStreamer {
 
@@ -181,9 +211,15 @@ module geo {
          */
         texCoords : boolean[];
 
+        /** Threshold after which we stop fulling loading the inital triangles */
         beginningThreshold : number;
 
+        /** If frustum prefetching, percentage of the bandwidth given to the frustum culling */
         frustumPercentage : number;
+
+        /** If frustum prefetching, percentage of the bandwidth given to the prefetching,
+         * 1 - {@link frustumPercentage}
+         */
         prefetchPercentage : number;
 
         /**
@@ -191,22 +227,33 @@ module geo {
          */
         chunk : number;
 
+        /** Previous recommendation clicked. Null if nothing already clicked */
         previousReco : number;
 
+        /** Mesh container representing the mesh to stream */
         mesh : MeshContainer;
 
+        /** Socket on which the data will be streamed */
         socket : SocketIO.Socket;
 
+        /** Table of prediction giving the probabilities of clicking on a recommendation given the previous one */
         predictionTable : number[][];
 
+        /** Faces that we are supposed to send */
         facesToSend : any[];
 
+        /** Indicates whether we should stream the elements at the beginning of the scene or do frustum culling */
         beginning : boolean;
 
+        /** Will generate the different configs for prefetching policies */
         generator : ConfigGenerator;
 
+        /** In case {@link generator} gave an empty data */
         backupGenerator : ConfigGenerator;
 
+        /**
+         * @param {string} path to the mesh
+         */
         constructor(path? : string) {
 
             this.meshFaces = [];
@@ -232,9 +279,9 @@ module geo {
 
         /**
          * Checks if a face is oriented towards the camera
-         * @param {Object} camera a camera (with a position, and a direction)
-         * @param {geo.Face} the face to test
-         * @return {Boolean} true if the face is in the good orientation, face otherwise
+         * @param camera a camera (with a position, and a direction)
+         * @param the face to test
+         * @return true if the face is in the good orientation, face otherwise
          */
         isBackFace(camera : CameraItf, face: Face) : boolean {
 
@@ -262,19 +309,17 @@ module geo {
 
         /**
          * Compute a function that can compare two faces
-         * @param {Camera} camera a camera seeing or not face
-         * @returns {function} the function that compares two faces : the higher face is the most interesting for the camera
+         * @param camera a camera seeing or not face
+         * @returns the function that compares two faces : the higher face is the most interesting for the camera
          */
         faceComparator(camera : CameraItf) : (face1 : Face, face2 : Face) => number {
 
-            var self = this;
-
-            return function(face1 : Face, face2 : Face) {
+            return (face1 : Face, face2 : Face) => {
 
                 var center1 = {
-                    x: (self.mesh.vertices[face1.a].x + self.mesh.vertices[face1.b].x + self.mesh.vertices[face1.c].x) / 3,
-                    y: (self.mesh.vertices[face1.a].y + self.mesh.vertices[face1.b].y + self.mesh.vertices[face1.c].y) / 3,
-                    z: (self.mesh.vertices[face1.a].z + self.mesh.vertices[face1.b].z + self.mesh.vertices[face1.c].z) / 3
+                    x: (this.mesh.vertices[face1.a].x + this.mesh.vertices[face1.b].x + this.mesh.vertices[face1.c].x) / 3,
+                    y: (this.mesh.vertices[face1.a].y + this.mesh.vertices[face1.b].y + this.mesh.vertices[face1.c].y) / 3,
+                    z: (this.mesh.vertices[face1.a].z + this.mesh.vertices[face1.b].z + this.mesh.vertices[face1.c].z) / 3
 
                 };
 
@@ -287,9 +332,9 @@ module geo {
                 var dot1 = dir1.x * dir1.x + dir1.y * dir1.y + dir1.z * dir1.z;
 
                 var center2 = {
-                    x: (self.mesh.vertices[face2.a].x + self.mesh.vertices[face2.b].x + self.mesh.vertices[face2.c].x) / 3,
-                    y: (self.mesh.vertices[face2.a].y + self.mesh.vertices[face2.b].y + self.mesh.vertices[face2.c].y) / 3,
-                    z: (self.mesh.vertices[face2.a].z + self.mesh.vertices[face2.b].z + self.mesh.vertices[face2.c].z) / 3
+                    x: (this.mesh.vertices[face2.a].x + this.mesh.vertices[face2.b].x + this.mesh.vertices[face2.c].x) / 3,
+                    y: (this.mesh.vertices[face2.a].y + this.mesh.vertices[face2.b].y + this.mesh.vertices[face2.c].y) / 3,
+                    z: (this.mesh.vertices[face2.a].z + this.mesh.vertices[face2.b].z + this.mesh.vertices[face2.c].z) / 3
                 };
 
                 var dir2 = {
@@ -314,64 +359,62 @@ module geo {
 
         /**
          * Initialize the socket.io callbacks
-         * @param {socket} socket the socket to initialize
+         * @param socket the socket to initialize
          */
         start(socket : SocketIO.Socket) {
 
             this.socket = socket;
 
-            var self = this;
-
-            socket.on('request', function(path : string, laggy : boolean, prefetch : string) {
+            socket.on('request', (path : string, laggy : boolean, prefetch : string) => {
 
                 if (laggy === true) {
-                    self.chunk = 1;
+                    this.chunk = 1;
                 }
 
-                self.mesh = Meshes.dict[path];
+                this.mesh = Meshes.dict[path];
 
                 switch (path) {
                     case '/static/data/bobomb/bobomb battlefeild.obj':
                     case '/static/data/bobomb/bobomb battlefeild_sub.obj':
-                        self.predictionTable = predictionTables[0];
-                        self.facesToSend = facesToSend[0];
+                        this.predictionTable = predictionTables[0];
+                        this.facesToSend = facesToSend[0];
                     break;
                     case '/static/data/mountain/coocoolmountain.obj':
                     case '/static/data/mountain/coocoolmountain_sub.obj':
-                        self.predictionTable = predictionTables[1];
-                        self.facesToSend = facesToSend[1];
+                        this.predictionTable = predictionTables[1];
+                        this.facesToSend = facesToSend[1];
                     break;
                     case '/static/data/whomp/Whomps Fortress.obj':
                     case '/static/data/whomp/Whomps Fortress_sub.obj':
-                        self.predictionTable = predictionTables[2];
-                        self.facesToSend = facesToSend[2];
+                        this.predictionTable = predictionTables[2];
+                        this.facesToSend = facesToSend[2];
                     break;
                     case '/static/data/sponza/sponza.obj':
-                        self.predictionTable = predictionTables[3];
-                        self.facesToSend = facesToSend[3];
+                        this.predictionTable = predictionTables[3];
+                        this.facesToSend = facesToSend[3];
                     break;
                     default:
-                        self.predictionTable = predictionTables[3];
+                        this.predictionTable = predictionTables[3];
                 };
 
                 console.log(prefetch);
-                self.generator = geo.ConfigGenerator.createFromString(prefetch, self);
-                self.backupGenerator = new geo.ConfigGenerator(self);
+                this.generator = geo.ConfigGenerator.createFromString(prefetch, this);
+                this.backupGenerator = new geo.ConfigGenerator(this);
 
-                if (self.mesh === undefined) {
+                if (this.mesh === undefined) {
                     process.stderr.write('Wrong path for model : ' + path);
                     socket.emit('refused');
                     socket.disconnect();
                     return;
                 }
 
-                self.meshFaces = new Array(self.mesh.meshes.length);
+                this.meshFaces = new Array(this.mesh.meshes.length);
 
-                for (var i = 0; i < self.meshFaces.length; i++) {
+                for (var i = 0; i < this.meshFaces.length; i++) {
 
-                    self.meshFaces[i] = {
+                    this.meshFaces[i] = {
                         counter: 0,
-                        array: new Array(self.mesh.meshes[i].faces.length)
+                        array: new Array(this.mesh.meshes[i].faces.length)
                     };
 
                 }
@@ -380,24 +423,24 @@ module geo {
 
             });
 
-            socket.on('materials', function() {
+            socket.on('materials', () => {
 
-                var data = self.nextMaterials();
+                var data = this.nextMaterials();
 
                 socket.emit('elements', data);
 
             });
 
-            socket.on('reco', function(recoId : number) {
+            socket.on('reco', (recoId : number) => {
 
-                self.previousReco = recoId + 1;
+                this.previousReco = recoId + 1;
 
             });
 
-            socket.on('next', function(_camera? : any[]) { // score) {
+            socket.on('next', (_camera? : any[]) => {
 
                 var cameraFrustum : Frustum;
-                var beginning = self.beginning;
+                var beginning = this.beginning;
                 var cameraExists = false;
 
                 // Clean camera attribute
@@ -440,11 +483,11 @@ module geo {
 
                     // Create config for proportions of chunks
                     var didPrefetch = false;
-                    var config = self.generator.generateMainConfig(cameraFrustum, recommendationClicked);
+                    var config = this.generator.generateMainConfig(cameraFrustum, recommendationClicked);
 
                     // Send next elements
                     var oldTime = Date.now();
-                    var next = self.nextElements(config);
+                    var next = this.nextElements(config);
 
                     // console.log(
                     //     'Adding ' +
@@ -454,24 +497,24 @@ module geo {
                     // );
 
 
-                    if (self.beginning === true && next.size < self.chunk) {
+                    if (this.beginning === true && next.size < this.chunk) {
 
-                        self.beginning = false;
-                        config = self.generator.generateMainConfig(cameraFrustum, recommendationClicked);
+                        this.beginning = false;
+                        config = this.generator.generateMainConfig(cameraFrustum, recommendationClicked);
 
                     }
 
-                    var fillElements = self.nextElements(config, self.chunk - next.size);
+                    var fillElements = this.nextElements(config, this.chunk - next.size);
 
                     next.configSizes = fillElements.configSizes;
                     next.data.push.apply(next.data, fillElements.data);
                     next.size += fillElements.size;
 
                     // Chunk is not empty, compute fill config
-                    if (next.size < self.chunk) {
+                    if (next.size < this.chunk) {
 
-                        config = self.generator.generateFillingConfig(config, next, cameraFrustum, recommendationClicked);
-                        fillElements = self.nextElements(config, self.chunk - next.size);
+                        config = this.generator.generateFillingConfig(config, next, cameraFrustum, recommendationClicked);
+                        fillElements = this.nextElements(config, this.chunk - next.size);
 
                         next.data.push.apply(next.data, fillElements.data);
                         next.size += fillElements.size;
@@ -479,9 +522,9 @@ module geo {
                     }
 
                     // If still not empty, fill linear
-                    if (next.size < self.chunk) {
+                    if (next.size < this.chunk) {
 
-                        fillElements = self.nextElements([], self.chunk - next.size);
+                        fillElements = this.nextElements([], this.chunk - next.size);
 
                         next.data.push.apply(next.data, fillElements.data);
                         next.size += fillElements.size;
@@ -490,8 +533,8 @@ module geo {
 
                 } else {
 
-                    config = self.backupGenerator.generateMainConfig();
-                    next = self.nextElements(config, self.chunk);
+                    config = this.backupGenerator.generateMainConfig();
+                    next = this.nextElements(config, this.chunk);
 
                 }
 
@@ -543,8 +586,8 @@ module geo {
 
         /**
          * Prepare the next elements
-         * @param {Object[]} config a configuration list
-         * @returns {array} an array of elements ready to send
+         * @param config a configuration list
+         * @returns an array of elements ready to send
          * @see {@link https://github.com/DragonRock/3dinterface/wiki/Streaming-configuration|Configuration list documentation}
          */
         nextElements(config : Config, chunk? : number) : Data {
