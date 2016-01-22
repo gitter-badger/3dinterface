@@ -1,0 +1,12 @@
+export var index = "/";
+export var bouncing = '/bouncing/';
+export var multisphere = '/multisphere/';
+export var prototype = '/prototype/';
+export var arrows = '/prototype/arrows/';
+export var viewports = '/prototype/viewports/';
+export var stream = '/stream/';
+export var reverse = '/prototype/reverse/';
+export var sponza = '/prototype/sponza/';
+export var replayIndex = '/prototype/replay/';
+export var tutorial = '/prototype/tutorial';
+export var logout = '/logout';

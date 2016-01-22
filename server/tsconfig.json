@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "outDir": "../server-bin/",
+        "sourceMap": true
+    },
+    "exclude": [
+        "node_modules",
+        "build",
+        "views",
+        "static"
+    ]
+}

@@ -1,0 +1,7 @@
+node_modules
+server-bin
+typings
+js/build
+js/obj
+static/
+doc/out
