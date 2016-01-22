@@ -1,4 +1,5 @@
 module geo {
+
     /**
      * Represent a 3D normal
      */

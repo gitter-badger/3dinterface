@@ -1,19 +1,49 @@
+/**
+ * @private
+ */
 let fs = require('fs');
 
 module geo {
 
+    /**
+     * Represents a mesh. All meshes are loaded once in geo.availableMesh to avoid
+     * loading at each mesh request
+     */
     export class MeshContainer {
 
+        /** Array of each part of the mesh (corresponding to each material) */
         meshes : Mesh[];
+
+        /** Array of the vertices of the meshes (all merged) */
         vertices : Vertex[];
+
+        /** Array of the faces of the meshes (all merged) */
         faces : Face[];
+
+        /** Array of the normals of the meshes (all merged) */
         normals : Normal[];
+
+        /** Array of the texture coordinates of the meshes (all merged) */
         texCoords : TexCoord[];
+
+        /** Transformation to apply to the vertices */
         transformation : Transformation;
+
+        /** Callback to call after loading is finished */
         callback : Function;
+
+        /** Total number of faces */
         numberOfFaces : number;
+
+        /** Recommendations, used by MeshStreamer */
         recommendations : any[];
 
+        /**
+         * Creates a mesh from file (if any) and apply transformation and callback if any
+         * @param path path to the .obj file
+         * @param transfo a transformation object to apply during the loading
+         * @param callback callback to call on the mesh
+         */
         constructor(path? : string, transfo? : Transformation, callback? : Function) {
 
             if (transfo === undefined) transfo = new Transformation();
@@ -34,6 +64,10 @@ module geo {
 
         }
 
+        /**
+         * Loads a obj file and apply the transformation
+         * @param {string} path the path to the file
+         */
         loadFromFile(path : string) : void {
 
             // Be carefule : use this
@@ -112,7 +146,6 @@ module geo {
                     }
 
                 }
-
 
                 this.callback();
 

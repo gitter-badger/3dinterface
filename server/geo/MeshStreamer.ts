@@ -10,6 +10,7 @@ module geo {
      * Anything that can be considered as a camera
      */
     export interface CameraItf {
+
         /** The optical center of the camera */
         position : Vector;
 
@@ -118,7 +119,7 @@ module geo {
     /**
      * Checks quickly if a triangle might be in a frustum
      * @private
-     * @param element array of thre 3 vertices of the triangle to test
+     * @param element array of the 3 vertices of the triangle to test
      * @param planes array of planes (Object with normal and constant values)
      * @return false if we can be sure that the triangle is not in the frustum, true oherwise
      */
