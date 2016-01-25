@@ -8,6 +8,15 @@ module L3D {
 
     }
 
+    export interface Face3 {
+
+        a : number;
+        b : number;
+        c : number;
+
+    }
+
+
     /**
      * Contains various functions for manipulating THREE.Vector3
      * Note that all these functions also work objects {x: x, y: y, z: z}, even if
