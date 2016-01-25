@@ -1,8 +1,5 @@
 ///<reference path="../L3D.ts" />
 
-
-
-
 module L3D {
     /**
      * Mouse cursor

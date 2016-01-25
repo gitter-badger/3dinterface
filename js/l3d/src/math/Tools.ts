@@ -15,6 +15,16 @@ module L3D {
      */
     export module Tools {
 
+        /**
+         * Clamp a number between two others
+         * @param num number to clamp
+         * @param min minimum bound for clamping
+         * @param max maximum bound for clamping
+         */
+        export function clamp(num : number, min : number, max : number) {
+            return Math.max(Math.min(num, max), min);
+        }
+
 
         /**
          * Computes the sum of two vectors
