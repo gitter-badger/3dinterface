@@ -51,10 +51,7 @@ module L3D {
         }
 
         /**
-         * creates a hermite polynom
-         * @param t time indices of the interpolation
-         * @param f values of the polynom at each time
-         * @param fp values of the derivative of the polynom at each time
+         * Creates a hermite polynom
          */
         export class Polynom<T> {
 
@@ -78,6 +75,11 @@ module L3D {
              */
             baseFunctions : BaseFunction[];
 
+            /**
+             * @param t time indices of the interpolation
+             * @param f values of the polynom at each time
+             * @param fp values of the derivative of the polynom at each time
+             */
             constructor(t : number[], f : T[], fp : T[]) {
                 this.times = t;
                 this.evals = f;
@@ -300,7 +302,7 @@ module L3D {
         }
 
         /**
-         * Stuff
+         * Contains a special type of hermite polynoms, particularly useful for us
          */
         export module special {
 

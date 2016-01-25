@@ -94,7 +94,12 @@ module L3D {
          * @param v2 vector to copy to
          * @returns the new vector
          */
-        export function copy(v : Vector3, v2 ?: Vector3) : Vector3 {
+        export function copy(v : Vector3) : THREE.Vector3;
+        export function copy(v : Vector3, v2 : Vector3) : void;
+        export function copy(v : Vector3, v2 : THREE.Vector3) : void;
+
+        export function copy(v : any, v2 ?: any) : any {
+
             if (v2 === undefined)
                 v2 = new THREE.Vector3();
 

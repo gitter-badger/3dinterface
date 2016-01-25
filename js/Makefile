@@ -24,3 +24,6 @@ BouncingCube:
 		--js obj/apps/bouncing-cube/BouncingCube.js \
 		--js obj/apps/bouncing-cube/main.js \
 		--js_output_file build/bouncing.min.js
+
+clean:
+	rm -rf obj/* build/*
