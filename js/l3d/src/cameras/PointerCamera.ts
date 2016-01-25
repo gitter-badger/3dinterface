@@ -180,7 +180,8 @@ module L3D {
          wasLocked : boolean;
 
          movingHermite : boolean;
-         hermitePosition : Vector3;
+
+         hermitePosition : Hermite.special.Polynom;
 
          changed : boolean;
 
@@ -480,8 +481,8 @@ module L3D {
          * Reset the position of th camera
          */
         resetPosition() {
-            this.position.copy(this.resetElements.position);
-            this.target.copy(this.resetElements.target);
+            Tools.copy(this.resetElements.position, this.position);
+            Tools.copy(this.resetElements.target, this.target);
             this.anglesFromVectors();
         }
 
@@ -584,7 +585,7 @@ module L3D {
          * @returns true if there is a collision, false otherwise
          */
         isColliding(direction : Vector3) {
-            this.raycaster.set(this.position, direction.clone().normalize());
+            this.raycaster.set(this.position, Tools.clone(direction).normalize());
             var intersects = this.raycaster.intersectObjects(this.collidableObjects, true);
 
             for (var i in intersects) {

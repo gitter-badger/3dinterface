@@ -1,7 +1,8 @@
 all:
 	cd .. && \
 	rm -rf doc/out/ && \
-	typedoc --includes js/l3d/ server/geo/ \
+	typedoc js/l3d/ server/geo/ \
+	        --includes js/l3d/ --includes server/geo/ \
 	        --out doc/out/ \
 	        --mode file \
 	        --module commonjs \

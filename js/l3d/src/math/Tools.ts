@@ -88,6 +88,21 @@ module L3D {
             return Math.sqrt(norm2(v));
         }
 
+        /**
+         * Creates a copy of a vector
+         * @param v vector to copy
+         * @param v2 vector to copy to
+         * @returns the new vector
+         */
+        export function copy(v : Vector3, v2 ?: Vector3) : Vector3 {
+            if (v2 === undefined)
+                v2 = new THREE.Vector3();
+
+            v2.x = v.x; v2.y = v.y; v2.z = v.z;
+
+            return v2;
+        }
+
     }
 
 }

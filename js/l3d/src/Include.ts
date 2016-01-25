@@ -4,4 +4,5 @@
 ///<reference path="./utils/History.ts" />
 ///<reference path="./utils/Logger.ts" />
 ///<reference path="./math/Tools.ts" />
+///<reference path="./math/Hermite.ts" />
 
