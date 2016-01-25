@@ -19,13 +19,6 @@ module L3D {
 
     }
 
-    export interface ResetElements {
-
-        position : Vector3;
-        target : Vector3;
-
-    }
-
     /**
      * Booleans indicating the type of camera motion
      * undefined will be considered as false
@@ -163,7 +156,7 @@ module L3D {
         /**
          * The camera we will move to when we'll reset the camera
          */
-        resetElements : ResetElements;
+        resetElements : CameraItf;
 
         /**
          * Id of the recommendation that is currently clicked (null if no recommendation are clicked)
@@ -762,7 +755,7 @@ module L3D {
          * Save the current state of the camera in the history
          */
         save() {
-            var backup : TargetMove = {position: this.position.clone, target: this.target.clone()};
+            var backup : CameraItf = {position: this.position.clone(), target: this.target.clone()};
             this.history.addState(backup);
         }
 
@@ -825,7 +818,7 @@ module L3D {
             var camera = this; // (this.recommendationClicked === null ? this : this.cameras[this.recommendationClicked].camera);
 
             camera.updateMatrix();
-            camera.updateMatrixWorld();
+            camera.updateMatrixWorld(true);
 
             camera.matrixWorldInverse.getInverse(camera.matrixWorld);
 
