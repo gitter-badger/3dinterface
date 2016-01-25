@@ -7,3 +7,4 @@ all:
 	        --module commonjs \
 	        --name L3D \
 	        --readme README.md \
+	        -excludeNotExported

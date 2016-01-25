@@ -16,6 +16,7 @@ L3D: compile
 	$(CLOSURE) $(OPT) \
 		--js obj/src/L3D.js \
 		--js obj/src/cameras/Camera.js \
+		--js obj/src/cameras/PointerCamera.js \
 		--js_output_file build/l3d.min.js
 
 BouncingCube:
