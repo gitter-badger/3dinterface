@@ -176,7 +176,7 @@ module L3D {
 
          t : number;
 
-         mousePointer : any;
+         mousePointer : MousePointer;
          startCanvas : any;
 
          wasLocked : boolean;
@@ -302,7 +302,7 @@ module L3D {
 
                 // The pointer is locked : adapt the state of the camera
                 this.pointerLocked = true;
-                this.mousePointer.render(L3D.MousePointer.BLACK);
+                this.mousePointer.render(Color.BLACK);
 
                 this.mouse.x = this.renderer.domElement.width/2;
                 this.mouse.y = this.renderer.domElement.height/2;

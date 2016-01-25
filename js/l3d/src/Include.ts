@@ -6,6 +6,8 @@
 ///<reference path="./math/Tools.ts" />
 ///<reference path="./math/Hermite.ts" />
 ///<reference path="./canvases/MousePointer.ts" />
+///<reference path="./canvases/StartCanvas.ts" />
+///<reference path="./canvases/LoadingCanvas.ts" />
 
 declare module THREE {
 
@@ -34,5 +36,16 @@ interface Element {
 
     webkitPointerLockElement : any;
     webkitRequestPointerLock() : void;
+
+}
+
+interface Window {
+
+    containerSize : {
+
+        width : () => number;
+        height: () => number;
+
+    };
 
 }
