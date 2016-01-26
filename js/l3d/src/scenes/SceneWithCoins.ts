@@ -50,7 +50,7 @@ class SceneWithCoins extends L3D.Scene {
                 if (coinConfig.type === ConfigType.SOME) {
                     // Get only the coordinates for ids that are requested
                     var self = this;
-                    arr = coinConfig.ids.map((i) => {return (<typeof SceneWithCoins>this.constructor).coins[i];});
+                    arr = coinConfig.ids.map((i) => (<typeof SceneWithCoins>this.constructor).coins[i]);
                 } else {
                     // Get all coins coordinates
                     arr = (<typeof SceneWithCoins>this.constructor).coins;
