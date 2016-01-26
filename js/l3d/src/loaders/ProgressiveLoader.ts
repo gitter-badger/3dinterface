@@ -42,12 +42,14 @@ module L3D {
         normalsExist ?: boolean;
 
         numberOfFaces ?: number;
+
     }
 
 
     /**
      * Parse a list as it is sent by the server and gives a slightly more comprehensible result
      * @param arr array corresponding to the line of the mesh file
+     * @returns A streamed element easy to manage
      */
     function parseList(arr : any[]) : StreamedElement {
 
@@ -193,12 +195,8 @@ module L3D {
         /**
          * Array of all the meshes that will be added to the main object
          */
-        meshes : THREE.Mesh[];
-
-        /**
-         * Array of all geometries (to not mix with BufferGeometry)
-         */
-        geometries : THREE.Geometry[];
+        parts : {mesh : THREE.Mesh, geometry : THREE.Geometry, added : boolean, faceNumber : number}[];
+        currentPart : {mesh : THREE.Mesh, geometry : THREE.Geometry, added : boolean, faceNumber : number};
 
         /**
          * Loader for the material file
@@ -242,10 +240,6 @@ module L3D {
 
         materialCreator : THREE.MTLLoader.MaterialCreator;
 
-        /** Mesh we are currently processing */
-        currentMesh : THREE.Mesh;
-        currentGeometry : THREE.Geometry;
-
         /** Indicates if the download is finished */
         finished : boolean;
 
@@ -275,7 +269,7 @@ module L3D {
             this.normals = [];
             this.uvs = [];
 
-            this.meshes = [];
+            this.parts = [];
 
             this.loader = typeof THREE.MTLLoader === 'function' ? new THREE.MTLLoader(this.texturesPath) : null;
 
@@ -285,15 +279,15 @@ module L3D {
 
             this.camera = camera;
 
-            if (this.camera instanceof ReplayCamera) {
-                var _moveReco = this.camera.moveReco;
+            // if (this.camera instanceof ReplayCamera) {
+            //     var _moveReco = this.camera.moveReco;
 
-                this.camera.moveReco = (param : any) => {
-                    this.socket.emit('reco', param);
-                    _moveReco.apply(this.camera, [param]);
-                };
+            //     this.camera.moveReco = (param : any) => {
+            //         this.socket.emit('reco', param);
+            //         _moveReco.apply(this.camera, [param]);
+            //     };
 
-            } else if (this.camera instanceof PointerCamera) {
+            // } else if (this.camera instanceof PointerCamera) {
 
                 // Only good for sponza model
                 var _moveHermite = this.camera.moveHermite;
@@ -303,7 +297,7 @@ module L3D {
                     _moveHermite.apply(this.camera, [a,b,c]);
                 };
 
-            }
+            // }
 
             this.numberOfFaces = -1;
             this.numberOfFacesReceived = 0;
@@ -372,13 +366,13 @@ module L3D {
                 }
 
                 this.vertices[elt.index] = new THREE.Vector3(elt.x, elt.y, elt.z);
-                this.currentGeometry.verticesNeedUpdate = true;
+                this.currentPart.geometry.verticesNeedUpdate = true;
 
             } else if (elt.type === StreamedElementType.TEX_COORD) {
 
                 // New texCoord arrived
                 this.texCoords[elt.index] = new THREE.Vector2(elt.x, elt.y);
-                this.currentGeometry.uvsNeedUpdate = true;
+                this.currentPart.geometry.uvsNeedUpdate = true;
 
             } else if (elt.type === StreamedElementType.NORMAL) {
 
@@ -419,12 +413,8 @@ module L3D {
 
                 // Create mesh
                 var mesh = new THREE.Mesh(geometry, material);
-                mesh.faceNumber = elt.fLength;
-                this.meshes.push(mesh);
-                this.geometries.push(geometry);
-
-                this.currentMesh = mesh;
-                this.currentGeometry = geometry;
+                this.parts.push({mesh : mesh, geometry : geometry, added : false, faceNumber : elt.fLength});
+                this.currentPart = this.parts[this.parts.length - 1];
 
                 if (typeof this.callback === 'function') {
                     this.callback(mesh);
@@ -436,35 +426,38 @@ module L3D {
 
                 this.mapFace[elt.a + '-' + elt.b + '-' + elt.c] = true;
 
-                if (!this.meshes[elt.mesh].added) {
+                if (!this.parts[elt.mesh].added) {
 
-                    this.meshes[elt.mesh].added = true;
-                    this.obj.add(this.meshes[elt.mesh]);
+                    this.parts[elt.mesh].added = true;
+                    this.obj.add(this.parts[elt.mesh].mesh);
 
                 }
 
+                var currentPart = this.parts[elt.mesh];
+                var currentGeometry = currentPart.geometry;
+
                 if (elt.aNormal !== undefined) {
-                    this.geometries[elt.mesh].faces.push(new THREE.Face3(elt.a, elt.b, elt.c, [this.normals[elt.aNormal], this.normals[elt.bNormal], this.normals[elt.cNormal]]));
+                    currentGeometry.faces.push(new THREE.Face3(elt.a, elt.b, elt.c, [this.normals[elt.aNormal], this.normals[elt.bNormal], this.normals[elt.cNormal]]));
                 } else {
-                    this.geometries[elt.mesh].faces.push(new THREE.Face3(elt.a, elt.b, elt.c));
-                    this.geometries[elt.mesh].computeFaceNormals();
-                    this.geometries[elt.mesh].computeVertexNormals();
+                    currentGeometry.faces.push(new THREE.Face3(elt.a, elt.b, elt.c));
+                    currentGeometry.computeFaceNormals();
+                    currentGeometry.computeVertexNormals();
                 }
 
                 if (elt.aTexture !== undefined) {
 
-                    this.geometries[elt.mesh].faceVertexUvs[0].push([this.texCoords[elt.aTexture], this.texCoords[elt.bTexture], this.texCoords[elt.cTexture]]);
+                    currentGeometry.faceVertexUvs[0].push([this.texCoords[elt.aTexture], this.texCoords[elt.bTexture], this.texCoords[elt.cTexture]]);
 
                 }
 
-                this.geometries[elt.mesh].verticesNeedUpdate = true;
-                this.geometries[elt.mesh].uvsNeedUpdate = true;
-                this.geometries[elt.mesh].normalsNeedUpdate = true;
-                this.geometries[elt.mesh].groupsNeedUpdate = true;
+                currentGeometry.verticesNeedUpdate = true;
+                currentGeometry.uvsNeedUpdate = true;
+                currentGeometry.normalsNeedUpdate = true;
+                currentGeometry.groupsNeedUpdate = true;
 
-                if (this.meshes[elt.mesh].faceNumber === this.meshes[elt.mesh].geometry.faces.length || typeof module === 'object') {
+                if (currentPart.faceNumber === currentGeometry.faces.length || typeof module === 'object') {
 
-                    this.geometries[elt.mesh].computeBoundingSphere();
+                    currentGeometry.computeBoundingSphere();
 
                 }
 
@@ -559,7 +552,7 @@ module L3D {
         }
 
         computeBoundingSphere() {
-            for (var m of this.meshes) {
+            for (var m of this.parts) {
                 m.geometry.computeBoundingSphere();
             }
         }
