@@ -1,3 +1,8 @@
+/**
+ * This file has been modified from typedoc by me for the purposes of the L3D
+ * project
+ */
+
 /// <reference path="lib/tsd.d.ts" />
 var td;
 (function (td) {

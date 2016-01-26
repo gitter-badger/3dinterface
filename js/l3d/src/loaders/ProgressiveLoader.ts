@@ -196,6 +196,10 @@ module L3D {
          * Array of all the meshes that will be added to the main object
          */
         parts : {mesh : THREE.Mesh, geometry : THREE.Geometry, added : boolean, faceNumber : number}[];
+
+        /**
+         * Current part (with its mesh, its geometry, if it was added or not, and the number of its faces)
+         */
         currentPart : {mesh : THREE.Mesh, geometry : THREE.Geometry, added : boolean, faceNumber : number};
 
         /**
@@ -234,10 +238,19 @@ module L3D {
          */
         log : Function;
 
+        /**
+         * A map that indicates if a face has been already received
+         */
         mapFace : {[id:string] : boolean};
 
+        /**
+         * Indicates wether the prefeching is enable or not
+         */
         prefetch : boolean;
 
+        /**
+         * Stores the materials
+         */
         materialCreator : THREE.MTLLoader.MaterialCreator;
 
         /** Indicates if the download is finished */
