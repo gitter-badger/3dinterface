@@ -1,51 +1,53 @@
-/**
- * Class that represents a scene that can contains recommendations and coins
- * @constructor
- * @augments {L3D.Scene}
- */
-class SceneWithCoins extends L3D.Scene {
-
-    coins : Coin[];
-    coinScale : number;
-
-    static coins : L3D.Vector3[];
-
-    constructor() {
-
-        super();
-
-        this.coins = [];
-        this.coinScale = 0.005;
-
-    }
+module Proto {
 
     /**
-     * Adds coins to the scene
-     * @param coinConfig Object that contains a type attribute (being
-     * Coin.Config.{NONE, SOME, ALL}) and a ids attribute being an array of ids
-     * of coins
+     * Class that represents a scene that can contains recommendations and coins
+     * @constructor
+     * @augments {L3D.Scene}
      */
-    addCoins (coinConfig : CoinConfig, coinScale ?: number) {
+    export class SceneWithCoins extends L3D.Scene {
 
-        if (typeof coinScale === 'number') {
-            this.coinScale = coinScale;
+        coins : Coin[];
+        coinScale : number;
+
+        static coins : L3D.Vector3[];
+
+        constructor() {
+
+            super();
+
+            this.coins = [];
+            this.coinScale = 0.005;
+
         }
 
-        if (typeof coinConfig.visible !== 'boolean') {
-            coinConfig.visible = true;
-        }
+        /**
+         * Adds coins to the scene
+         * @param coinConfig Object that contains a type attribute (being
+         * Coin.Config.{NONE, SOME, ALL}) and a ids attribute being an array of ids
+         * of coins
+         */
+        addCoins (coinConfig : CoinConfig, coinScale ?: number) {
 
-        switch (coinConfig.type) {
+            if (typeof coinScale === 'number') {
+                this.coinScale = coinScale;
+            }
 
-            case ConfigType.NONE:
+            if (typeof coinConfig.visible !== 'boolean') {
+                coinConfig.visible = true;
+            }
 
-                // No coin to add
-                break;
+            switch (coinConfig.type) {
 
-            case ConfigType.SOME:
-            case ConfigType.ALL:
+                case ConfigType.NONE:
 
-                var arr : L3D.Vector3[];
+                    // No coin to add
+                    break;
+
+                case ConfigType.SOME:
+                    case ConfigType.ALL:
+
+                    var arr : L3D.Vector3[];
 
                 if (coinConfig.type === ConfigType.SOME) {
                     // Get only the coordinates for ids that are requested
@@ -65,15 +67,17 @@ class SceneWithCoins extends L3D.Scene {
                     this.clickableObjects.push(coin);
                 }
 
-            break;
+                break;
+
+            }
 
         }
 
-    }
+        setCoinsVisibility(b = true) {
 
-    setCoinsVisibility(b = true) {
+            this.coins.forEach((c : THREE.Object3D) => { c.visible = b; });
 
-        this.coins.forEach((c : THREE.Object3D) => { c.visible = b; });
+        }
 
     }
 

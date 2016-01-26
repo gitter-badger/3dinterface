@@ -1,8 +1,10 @@
-module L3D {
+module Proto {
 
-    module Scene {
+    export function Recommendation<T>(dummy : T) : L3D.BaseRecommendation[];
 
-        export var recommendations : BaseRecommendation[] = [];
+    export function Recommendation(dummy : Proto.PeachScene) : L3D.BaseRecommendation[] {
+
+        return [];
 
     }
 

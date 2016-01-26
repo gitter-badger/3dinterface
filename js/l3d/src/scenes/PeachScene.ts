@@ -1,100 +1,104 @@
-export class PeachScene extends SceneWithCoins {
+module Proto {
 
-    coinScale : number;
+    export class PeachScene extends SceneWithCoins {
 
-    constructor() {
+        coinScale : number;
 
-        super();
-        this.coinScale = 0.001;
+        constructor() {
 
-    }
+            super();
+            this.coinScale = 0.001;
 
-    load(prefetch : string) {
-
-        if (prefetch !== undefined) {
-            this.prefetchType = prefetch;
         }
 
-        this.loader = new L3D.ProgressiveLoader(
-            '/static/data/castle/princess peaches castle (outside).obj',
-            this,
-            this.camera,
-            (object : THREE.Mesh) => {
+        load(prefetch : string) {
 
-                this.clickableObjects.push(object);
-                object.raycastable = true;
+            if (prefetch !== undefined) {
+                this.prefetchType = prefetch;
+            }
 
-                if (object.material.name === 'Material.103_princess_peaches_cast') {
+            this.loader = new L3D.ProgressiveLoader(
+                '/static/data/castle/princess peaches castle (outside).obj',
+                this,
+                this.camera,
+                (object : THREE.Mesh) => {
 
-                    object.raycastable = false;
-                    object.material.transparent = false;
+                    this.clickableObjects.push(object);
+                    object.raycastable = true;
 
-                } else if (object.material.name === 'Material.136_princess_peaches_cast' ||
-                           object.material.name === 'Material.135_princess_peaches_cast') {
+                    if (object.material.name === 'Material.103_princess_peaches_cast') {
 
-                    object.raycastable = false;
-                    object.material.transparent = false;
+                        object.raycastable = false;
+                        object.material.transparent = false;
 
-                    object.material.opacity = 0.5;
-                    object.raycastable = false;
-                    object.material.side = THREE.FrontSide;
-                }
-            },
-            ()=>{},// L3D.LogFunction,
-            false,
-            this.prefetchType
-        );
+                    } else if (object.material.name === 'Material.136_princess_peaches_cast' ||
+                               object.material.name === 'Material.135_princess_peaches_cast') {
 
-        this.loader.onFinished = () => this.finish();
-        this.loader.load();
+                        object.raycastable = false;
+                        object.material.transparent = false;
 
-        this.collidableObjects.push(this.loader.obj);
-        this.clickableObjects.push(this.loader.obj);
-        this.loader.obj.raycastable = true;
+                        object.material.opacity = 0.5;
+                        object.raycastable = false;
+                        object.material.side = THREE.FrontSide;
+                    }
+                },
+                ()=>{},// L3D.LogFunction,
+                    false,
+                this.prefetchType
+            );
 
-    }
+            this.loader.onFinished = () => this.finish();
+            this.loader.load();
 
-    setCamera(camera : L3D.PointerCamera) {
+            this.collidableObjects.push(this.loader.obj);
+            this.clickableObjects.push(this.loader.obj);
+            this.loader.obj.raycastable = true;
 
-        super.setCamera(camera);
-        this.camera.speed = 0.001;
-
-    }
-
-    getResetElements() {
-
-        return {
-            position: new THREE.Vector3(0.24120226734236713,0.2009624547018851,-0.5998422840047036),
-            target: new THREE.Vector3(0.24120226734232672,0.20096245470190008,-40.5998422840047)
         }
 
-    }
+        setCamera(camera : L3D.PointerCamera) {
 
-    addCoins(coinConfig :CoinConfig) {
+            super.setCamera(camera);
+            this.camera.speed = 0.001;
 
-        super.addCoins(coinConfig, 0.001);
+        }
 
-    }
+        getResetElements() {
 
-    createCoin(position : L3D.Vector3, scale = this.coinScale, visible = true, callback = ()=>{}) {
+            return {
+                position: new THREE.Vector3(0.24120226734236713,0.2009624547018851,-0.5998422840047036),
+                target: new THREE.Vector3(0.24120226734232672,0.20096245470190008,-40.5998422840047)
+            }
 
-        var coin = new Coin(position, scale, visible, callback);
-        this.add(coin);
-        this.coins.push(coin);
-        this.collidableObjects.push(coin);
-        this.clickableObjects.push(coin);
+        }
 
-    }
+        addCoins(coinConfig :CoinConfig) {
 
-    addRecommendations(ClassToInstanciate : any, width : number, height : number) {
+            super.addCoins(coinConfig, 0.001);
 
-        return super.addRecommendations(ClassToInstanciate, width, height, 0.2);
+        }
 
-    }
+        createCoin(position : L3D.Vector3, scale = this.coinScale, visible = true, callback = ()=>{}) {
 
-    createRecommendation(ClassToInstanciate : any, width : number, height : number, id : number) {
+            var coin = new Coin(position, scale, visible, callback);
+            this.add(coin);
+            this.coins.push(coin);
+            this.collidableObjects.push(coin);
+            this.clickableObjects.push(coin);
 
-        return super.createRecommendation(ClassToInstanciate, width, height, id, 0.2);
+        }
+
+        addRecommendations(ClassToInstanciate : any, width : number, height : number) {
+
+            return super.addRecommendations(ClassToInstanciate, width, height, 0.2);
+
+        }
+
+        createRecommendation(ClassToInstanciate : any, width : number, height : number, id : number) {
+
+            return super.createRecommendation(ClassToInstanciate, width, height, id, 0.2);
+
+        }
 
     }
 
