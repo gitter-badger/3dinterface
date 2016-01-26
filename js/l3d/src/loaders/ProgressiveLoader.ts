@@ -132,7 +132,7 @@ module L3D {
     /**
      * Loads a mesh from socket.io
      */
-    class ProgressiveLoader {
+    export class ProgressiveLoader {
 
         /**
          * Path to the .obj file
@@ -244,9 +244,9 @@ module L3D {
         mapFace : {[id:string] : boolean};
 
         /**
-         * Indicates wether the prefeching is enable or not
+         * Indicates which type of prefetch is used
          */
-        prefetch : boolean;
+        prefetch : string;
 
         /**
          * Stores the materials
@@ -264,7 +264,7 @@ module L3D {
          * order)
          * @param {function} callback callback to call on the objects when they're created
          */
-        constructor(path : string, scene : THREE.Scene, camera : PointerCamera, callback : Function, log : Function, laggy : boolean, prefetch : boolean) {
+        constructor(path : string, scene : THREE.Scene, camera : PointerCamera, callback : Function, log : Function, laggy : boolean, prefetch : string) {
 
             this.objPath = path;
             this.texturesPath = path.substring(0, path.lastIndexOf('/')) + '/';
@@ -332,7 +332,7 @@ module L3D {
         /**
          * Starts the loading of the mesh
          */
-        load(callback : () => void) {
+        load(callback : () => void = ()=>{}) {
 
             this._callback = callback;
 
