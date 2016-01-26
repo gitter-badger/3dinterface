@@ -195,12 +195,12 @@ module L3D {
         /**
          * Array of all the meshes that will be added to the main object
          */
-        parts : {mesh : THREE.Mesh, geometry : THREE.Geometry, added : boolean, faceNumber : number}[];
+        parts : {mesh : THREE.Mesh, added : boolean, faceNumber : number}[];
 
         /**
          * Current part (with its mesh, its geometry, if it was added or not, and the number of its faces)
          */
-        currentPart : {mesh : THREE.Mesh, geometry : THREE.Geometry, added : boolean, faceNumber : number};
+        currentPart : {mesh : THREE.Mesh, added : boolean, faceNumber : number};
 
         /**
          * Loader for the material file
@@ -379,13 +379,13 @@ module L3D {
                 }
 
                 this.vertices[elt.index] = new THREE.Vector3(elt.x, elt.y, elt.z);
-                this.currentPart.geometry.verticesNeedUpdate = true;
+                (<THREE.Geometry>this.currentPart.mesh.geometry).verticesNeedUpdate = true;
 
             } else if (elt.type === StreamedElementType.TEX_COORD) {
 
                 // New texCoord arrived
                 this.texCoords[elt.index] = new THREE.Vector2(elt.x, elt.y);
-                this.currentPart.geometry.uvsNeedUpdate = true;
+                (<THREE.Geometry>this.currentPart.mesh.geometry).uvsNeedUpdate = true;
 
             } else if (elt.type === StreamedElementType.NORMAL) {
 
@@ -426,7 +426,7 @@ module L3D {
 
                 // Create mesh
                 var mesh = new THREE.Mesh(geometry, material);
-                this.parts.push({mesh : mesh, geometry : geometry, added : false, faceNumber : elt.fLength});
+                this.parts.push({mesh : mesh, added : false, faceNumber : elt.fLength});
                 this.currentPart = this.parts[this.parts.length - 1];
 
                 if (typeof this.callback === 'function') {
@@ -447,7 +447,7 @@ module L3D {
                 }
 
                 var currentPart = this.parts[elt.mesh];
-                var currentGeometry = currentPart.geometry;
+                var currentGeometry = (<THREE.Geometry>currentPart.mesh.geometry);
 
                 if (elt.aNormal !== undefined) {
                     currentGeometry.faces.push(new THREE.Face3(elt.a, elt.b, elt.c, [this.normals[elt.aNormal], this.normals[elt.bNormal], this.normals[elt.cNormal]]));
@@ -566,7 +566,7 @@ module L3D {
 
         computeBoundingSphere() {
             for (var m of this.parts) {
-                m.geometry.computeBoundingSphere();
+                (<THREE.Geometry>m.mesh.geometry).computeBoundingSphere();
             }
         }
 
