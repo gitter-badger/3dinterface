@@ -82,6 +82,10 @@ module Proto {
             return RecommendationData.mountainRecommendations;
         }
 
+        getRawCoins() : L3D.Vector3[] {
+            return CoinData.mountainCoins;
+        }
+
     }
 
 }

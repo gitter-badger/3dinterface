@@ -73,6 +73,10 @@ module Proto {
             return RecommendationData.bobombRecommendations;
         }
 
+        getRawCoins() : L3D.Vector3[] {
+            return CoinData.bobombCoins;
+        }
+
     }
 
 }

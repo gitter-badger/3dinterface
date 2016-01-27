@@ -89,6 +89,10 @@ module Proto {
             return RecommendationData.whompRecommendations;
         }
 
+        getRawCoins() : L3D.Vector3[] {
+            return CoinData.whompCoins;
+        }
+
     }
 
 }

@@ -81,6 +81,8 @@ module Proto {
 
         abstract getRawRecommendations() : L3D.CameraItf[];
 
+        abstract getRawCoins() : L3D.Vector3[];
+
     }
 
 }

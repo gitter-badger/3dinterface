@@ -100,6 +100,7 @@ module Proto {
         }
 
         getRawRecommendations() : L3D.CameraItf[] { return []; }
+        getRawCoins() : L3D.Vector3[] { return []; }
 
     }
 

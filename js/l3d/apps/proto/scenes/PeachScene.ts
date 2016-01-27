@@ -101,9 +101,11 @@ module Proto {
         }
 
         getRawRecommendations() : L3D.CameraItf[] {
-
             return RecommendationData.peachRecommendations;
+        }
 
+        getRawCoins() : L3D.Vector3[] {
+            return CoinData.peachCoins;
         }
 
     }
