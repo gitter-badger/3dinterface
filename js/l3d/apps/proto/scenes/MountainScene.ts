@@ -78,6 +78,10 @@ module Proto {
 
         }
 
+        getRawRecommendations() : L3D.CameraItf[] {
+            return RecommendationData.mountainRecommendations;
+        }
+
     }
 
 }

@@ -5,7 +5,7 @@ module Proto {
      * @constructor
      * @augments {L3D.Scene}
      */
-    export class SceneWithCoins extends L3D.Scene {
+    export abstract class SceneWithCoins extends L3D.Scene {
 
         coins : Coin[];
         coinScale : number;
@@ -78,6 +78,8 @@ module Proto {
             this.coins.forEach((c : THREE.Object3D) => { c.visible = b; });
 
         }
+
+        abstract getRawRecommendations() : L3D.CameraItf[];
 
     }
 

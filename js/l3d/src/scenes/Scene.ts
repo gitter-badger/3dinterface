@@ -2,7 +2,7 @@ module L3D {
     /**
      * Class that represents a scene that can contain recommendations
      */
-    export class Scene extends THREE.Scene {
+    export abstract class Scene extends THREE.Scene {
         /**
          * The objects that the camera can collide
          */
@@ -38,8 +38,6 @@ module L3D {
          * Functions to call when loading is finished
          */
         onLoad : Function[];
-
-        static recommendations : BaseRecommendation[] = [];
 
         constructor() {
 
@@ -116,9 +114,9 @@ module L3D {
             }
 
             // Access local recommendations
-            for (var i = 0; i < (<typeof Scene>this.constructor).recommendations.length; i++) {
+            for (var i = 0; i < this.getRawRecommendations().length; i++) {
 
-                var reco = createRecommendation((<typeof Scene>this.constructor).recommendations[i].camera);
+                var reco = createRecommendation(this.getRawRecommendations()[i]);
                 this.recommendations.push(reco);
                 reco.addToScene(this);
                 this.clickableObjects.push(reco);
@@ -145,7 +143,7 @@ module L3D {
                 );
             }
 
-            var reco = createRecommendation((<typeof Scene>this.constructor).recommendations[id].camera);
+            var reco = createRecommendation(this.getRawRecommendations()[id]);
             this.recommendations.push(reco);
             reco.addToScene(this);
             this.clickableObjects.push(reco);
@@ -173,5 +171,8 @@ module L3D {
             this.onLoad.map(function(f) { f(); });
 
         }
+
+        abstract getRawRecommendations() : CameraItf[];
+
     }
 }
