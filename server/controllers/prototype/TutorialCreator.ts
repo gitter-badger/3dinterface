@@ -1,11 +1,11 @@
 import pg = require('pg');
 
-var pgc = require('../../private');
+import pgc = require('../../private');
 
 /**
  * Class that creates a tutorial
  */
-export class TutorialCreator {
+export = class TutorialCreator {
 
     id : number;
     finishAction : (expId : number, coins : number[]) => void;

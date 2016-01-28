@@ -1,14 +1,14 @@
 import pg = require('pg');
 
-var pgc = require('../../private');
-var Log = require('../../lib/log');
+import pgc = require('../../private');
+import Log = require('../../lib/log');
 
-var async = require('async');
+import async = require('async');
 
 /**
  * Class that verifies that a user has correctly done all the experiments
  */
-export class UserVerifier {
+export = class UserVerifier {
 
     userId : number;
     finishAction : (a : boolean) => void;

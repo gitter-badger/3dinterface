@@ -20,15 +20,16 @@ function predicate(line : any) {
 }
 
 // var pg = require('pg');
-var pgc = require('../../private.js');
-var Log = require('../../lib/log.js');
-var async = require('async');
+import pgc = require('../../private');
+import Log = require('../../lib/log');
+
+import async = require('async');
 
 
 /**
  * Class that creates an experiment
  */
-export class ExpCreator {
+export = class ExpCreator {
 
     /** callback to call on finalResult */
     finishAction : (expId : number, coinCombinationId : number, sceneId : number, recoStyle : string, coins : number[]) => void;

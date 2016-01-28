@@ -1,12 +1,12 @@
 import pg = require('pg');
 
-var pgc = require('../../private');
-var Log = require('../../lib/log');
+import pgc = require('../../private');
+import Log = require('../../lib/log');
 
 /**
  * Class that checks if an user id exists
  */
-export class UserIdChecker {
+export = class UserIdChecker {
 
     id : number;
     finishAction : (a : any) => void;

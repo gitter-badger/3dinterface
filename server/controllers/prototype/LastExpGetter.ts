@@ -1,12 +1,12 @@
 import pg = require('pg');
 
-var pgc = require('../../private');
-var Log = require('../../lib/log');
+import pgc = require('../../private');
+import Log = require('../../lib/log');
 
 /**
  * Class that gives access to the last not finished experiment
  */
-export class LastExpGetter {
+export = class LastExpGetter {
 
     userId : number;
     finishAction : (expId : number, coinCombinationId : number, sceneId : number, recommendationStyle : string, coins : number[]) => void;

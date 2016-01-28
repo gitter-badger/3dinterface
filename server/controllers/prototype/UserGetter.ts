@@ -1,11 +1,11 @@
 import pg = require('pg');
 
-var pgc = require('../../private');
+import pgc = require('../../private');
 
 /**
  * Class that gets the "valid" attribute of a user in the databse
  */
-export class UserGetter {
+export = class UserGetter {
 
     userId : number;
     finishAction : (workerId : string, valid : boolean) => void;

@@ -1,11 +1,11 @@
 import pg = require('pg');
 
-var pgc = require('../../private');
+import pgc = require('../../private');
 
 /**
  * Class that checks if an experiment exists
  */
-export class ExpIdChecker {
+export = class ExpIdChecker {
 
     id : number;
     finishAction : (a : any) => void;

@@ -1,8 +1,10 @@
+import DBReq = require('./DBReq');
+
 /*
 
 var tools = require('../../lib/filterInt');
 var pg = require('pg');
-var pgc = require('../../private');
+import pgc = require('../../private');
 var db = require('./dbrequests');
 
 module.exports.index = function(req, res) {

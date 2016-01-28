@@ -84,21 +84,21 @@ export module socket {
 
 }
 
-export function dberror(error : Error) {
+export function dberror(error : any) {
     write(
         '[DBE] ' + new Date() + ' ' + error,
         Color.RED
     );
 }
 
-export function prefetcherror(error : Error) {
+export function prefetcherror(error : any) {
     write(
         '[PFE] ' + new Date() + ' ' + error,
         Color.RED
     );
 }
 
-export function mailerror(error : Error) {
+export function mailerror(error : any) {
     write(
         '[MLE] ' + new Date() + ' ' + error,
         Color.RED
@@ -114,7 +114,7 @@ export function debug(info? : any, force? : boolean) {
     }
 }
 
-export function jadeerror(error : Error) {
+export function jadeerror(error : any) {
     write(
         '[JER] ' + new Date() + ' ' + error,
         Color.RED

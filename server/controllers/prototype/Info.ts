@@ -2,9 +2,10 @@
 
 import pg = require('pg');
 
-let pgc = require('../../private.js');
-let Log = require('../../lib/log.js');
-let async = require('async');
+import pgc = require('../../private');
+import Log = require('../../lib/log');
+
+import async = require('async');
 
 /**
  * A class that loads every information from an experiment
@@ -13,7 +14,7 @@ let async = require('async');
  * @constructor
  * @private
  */
-export class Info {
+export = class Info {
 
     /**
      * Id of the experiment to log

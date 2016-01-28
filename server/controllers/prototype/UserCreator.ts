@@ -1,14 +1,14 @@
 import pg = require('pg');
 
 // var pg = require('pg');
-var pgc = require('../../private.js');
-var Log = require('../../lib/log.js');
-var async = require('async');
+import pgc = require('../../private');
+import Log = require('../../lib/log');
+import async = require('async');
 
 /**
  * Class that creates a user
  */
-export class UserCreator {
+export = class UserCreator {
 
     /**
      * Callback to call on the id when the user is created

@@ -1,14 +1,14 @@
-export var ExpCreator = require('./ExpCreator').ExpCreator;
-export var ExpGetter = require('./ExpGetter').ExpGetter;
-export var ExpIdChecker = require('./ExpIdChecker').ExpIdChecker;
-export var Info = require('./Info').Info;
-export var LastExpGetter = require('./LastExpGetter').LastExpGetter;
-export var TutorialCreator = require('./TutorialCreator').TutorialCreator;
-export var UserCreator = require('./UserCreator').UserCreator;
-export var UserGetter = require('./UserGetter').UserGetter;
-export var UserIdChecker = require('./UserIdChecker').UserIdChecker;
-export var UserNameChecker = require('./UserNameChecker').UserNameChecker;
-export var UserVerifier = require('./UserVerifier').UserVerifier;
+import ExpCreator = require('./ExpCreator');
+import ExpGetter = require('./ExpGetter');
+import ExpIdChecker = require('./ExpIdChecker');
+import Info = require('./Info');
+import LastExpGetter = require('./LastExpGetter');
+import TutorialCreator = require('./TutorialCreator');
+import UserCreator = require('./UserCreator');
+import UserGetter = require('./UserGetter');
+import UserIdChecker = require('./UserIdChecker');
+import UserNameChecker = require('./UserNameChecker');
+import UserVerifier = require('./UserVerifier');
 
 /**
  * Try to get a user by id, and creates it if it doesn't exists
@@ -22,11 +22,11 @@ export function tryUser(id : number, callback : Function) {
             if (clear) {
                 callback(id);
             } else {
-                new UserCreator(callback);
+                throw new Error('Couldn\'t create user');
             }
         });
     } else {
-        new UserCreator(callback);
+        throw new Error('Invalid parameters');
     }
 }
 

@@ -1,11 +1,11 @@
 import pg = require('pg');
 
-var pgc = require('../../private');
+import pgc = require('../../private');
 
 /**
  * Class that gets the info from all experiment
  */
-export class ExpGetter {
+export = class ExpGetter {
 
     finishAction : (a:any) => void;
 
