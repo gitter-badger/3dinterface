@@ -1,449 +1,31 @@
+///<reference path="../../../typings/includes.d.ts"/>
+
+import pg = require('pg');
+
 /**
  *
  */
 module DBReq {
 
-// Polyfill of find array
-if (!Array.prototype.find) {
-    Array.prototype.find = function(predicate) {
-        if (this === null || this === undefined) {
-            throw new TypeError('Array.prototype.find a été appelé sur null ou undefined');
-        }
-        if (typeof predicate !== 'function') {
-            throw new TypeError('predicate doit être une fonction');
-        }
-        var list = Object(this);
-        var length = list.length >>> 0;
-        var thisArg = arguments[1];
-        var value;
+    function predicate(line : any) {
 
-        for (var i = 0; i < length; i++) {
-            value = list[i];
-            if (predicate.call(thisArg, value, i, list)) {
-                return value;
-            }
-        }
-        return undefined;
-    };
-}
+        return function(elt : any) {
 
-// Production steps of ECMA-262, Edition 5, 15.4.4.21
-// Reference: http://es5.github.io/#x15.4.4.21
-if (!Array.prototype.reduce) {
-    Array.prototype.reduce = function(callback /*, initialValue*/) {
-        'use strict';
-        if (this === null || this === undefined) {
-            throw new TypeError('Array.prototype.reduce called on null or undefined');
-        }
-        if (typeof callback !== 'function') {
-            throw new TypeError(callback + ' is not a function');
-        }
-        var t = Object(this), len = t.length >>> 0, k = 0, value;
-        if (arguments.length == 2) {
-            value = arguments[1];
-        } else {
-            while (k < len && !(k in t)) {
-                k++;
-            }
-            if (k >= len) {
-                throw new TypeError('Reduce of empty array with no initial value');
-            }
-            value = t[k++];
-        }
-        for (; k < len; k++) {
-            if (k in t) {
-                value = callback(value, t[k], k, t);
-            }
-        }
-        return value;
-    };
-}
+            return (
+                (elt.recommendationStyle !== null && (elt.recommendationStyle.trim() === line.recommendationStyle.trim())) ||
+                    line.sceneId === elt.sceneId
+            );
 
-var pg = require('pg');
+        }
+
+    }
+
+// var pg = require('pg');
 var pgc = require('../../private.js');
 var Log = require('../../lib/log.js');
 var async = require('async');
 
-/**
- * Class that creates a user
- * @param workerId {string} the name of the person doing the experiment
- * @param age {string} a string representing an age range
- * @param male {boolean} indicates if the user is a man or a woman
- * @param rating {Number} between 1 and 5, describes the level of the user
- * @param lastTime {Number} between 0 and 3 such that
- * <ol start="0">
- *  <li>never played</li>
- *  <li>this year</li>
- *  <li>this month</li>
- *  <li>this week</li>
- * </ol>
- * @param finishAction {function} callback that has as a parameter the id of
- * the new user
- * @memberof DBReq
- * @constructor
- * @private
- */
-DBReq.UserCreator = function(workerId, age, male, rating, lastTime, finishAction) {
-    /**
-     * Callback to call on the id when the user is created
-     * @type {function}
-     */
-    this.finishAction = finishAction;
-
-    this.workerId = workerId;
-    this.age = age;
-    this.male = male;
-    this.rating = rating;
-    this.lastTime = lastTime;
-
-    // Connect to db
-    var self = this;
-    pg.connect(pgc.url, function(err, client, release) {
-        self.client = client;
-        self.release = release;
-        self.execute();
-    });
-};
-
-/**
- * Executes the SQL request and calls the callback
- */
-DBReq.UserCreator.prototype.execute = function() {
-    var self = this;
-    this.client.query("BEGIN; LOCK Users IN SHARE ROW EXCLUSIVE MODE;", [], function() {
-        self.client.query(
-            "INSERT INTO users(worker_id, age, male, rating, lasttime)  VALUES($1, $2, $3, $4, $5);",
-            [
-                self.workerId,
-                self.age,
-                self.male,
-                self.rating,
-                self.lastTime
-            ],
-            function(err, result) {
-                if (err !== null) {
-                    Log.dberror(err + ' in UserCreator INSERT INTO');
-                }
-                self.client.query(
-                    "SELECT max(id) FROM Users;",
-                    [],
-                    function(err, result) {
-                        self.finalResult = result.rows[0].max;
-                        self.finish();
-                    }
-                );
-            }
-        );
-    });
-};
-
-/**
- * Release the DB connection and call the callback
- */
-DBReq.UserCreator.prototype.finish = function() {
-
-    var self = this;
-
-    this.client.query("COMMIT;", [], function() {
-
-        self.release();
-        self.client = null;
-        self.release = null;
-
-        self.finishAction(self.finalResult);
-
-    });
-};
-
-/**
- * Class that creates an experiment
- * @param userId {Number} id of the user that does the experiment
- * @param experiments {Object[]} array of objects representing the experiments
- * that the user has already done <code>{sceneId: Number, recommendationStyle: string, coins Number[]}</code>
- * @param finishAction {function} callback that has as parameters
- * <ol>
- *  <li>the id of the experiment (Number)</li>
- *  <li>the id of the coin combination (Number)</li>
- *  <li>the id of the scene (Number)</li>
- *  <li>the recommendation style (string)</li>
- *  <li>the coins (Number[])</li>
- * </ol>
- * @memberof DBReq
- * @constructor
- * @private
- */
-DBReq.ExpCreator = function(userId, experiments, finishAction) {
-    this.finishAction = finishAction;
-    this.userId = userId;
-    this.experiments = experiments;
-    this.finalResult = {};
-
-    // Connect to db
-    var self = this;
-    pg.connect(pgc.url, function(err, client, release) {
-
-        self.client = client;
-        self.release = release;
-
-        self.startTime = Date.now();
-
-        // Start transaction and lock table
-        self.client.query("BEGIN; LOCK CoinCombination IN SHARE ROW EXCLUSIVE MODE; LOCK Experiment IN SHARE ROW EXCLUSIVE MODE;", [], function() {
-            self.execute();
-        });
-    });
-};
-
-function predicate(line) {
-
-    return function(elt, idx, arr) {
-
-        return (
-            (elt.recommendationStyle !== null && (elt.recommendationStyle.trim() === line.recommendationStyle.trim())) ||
-            line.sceneId === elt.sceneId
-        );
-
-    };
-
 }
-
-/**
- * Executes the SQL request and calls the callback
- */
-// Abandon all hope ye who enter here
-DBReq.ExpCreator.prototype.execute = function() {
-    var self = this;
-    this.client.query(
-        "SELECT DISTINCT \n" +
-        "    RecommendationStyle.name AS \"recommendationStyle\", \n" +
-        "    CoinCombination.scene_id AS \"sceneId\", \n" +
-        "    CoinCombination.id, \n" +
-        "    coin_1 AS coin1, \n" +
-        "    coin_2 AS coin2, \n" +
-        "    coin_3 AS coin3, \n" +
-        "    coin_4 AS coin4, \n" +
-        "    coin_5 AS coin5, \n" +
-        "    coin_6 AS coin6, \n" +
-        "    coin_7 AS coin7, \n" +
-        "    coin_8 AS coin8\n" +
-        "FROM CoinCombination, Experiment, Users U, Users Other, RecommendationStyle, Scene\n" +
-        "WHERE\n" +
-        "    Scene.id = CoinCombination.scene_id AND\n" +
-        "    Scene.name != 'peachcastle' AND\n" +
-        "    CoinCombination.id = Experiment.coin_combination_id AND\n" +
-        "    Other.id = Experiment.user_id AND\n" +
-        "    Experiment.finished = true AND\n" +
-        "    Other.rating = U.rating AND\n" +
-        "    Other.id != U.id AND\n" +
-        "    U.id = $1 \n" +
-        "EXCEPT \n" +
-        "SELECT DISTINCT \n" +
-        "    Experiment.recommendation_style AS \"recommendationStyle\", \n" +
-        "    CoinCombination.scene_id AS \"sceneId\", \n" +
-        "    CoinCombination.id, \n" +
-        "    coin_1 AS coin1, \n" +
-        "    coin_2 AS coin2, \n" +
-        "    coin_3 AS coin3, \n" +
-        "    coin_4 AS coin4, \n" +
-        "    coin_5 AS coin5, \n" +
-        "    coin_6 AS coin6, \n" +
-        "    coin_7 AS coin7, \n" +
-        "    coin_8 AS coin8\n" +
-        "FROM CoinCombination, Experiment\n" +
-        "WHERE\n" +
-        "   CoinCombination.id = Experiment.coin_combination_id;",
-        [self.userId],
-        function(err, result) {
-            if (err !== null) {
-                Log.dberror(err + ' in ExpCreator first request');
-            }
-
-            var line, found = false;
-
-            while ((line = result.rows.shift()) !== undefined) {
-
-                if (line === undefined) {
-
-                    break;
-
-                }
-
-                // Look for an experiment impossible
-                var elt = self.experiments.find(predicate(line));
-
-                // Line is a valid experiment
-                if (elt === undefined) {
-
-                    found = true;
-                    break;
-
-                }
-
-            }
-
-            if (found) {
-                // Set the result
-                self.finalResult.coinCombinationId = line.id;
-                self.finalResult.sceneId = line.sceneId;
-                self.finalResult.recommendationStyle = line.recommendationStyle;
-                self.finalResult.coins = [
-                    line.coin1,
-                    line.coin2,
-                    line.coin3,
-                    line.coin4,
-                    line.coin5,
-                    line.coin6,
-                    line.coin7,
-                    line.coin8
-                ];
-
-                // There is a suggested experiment : create it
-                self.client.query(
-                    "INSERT INTO Experiment(user_id, coin_combination_id, recommendation_style)\n" +
-                    "VALUES($1,$2,$3)\n" +
-                    "RETURNING id",
-                    [self.userId, line.id, line.recommendationStyle],
-                    function(err, result) {
-                        if (err !== null) {
-                            Log.dberror(err + ' in ExpCreator second request (with suggested experiment)');
-                        }
-                        self.finalResult.expId = result.rows[0].id;
-                        self.finish();
-                    }
-                );
-
-
-            } else {
-                // Find the scene / recommendation style for the new experiment
-                self.client.query(
-                    "SELECT RecommendationStyle.name, Scene.id AS \"sceneId\"\n" +
-                    "FROM RecommendationStyle, Scene\n" +
-                    "WHERE\n" +
-                    "    Scene.name != 'peachcastle' AND \n" +
-                    "    RecommendationStyle.name NOT IN(\n" +
-                    "        SELECT DISTINCT Experiment.recommendation_style AS name\n" +
-                    "        FROM Experiment\n" +
-                    "        WHERE Experiment.user_id = $1\n" +
-                    "        AND Experiment.recommendation_style != ''\n" +
-                    "    ) AND\n" +
-                    "    Scene.id NOT IN(\n" +
-                    "        SELECT DISTINCT CoinCombination.scene_id AS id\n" +
-                    "        FROM Experiment, CoinCombination\n" +
-                    "        WHERE\n" +
-                    "            Experiment.coin_combination_id = CoinCombination.id AND\n" +
-                    "            user_id = $1\n" +
-                    "    ) \n" +
-                    "\n" +
-                    "ORDER BY RANDOM()\n" +
-                    "LIMIT 1;",
-                    [self.userId],
-                    function(err, result) {
-                        if (err !== null) {
-                            Log.dberror(err + ' in ExpCreator second request (without suggested experiment');
-                        }
-                        if (result.rows.length > 0) {
-                            self.finalResult.sceneId = result.rows[0].sceneId;
-                            self.finalResult.recommendationStyle = result.rows[0].name;
-
-                            // Generate random coins
-                            self.client.query(
-                                "SELECT generate_series AS id\n" +
-                                "FROM Scene, generate_series(0,Scene.coin_number-1)\n" +
-                                "WHERE Scene.id = $1\n" +
-                                "ORDER BY RANDOM()\n" +
-                                "LIMIT 8;",
-                                [self.finalResult.sceneId],
-                                function(err, result) {
-                                    if (err !== null) {
-                                        Log.dberror(err + ' in ExpCreator third request (without suggested experiment');
-                                    }
-                                    self.finalResult.coins = [];
-                                    for (var i = 0; i < 8; i++) {
-                                        self.finalResult.coins.push(result.rows[i].id);
-                                    }
-
-                                    // And then, create the CoinCombination
-                                    self.client.query(
-                                        "INSERT INTO CoinCombination(scene_id, coin_1, coin_2, coin_3, coin_4, coin_5, coin_6, coin_7, coin_8)\n" +
-                                        "VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)\n" +
-                                        "RETURNING id;",
-                                        [
-                                            self.finalResult.sceneId,
-                                            self.finalResult.coins[0],
-                                            self.finalResult.coins[1],
-                                            self.finalResult.coins[2],
-                                            self.finalResult.coins[3],
-                                            self.finalResult.coins[4],
-                                            self.finalResult.coins[5],
-                                            self.finalResult.coins[6],
-                                            self.finalResult.coins[7],
-                                        ],
-                                        function(err, result) {
-                                            if (err !== null) {
-                                                Log.dberror(err + ' in ExpCreator fourth request (without suggested experiment');
-                                            }
-                                            self.finalResult.coinCombinationId = result.rows[0].id;
-
-                                            // And create the experiment
-                                            self.client.query(
-                                                "INSERT INTO Experiment(user_id, coin_combination_id, recommendation_style)\n" +
-                                                "VALUES($1,$2,$3)\n" +
-                                                "RETURNING id;",
-                                                [self.userId, self.finalResult.coinCombinationId, self.finalResult.recommendationStyle],
-                                                function(err, result) {
-                                                    if (err !== null) {
-                                                        Log.dberror(err + ' in ExpCreator fifth request (without suggested experiment');
-                                                    }
-                                                    self.finalResult.expId = result.rows[0].id;
-                                                    self.finish();
-                                                }
-                                            );
-                                        }
-                                    );
-                                }
-                            );
-                        } else {
-                            self.finish();
-                        }
-                    }
-                );
-            }
-        }
-    );
-};
-
-/**
- * Release the DB connection and call the callback
- */
-DBReq.ExpCreator.prototype.finish = function() {
-    var self = this;
-
-    // self.finishAction(
-    //     self.finalResult.expId,
-    //     self.finalResult.coinCombinationId,
-    //     self.finalResult.sceneId,
-    //     self.finalResult.recommendationStyle,
-    //     self.finalResult.coins
-    // );
-
-    // Commit, and then release
-    this.client.query("COMMIT;", function() {
-
-        Log.debug('Exp creation took ' + (Date.now() - self.startTime) + ' ms', true);
-
-        self.release();
-        self.client = null;
-        self.release = null;
-
-        self.finishAction(
-            self.finalResult.expId,
-            self.finalResult.sceneId,
-            self.finalResult.coinCombinationId,
-            self.finalResult.recommendationStyle,
-            self.finalResult.coins
-        );
-    });
-};
 
 /**
  * Class that checks if an user id exists
@@ -464,7 +46,7 @@ DBReq.UserIdChecker = function(id, finishAction) {
         self.release = release;
         self.execute();
     });
-};
+}
 
 /**
  * Executes the SQL request and calls the callback
@@ -483,7 +65,7 @@ DBReq.UserIdChecker.prototype.execute = function() {
             self.finish();
         }
     );
-};
+}
 
 /**
  * Release the DB connection and call the callback
@@ -494,7 +76,7 @@ DBReq.UserIdChecker.prototype.finish = function() {
     this.release = null;
 
     this.finishAction(this.finalResult);
-};
+}
 
 /**
  * Class that checks if a workerId exists
@@ -518,7 +100,7 @@ DBReq.UserNameChecker = function(name, finishAction) {
         self.release = release;
         self.execute();
     });
-};
+}
 
 /**
  * Executes the SQL request and calls the callback
@@ -538,7 +120,7 @@ DBReq.UserNameChecker.prototype.execute = function() {
         }
     );
 
-};
+}
 
 /**
  * Release the DB connection and call the callback
@@ -549,7 +131,7 @@ DBReq.UserNameChecker.prototype.finish = function() {
     this.release = null;
 
     this.finishAction(this.finalResult);
-};
+}
 
 /**
  * Class that checks if an experiment exists
@@ -570,7 +152,7 @@ DBReq.ExpIdChecker = function(id, finishAction) {
         self.release = release;
         self.execute();
     });
-};
+}
 
 /**
  * Executes the SQL request and calls the callback
@@ -589,7 +171,7 @@ DBReq.ExpIdChecker.prototype.execute = function() {
             self.finish();
         }
     );
-};
+}
 
 /**
  * Release the DB connection and call the callback
@@ -600,7 +182,7 @@ DBReq.ExpIdChecker.prototype.finish = function() {
     this.release = null;
 
     this.finishAction(this.finalResult);
-};
+}
 
 /**
  * Class that gives access to the last not finished experiment
@@ -622,7 +204,7 @@ DBReq.LastExpGetter = function(userId, finishAction) {
     var self = this;
     this.userId = userId;
     this.finishAction = finishAction;
-    this.finalResult = {};
+    this.finalResult = {}
 
     if (this.userId === undefined) {
         return;
@@ -633,7 +215,7 @@ DBReq.LastExpGetter = function(userId, finishAction) {
         self.release = release;
         self.execute();
     });
-};
+}
 
 /**
  * Executes the SQL request and calls the callback
@@ -698,7 +280,7 @@ DBReq.LastExpGetter.prototype.execute = function() {
             );
         }
     );
-};
+}
 
 /**
  * Release the DB connection and call the callback
@@ -715,7 +297,7 @@ DBReq.LastExpGetter.prototype.finish = function() {
         this.finalResult.recommendationStyle,
         this.finalResult.coins
     );
-};
+}
 
 /**
  * Class that gets the info from all experiment
@@ -735,7 +317,7 @@ DBReq.ExpGetter = function(finishAction) {
         self.release = release;
         self.execute();
     });
-};
+}
 
 /**
  * Executes the SQL request and calls the callback
@@ -758,7 +340,7 @@ DBReq.ExpGetter.prototype.execute = function() {
             self.finish();
         }
     );
-};
+}
 
 /**
  * Release the DB connection and call the callback
@@ -769,7 +351,7 @@ DBReq.ExpGetter.prototype.finish = function() {
     this.release = null;
 
     this.finishAction(this.finalResult);
-};
+}
 
 /**
  * Class that creates a tutorial
@@ -786,7 +368,7 @@ DBReq.ExpGetter.prototype.finish = function() {
 DBReq.TutorialCreator = function(id, finishAction) {
     this.id = id;
     this.finishAction = finishAction;
-    this.finalResult = {};
+    this.finalResult = {}
 
     var self = this;
     pg.connect(pgc.url, function(err, client, release) {
@@ -794,7 +376,7 @@ DBReq.TutorialCreator = function(id, finishAction) {
         self.release = release;
         self.execute();
     });
-};
+}
 
 /**
  * Executes the SQL request and calls the callback
@@ -846,7 +428,7 @@ DBReq.TutorialCreator.prototype.execute = function() {
             );
         }
     );
-};
+}
 
 /**
  * Release the DB connection and call the callback
@@ -857,7 +439,7 @@ DBReq.TutorialCreator.prototype.finish = function() {
     this.client = null;
 
     this.finishAction(this.finalResult.expId, this.finalResult.coins);
-};
+}
 
 /**
  * Class that verifies that a user has correctly done all the experiments
@@ -879,7 +461,7 @@ DBReq.UserVerifier = function(userId, finishAction) {
 
         self.execute();
     });
-};
+}
 
 /**
  * Executes the SQL request and calls the callback
@@ -920,7 +502,7 @@ DBReq.UserVerifier.prototype.execute = function() {
         }
     );
 
-};
+}
 
 /**
  * Release the DB connection and call the callback
@@ -931,7 +513,7 @@ DBReq.UserVerifier.prototype.finish = function(finalResult) {
     this.client = null;
     this.release = null;
     this.finishAction(finalResult);
-};
+}
 
 /**
  * Class that gets the "valid" attribute of a user in the databse
@@ -956,7 +538,7 @@ DBReq.UserGetter = function(userId, finishAction) {
 
         self.execute();
     });
-};
+}
 
 /**
  * Executes the SQL request and calls the callback
@@ -971,7 +553,7 @@ DBReq.UserGetter.prototype.execute = function() {
             self.finish(result.rows[0].workerId, result.rows[0].valid);
         }
     );
-};
+}
 
 /**
  * Release the DB connection and call the callback
@@ -984,7 +566,7 @@ DBReq.UserGetter.prototype.finish = function(workerId, valid) {
 
     this.finishAction(workerId, valid);
 
-};
+}
 
 /**
  * Try to get a user by id, and creates it if it doesn't exists
@@ -1004,7 +586,7 @@ DBReq.tryUser = function(id, callback) {
     } else {
         new DBReq.UserCreator(callback);
     }
-};
+}
 
 // Helper for the rest
 // http://stackoverflow.com/questions/9830359/apply-an-array-to-a-constructor-function-in-javascript
@@ -1022,7 +604,7 @@ function construct(constr, args) {
  * finished
  * @memberof DBReq
  */
-DBReq.getInfo = function() { construct(DBReq.Info, arguments); };
+DBReq.getInfo = function() { construct(DBReq.Info, arguments); }
 
 /**
  * Creates an user
@@ -1042,7 +624,7 @@ DBReq.getInfo = function() { construct(DBReq.Info, arguments); };
  * the new user
  * @memberof DBReq
  */
-DBReq.createUser = function() { construct(DBReq.UserCreator, arguments); };
+DBReq.createUser = function() { construct(DBReq.UserCreator, arguments); }
 
 /**
  * Creates an experiment
@@ -1060,7 +642,7 @@ DBReq.createUser = function() { construct(DBReq.UserCreator, arguments); };
  * </ol>
  * @memberof DBReq
  */
-DBReq.createExp = function() { construct(DBReq.ExpCreator, arguments); };
+DBReq.createExp = function() { construct(DBReq.ExpCreator, arguments); }
 
 /**
  * Creates a tutorial
@@ -1073,7 +655,7 @@ DBReq.createExp = function() { construct(DBReq.ExpCreator, arguments); };
  * </ol>
  * @memberof DBReq
  */
-DBReq.createTutorial = function() { construct(DBReq.TutorialCreator, arguments); };
+DBReq.createTutorial = function() { construct(DBReq.TutorialCreator, arguments); }
 
 /**
  * Checks if an user id exists
@@ -1083,7 +665,7 @@ DBReq.createTutorial = function() { construct(DBReq.TutorialCreator, arguments);
  * boolean indicating wether the user id exists or not
  * @memberof DBReq
  */
-DBReq.checkUserId = function() { construct(DBReq.UserIdChecker, arguments); };
+DBReq.checkUserId = function() { construct(DBReq.UserIdChecker, arguments); }
 
 /**
  * Checks if a workerId exists
@@ -1093,7 +675,7 @@ DBReq.checkUserId = function() { construct(DBReq.UserIdChecker, arguments); };
  * boolean indicating wether the user id exists or not
  * @memberof DBReq
  */
-DBReq.checkUserName = function() { construct(DBReq.UserNameChecker, arguments); };
+DBReq.checkUserName = function() { construct(DBReq.UserNameChecker, arguments); }
 
 /**
  * Checks if an experiment exists
@@ -1103,7 +685,7 @@ DBReq.checkUserName = function() { construct(DBReq.UserNameChecker, arguments); 
  * id of the scene if the experiment exists, or null otherwise
  * @memberof DBReq
  */
-DBReq.checkExpId = function() { construct(DBReq.ExpIdChecker, arguments); };
+DBReq.checkExpId = function() { construct(DBReq.ExpIdChecker, arguments); }
 
 /**
  * Gets the info from all experiment
@@ -1113,7 +695,7 @@ DBReq.checkExpId = function() { construct(DBReq.ExpIdChecker, arguments); };
  * the id of the user.
  * @memberof DBReq
  */
-DBReq.getAllExps = function() { construct(DBReq.ExpGetter, arguments); };
+DBReq.getAllExps = function() { construct(DBReq.ExpGetter, arguments); }
 
 /**
  * Gives access to the last not finished experiment
@@ -1129,7 +711,7 @@ DBReq.getAllExps = function() { construct(DBReq.ExpGetter, arguments); };
  * </ol>xperiment exists, or null otherwise
  * @memberof DBReq
  */
-DBReq.getLastExp = function() { construct(DBReq.LastExpGetter, arguments); };
+DBReq.getLastExp = function() { construct(DBReq.LastExpGetter, arguments); }
 
 /**
  * Verifies that a user has correctly done all the experiments
@@ -1139,7 +721,7 @@ DBReq.getLastExp = function() { construct(DBReq.LastExpGetter, arguments); };
  * which is true is the verification was a success
  * @memberof DBReq
  */
-DBReq.verifyUser = function() { construct(DBReq.UserVerifier, arguments); };
+DBReq.verifyUser = function() { construct(DBReq.UserVerifier, arguments); }
 
 /**
  * Gets the "valid" attribute of a user in the databse
@@ -1152,7 +734,7 @@ DBReq.verifyUser = function() { construct(DBReq.UserVerifier, arguments); };
  * </ol>
  * @memberof DBReq
  */
-DBReq.getUser = function() { construct(DBReq.UserGetter, arguments); };
+DBReq.getUser = function() { construct(DBReq.UserGetter, arguments); }
 
 module.exports = DBReq;
 

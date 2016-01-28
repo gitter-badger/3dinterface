@@ -1,3 +1,5 @@
+/*
+
 var tools = require('../../lib/filterInt');
 var pg = require('pg');
 var pgc = require('../../private');
@@ -278,3 +280,5 @@ module.exports.userstudy = function(req, res) {
 module.exports.next = function(req, res) {
     res.redirect('/prototype/game');
 };
+
+*/

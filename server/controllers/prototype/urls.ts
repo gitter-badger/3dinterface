@@ -1,4 +1,4 @@
-module.exports = {
+export = {}; /*
     '/prototype': 'index',
     '/prototype/game': 'game',
     '/prototype/replay': 'replayIndex',
@@ -13,3 +13,4 @@ module.exports = {
     '/prototype/next': 'next',
     '/prototype/play': 'play'
 };
+*/

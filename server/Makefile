@@ -35,11 +35,13 @@ geo-bin:
 
 server:
 	tsc
+	rm -rf ../server-bin/views
 	cp -r views ../server-bin/views
 	cp -r geo/generated ../server-bin/geo/generated
 	cp -r geo/*.json ../server-bin/geo/
 	for path in `ls controllers`; do \
 		if [ -d ../server-bin/controllers/$$path/ ]; then \
+			rm -rf ../server-bin/controllers/$$path/views; \
 			cp -r controllers/$$path/views ../server-bin/controllers/$$path/views; \
 		fi \
 	done

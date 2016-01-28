@@ -9,7 +9,7 @@ import express = require('express');
 import fs = require('fs');
 var log = require('./log');
 
-function main(parent : express.Application) : void {
+function main(app : express.Application) : void {
 
     log.debug("Loading controllers :");
 
@@ -21,7 +21,6 @@ function main(parent : express.Application) : void {
         // urls.js, just like django urls.py
         var urls = require('./../controllers/' + name + '/urls');
         name = obj.name || name;
-        var app = express();
 
         // allow specifying the view engine
         if (obj.engine) app.set('view engine', obj.engine);
@@ -33,7 +32,15 @@ function main(parent : express.Application) : void {
         log.debug('   ' + name + ':');
 
         for (var key in urls) {
-            app.get(key, obj[urls[key]]);
+            app.get(key, function(req, res) {
+                var path = obj[urls[key]](req, res);
+                res.render(__dirname + '/../controllers/' + name + '/views/' + path, res.locals, function(err, out) {
+                    if (err !== null) {
+                    log.jadeerror(err);
+                    }
+                    res.send(out);
+                });
+            });
             log.debug('      ' + key + ' -> ' + name + '.' + urls[key]);
 
         }
@@ -41,7 +48,7 @@ function main(parent : express.Application) : void {
         log.debug();
 
         // mount the app
-        parent.use(app);
+        // parent.use(app);
 
     });
 
