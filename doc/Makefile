@@ -12,4 +12,9 @@ all:
 	           --readme README.md \
 	           -excludeNotExported
 
+clean:
+	rm -rf out
 
+push: all
+	ssh pi@dragonrock.no-ip.org "rm -rf web/l3d-doc/typescript"
+	scp -r out pi@dragonrock.no-ip.org:web/l3d-doc/typescript

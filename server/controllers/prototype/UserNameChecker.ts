@@ -17,8 +17,8 @@ module DBReq {
         finalResult : any;
 
         /**
-         * @param id {string} workerId of to test
-         * @param finishAction {function} callback that has as a parameter which is a
+         * @param id workerId of to test
+         * @param finishAction callback that has as a parameter which is a
          * boolean indicating wether the user id exists or not
          * @private
          */

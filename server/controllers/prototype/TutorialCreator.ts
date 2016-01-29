@@ -16,11 +16,11 @@ module DBReq {
         finalResult : {expId : number, coins : number[]};
 
         /**
-         * @param id {Number} id of the user doing the tutorial
-         * @param finishAction {function} callback that has as parameters
+         * @param id id of the user doing the tutorial
+         * @param finishAction  callback that has as parameters
          * <ol>
-         *  <li>the id of the experiment (Number)</li>
-         *  <li>the id of the generated coins (Number[])</li>
+         *  <li>the id of the experiment</li>
+         *  <li>the id of the generated coins</li>
          * </ol>
          * @private
          */

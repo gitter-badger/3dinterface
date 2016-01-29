@@ -17,12 +17,11 @@ module DBReq {
         release : () => void;
 
         /**
-         * @param id {Number} id of the user to check
-         * @param finishAction {function} callback that has as a parameter which is a
-         * boolean indicating wether the user id exists or not
-         * @private
+         * @param id id of the user to check
+         * @param finishAction callback that has as a parameter indicating
+         * wether the user id exists or not
          */
-        constructor(id : number, finishAction : (a : any) => void) {
+        constructor(id : number, finishAction : (a : boolean) => void) {
             this.id = id;
             this.finishAction = finishAction;
 

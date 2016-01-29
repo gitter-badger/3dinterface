@@ -18,14 +18,14 @@ module DBReq {
         release : () => void;
 
         /**
-         * @param id {Number} id of the user of who you want the last experiment
-         * @param finishAction {function} callback that has as parameters
+         * @param id id of the user of who you want the last experiment
+         * @param finishAction callback that has as parameters
          * <ol>
-         *  <li>the id of the experiment (Number)</li>
-         *  <li>the id of the coin combination (Number)</li>
-         *  <li>the id of the scene (Number)</li>
-         *  <li>the recommendation style (string)</li>
-         *  <li>the coins (Number[])</li>
+         *  <li>the id of the experiment</li>
+         *  <li>the id of the coin combination</li>
+         *  <li>the id of the scene</li>
+         *  <li>the recommendation style</li>
+         *  <li>the coins</li>
          * </ol>
          * @private
          */

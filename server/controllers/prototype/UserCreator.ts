@@ -42,18 +42,18 @@ module DBReq {
         finalResult : any;
 
         /**
-         * @param workerId {string} the name of the person doing the experiment
-         * @param age {string} a string representing an age range
-         * @param male {boolean} indicates if the user is a man or a woman
-         * @param rating {Number} between 1 and 5, describes the level of the user
-         * @param lastTime {Number} between 0 and 3 such that
+         * @param workerId the name of the person doing the experiment
+         * @param age a string representing an age range
+         * @param male indicates if the user is a man or a woman
+         * @param rating between 1 and 5, describes the level of the user
+         * @param lastTime between 0 and 3 such that
          * <ol start="0">
          *  <li>never played</li>
          *  <li>this year</li>
          *  <li>this month</li>
          *  <li>this week</li>
          * </ol>
-         * @param finishAction {function} callback that has as a parameter the id of
+         * @param finishAction callback that has as a parameter the id of
          * the new user
          * @private
          */

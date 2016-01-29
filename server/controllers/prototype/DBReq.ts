@@ -14,8 +14,8 @@ module DBReq {
 
     /**
      * Try to get a user by id, and creates it if it doesn't exists
-     * @param id {Number} id to test
-     * @param callback {function} callback to call on the id
+     * @param id id to test
+     * @param callback callback to call on the id
      */
     export function tryUser(id : number, callback : Function) {
         if (id !== undefined && id !== null) {
@@ -34,8 +34,8 @@ module DBReq {
     /**
      * Loads every information from an experiment
      * (wraps the {@link Info} constructor)
-     * @param id {Number} id of the experiment to load
-     * @param finishAction {function} callback on the result when loading is
+     * @param id id of the experiment to load
+     * @param finishAction callback on the result when loading is
      * finished
      */
     export function getInfo(id : number, finishAction : (a:any) => void) {
@@ -45,18 +45,18 @@ module DBReq {
     /**
      * Creates an user
      * (wraps the {@link UserCreator} constructor)
-     * @param workerId {string} the name of the person doing the experiment
-     * @param age {string} a string representing an age range
-     * @param male {boolean} indicates if the user is a man or a woman
-     * @param rating {Number} between 1 and 5, describes the level of the user
-     * @param lastTime {Number} between 0 and 3 such that
+     * @param workerId the name of the person doing the experiment
+     * @param age a string representing an age range
+     * @param male indicates if the user is a man or a woman
+     * @param rating between 1 and 5, describes the level of the user
+     * @param lastTime between 0 and 3 such that
      * <ol start="0">
      *  <li>never played</li>
      *  <li>this year</li>
      *  <li>this month</li>
      *  <li>this week</li>
      * </ol>
-     * @param finishAction {function} callback that has as a parameter the id of
+     * @param finishAction callback that has as a parameter the id of
      * the new user
      */
     export function createUser(workerId : string, age : string, male : boolean, rating : number, lastTime : number, finishAction : (a:any) => void ) {
@@ -66,16 +66,16 @@ module DBReq {
     /**
      * Creates an experiment
      * (wraps the {@link ExpCreator} constructor)
-     * @param userId {Number} id of the user that does the experiment
-     * @param experiments {Object[]} array of objects representing the experiments
+     * @param userId id of the user that does the experiment
+     * @param experiments array of objects representing the experiments
      * that the user has already done <code>{sceneId: Number, recommendationStyle: string, coins Number[]}</code>
-     * @param finishAction {function} callback that has as parameters
+     * @param finishAction callback that has as parameters
      * <ol>
-     *  <li>the id of the experiment (Number)</li>
-     *  <li>the id of the coin combination (Number)</li>
-     *  <li>the id of the scene (Number)</li>
-     *  <li>the recommendation style (string)</li>
-     *  <li>the coins (Number[])</li>
+     *  <li>the id of the experiment</li>
+     *  <li>the id of the coin combination</li>
+     *  <li>the id of the scene</li>
+     *  <li>the recommendation styleg</li>
+     *  <li>the coins</li>
      * </ol>
      */
     export function createExp(userId : number, experiments : any[], finishAction : (a:any) => void) {
@@ -85,10 +85,10 @@ module DBReq {
     /**
      * Creates a tutorial
      * (wraps the {@link TurorialCreator} constructor)
-     * @param id {Number} id of the user doing the tutorial
-     * @param finishAction {function} callback that has as parameters
+     * @param id id of the user doing the tutorial
+     * @param finishAction callback that has as parameters
      * <ol>
-     *  <li>the id of the experiment (Number)</li>
+     *  <li>the id of the experiment</li>
      *  <li>the id of the generated coins (Number[])</li>
      * </ol>
      */
@@ -99,8 +99,8 @@ module DBReq {
     /**
      * Checks if an user id exists
      * (wraps the {@link UserIdChecker} constructor)
-     * @param id {Number} id of the user to check
-     * @param finishAction {function} callback that has as a parameter which is a
+     * @param id id of the user to check
+     * @param finishAction callback that has as a parameter which is a
      * boolean indicating wether the user id exists or not
      */
     export function checkUserId(id : number, finishAction : (a:any) => void) {
@@ -110,8 +110,8 @@ module DBReq {
     /**
      * Checks if a workerId exists
      * (wraps the {@link UserNameChecker} constructor)
-     * @param id {string} workerId of to test
-     * @param finishAction {function} callback that has as a parameter which is a
+     * @param id workerId of to test
+     * @param finishAction callback that has as a parameter which is a
      * boolean indicating wether the user id exists or not
      */
     export function checkUserName(name : string, finishAction : (a:any) => void) {
@@ -121,8 +121,8 @@ module DBReq {
     /**
      * Checks if an experiment exists
      * (wraps the {@link ExpIdChecker} constructor)
-     * @param id {Number} id of the experiment to check
-     * @param finishAction {function} callback that has as a parameter which is the
+     * @param id id of the experiment to check
+     * @param finishAction callback that has as a parameter which is the
      * id of the scene if the experiment exists, or null otherwise
      */
     export function checkExpId(id : number, finishAction : (a:any) => void) {
@@ -132,7 +132,7 @@ module DBReq {
     /**
      * Gets the info from all experiment
      * (wraps the {@link ExpGetter} constructor)
-     * @param finishAction {function} callback that has as a parameter which is an
+     * @param finishAction callback that has as a parameter which is an
      * array of objects containing the id, the username, the name of the scene and
      * the id of the user.
      */
@@ -143,13 +143,13 @@ module DBReq {
     /**
      * Gives access to the last not finished experiment
      * (wraps the {@link LastExpGetter} constructor)
-     * @param id {Number} id of the user of who you want the last experiment
-     * @param finishAction {function} callback that has as parameters
+     * @param id id of the user of who you want the last experiment
+     * @param finishAction callback that has as parameters
      * <ol>
-     *  <li>the id of the experiment (Number)</li>
-     *  <li>the id of the coin combination (Number)</li>
-     *  <li>the id of the scene (Number)</li>
-     *  <li>the recommendation style (string)</li>
+     *  <li>the id of the experiment</li>
+     *  <li>the id of the coin combination</li>
+     *  <li>the id of the scene</li>
+     *  <li>the recommendation styleg</li>
      *  <li>the coins (Number[])</li>
      * </ol>xperiment exists, or null otherwise
      */
@@ -160,8 +160,8 @@ module DBReq {
     /**
      * Verifies that a user has correctly done all the experiments
      * (wraps the {@link UserVerifier} constructor)
-     * @param userId {Number} id of the user to verify
-     * @param finishAction {function} callback that has as parameter a boolean
+     * @param userId id of the user to verify
+     * @param finishAction callback that has as parameter a boolean
      * which is true is the verification was a success
      */
     export function verifyUser(id : number, finishAction : (a:boolean) => void) {
@@ -171,11 +171,11 @@ module DBReq {
     /**
      * Gets the "valid" attribute of a user in the databse
      * (wraps the {@link UserGetter} constructor)
-     * @param userId {Number} id of the user
-     * @param finishAction {function} callback that has as parameters :
+     * @param userId id of the user
+     * @param finishAction callback that has as parameters :
      * <ol>
-     *  <li>the workerId of the user (string)</li>
-     *  <li>the "valid" attribute of the database (boolean)</li>
+     *  <li>the workerId of the userg</li>
+     *  <li>the "valid" attribute of the database</li>
      * </ol>
      */
     export function getUser(userId : number, finishAction : (workerId : string, valid : boolean) => void) {

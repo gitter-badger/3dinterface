@@ -18,12 +18,11 @@ module DBReq {
         finalResult : any;
 
         /**
-         * @param finishAction {function} callback that has as a parameter which is an
+         * @param finishAction callback that has as a parameter which is an
          * array of objects containing the id, the username, the name of the scene and
          * the id of the user.
-         * @private
          */
-        constructor(finishAction : (a:any) => void) {
+        constructor(finishAction : (a : any) => void) {
             this.finishAction = finishAction;
 
             pg.connect(pgc.url, (err, client, release) => {
