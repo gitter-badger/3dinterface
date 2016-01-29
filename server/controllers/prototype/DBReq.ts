@@ -16,7 +16,6 @@ module DBReq {
      * Try to get a user by id, and creates it if it doesn't exists
      * @param id {Number} id to test
      * @param callback {function} callback to call on the id
-     * @memberof DBReq
      */
     export function tryUser(id : number, callback : Function) {
         if (id !== undefined && id !== null) {
@@ -38,7 +37,6 @@ module DBReq {
      * @param id {Number} id of the experiment to load
      * @param finishAction {function} callback on the result when loading is
      * finished
-     * @memberof DBReq
      */
     export function getInfo(id : number, finishAction : (a:any) => void) {
         new Info(id, finishAction);
@@ -60,7 +58,6 @@ module DBReq {
      * </ol>
      * @param finishAction {function} callback that has as a parameter the id of
      * the new user
-     * @memberof DBReq
      */
     export function createUser(workerId : string, age : string, male : boolean, rating : number, lastTime : number, finishAction : (a:any) => void ) {
         new UserCreator(workerId, age, male, rating, lastTime, finishAction);
@@ -80,7 +77,6 @@ module DBReq {
      *  <li>the recommendation style (string)</li>
      *  <li>the coins (Number[])</li>
      * </ol>
-     * @memberof DBReq
      */
     export function createExp(userId : number, experiments : any[], finishAction : (a:any) => void) {
         new ExpCreator(userId, experiments, finishAction);
@@ -95,7 +91,6 @@ module DBReq {
      *  <li>the id of the experiment (Number)</li>
      *  <li>the id of the generated coins (Number[])</li>
      * </ol>
-     * @memberof DBReq
      */
     export function createTutorial(id : number, finishAction : (expId : number, coins : number[]) => void) {
         new TutorialCreator(id, finishAction);
@@ -107,7 +102,6 @@ module DBReq {
      * @param id {Number} id of the user to check
      * @param finishAction {function} callback that has as a parameter which is a
      * boolean indicating wether the user id exists or not
-     * @memberof DBReq
      */
     export function checkUserId(id : number, finishAction : (a:any) => void) {
         new UserIdChecker(id, finishAction);
@@ -119,7 +113,6 @@ module DBReq {
      * @param id {string} workerId of to test
      * @param finishAction {function} callback that has as a parameter which is a
      * boolean indicating wether the user id exists or not
-     * @memberof DBReq
      */
     export function checkUserName(name : string, finishAction : (a:any) => void) {
         new UserNameChecker(name, finishAction);
@@ -131,7 +124,6 @@ module DBReq {
      * @param id {Number} id of the experiment to check
      * @param finishAction {function} callback that has as a parameter which is the
      * id of the scene if the experiment exists, or null otherwise
-     * @memberof DBReq
      */
     export function checkExpId(id : number, finishAction : (a:any) => void) {
         new ExpIdChecker(id, finishAction);
@@ -143,7 +135,6 @@ module DBReq {
      * @param finishAction {function} callback that has as a parameter which is an
      * array of objects containing the id, the username, the name of the scene and
      * the id of the user.
-     * @memberof DBReq
      */
     export function getAllExps(finishAction : (a:any) => void) {
         new ExpGetter(finishAction);
@@ -161,7 +152,6 @@ module DBReq {
      *  <li>the recommendation style (string)</li>
      *  <li>the coins (Number[])</li>
      * </ol>xperiment exists, or null otherwise
-     * @memberof DBReq
      */
     export function getLastExp(userId : number, finishAction : (expId : number, coinCombinationId : number, sceneId : number, recommendationStyle : string, coins : number[]) => void) {
         new LastExpGetter(userId, finishAction);
@@ -173,7 +163,6 @@ module DBReq {
      * @param userId {Number} id of the user to verify
      * @param finishAction {function} callback that has as parameter a boolean
      * which is true is the verification was a success
-     * @memberof DBReq
      */
     export function verifyUser(id : number, finishAction : (a:boolean) => void) {
         new UserVerifier(id, finishAction);
@@ -188,7 +177,6 @@ module DBReq {
      *  <li>the workerId of the user (string)</li>
      *  <li>the "valid" attribute of the database (boolean)</li>
      * </ol>
-     * @memberof DBReq
      */
     export function getUser(userId : number, finishAction : (workerId : string, valid : boolean) => void) {
         new UserGetter(userId, finishAction);

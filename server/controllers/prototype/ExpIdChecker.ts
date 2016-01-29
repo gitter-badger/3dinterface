@@ -20,7 +20,6 @@ module DBReq {
          * @param id {Number} id of the experiment to check
          * @param finishAction {function} callback that has as a parameter which is the
          * id of the scene if the experiment exists, or null otherwise
-         * @memberof DBReq
          * @constructor
          * @private
          */

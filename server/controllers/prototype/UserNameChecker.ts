@@ -20,7 +20,6 @@ module DBReq {
          * @param id {string} workerId of to test
          * @param finishAction {function} callback that has as a parameter which is a
          * boolean indicating wether the user id exists or not
-         * @memberof DBReq
          * @constructor
          * @private
          */

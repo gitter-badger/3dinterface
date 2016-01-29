@@ -55,7 +55,6 @@ module DBReq {
          * </ol>
          * @param finishAction {function} callback that has as a parameter the id of
          * the new user
-         * @memberof DBReq
          * @constructor
          * @private
          */
