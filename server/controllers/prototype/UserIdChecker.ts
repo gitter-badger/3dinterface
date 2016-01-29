@@ -20,7 +20,6 @@ module DBReq {
          * @param id {Number} id of the user to check
          * @param finishAction {function} callback that has as a parameter which is a
          * boolean indicating wether the user id exists or not
-         * @constructor
          * @private
          */
         constructor(id : number, finishAction : (a : any) => void) {

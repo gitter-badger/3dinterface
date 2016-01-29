@@ -21,7 +21,6 @@ module DBReq {
          * @param finishAction {function} callback that has as a parameter which is an
          * array of objects containing the id, the username, the name of the scene and
          * the id of the user.
-         * @constructor
          * @private
          */
         constructor(finishAction : (a:any) => void) {

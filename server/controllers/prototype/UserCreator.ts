@@ -55,7 +55,6 @@ module DBReq {
          * </ol>
          * @param finishAction {function} callback that has as a parameter the id of
          * the new user
-         * @constructor
          * @private
          */
         constructor(workerId : string, age : string, male : boolean, rating : number, lastTime : number, finishAction = (a:any)=>{}) {

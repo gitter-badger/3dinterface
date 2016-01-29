@@ -21,7 +21,6 @@ module DBReq {
          * @param userId {Number} id of the user to verify
          * @param finishAction {function} callback that has as parameter a boolean
          * which is true is the verification was a success
-         * @constructor
          * @private
          */
         constructor(userId : number, finishAction : (a : boolean) => void) {

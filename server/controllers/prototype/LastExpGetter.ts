@@ -28,7 +28,6 @@ module DBReq {
          *  <li>the coins (Number[])</li>
          * </ol>
          * @private
-         * @constructor
          */
         constructor(userId : number, finishAction : (expId : number, coinCombinationId : number, sceneId : number, recommendationStyle : string, coins : number[]) => void) {
 

@@ -22,7 +22,6 @@ module DBReq {
          *  <li>the id of the experiment (Number)</li>
          *  <li>the id of the generated coins (Number[])</li>
          * </ol>
-         * @constructor
          * @private
          */
         constructor(id : number, finishAction : (expId : number, coins : number[]) => void) {

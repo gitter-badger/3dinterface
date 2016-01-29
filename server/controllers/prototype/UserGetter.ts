@@ -21,7 +21,6 @@ module DBReq {
          *  <li>the workerId of the user (string)</li>
          *  <li>the "valid" attribute of the database (boolean)</li>
          * </ol>
-         * @constructor
          * @private
          */
         constructor(userId : number, finishAction : (workerId : string, valid : boolean) => void) {

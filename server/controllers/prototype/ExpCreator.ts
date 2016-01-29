@@ -58,7 +58,6 @@ module DBReq {
          *  <li>the recommendation style (string)</li>
          *  <li>the coins (Number[])</li>
          * </ol>
-         * @constructor
          * @private
          */
         constructor(userId : number, experiments : any[], finishAction = (a:any) => {}) {

@@ -12,7 +12,6 @@ module DBReq {
     /**
      * A class that loads every information from an experiment
      * finished
-     * @constructor
      * @private
      */
     export class Info {
