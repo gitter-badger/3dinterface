@@ -1,3 +1,3 @@
-module.exports = {
+export = {
     '/multisphere': 'index'
 };

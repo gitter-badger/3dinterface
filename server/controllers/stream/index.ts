@@ -1,6 +1,7 @@
-var tools = require('../../lib/filterInt');
+import express = require('express');
+import tools = require('../../lib/filterInt');
 
-module.exports.index = function(req, res, next) {
+export function index(req : express.Request, res : express.Response, render : Function, next : Function) {
 
     // Parse get argument res
     res.locals.resolution = req.params.res;
@@ -19,7 +20,6 @@ module.exports.index = function(req, res, next) {
     }
 
     res.setHeader('Content-Type', 'text/html');
-    res.render('index.jade', res.locals, function(err, result) {
-        res.send(result);
-    });
+    render('index.jade');
+
 };

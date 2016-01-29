@@ -32,17 +32,17 @@ function main(app : express.Application) : void {
         log.debug('   ' + name + ':');
 
         for (var key in urls) {
-            app.get(key, function(req, res) {
-                var path = obj[urls[key]](req, res);
-                res.render(__dirname + '/../controllers/' + name + '/views/' + path, res.locals, function(err, out) {
-                    if (err !== null) {
-                    log.jadeerror(err);
-                    }
-                    res.send(out);
-                });
+            app.get(key, function(req, res, next) {
+                var path = obj[urls[key]](req, res, function(view : string) {
+                    res.render(__dirname + '/../controllers/' + name + '/views/' + view, res.locals, function(err : Error, out : string) {
+                        if (err !== null) {
+                            log.jadeerror(err);
+                        }
+                        res.send(out);
+                    });
+                }, next);
             });
             log.debug('      ' + key + ' -> ' + name + '.' + urls[key]);
-
         }
 
         log.debug();

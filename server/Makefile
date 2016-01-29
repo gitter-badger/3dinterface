@@ -42,6 +42,8 @@ server:
 	for path in `ls controllers`; do \
 		if [ -d ../server-bin/controllers/$$path/ ]; then \
 			rm -rf ../server-bin/controllers/$$path/views; \
-			cp -r controllers/$$path/views ../server-bin/controllers/$$path/views; \
+			if [ -d controllers/$$path/views ]; then \
+				cp -r controllers/$$path/views ../server-bin/controllers/$$path/views; \
+			fi \
 		fi \
 	done

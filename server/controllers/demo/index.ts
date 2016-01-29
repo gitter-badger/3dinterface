@@ -1,13 +1,13 @@
-module.exports.demoConfig = function(req, res) {
-    res.setHeader('Content-Type', 'text/html');
+import express = require('express');
 
-    res.render('demo-config.jade', res.locals, function(err, result) {
-        res.send(result);
-    });
+export function demoConfig(req : express.Request, res : express.Response, render : Function) {
+
+    res.setHeader('Content-Type', 'text/html');
+    render('demo-config.jade');
 
 };
 
-module.exports.demo = function(req, res) {
+export function demo(req : express.Request, res : express.Response, render : Function) {
 
     res.setHeader('Content-Type', 'text/html');
 
@@ -25,8 +25,6 @@ module.exports.demo = function(req, res) {
 
     res.locals.prefetch = req.query.prefetch;
 
-    res.render('demo.jade', res.locals, function(err, result) {
-        res.send(result);
-    });
+    render('demo.jade');
 };
 

@@ -1,3 +1,3 @@
-module.exports = {
+export = {
     '/before-begin': 'index',
 };

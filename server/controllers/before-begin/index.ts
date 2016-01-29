@@ -6,3 +6,4 @@ export function index(req : express.Request, res : express.Response, render : Fu
     render('index.jade');
 
 }
+
