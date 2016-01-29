@@ -40,6 +40,11 @@ var td;
  * Load TypeScript
  */
 eval((function () {
+    // var tmp = td.FS.readFileSync;
+    // td.FS.readFileSync = function() {
+    //     var ret = tmp.apply(td.FS, arguments);
+    //     return ret.replace('//@typedoc', '');
+    // }
     var fileName = td.Path.resolve(td.tsPath, 'tsc.js');
     var contents = td.FS.readFileSync(fileName, 'utf-8');
     return contents.replace('ts.executeCommandLine(ts.sys.args);', '');

@@ -5,121 +5,127 @@ import pgc = require('../../private');
 import Log = require('../../lib/log');
 import async = require('async');
 
-/**
- * Class that creates a user
- */
-export = class UserCreator {
+module DBReq {
 
     /**
-     * Callback to call on the id when the user is created
+     * Class that creates a user
      */
-    finishAction : (a : any) => void;
+    export class UserCreator {
 
-    /** Microworker's id of the worker */
-    workerId : string;
+        /**
+         * Callback to call on the id when the user is created
+         */
+        finishAction : (a : any) => void;
 
-    /** Age range (e.g. '20-25') */
-    age : string;
+        /** Microworker's id of the worker */
+        workerId : string;
 
-    /** true if the user is a male, false otherwise */
-    male : boolean;
+        /** Age range (e.g. '20-25') */
+        age : string;
 
-    /** how the user rates its 3D navigation level (between 1 and 5) */
-    rating : number;
+        /** true if the user is a male, false otherwise */
+        male : boolean;
 
-    /** when is the last time the user played a 3D videogame */
-    lastTime : number;
+        /** how the user rates its 3D navigation level (between 1 and 5) */
+        rating : number;
 
-    /** client connection to pg database */
-    client : pg.Client;
+        /** when is the last time the user played a 3D videogame */
+        lastTime : number;
 
-    /** release database function */
-    release : () => void;
+        /** client connection to pg database */
+        client : pg.Client;
 
-    /** the result on which the callback will be called */
-    finalResult : any;
+        /** release database function */
+        release : () => void;
 
-    /**
-     * @param workerId {string} the name of the person doing the experiment
-     * @param age {string} a string representing an age range
-     * @param male {boolean} indicates if the user is a man or a woman
-     * @param rating {Number} between 1 and 5, describes the level of the user
-     * @param lastTime {Number} between 0 and 3 such that
-     * <ol start="0">
-     *  <li>never played</li>
-     *  <li>this year</li>
-     *  <li>this month</li>
-     *  <li>this week</li>
-     * </ol>
-     * @param finishAction {function} callback that has as a parameter the id of
-     * the new user
-     * @memberof DBReq
-     * @constructor
-     * @private
-     */
-    constructor(workerId : string, age : string, male : boolean, rating : number, lastTime : number, finishAction = (a:any)=>{}) {
+        /** the result on which the callback will be called */
+        finalResult : any;
 
-        this.finishAction = finishAction;
+        /**
+         * @param workerId {string} the name of the person doing the experiment
+         * @param age {string} a string representing an age range
+         * @param male {boolean} indicates if the user is a man or a woman
+         * @param rating {Number} between 1 and 5, describes the level of the user
+         * @param lastTime {Number} between 0 and 3 such that
+         * <ol start="0">
+         *  <li>never played</li>
+         *  <li>this year</li>
+         *  <li>this month</li>
+         *  <li>this week</li>
+         * </ol>
+         * @param finishAction {function} callback that has as a parameter the id of
+         * the new user
+         * @memberof DBReq
+         * @constructor
+         * @private
+         */
+        constructor(workerId : string, age : string, male : boolean, rating : number, lastTime : number, finishAction = (a:any)=>{}) {
 
-        this.workerId = workerId;
-        this.age = age;
-        this.male = male;
-        this.rating = rating;
-        this.lastTime = lastTime;
+            this.finishAction = finishAction;
 
-        // Connect to db
-        pg.connect(pgc.url, (err : Error, client : pg.Client, release : () => void) => {
-            this.client = client;
-            this.release = release;
-            this.execute();
-        });
-    }
+            this.workerId = workerId;
+            this.age = age;
+            this.male = male;
+            this.rating = rating;
+            this.lastTime = lastTime;
 
-    /**
-     * Executes the SQL request and calls the callback
-     */
-    execute() {
-        this.client.query("BEGIN; LOCK Users IN SHARE ROW EXCLUSIVE MODE;", [], () => {
-            this.client.query(
-                "INSERT INTO users(worker_id, age, male, rating, lasttime)  VALUES($1, $2, $3, $4, $5);",
-                [
-                    this.workerId,
-                    this.age,
-                    this.male,
-                    this.rating,
-                    this.lastTime
-                ],
-                (err : Error, result : pg.QueryResult) => {
-                    if (err !== null) {
-                        Log.dberror(err + ' in UserCreator INSERT INTO');
-                    }
-                    this.client.query(
-                        "SELECT max(id) FROM Users;",
-                        [],
-                        (err : Error, result : pg.QueryResult) => {
-                            this.finalResult = result.rows[0].max;
-                            this.finish();
+            // Connect to db
+            pg.connect(pgc.url, (err : Error, client : pg.Client, release : () => void) => {
+                this.client = client;
+                this.release = release;
+                this.execute();
+            });
+        }
+
+        /**
+         * Executes the SQL request and calls the callback
+         */
+        execute() {
+            this.client.query("BEGIN; LOCK Users IN SHARE ROW EXCLUSIVE MODE;", [], () => {
+                this.client.query(
+                    "INSERT INTO users(worker_id, age, male, rating, lasttime)  VALUES($1, $2, $3, $4, $5);",
+                    [
+                        this.workerId,
+                        this.age,
+                        this.male,
+                        this.rating,
+                        this.lastTime
+                    ],
+                    (err : Error, result : pg.QueryResult) => {
+                        if (err !== null) {
+                            Log.dberror(err + ' in UserCreator INSERT INTO');
                         }
-                    );
-                }
-            );
-        });
-    }
+                        this.client.query(
+                            "SELECT max(id) FROM Users;",
+                            [],
+                            (err : Error, result : pg.QueryResult) => {
+                                this.finalResult = result.rows[0].max;
+                                this.finish();
+                            }
+                        );
+                    }
+                );
+            });
+        }
 
-    /**
-     * Release the DB connection and call the callback
-     */
-    finish() {
+        /**
+         * Release the DB connection and call the callback
+         */
+        finish() {
 
-        this.client.query("COMMIT;", [], () =>  {
+            this.client.query("COMMIT;", [], () =>  {
 
-            this.release();
-            this.client = null;
-            this.release = null;
+                this.release();
+                this.client = null;
+                this.release = null;
 
-            this.finishAction(this.finalResult);
+                this.finishAction(this.finalResult);
 
-        });
+            });
+        }
+
     }
 
 }
+
+export = DBReq.UserCreator;

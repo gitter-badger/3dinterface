@@ -5,85 +5,91 @@ import Log = require('../../lib/log');
 
 import async = require('async');
 
-/**
- * Class that verifies that a user has correctly done all the experiments
- */
-export = class UserVerifier {
-
-    userId : number;
-    finishAction : (a : boolean) => void;
-    client : pg.Client;
-    release : () => void;
+module DBReq {
 
     /**
-     * @param userId {Number} id of the user to verify
-     * @param finishAction {function} callback that has as parameter a boolean
-     * which is true is the verification was a success
-     * @memberof DBReq
-     * @constructor
-     * @private
+     * Class that verifies that a user has correctly done all the experiments
      */
-    constructor(userId : number, finishAction : (a : boolean) => void) {
-        this.userId = userId;
-        this.finishAction = finishAction;
+    export class UserVerifier {
 
-        pg.connect(pgc.url, (err, client, release) => {
-            this.client = client;
-            this.release = release;
+        userId : number;
+        finishAction : (a : boolean) => void;
+        client : pg.Client;
+        release : () => void;
 
-            this.execute();
-        });
-    }
+        /**
+         * @param userId {Number} id of the user to verify
+         * @param finishAction {function} callback that has as parameter a boolean
+         * which is true is the verification was a success
+         * @memberof DBReq
+         * @constructor
+         * @private
+         */
+        constructor(userId : number, finishAction : (a : boolean) => void) {
+            this.userId = userId;
+            this.finishAction = finishAction;
 
-    /**
-     * Executes the SQL request and calls the callback
-     */
-    execute() {
+            pg.connect(pgc.url, (err, client, release) => {
+                this.client = client;
+                this.release = release;
 
-        this.client.query(
-            "SELECT id as \"expId\" FROM Experiment WHERE user_id = $1",
-            [this.userId],
-            (err, result) => {
-                if (result.rows.length !== 4) {
-                    this.finish(false);
-                }
+                this.execute();
+            });
+        }
 
-                async.map(
-                    result.rows,
-                    (elt : any, callback : (a : any, b : boolean) => void ) => {
-                        this.client.query(
-                            "SELECT count(*) > 5 AS ok FROM CoinClicked WHERE exp_id = $1",
-                            [elt.expId],
-                            (err : Error, result : pg.QueryResult) => {
-                                callback(null, result.rows[0].ok === true);
-                            }
-                        );
-                    },
-                    (err : Error, result : any[]) => {
-                        var ok = result.reduce(function(prev, next) { return prev && next; });
-                        this.client.query(
-                            "UPDATE Users SET valid = $1 WHERE id = $2",
-                            [ok, this.userId],
-                            (err : Error, result : pg.QueryResult) => {
-                                this.finish(ok);
-                            }
-                        );
+        /**
+         * Executes the SQL request and calls the callback
+         */
+        execute() {
+
+            this.client.query(
+                "SELECT id as \"expId\" FROM Experiment WHERE user_id = $1",
+                [this.userId],
+                (err, result) => {
+                    if (result.rows.length !== 4) {
+                        this.finish(false);
                     }
-                );
-            }
-        );
 
-    }
+                    async.map(
+                        result.rows,
+                        (elt : any, callback : (a : any, b : boolean) => void ) => {
+                            this.client.query(
+                                "SELECT count(*) > 5 AS ok FROM CoinClicked WHERE exp_id = $1",
+                                [elt.expId],
+                                (err : Error, result : pg.QueryResult) => {
+                                    callback(null, result.rows[0].ok === true);
+                                }
+                            );
+                        },
+                        (err : Error, result : any[]) => {
+                            var ok = result.reduce(function(prev, next) { return prev && next; });
+                            this.client.query(
+                                "UPDATE Users SET valid = $1 WHERE id = $2",
+                                [ok, this.userId],
+                                (err : Error, result : pg.QueryResult) => {
+                                    this.finish(ok);
+                                }
+                            );
+                        }
+                    );
+                }
+            );
 
-    /**
-     * Release the DB connection and call the callback
-     */
-    finish(finalResult : any) {
-        this.release();
+        }
 
-        this.client = null;
-        this.release = null;
-        this.finishAction(finalResult);
+        /**
+         * Release the DB connection and call the callback
+         */
+        finish(finalResult : any) {
+            this.release();
+
+            this.client = null;
+            this.release = null;
+            this.finishAction(finalResult);
+        }
+
     }
 
 }
+
+export = DBReq.UserVerifier;
