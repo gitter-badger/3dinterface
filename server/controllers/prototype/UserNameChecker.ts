@@ -22,7 +22,7 @@ export = class UserNameChecker {
      * @constructor
      * @private
      */
-    constructor(name : string, finishAction : (a : any) => {}) {
+    constructor(name : string, finishAction = (a : any) => {}) {
         this.name = name;
         this.finishAction = finishAction;
         pg.connect(pgc.url, function(err, client, release) {

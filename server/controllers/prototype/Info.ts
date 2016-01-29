@@ -73,7 +73,7 @@ export = class Info {
      * @param id id of the experiment to load
      * @param finishAction callback on the result when loading is
      */
-    constructor(id : number, finishAction : Function) {
+    constructor(id : number, finishAction : (a:any) => void) {
 
         this.id = id;
 

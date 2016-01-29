@@ -1,13 +1,10 @@
-import DBReq = require('./DBReq');
-
-/*
-
-var tools = require('../../lib/filterInt');
-var pg = require('pg');
+import express = require('express');
+import tools = require('../../lib/filterInt');
+import pg = require('pg');
 import pgc = require('../../private');
-var db = require('./dbrequests');
+import db = require('./DBReq');
 
-module.exports.index = function(req, res) {
+export function index(req : express.Request, res : express.Response) {
     res.setHeader('Content-Type', 'text/html');
 
     res.render('index.jade', res.locals, function(err, result) {
@@ -15,7 +12,7 @@ module.exports.index = function(req, res) {
     });
 };
 
-var sceneToFunction = function(scene) {
+function sceneToFunction(scene : number) : string {
     switch (scene) {
         case 2:
             return 'BobombScene';
@@ -28,19 +25,19 @@ var sceneToFunction = function(scene) {
     }
 };
 
-module.exports.game = function(req, res) {
+export function game(req : express.Request, res : express.Response) {
 
     req.session.experiments = req.session.experiments || [];
     req.session.save();
 
-    db.checkUserId(req.session.userId, function(ok) {
+    db.checkUserId(req.session.userId, function(ok : boolean) {
 
         if (ok) {
 
             db.createExp(
                 req.session.userId,
                 req.session.experiments,
-                function(expId, sceneId, coinCombinationId, recommendationStyle, coins) {
+                function() {
 
                     // if (expId === undefined) {
 
@@ -59,6 +56,7 @@ module.exports.game = function(req, res) {
 
                     // res.setHeader('Content-Type','text/html');
                     // res.send("Ok");
+
                 });
 
         } else {
@@ -69,7 +67,7 @@ module.exports.game = function(req, res) {
     });
 };
 
-module.exports.play = function(req, res) {
+export function play(req : express.Request, res : express.Response) {
 
     req.session.counter = req.session.counter === undefined ? 0 : req.session.counter + 1;
     req.session.save();
@@ -127,7 +125,7 @@ module.exports.play = function(req, res) {
 
 };
 
-module.exports.sponza = function(req, res) {
+export function sponza(req : express.Request, res : express.Response) {
     res.setHeader('Content-Type', 'text/html');
 
     res.render('sponza.jade', res.locals, function(err, result) {
@@ -135,7 +133,7 @@ module.exports.sponza = function(req, res) {
     });
 };
 
-module.exports.replayInfo = function(req, res) {
+export function replayInfo(req : express.Request, res : express.Response) {
     res.setHeader('Content-Type', 'text/plain');
 
     // Parse id
@@ -146,7 +144,7 @@ module.exports.replayInfo = function(req, res) {
     });
 };
 
-module.exports.replay = function(req, res, next) {
+export function replay(req : express.Request, res : express.Response, next : Function) {
     // Get id parameter
     res.locals.id = tools.filterInt(req.params.id);
 
@@ -172,7 +170,7 @@ module.exports.replay = function(req, res, next) {
     });
 };
 
-module.exports.replayIndex = function(req, res, next) {
+export function replayIndex(req : express.Request, res : express.Response, next : Function) {
     db.getAllExps(function(result) {
         res.locals.users = result;
 
@@ -183,7 +181,7 @@ module.exports.replayIndex = function(req, res, next) {
     });
 };
 
-module.exports.tutorial = function(req, res) {
+export function tutorial(req : express.Request, res : express.Response) {
 
     if (req.session.tutorialDone) {
 
@@ -223,9 +221,9 @@ module.exports.tutorial = function(req, res) {
 
 };
 
-function editorHelper(templateName) {
+function editorHelper(templateName : string) {
 
-    return function(req, res, next) {
+    return function(req : express.Request, res : express.Response, next : Function) {
 
         var scene = req.params.scene;
 
@@ -257,7 +255,7 @@ module.exports.clicker = editorHelper('prototype_clicker.jade');
 module.exports.viewer = editorHelper('prototype_viewer.jade');
 module.exports.checker = editorHelper('prototype_checker.jade');
 
-module.exports.userstudy = function(req, res) {
+export function userstudy(req : express.Request, res : express.Response) {
 
     if (req.session.userId !== undefined) {
 
@@ -279,8 +277,6 @@ module.exports.userstudy = function(req, res) {
 
 };
 
-module.exports.next = function(req, res) {
+export function next(req : express.Request, res : express.Response) {
     res.redirect('/prototype/game');
 };
-
-*/

@@ -1,4 +1,4 @@
-export = {}; /*
+export = {
     '/prototype': 'index',
     '/prototype/game': 'game',
     '/prototype/replay': 'replayIndex',
@@ -13,4 +13,4 @@ export = {}; /*
     '/prototype/next': 'next',
     '/prototype/play': 'play'
 };
-*/
+

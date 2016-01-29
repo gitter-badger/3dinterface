@@ -46,7 +46,9 @@ function construct(constr : any, args : IArguments) {
  * finished
  * @memberof DBReq
  */
-export function getInfo() { construct(Info, arguments); }
+export function getInfo(id : number, finishAction : (a:any) => void) {
+    new Info(id, finishAction);
+}
 
 /**
  * Creates an user
@@ -66,7 +68,9 @@ export function getInfo() { construct(Info, arguments); }
  * the new user
  * @memberof DBReq
  */
-export function createUser() { construct(UserCreator, arguments); }
+export function createUser(workerId : string, age : string, male : boolean, rating : number, lastTime : number, finishAction : (a:any) => void ) {
+    new UserCreator(workerId, age, male, rating, lastTime, finishAction);
+}
 
 /**
  * Creates an experiment
@@ -84,7 +88,9 @@ export function createUser() { construct(UserCreator, arguments); }
  * </ol>
  * @memberof DBReq
  */
-export function createExp() { construct(ExpCreator, arguments); }
+export function createExp(userId : number, experiments : any[], finishAction : (a:any) => void) {
+    new ExpCreator(userId, experiments, finishAction);
+}
 
 /**
  * Creates a tutorial
@@ -97,7 +103,9 @@ export function createExp() { construct(ExpCreator, arguments); }
  * </ol>
  * @memberof DBReq
  */
-export function createTutorial() { construct(TutorialCreator, arguments); }
+export function createTutorial(id : number, finishAction : (expId : number, coins : number[]) => void) {
+    new TutorialCreator(id, finishAction);
+}
 
 /**
  * Checks if an user id exists
@@ -107,7 +115,9 @@ export function createTutorial() { construct(TutorialCreator, arguments); }
  * boolean indicating wether the user id exists or not
  * @memberof DBReq
  */
-export function checkUserId() { construct(UserIdChecker, arguments); }
+export function checkUserId(id : number, finishAction : (a:any) => void) {
+    new UserIdChecker(id, finishAction);
+}
 
 /**
  * Checks if a workerId exists
@@ -117,7 +127,9 @@ export function checkUserId() { construct(UserIdChecker, arguments); }
  * boolean indicating wether the user id exists or not
  * @memberof DBReq
  */
-export function checkUserName() { construct(UserNameChecker, arguments); }
+export function checkUserName(name : string, finishAction : (a:any) => void) {
+    new UserNameChecker(name, finishAction);
+}
 
 /**
  * Checks if an experiment exists
@@ -127,7 +139,9 @@ export function checkUserName() { construct(UserNameChecker, arguments); }
  * id of the scene if the experiment exists, or null otherwise
  * @memberof DBReq
  */
-export function checkExpId() { construct(ExpIdChecker, arguments); }
+export function checkExpId(id : number, finishAction : (a:any) => void) {
+    new ExpIdChecker(id, finishAction);
+}
 
 /**
  * Gets the info from all experiment
@@ -137,7 +151,9 @@ export function checkExpId() { construct(ExpIdChecker, arguments); }
  * the id of the user.
  * @memberof DBReq
  */
-export function getAllExps() { construct(ExpGetter, arguments); }
+export function getAllExps(finishAction : (a:any) => void) {
+    new ExpGetter(finishAction);
+}
 
 /**
  * Gives access to the last not finished experiment
@@ -153,7 +169,9 @@ export function getAllExps() { construct(ExpGetter, arguments); }
  * </ol>xperiment exists, or null otherwise
  * @memberof DBReq
  */
-export function getLastExp() { construct(LastExpGetter, arguments); }
+export function getLastExp(userId : number, finishAction : (expId : number, coinCombinationId : number, sceneId : number, recommendationStyle : string, coins : number[]) => void) {
+    new LastExpGetter(userId, finishAction);
+}
 
 /**
  * Verifies that a user has correctly done all the experiments
@@ -163,7 +181,9 @@ export function getLastExp() { construct(LastExpGetter, arguments); }
  * which is true is the verification was a success
  * @memberof DBReq
  */
-export function verifyUser() { construct(UserVerifier, arguments); }
+export function verifyUser(id : number, finishAction : (a:boolean) => void) {
+    new UserVerifier(id, finishAction);
+}
 
 /**
  * Gets the "valid" attribute of a user in the databse
@@ -176,4 +196,6 @@ export function verifyUser() { construct(UserVerifier, arguments); }
  * </ol>
  * @memberof DBReq
  */
-export function getUser() { construct(UserGetter, arguments); }
+export function getUser(userId : number, finishAction : (workerId : string, valid : boolean) => void) {
+    new UserGetter(userId, finishAction);
+}
