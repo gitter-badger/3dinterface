@@ -3,7 +3,7 @@ module L3D {
     /**
      * Displays a translucid canvas over the renderer to enable interaction to lock pointer
      */
-    class StartCanvas {
+    export class StartCanvas {
 
         /** The document element to add on top of the renderer */
         domElement : HTMLCanvasElement;

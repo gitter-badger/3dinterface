@@ -3,7 +3,7 @@ module L3D {
     /**
      * Displays a small preview of a camera
      */
-    class Previewer {
+    export class Previewer {
 
         /** The document element to add on top of the renderer */
         domElement = document.createElement('canvas');

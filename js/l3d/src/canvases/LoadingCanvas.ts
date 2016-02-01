@@ -3,7 +3,7 @@ module L3D {
     /**
      * Displays a translucid canvas over the renderer to tell to wait for loading
      */
-    class LoadingCanvas {
+    export class LoadingCanvas {
 
         /**
          * The document element to add on top of the renderer

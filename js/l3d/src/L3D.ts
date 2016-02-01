@@ -47,4 +47,12 @@ interface Window {
 
     };
 
+    onWindowResize ?: Function;
+
+}
+
+interface Math {
+
+    sign : (v : number) => number;
+
 }
