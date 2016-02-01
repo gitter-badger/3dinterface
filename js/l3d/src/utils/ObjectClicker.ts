@@ -1,0 +1,142 @@
+module L3D {
+
+    export class ObjectClicker {
+
+        /**
+         * Objects on which the collision is possible
+         */
+        objects : THREE.Object3D[];
+
+        /**
+         * Camera used for ray casting
+         */
+        camera : THREE.Camera;
+
+        /**
+         * Position of the mouse
+         */
+        mouse : { x : number, y : number };
+
+        /**
+         * Element on which we will listen
+         */
+        domElement : Element;
+
+        /**
+         * Element currently hovered
+         */
+        hoveredElement : THREE.Object3D;
+
+        /**
+         * Raycaster used for finding the objects
+         */
+        private raycaster : THREE.Raycaster;
+
+        /**
+         * Currently pointed object
+         */
+        currentPointedObject : THREE.Intersection;
+
+        /**
+         * Previously pointed object
+         */
+        previousPointedObject : THREE.Intersection;
+
+        constructor() {
+
+            // Add event listeners
+            this.domElement.addEventListener('mousemove', (event : any) => { this.update(event); });
+
+            if (navigator.userAgent.indexOf("Firefox") > 0) {
+                // If firefox
+                this.domElement.addEventListener('mousedown', (event : any) => { this.click(event); });
+            } else {
+                // If chrome
+                this.domElement.addEventListener('click', (event : any) => { this.click(event); });
+                this.domElement.addEventListener('contextmenu', (event : any) => { event.button = 2; this.click(event); });
+            }
+
+        }
+
+
+        getPointedObject() {
+
+            // Compute x and y for unprojection
+            var x = ( this.mouse.x / window.containerSize.width() ) * 2 - 1;
+            var y = - (this.mouse.y / window.containerSize.height()) * 2 + 1;
+
+            if (this.pointerCheck()) {
+
+                x = 0;
+                y = 0;
+
+            }
+
+            var vector = new THREE.Vector3(x,y,0.5);
+            vector.unproject(this.camera);
+
+            // Set raycaster
+            this.raycaster.set(this.camera.position, vector.sub(this.camera.position).normalize());
+
+            // Compute intersections
+            var intersects = this.raycaster.intersectObjects(this.objects, false);
+
+            // Avoid non-raycastable objects
+            for (var i = 0; i < intersects.length && !intersects[i].object.raycastable; i++){}
+
+            // Objects are sorted by distance in intersects, the best is the first
+            return intersects[i];
+
+        }
+
+        update(event ?: any) {
+
+            if (event !== undefined) {
+                this.mouse.x = event.offsetX || event.layerX;
+                this.mouse.y = event.offsetY || event.layerY;
+            }
+
+            // Update current pointed object
+            this.previousPointedObject = this.currentPointedObject;
+            this.currentPointedObject = this.getPointedObject();
+
+            // If those two objects are different, call onHover
+            if (this.previousPointedObject !== this.currentPointedObject) {
+
+                var p = this.pointerCheck();
+
+                if (this.previousPointedObject !== undefined)
+                    if (this.previousPointedObject.object !== undefined)
+                        if (typeof this.previousPointedObject.object.onMouseLeave === 'function')
+                            this.previousPointedObject.object.onMouseLeave();
+
+                if (this.currentPointedObject !== undefined)
+                    if (this.currentPointedObject.object !== undefined)
+                        if (typeof this.currentPointedObject.object.onMouseEnter === 'function')
+                            this.currentPointedObject.object.onMouseEnter({
+                                x : p ? window.containerSize.width()  / 2 : this.mouse.x,
+                                y : p ? window.containerSize.height() / 2 : this.mouse.y
+                            });
+
+            }
+
+        }
+
+        click(event ?: any) {
+
+            if (this.currentPointedObject !== undefined)
+                if (this.currentPointedObject.object !== undefined)
+                    if (typeof this.currentPointedObject.object.onClick === 'function')
+                        this.currentPointedObject.object.onClick();
+
+
+        }
+
+        private pointerCheck() : boolean {
+            return this.camera instanceof PointerCamera && (<PointerCamera>this.camera).pointerLocked;
+        }
+
+
+    }
+
+}
