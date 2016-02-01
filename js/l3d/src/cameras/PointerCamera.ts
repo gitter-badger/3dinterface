@@ -163,32 +163,32 @@ module L3D {
         recommendationClicked : number;
 
         /**
-          *
-          */
-         newTarget : Vector3;
+         *
+         */
+        newTarget : Vector3;
 
-         newPosition : Vector3;
+        newPosition : Vector3;
 
-         mouseMoved : boolean;
+        mouseMoved : boolean;
 
-         t : number;
+        t : number;
 
-         mousePointer : MousePointer;
-         startCanvas : any;
+        mousePointer : MousePointer;
+        startCanvas : any;
 
-         wasLocked : boolean;
+        wasLocked : boolean;
 
-         movingHermite : boolean;
+        movingHermite : boolean;
 
-         hermitePosition : Hermite.special.Polynom<Vector3>;
+        hermitePosition : Hermite.special.Polynom<Vector3>;
 
-         hermiteAngles : Hermite.special.Polynom<Vector3>;
+        hermiteAngles : Hermite.special.Polynom<Vector3>;
 
-         hermite : Hermite.Polynom<Vector3>;
+        hermite : Hermite.Polynom<Vector3>;
 
-         collidableObjects : any[];
+        collidableObjects : any[];
 
-         changed : boolean;
+        changed : boolean;
 
         constructor(
             arg0 : any, arg1 : any, arg2 : any, arg3 : any,
@@ -528,31 +528,31 @@ module L3D {
         move(recommendation : TargetMove, toSave : boolean, recommendationId ?: number) : void;
         move(recommendation : any, toSave = true, recommendationId? : number) : void {
 
-                var otherCamera = recommendation.camera || recommendation;
+            var otherCamera = recommendation.camera || recommendation;
 
-                this.movingHermite = false;
-                this.moving = true;
+            this.movingHermite = false;
+            this.moving = true;
 
-                this.newTarget = otherCamera.target.clone();
-                this.newPosition = otherCamera.position.clone();
-                var t = [0,1];
-                var f = [this.position.clone(), this.newPosition];
-                var fp = [L3D.Tools.diff(this.target, this.position), L3D.Tools.diff(this.newTarget, this.newPosition)];
-                this.hermite = new L3D.Hermite.Polynom(t,f,fp);
-                this.t = 0;
+            this.newTarget = otherCamera.target.clone();
+            this.newPosition = otherCamera.position.clone();
+            var t = [0,1];
+            var f = [this.position.clone(), this.newPosition];
+            var fp = [L3D.Tools.diff(this.target, this.position), L3D.Tools.diff(this.newTarget, this.newPosition)];
+            this.hermite = new L3D.Hermite.Polynom(t,f,fp);
+            this.t = 0;
 
-                if (toSave) {
-                    if (this.changed) {
-                        this.save();
-                        this.changed = false;
-                    }
-                    this.history.addState({position: otherCamera.position.clone(), target: otherCamera.target.clone()});
+            if (toSave) {
+                if (this.changed) {
+                    this.save();
+                    this.changed = false;
                 }
+                this.history.addState({position: otherCamera.position.clone(), target: otherCamera.target.clone()});
             }
+        }
 
-            /**
-             * Creates a hermite motion to another camera
-             * @param recommendation Camera to move to
+        /**
+         * Creates a hermite motion to another camera
+         * @param recommendation Camera to move to
          * @param toSave if you want to save the current state of the camera
          */
         moveHermite(recommendation : CameraItf, toSave : boolean, recommendationId ?: number) : void;
