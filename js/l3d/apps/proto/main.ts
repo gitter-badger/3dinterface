@@ -32,7 +32,7 @@ module Proto {
         window.onload = main;
 
         var stats : Stats,
-            renderer : THREE.Renderer,
+            renderer : THREE.WebGLRenderer,
             scene : THREE.Scene,
             container : HTMLElement,
             clickableObjects : THREE.Object3D[] = [],
@@ -89,7 +89,7 @@ module Proto {
             // Set the good size of cameras
             onWindowResize();
 
-            coinCanvas.update(true);
+            coinCanvas.update();
 
 
             if (GLOB.locked !== undefined && GLOB.locked)
