@@ -22,7 +22,7 @@ module Proto {
         //     //     loadingCanvas.clear();
         //
         //     L3D.DB.enable();
-        //     camera1.reset();
+        //     camera.reset();
         //
         // };
 
@@ -33,19 +33,20 @@ module Proto {
 
         var stats : Stats,
             renderer : THREE.WebGLRenderer,
-            scene : THREE.Scene,
+            scene : SceneWithCoins,
             container : HTMLElement,
             clickableObjects : THREE.Object3D[] = [],
             recommendations : L3D.BaseRecommendation[],
             objectClicker : L3D.ObjectClicker,
             previewer : L3D.Previewer,
-            camera1 : L3D.PointerCamera,
+            camera : L3D.PointerCamera,
             coins : Coin[] = [],
             previousTime : number,
             pointer : L3D.MousePointer,
             startCanvas : L3D.StartCanvas,
             loadingCanvas : L3D.LoadingCanvas,
-            coinCanvas : CoinCanvas;
+            coinCanvas : CoinCanvas,
+            buttonManager : ButtonManager;
 
         // window.onbeforeunload = function() {
         //
@@ -157,13 +158,13 @@ module Proto {
             // );
 
             // Initialize pointer camera
-            camera1 = new L3D.PointerCamera(
+            camera = new L3D.PointerCamera(
                 50,
                 window.containerSize.width() / window.containerSize.height(),
                 0.01, 100000, renderer, container
             );
 
-            scene.setCamera(camera1);
+            scene.setCamera(camera);
 
             scene.load(GLOB.prefetch, GLOB.lowRes);
 
@@ -171,13 +172,13 @@ module Proto {
 
             scene.addCoins(GLOB.coinConfig);
 
-            camera1.collidableObjects = scene.collidableObjects;
-            camera1.collisions = true;
+            camera.collidableObjects = scene.collidableObjects;
+            camera.collisions = true;
 
             // Get default param for camera lock
-            document.getElementById('lock').checked = GLOB.locked;
-            camera1.shouldLock = GLOB.locked;
-            camera1.onPointerLockChange();
+            $('#lock').prop('checked', GLOB.locked);
+            camera.shouldLock = GLOB.locked;
+            camera.onPointerLockChange();
 
         }
 
@@ -200,10 +201,10 @@ module Proto {
             coinCanvas.domElement.style.cssFloat = 'top-left';
 
             // Initialize pointer for pointer lock
-            pointer = new L3D.MousePointer(camera1);
+            pointer = new L3D.MousePointer(camera);
 
             // Init start canvas
-            startCanvas = new L3D.StartCanvas(camera1);
+            startCanvas = new L3D.StartCanvas(camera);
 
             loadingCanvas = new L3D.LoadingCanvas();
         }
@@ -211,7 +212,7 @@ module Proto {
         function initModels() {
 
             // // Init recommendations
-            // recommendations = GLOB.initMainScene(camera1, scene, coins, clickableObjects);
+            // recommendations = GLOB.initMainScene(camera, scene, coins, clickableObjects);
 
             // // init clickable objects
             // var i;
@@ -229,15 +230,15 @@ module Proto {
             window.addEventListener('resize', onWindowResize, false);
 
             // HTML Bootstrap buttons
-            buttonManager = new ButtonManager(camera1, recommendations, previewer);
+            buttonManager = new ButtonManager(camera, recommendations, previewer);
 
             // Object clicker for hover and clicking recommendations
             objectClicker = new L3D.ObjectClicker(
                 renderer,
-                camera1,
+                camera,
                 scene.clickableObjects,
-                objectClickerOnHover(camera1, previewer, scene.recommendations, container), // Create onHover function
-                objectClickerOnClick(camera1, buttonManager, scene.recommendations, scene.coins), // Create onClick function
+                objectClickerOnHover(camera, previewer, scene.recommendations, container), // Create onHover function
+                objectClickerOnClick(camera, buttonManager, scene.recommendations, scene.coins), // Create onClick function
                 container
             );
 
@@ -264,23 +265,23 @@ module Proto {
 
             // Update main camera
             var currentTime = Date.now() - previousTime;
-            camera1.update(isNaN(currentTime) ? 20 : currentTime);
+            camera.update(isNaN(currentTime) ? 20 : currentTime);
             previousTime = Date.now();
 
             coinCanvas.update();
             coinCanvas.render();
 
             // Update the recommendations
-            scene.recommendations.map(function(reco : L3D.BaseRecommendation) { reco.update(camera1);});
+            scene.recommendations.map(function(reco : L3D.BaseRecommendation) { reco.update(camera);});
 
             // Set current position of camera
-            camera1.look();
+            camera.look();
 
             var left = 0, bottom = 0, width = window.containerSize.width(), height = window.containerSize.height();
             renderer.setScissor(left, bottom, width, height);
             renderer.enableScissorTest(true);
             renderer.setViewport(left, bottom, width, height);
-            renderer.render(scene, camera1);
+            renderer.render(scene, camera);
 
             // Remove borders of preview
             previewer.clear();
@@ -292,7 +293,7 @@ module Proto {
             });
 
             // Update transparent elements
-            // THREEx.Transparency.update(camera1);
+            // THREEx.Transparency.update(camera);
 
             // Render preview
             previewer.render(window.containerSize.width(), window.containerSize.height());

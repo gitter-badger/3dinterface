@@ -55,6 +55,10 @@ module L3D {
             enabled = false;
         }
 
+        export function isEnabled() : boolean {
+            return enabled;
+        }
+
         /**
          * Compacts a camera
          * @param camera a camera with a position and a target
