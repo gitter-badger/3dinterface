@@ -1,3 +1,5 @@
+///<reference path="../../../../typings/includes.d.ts"/>
+
 module Proto {
 
     L3D.DB.disable();
