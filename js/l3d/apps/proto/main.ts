@@ -1,4 +1,4 @@
-///<reference path="../../../../typings/includes.d.ts"/>
+///<reference path="./includes.d.ts"/>
 
 module Proto {
 
@@ -99,10 +99,10 @@ module Proto {
                 startCanvas.render();
 
             // Some config
-            if (GLOB.initMainScene !== L3D.initPeach && GLOB.initMainScene !== L3D.initSponza)
-                setInterval(function() {logfps(stats.getFps());}, 500);
-            else
-                L3D.DB.disable();
+            // if (GLOB.initMainScene !== L3D.initPeach && GLOB.initMainScene !== L3D.initSponza)
+            //     setInterval(function() {logfps(stats.getFps());}, 500);
+            // else
+            //     L3D.DB.disable();
 
             // startCanvas.render(L3D.StartCanvas.Black);
 
@@ -166,13 +166,13 @@ module Proto {
                 0.01, 100000, renderer, container
             );
 
-            scene.setCamera(camera);
+            // scene.setCamera(camera);
 
-            scene.load(GLOB.prefetch, GLOB.lowRes);
+            // scene.load(GLOB.prefetch, GLOB.lowRes);
 
-            scene.addRecommendations(GLOB.Recommendation);
+            // scene.addRecommendations(GLOB.Recommendation);
 
-            scene.addCoins(GLOB.coinConfig);
+            // scene.addCoins(GLOB.coinConfig);
 
             camera.collidableObjects = scene.collidableObjects;
             camera.collisions = true;
@@ -235,14 +235,7 @@ module Proto {
             buttonManager = new ButtonManager(camera, recommendations, previewer);
 
             // Object clicker for hover and clicking recommendations
-            objectClicker = new L3D.ObjectClicker(
-                renderer,
-                camera,
-                scene.clickableObjects,
-                objectClickerOnHover(camera, previewer, scene.recommendations, container), // Create onHover function
-                objectClickerOnClick(camera, buttonManager, scene.recommendations, scene.coins), // Create onClick function
-                container
-            );
+            objectClicker = new L3D.ObjectClicker();
 
         }
 

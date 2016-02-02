@@ -24,7 +24,7 @@ module Proto {
         /**
          * Adds coins to the scene
          * @param coinConfig Object that contains a type attribute (being
-         * Coin.Config.{NONE, SOME, ALL}) and a ids attribute being an array of ids
+         * Coin.Config.{None, Some, All}) and a ids attribute being an array of ids
          * of coins
          */
         addCoins (coinConfig : CoinConfig, coinScale ?: number) {
@@ -39,20 +39,20 @@ module Proto {
 
             switch (coinConfig.type) {
 
-                case ConfigType.NONE:
+                case ConfigType.None:
 
                     // No coin to add
                     break;
 
-                case ConfigType.SOME:
-                    case ConfigType.ALL:
+                case ConfigType.Some:
+                    case ConfigType.All:
 
                     var arr : L3D.Vector3[];
 
-                if (coinConfig.type === ConfigType.SOME) {
+                if (coinConfig.type === ConfigType.Some) {
                     // Get only the coordinates for ids that are requested
                     var self = this;
-                    arr = coinConfig.ids.map((i) => (<typeof SceneWithCoins>this.constructor).coins[i]);
+                    arr = coinConfig.ids.map((i : number) => (<typeof SceneWithCoins>this.constructor).coins[i]);
                 } else {
                     // Get all coins coordinates
                     arr = (<typeof SceneWithCoins>this.constructor).coins;
