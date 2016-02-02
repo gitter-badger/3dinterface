@@ -251,7 +251,7 @@ module Proto {
             objectClicker.update();
 
             // Update recommendations (set raycastable if shown)
-            scene.recommendations.map(function(reco) {
+            scene.recommendations.map(function(reco : L3D.BaseRecommendation) {
                 if (reco instanceof L3D.BaseRecommendation) {
                     reco.traverse(function(elt) {
                         elt.visible = elt.raycastable = buttonManager.showArrows;
@@ -271,7 +271,7 @@ module Proto {
             coinCanvas.render();
 
             // Update the recommendations
-            scene.recommendations.map(function(reco) { reco.update(camera1);});
+            scene.recommendations.map(function(reco : L3D.BaseRecommendation) { reco.update(camera1);});
 
             // Set current position of camera
             camera1.look();
@@ -286,7 +286,10 @@ module Proto {
             previewer.clear();
 
             // Hide arrows in recommendation
-            scene.recommendations.map(function(reco) { if (reco instanceof L3D.BaseRecommendation) hide(reco); });
+            scene.recommendations.map(function(reco : L3D.BaseRecommendation) {
+                if (reco instanceof L3D.BaseRecommendation)
+                    hide(reco);
+            });
 
             // Update transparent elements
             // THREEx.Transparency.update(camera1);
@@ -304,7 +307,7 @@ module Proto {
 
             resizeElements(renderer, container, previewer, coinCanvas, pointer, startCanvas, loadingCanvas);
 
-            scene.recommendations.forEach(function(reco) {
+            scene.recommendations.forEach(function(reco : L3D.BaseRecommendation) {
                 resetCameraAspect(reco.camera, window.containerSize.width(), window.containerSize.height());
             });
 
