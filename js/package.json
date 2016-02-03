@@ -1,9 +1,0 @@
-{
-    "name" : "l3d",
-    "version" : "1.0.0",
-    "dependencies" : {
-        "three":"0.71.0"
-    },
-    "main" : "build/l3d.min.js",
-    "typings" : "build/l3d.min.ts"
-}

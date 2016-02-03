@@ -1,0 +1,7 @@
+src
+obj
+typings/*
+d.ts/*
+build/L3D.d.ts
+Makefile
+node_modules/

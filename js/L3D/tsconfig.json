@@ -1,0 +1,35 @@
+{
+    "compilerOptions": {
+        "module":"commonjs",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "outDir":"./obj/",
+        "outFile" :"./build/L3D.js",
+        "sourceMap": true,
+        "declaration": true
+    },
+    "files" : [
+        "src/d.ts/threejs/three.examples.ts",
+        "src/d.ts/includes.ts",
+        "src/d.ts/polyfills.ts",
+        "./src/math/Hermite.ts",
+        "./src/math/Tools.ts",
+        "./src/utils/History.ts",
+        "./src/utils/Logger.ts",
+        "./src/utils/ObjectClicker.ts",
+        "./src/canvases/MousePointer.ts",
+        "./src/canvases/StartCanvas.ts",
+        "./src/canvases/Previewer.ts",
+        "./src/canvases/LoadingCanvas.ts",
+        "./src/loaders/ProgressiveLoader.ts",
+        "./src/recommendations/BaseRecommendation.ts",
+        "./src/recommendations/ArrowRecommendation.ts",
+        "./src/recommendations/ViewportRecommendation.ts",
+        "./src/cameras/Camera.ts",
+        "./src/cameras/FixedCamera.ts",
+        "./src/cameras/PointerCamera.ts",
+        "./src/cameras/ReplayCamera.ts",
+        "./src/scenes/Scene.ts"
+    ]
+}
