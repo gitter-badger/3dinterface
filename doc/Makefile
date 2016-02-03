@@ -1,16 +1,18 @@
-TYPEDOC=doc/typedoc/bin/typedoc
+TYPEDOC=typedoc
 
 all:
 	cd .. && \
-	rm -rf doc/out/ && \
-	$(TYPEDOC) js/l3d/src/ server/geo/ server/controllers/prototype/ \
-	           --includes js/l3d/ --includes server/geo/ \
-	           --out doc/out/ \
-	           --mode file \
-	           --name L3D \
-	           --module commonjs \
-	           --readme README.md \
-	           -excludeNotExported
+	rm -rf doc/out/* && \
+	$(TYPEDOC) \
+			js/l3d/src/ server/geo/ server/controllers/prototype/ \
+			--exclude server/controllers/prototype/index.ts \
+			--exclude server/controllers/prototype/urls.ts \
+			--includes js/l3d/ --includes server/geo/ \
+			--out doc/out/ \
+			--mode file \
+			--name L3D \
+			--module commonjs \
+			--readme README.md
 
 clean:
 	rm -rf out

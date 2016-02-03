@@ -1,7 +1,12 @@
-/**
- * @private
- */
-let fs = require('fs');
+import fs = require('fs');
+
+import { Face           } from './Face';
+import { Material       } from './Material';
+import { Mesh           } from './Mesh';
+import { Normal         } from './Normal';
+import { TexCoord       } from './TexCoord';
+import { Transformation } from './Transformation';
+import { Vertex         } from './Vertex';
 
 module geo {
 
@@ -149,13 +154,13 @@ module geo {
 
                 this.callback();
 
-            }
+            });
 
-        );
+        }
+
 
     }
 
-
 }
 
-}
+export = geo;

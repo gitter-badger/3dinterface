@@ -1,5 +1,7 @@
 module geo {
 
+    interface Sendable {};
+
     /**
      * Represent a texture coordinate element
      */
@@ -66,3 +68,5 @@ module geo {
     }
 
 }
+
+export = geo;

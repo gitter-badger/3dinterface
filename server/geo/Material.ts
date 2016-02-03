@@ -44,3 +44,5 @@ module geo {
     }
 
 }
+
+export = geo;

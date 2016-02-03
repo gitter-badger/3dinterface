@@ -1,10 +1,6 @@
-module geo {
+import { Vector } from './Interfaces';
 
-    export interface Vector {
-        x : number;
-        y : number;
-        z : number;
-    }
+module geo {
 
     export function clone(v : Vector) : Vector { return {x:v.x, y:v.y, z:v.z}; }
 
@@ -73,3 +69,5 @@ module geo {
     }
 
 }
+
+export = geo;

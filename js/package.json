@@ -4,5 +4,6 @@
     "dependencies" : {
         "three":"0.71.0"
     },
-    "main" : "build/l3d.min.js"
+    "main" : "build/l3d.min.js",
+    "typings" : "build/l3d.min.ts"
 }

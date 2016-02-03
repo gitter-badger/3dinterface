@@ -1,3 +1,7 @@
+import { Frustum, Data } from '../Interfaces';
+import { ConfigGenerator, Config } from './ConfigGenerator';
+import { MeshStreamer } from '../MeshStreamer';
+
 module geo {
 
     /**
@@ -111,3 +115,5 @@ module geo {
     }
 
 }
+
+export = geo;

@@ -1,5 +1,7 @@
 module geo {
 
+    interface Sendable {};
+
     /**
      * Represents a 3D vertex
      */
@@ -71,3 +73,5 @@ module geo {
     }
 
 }
+
+export = geo;

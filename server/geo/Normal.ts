@@ -1,4 +1,8 @@
+import { Vertex } from './Vertex';
+
 module geo {
+
+    interface Sendable {};
 
     /**
      * Represent a 3D normal
@@ -46,3 +50,5 @@ module geo {
     }
 
 }
+
+export = geo;

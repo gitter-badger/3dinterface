@@ -1,3 +1,5 @@
+import { Sendable } from './Interfaces';
+
 module geo {
 
     /**
@@ -168,3 +170,5 @@ module geo {
     }
 
 }
+
+export = geo;

@@ -1,7 +1,9 @@
 ///<reference path="../../typings/tsd.d.ts"/>
 
 import express = require('express');
-var http = require('http');
+import http = require('http');
+
+module log {
 
 export enum Color {
     DEFAULT,
@@ -120,3 +122,7 @@ export function jadeerror(error : any) {
         Color.RED
     );
 }
+
+}
+
+export = log;

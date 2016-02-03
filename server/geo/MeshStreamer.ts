@@ -1,72 +1,25 @@
 ///<reference path="../../typings/socket.io/socket.io.d.ts" />
 
+import fs = require('fs');
+import THREE = require('three');
+import * as L3D from '../../node_modules/l3d/build/l3d.min.ts';
+
+import { Face } from './Face';
+import { Vector, Sendable, CameraItf, Frustum, Data, Plane } from './Interfaces';
+import { MeshContainer } from './MeshContainer';
+import { Transformation } from './Transformation';
+import { ConfigGenerator, Config } from './ConfigGenerators/ConfigGenerator';
+
+import { Meshes } from './loadMeshes';
+
 module geo {
-
-    let fs = require('fs');
-    let THREE = require('three');
-    let L3D = require('../../static/js/l3d.min.js');
-
-    /**
-     * Anything that can be considered as a camera
-     */
-    export interface CameraItf {
-
-        /** The optical center of the camera */
-        position : Vector;
-
-        /** The point that the camera is facing*/
-        target : Vector;
-    }
-
-    /** Represents the frustum of a camera */
-    export interface Frustum extends CameraItf {
-
-        /** Center of the frustum */
-        position : Vector;
-
-        /** Vector that the frustum is facing */
-        target : Vector;
-
-        /** Planes that delimitates the frustum */
-        planes : Plane[];
-    }
-
-    /**
-     * Represents the data that will be sent to the client
-     */
-    export interface Data {
-
-        /** Raw data, array of the result of {@link Sendable.toString} */
-        data : any[];
-
-        /** Indicates wether the data is the last packet to send */
-        finished: boolean;
-
-        /** Sizes of the config */
-        configSizes? : number[];
-
-        /** Size of the data */
-        size : number;
-    }
-
-    /**
-     * A plane in space
-     */
-    export interface Plane  {
-        /** A vector representing the normal of the plane*/
-        normal : Vector;
-
-        /** The d in ax + by + cz + d = 0 */
-        constant : number;
-
-    };
 
     function readIt(sceneNumber : number, recoId : number) : {index : number, area : number}[] {
         var toZip = {
             triangles :
-                JSON.parse(fs.readFileSync('./geo/generated/scene' + sceneNumber + '/triangles' + recoId + '.json')),
+                JSON.parse(fs.readFileSync('./geo/generated/scene' + sceneNumber + '/triangles' + recoId + '.json', 'utf-8')),
             areas :
-                JSON.parse(fs.readFileSync('./geo/generated/scene' + sceneNumber + '/areas' + recoId + '.json'))
+                JSON.parse(fs.readFileSync('./geo/generated/scene' + sceneNumber + '/areas' + recoId + '.json', 'utf-8'))
         };
 
         var ret : {index: number, area: number}[] = [];
@@ -97,9 +50,9 @@ module geo {
     try
     {
         var predictionTables = [
-            JSON.parse(fs.readFileSync('./geo/mat1.json')),
-            JSON.parse(fs.readFileSync('./geo/mat2.json')),
-            JSON.parse(fs.readFileSync('./geo/mat3.json')),
+            JSON.parse(fs.readFileSync('./geo/mat1.json', 'utf-8')),
+            JSON.parse(fs.readFileSync('./geo/mat2.json', 'utf-8')),
+            JSON.parse(fs.readFileSync('./geo/mat3.json', 'utf-8')),
             [[1,1],
                 [1,2]]
         ];
@@ -399,8 +352,8 @@ module geo {
                 };
 
                 console.log(prefetch);
-                this.generator = geo.ConfigGenerator.createFromString(prefetch, this);
-                this.backupGenerator = new geo.ConfigGenerator(this);
+                this.generator = ConfigGenerator.createFromString(prefetch, this);
+                this.backupGenerator = new ConfigGenerator(this);
 
                 if (this.mesh === undefined) {
                     process.stderr.write('Wrong path for model : ' + path);
@@ -855,3 +808,5 @@ module geo {
     }
 
 }
+
+export = geo;

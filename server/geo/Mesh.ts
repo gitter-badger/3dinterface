@@ -1,17 +1,9 @@
+import { Vertex }   from './Vertex';
+import { Normal }   from './Normal';
+import { TexCoord } from './TexCoord';
+import { Face } from './Face';
+
 module geo {
-
-    /**
-     * Reprensents anything that is sendable via {@link MeshStreamer}
-     */
-    export interface Sendable {
-
-        /** Indicates wether the elements has already been sent or not **/
-        sent : boolean;
-
-        /** Converts the element to a list to stream */
-        toList() : any[];
-
-    }
 
     /**
      * Reprensents an elementary mesh (only one material, e.g., a part of an .obj file)
@@ -165,3 +157,5 @@ module geo {
     }
 
 }
+
+export = geo;

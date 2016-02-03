@@ -1,5 +1,5 @@
-///<reference path="./MeshesInfo.ts" />
-
+import { MeshContainer } from './MeshContainer';
+import { MeshNames } from './MeshesInfo';
 
 module geo {
 
@@ -77,3 +77,5 @@ module geo {
     }
 
 }
+
+export = geo;

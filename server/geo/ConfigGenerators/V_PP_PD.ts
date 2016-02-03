@@ -1,3 +1,8 @@
+import { Frustum, Data } from '../Interfaces';
+import { ConfigGenerator, Config } from './ConfigGenerator';
+import { MeshStreamer } from '../MeshStreamer';
+import { V_PP_Generator } from './V_PP';
+
 module geo {
 
     /**
@@ -131,3 +136,5 @@ module geo {
     }
 
 }
+
+export = geo;
