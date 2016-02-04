@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { ArrowRecommendation } from './ArrowRecommendation';
 import { Vector3, Tools } from '../math/Tools';
 

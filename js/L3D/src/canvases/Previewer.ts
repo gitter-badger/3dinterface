@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { MouseCursor } from '../cameras/PointerCamera';
 import { Camera } from '../cameras/Camera';
 import { Tools } from '../math/Tools';

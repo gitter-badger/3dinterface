@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { PointerCamera } from '../cameras/PointerCamera';
 
 module L3D {

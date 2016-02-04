@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 module L3D {
 
     export interface Vector3 {

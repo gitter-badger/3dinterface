@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { Vector3, Tools } from '../math/Tools';
 import { History } from '../utils/History';
 import { CameraItf } from '../utils/Logger';
