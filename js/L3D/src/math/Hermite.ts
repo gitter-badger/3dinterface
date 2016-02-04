@@ -89,8 +89,8 @@ module L3D {
                 this.primes = fp;
                 this.baseFunctions = [];
 
-                for (var i in this.times) {
-                    this.baseFunctions.push(new L3D.Hermite.BaseFunction(i, this.times));
+                for (var i = 0; i < this.times.length; i++) {
+                    this.baseFunctions.push(new L3D.Hermite.BaseFunction(this.times[i], this.times));
                 }
 
                 // Let's do something at least a little reusable
@@ -276,7 +276,8 @@ module L3D {
             eval(t : number) : number {
                 var ret = 1;
 
-                for (var i in this.times) {
+                for (var index = 0; index < this.times.length; index++) {
+                    let i = this.times[index];
                     if (i !== this.index) {
                         ret *= (t - this.times[i]) / (this.times[this.index] - this.times[i]);
                     }
@@ -293,7 +294,8 @@ module L3D {
             prime(t : number) : number {
                 var ret = 0;
 
-                for (var i in this.times) {
+                for (var index = 0; index < this.times.length; index++) {
+                    let i = this.times[index];
                     if (i !== this.index) {
                         ret += 2 / (t - this.times[i]);
                     }
