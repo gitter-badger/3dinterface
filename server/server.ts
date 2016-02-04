@@ -1,4 +1,5 @@
-///<reference path="../typings/tsd.d.ts" />
+// enable source map
+require('source-map-support').install();
 
 import express = require('express');
 import jade = require('jade');

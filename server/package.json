@@ -13,7 +13,8 @@
         "emailjs":"0.3.16",
         "three":"0.71.0",
         "sha256":"0.2.0",
-        "async":"1.4.2"
+        "async":"1.4.2",
+        "source-map-support":"0.4.0"
     },
     "repository" : {
         "type" : "git",

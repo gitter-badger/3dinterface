@@ -31,7 +31,6 @@
         },
         "threejs/three.d.ts" : {
             "commit": "d1f6bde13f2209be42e86c3686761e8bfcbb50a5"
-
         },
         "socket.io-client/socket.io-client.d.ts": {
             "commit": "d1f6bde13f2209be42e86c3686761e8bfcbb50a5"
@@ -43,6 +42,9 @@
             "commit": "d1f6bde13f2209be42e86c3686761e8bfcbb50a5"
         },
         "pg/pg.d.ts": {
+            "commit": "d1f6bde13f2209be42e86c3686761e8bfcbb50a5"
+        },
+        "async/async.d.ts": {
             "commit": "d1f6bde13f2209be42e86c3686761e8bfcbb50a5"
         }
     }

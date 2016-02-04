@@ -1,4 +1,4 @@
-///<reference path="../../../typings/tsd.d.ts" />
+///<reference path="../../d.ts/includes.d.ts" />
 
 import pg = require('pg');
 
@@ -155,7 +155,8 @@ module DBReq {
                 // Find next element
                 let nextIndex : number = null;
 
-                for (let i in this.results) {
+                for (let index = 0; index < this.results.length; index++) {
+                    let i = this.results[index];
                     // The next element is placed at the index 0 (since the elements
                     // gotten from the database are sorted)
                     if (this.results[i].length !== 0 &&

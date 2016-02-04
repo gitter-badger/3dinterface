@@ -12,31 +12,14 @@ prepare:
 	tsd install
 	npm install
 
-compile: server geo-bin
-
-geo-bin:
-	$(CLOSURE) $(OPT) \
-		--js ../server-bin/geo/Transformation.js \
-		--js ../server-bin/geo/Vertex.js \
-		--js ../server-bin/geo/Face.js \
-		--js ../server-bin/geo/Normal.js \
-		--js ../server-bin/geo/TexCoord.js \
-		--js ../server-bin/geo/Material.js \
-		--js ../server-bin/geo/Mesh.js \
-		--js ../server-bin/geo/MeshContainer.js \
-		--js ../server-bin/geo/MeshesInfo.js \
-		--js ../server-bin/geo/loadMeshes.js \
-		--js ../server-bin/geo/ConfigGenerators/ConfigGenerator.js \
-		--js ../server-bin/geo/ConfigGenerators/NV_PN.js \
-		--js ../server-bin/geo/ConfigGenerators/V_PD.js \
-		--js ../server-bin/geo/ConfigGenerators/V_PP.js \
-		--js ../server-bin/geo/ConfigGenerators/V_PP_PD.js \
-		--js_output_file ../server-bin/lib/geo.min.js
+compile: server
 
 server:
 	tsc
 	rm -rf ../server-bin/views
+	cp package.json ../server-bin/
 	cp -r views ../server-bin/views
+	mkdir -p ../server-bin/geo
 	cp -r geo/generated ../server-bin/geo/generated
 	cp -r geo/*.json ../server-bin/geo/
 	for path in `ls controllers`; do \

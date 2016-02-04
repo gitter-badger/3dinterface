@@ -1,9 +1,8 @@
 import _ = require('socket.io');
+import * as geo from '../geo/Geo';
 
-var fs = require('fs');
-var geo = require('./geo.min.js');
-
-var log = require('./log.js');
+import fs = require('fs');
+import log = require('./log');
 
 export = function(io : SocketIO.Server) {
 
