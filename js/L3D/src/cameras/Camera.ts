@@ -1,4 +1,3 @@
-///<reference path="../L3D.ts" />
 import * as THREE from 'three';
 
 module L3D {

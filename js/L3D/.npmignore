@@ -1,7 +1,6 @@
-src
-obj
-typings/*
-d.ts/*
-build/L3D.d.ts
-Makefile
-node_modules/
+./node_modules
+./src
+./Makefile
+./gulpfile.js
+./tsconfig.json
+./tsd.json

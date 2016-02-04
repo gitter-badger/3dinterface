@@ -5,12 +5,12 @@
         "removeComments": true,
         "preserveConstEnums": true,
         "outDir":"./obj/",
-        "sourceMap": true
+        "sourceMap": true,
+        "declaration":true
     },
     "files" : [
-        "src/d.ts/threejs/three.examples.ts",
-        "src/d.ts/includes.ts",
-        "src/d.ts/polyfills.ts",
+        "./L3D.ts",
+        "./src/d.ts/includes.ts",
         "./src/math/Hermite.ts",
         "./src/math/Tools.ts",
         "./src/utils/History.ts",
@@ -29,5 +29,8 @@
         "./src/cameras/PointerCamera.ts",
         "./src/cameras/ReplayCamera.ts",
         "./src/scenes/Scene.ts"
+    ],
+    "exlcude": [
+        "build"
     ]
 }
