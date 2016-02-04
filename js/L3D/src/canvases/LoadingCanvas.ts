@@ -105,5 +105,3 @@ module L3D {
     }
 
 }
-
-export = L3D;

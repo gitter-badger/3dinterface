@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 module L3D {
 
     export interface Vector3 {
@@ -125,5 +124,3 @@ module L3D {
     }
 
 }
-
-export = L3D;

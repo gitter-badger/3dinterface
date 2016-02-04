@@ -1,6 +1,3 @@
-import * as THREE from 'three';
-import { Vector3, Tools } from './Tools';
-
 module L3D {
 
     /**
@@ -361,5 +358,3 @@ module L3D {
 
     }
 }
-
-export = L3D;

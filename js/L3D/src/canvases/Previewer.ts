@@ -1,8 +1,3 @@
-import * as THREE from 'three';
-import { MouseCursor } from '../cameras/PointerCamera';
-import { Camera } from '../cameras/Camera';
-import { Tools } from '../math/Tools';
-
 module L3D {
 
     /**
@@ -193,5 +188,3 @@ module L3D {
     }
 
 }
-
-export = L3D;

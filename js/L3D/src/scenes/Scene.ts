@@ -1,10 +1,3 @@
-import * as THREE from 'three';
-import { PointerCamera } from '../cameras/PointerCamera';
-import { ProgressiveLoader } from '../loaders/ProgressiveLoader';
-import { BaseRecommendation } from '../recommendations/BaseRecommendation';
-import { CameraItf } from '../utils/Logger';
-import { Vector3, Tools } from  '../math/Tools';
-
 module L3D {
     /**
      * Class that represents a scene that can contain recommendations
@@ -183,5 +176,3 @@ module L3D {
 
     }
 }
-
-export = L3D;

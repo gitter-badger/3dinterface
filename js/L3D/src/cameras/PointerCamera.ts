@@ -1,11 +1,3 @@
-import * as THREE from 'three';
-import { Vector3, Tools } from '../math/Tools';
-import { History } from '../utils/History';
-import { CameraItf } from '../utils/Logger';
-import { MousePointer, Color } from '../canvases/MousePointer';
-import { Hermite } from '../math/Hermite';
-import { DB } from '../utils/Logger';
-
 module L3D {
     /**
      * Mouse cursor
@@ -866,5 +858,3 @@ module L3D {
     }
 
 }
-
-export = L3D;

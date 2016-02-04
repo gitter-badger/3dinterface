@@ -1,6 +1,3 @@
-import { PointerCamera } from '../cameras/PointerCamera';
-import { Vector3 } from '../math/Tools';
-
 module L3D {
 
     export interface CameraItf {
@@ -335,5 +332,3 @@ module L3D {
     }
 
 }
-
-export = L3D;

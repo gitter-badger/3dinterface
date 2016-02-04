@@ -1,11 +1,13 @@
 {
     "compilerOptions": {
-        "module":"commonjs",
+        "module":"amd",
         "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
         "outDir":"./obj/",
-        "sourceMap": true
+        "outFile":"./build/L3D.js",
+        "sourceMap": true,
+        "declaration": true
     },
     "files" : [
         "src/d.ts/threejs/three.examples.ts",

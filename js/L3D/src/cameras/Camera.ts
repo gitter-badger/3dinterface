@@ -1,5 +1,4 @@
 ///<reference path="../L3D.ts" />
-import * as THREE from 'three';
 
 module L3D {
 
@@ -75,5 +74,3 @@ module L3D {
     }
 
 }
-
-export = L3D;

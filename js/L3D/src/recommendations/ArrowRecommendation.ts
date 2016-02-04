@@ -1,9 +1,3 @@
-import * as THREE from 'three';
-import { FixedCamera } from '../cameras/FixedCamera';
-import { BaseRecommendation } from './BaseRecommendation';
-import { Vector3, Tools } from '../math/Tools';
-import { Hermite } from '../math/Hermite';
-
 module L3D {
 
     /**
@@ -346,5 +340,3 @@ module L3D {
     }
 
 }
-
-export = L3D;

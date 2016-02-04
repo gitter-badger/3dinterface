@@ -1,7 +1,3 @@
-import * as THREE from 'three';
-import { PointerCamera } from '../cameras/PointerCamera';
-import { Face3 } from '../math/Tools';
-
 module L3D {
 
     enum StreamedElementType {
@@ -591,4 +587,3 @@ module L3D {
 
 }
 
-export = L3D;

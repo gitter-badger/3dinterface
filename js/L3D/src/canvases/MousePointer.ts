@@ -1,6 +1,3 @@
-import * as THREE from 'three';
-import { PointerCamera } from '../cameras/PointerCamera';
-
 module L3D {
 
     /**
@@ -178,5 +175,3 @@ module L3D {
     }
 
 }
-
-export = L3D;

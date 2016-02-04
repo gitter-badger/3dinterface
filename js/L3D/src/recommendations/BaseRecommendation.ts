@@ -1,7 +1,3 @@
-import * as THREE from 'three';
-import { FixedCamera } from '../cameras/FixedCamera';
-import { Vector3, Tools } from '../math/Tools';
-
 module L3D {
 
     /**
@@ -38,5 +34,3 @@ module L3D {
     }
 
 }
-
-export = L3D;
