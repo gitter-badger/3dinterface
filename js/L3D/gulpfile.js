@@ -4,6 +4,7 @@ var webpack = require('webpack');
 var path = require('path');
 var fs = require('fs');
 var ncp = require('ncp');
+var path = require('path');
 
 var nodeModules = {};
 fs.readdirSync('node_modules')
@@ -14,10 +15,10 @@ fs.readdirSync('node_modules')
     nodeModules[mod] = 'commonjs ' + mod;
 });
 
-var config = {
+var backendConfig = {
     entry: './L3D.ts',
     output: {
-        filename: 'build/L3D.js',
+        filename: 'build-backend/L3D.js',
         libraryTarget: 'commonjs'
     },
     target: 'node',
@@ -38,8 +39,42 @@ var config = {
     devtool:'sourcemap'
 }
 
+var frontendConfig = {
+    entry: './L3D.ts',
+    output: {
+        libraryTarget: 'var',
+        library: 'L3D',
+        filename: 'build-frontend/L3D.js',
+    },
+    resolve: {
+        extensions: ['', '.webpack.js', '.web.js', '.ts', '.js', '.json']
+    },
+    module: {
+        loaders: [{
+            test: /\.ts(x?)$/,
+            loader: 'ts-loader'
+        },
+        {
+            test: /\.json$/,
+            loader: 'json-loader'
+        }],
+        exclude: /node_modules/
+    },
+    externals: {
+        three : 'THREE',
+        'socket.io': 'io'
+    },
+    // plugins: [
+    //     new webpack.NormalModuleReplacementPlugin(new RegExp('require(\'socket.io-client/package\').version'), require('socket.io-client/package').version)
+    // ],
+    devtool:'sourcemap',
+    node: {
+        fs: "empty"
+    }
+}
+
 gulp.task('build-backend', function(done) {
-    webpack(config).run(function(err, stats) {
+    webpack(backendConfig).run(function(err, stats) {
         if (err) {
             console.log('Error ', err);
         } else {
@@ -51,6 +86,16 @@ gulp.task('build-backend', function(done) {
     });
 });
 
+gulp.task('build-frontend', function(done) {
+    webpack(frontendConfig).run(function(err, stats) {
+        if (err) {
+            console.log('Error ', err);
+        } else {
+            console.log(stats.toString());
+            done();
+        }
+    });
+});
 
 gulp.task('clean', function(done) {
 
@@ -60,7 +105,6 @@ gulp.task('clean', function(done) {
     ],
     function(err,results) {
         done();
-    }
-    );
+    });
 
 });

@@ -1,4 +1,5 @@
-///<reference path="../../src/L3D.ts" />
+import * as L3D from '../../L3D/L3D';
+import * as THREE from 'three';
 
 module geo {
 

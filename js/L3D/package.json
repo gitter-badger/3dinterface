@@ -2,11 +2,11 @@
   "name": "L3D",
   "version": "1.0.0",
   "dependencies": {
-    "socket.io": "^1.4.5",
-    "socket.io-client": "^1.4.5",
+    "socket.io": "1.3.5",
+    "socket.io-client": "1.3.5",
     "source-map-support": "^0.4.0",
     "three": "^0.71.0"
   },
-  "main": "build/L3D.js",
+  "main": "build-backend/L3D.js",
   "typings": "obj/L3D.d.ts"
 }
