@@ -7,6 +7,6 @@
     "source-map-support": "^0.4.0",
     "three": "^0.71.0"
   },
-  "main": "build-backend/L3D.js",
-  "typings": "obj/L3D.d.ts"
+  "main": "./L3D.js",
+  "typings": "./L3D.d.ts"
 }

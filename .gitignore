@@ -1,7 +1,5 @@
 node_modules
-server-bin
 typings
-js/build
-js/obj
+build
 static/
 doc/out
