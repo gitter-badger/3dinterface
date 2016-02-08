@@ -43,19 +43,7 @@ var backendConfig = {
         new webpack.BannerPlugin('require("source-map-support").install();',
                 { raw: true, entryOnly: false })
     ],
-    devtool:'sourcemap',
-    ts: {
-        compilerOptions : {
-            "module":"commonjs",
-            "noImplicitAny": true,
-            "removeComments": true,
-            "preserveConstEnums": true,
-            "outDir":path.join(rootL3D, '../build'),
-            "sourceMap": true,
-            "declaration":true,
-            "rootDir":rootL3D
-        }
-    }
+    devtool:'sourcemap'
 };
 
 gulp.task('build-L3D-backend', function(done) {
@@ -66,9 +54,7 @@ gulp.task('build-L3D-backend', function(done) {
         if (err) {
             console.log('Error ', err);
         } else {
-            merge(path.join(rootL3D, '../build'), buildL3D);
-            rmdir(path.join(rootL3D, '../build'), function(err) {
-                async.parallel([
+            async.parallel([
                     function(callback) {
                         ncp(path.join(rootL3D, 'd.ts'), path.join(buildL3D, 'd.ts'), function(err) {
                             if (err)
@@ -83,10 +69,9 @@ gulp.task('build-L3D-backend', function(done) {
                             callback();
                         });
                     }
-                ], function() {
-                    console.log(stats.toString());
-                    done();
-                });
+            ], function() {
+                console.log(stats.toString());
+                done();
             });
         }
     });

@@ -1,4 +1,3 @@
-///<reference path="../d.ts/includes.d.ts"/>
 import * as THREE from 'three';
 import * as io from 'socket.io';
 import { PointerCamera } from '../cameras/PointerCamera';

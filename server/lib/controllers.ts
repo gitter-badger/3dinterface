@@ -1,6 +1,3 @@
-///<reference path="../typings/tsd.d.ts" />
-///<reference path="../lib/log.ts" />
-
 /**
  * Module dependencies.
  */

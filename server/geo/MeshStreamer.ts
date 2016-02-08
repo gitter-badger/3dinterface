@@ -1,5 +1,3 @@
-///<reference path="../typings/socket.io/socket.io.d.ts" />
-
 import * as fs from 'fs';
 import * as THREE from 'three';
 import * as L3D from 'L3D';

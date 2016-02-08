@@ -1,5 +1,3 @@
-///<reference path="./typings/tsd.d.ts"/>
-
 // enable source map
 import sourceMapSupport = require('source-map-support');
 sourceMapSupport.install();

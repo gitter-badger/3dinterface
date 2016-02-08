@@ -1,5 +1,3 @@
-///<reference path="../manual_typings/sha256.d.ts" />
-
 import priv = require('../private');
 import hash = require('sha256');
 

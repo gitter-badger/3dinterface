@@ -12,5 +12,12 @@
         "build",
         "views",
         "static"
+    ],
+    "filesGlob": [
+        "./*.ts",
+        "./d.ts/*.ts",
+        "./typings/*.d.ts",
+        "./typings/*/*.d.ts",
+        "./manual_typings/*.d.ts"
     ]
 }

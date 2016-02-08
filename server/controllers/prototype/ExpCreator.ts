@@ -1,5 +1,3 @@
-///<reference path="../../d.ts/includes.d.ts"/>
-
 import pg = require('pg');
 import pgc = require('../../private');
 import Log = require('../../lib/log');
