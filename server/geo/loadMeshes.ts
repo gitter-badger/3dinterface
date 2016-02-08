@@ -1,11 +1,10 @@
 import { MeshContainer } from './MeshContainer';
 import { MeshNames } from './MeshesInfo';
+import log = require('../lib/log');
 
 module geo {
 
     module MeshLoader {
-
-        let log = require('./log');
 
         function isLoaded() : boolean {
 

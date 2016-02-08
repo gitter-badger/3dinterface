@@ -126,4 +126,4 @@ module DBReq {
 
 }
 
-export = DBReq.UserCreator;
+export = DBReq;

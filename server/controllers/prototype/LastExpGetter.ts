@@ -130,4 +130,4 @@ module DBReq {
 
 }
 
-export = DBReq.LastExpGetter;
+export = DBReq;

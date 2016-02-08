@@ -1,6 +1,6 @@
-module geo {
+import { Sendable } from './Interfaces';
 
-    interface Sendable {};
+module geo {
 
     /**
      * Represents a 3D vertex

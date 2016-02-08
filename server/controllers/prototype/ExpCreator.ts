@@ -322,4 +322,4 @@ module DBReq {
 
 }
 
-export = DBReq.ExpCreator;
+export = DBReq;

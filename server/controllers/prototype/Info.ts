@@ -518,4 +518,4 @@ module DBReq {
 
 }
 
-export = DBReq.Info;
+export = DBReq;

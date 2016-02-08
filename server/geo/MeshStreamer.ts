@@ -9,6 +9,7 @@ import { Vector, Sendable, CameraItf, Frustum, Data, Plane } from './Interfaces'
 import { MeshContainer } from './MeshContainer';
 import { Transformation } from './Transformation';
 import { ConfigGenerator, Config } from './ConfigGenerators/ConfigGenerator';
+import { createConfigFromString } from './ConfigGenerators/createConfigFromString';
 
 import { Meshes } from './loadMeshes';
 
@@ -352,7 +353,7 @@ module geo {
                 };
 
                 console.log(prefetch);
-                this.generator = ConfigGenerator.createFromString(prefetch, this);
+                this.generator = createConfigFromString(prefetch, this);
                 this.backupGenerator = new ConfigGenerator(this);
 
                 if (this.mesh === undefined) {

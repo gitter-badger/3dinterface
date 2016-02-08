@@ -90,4 +90,4 @@ module DBReq {
 
 }
 
-export = DBReq.UserVerifier;
+export = DBReq;

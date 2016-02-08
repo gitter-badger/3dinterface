@@ -1,6 +1,6 @@
-module geo {
+import { Sendable } from './Interfaces';
 
-    interface Sendable {};
+module geo {
 
     /**
      * Represent a texture coordinate element

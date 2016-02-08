@@ -71,4 +71,4 @@ module DBReq {
 
 }
 
-export = DBReq.UserNameChecker;
+export = DBReq;

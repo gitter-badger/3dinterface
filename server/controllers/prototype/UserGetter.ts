@@ -66,4 +66,4 @@ module DBReq {
 
 }
 
-export = DBReq.UserGetter;
+export = DBReq;

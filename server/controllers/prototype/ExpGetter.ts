@@ -69,4 +69,4 @@ module DBReq {
 
 }
 
-export = DBReq.ExpGetter;
+export = DBReq;

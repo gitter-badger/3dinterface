@@ -1,5 +1,8 @@
+///<reference path="./typings/tsd.d.ts"/>
+
 // enable source map
-require('source-map-support').install();
+import sourceMapSupport = require('source-map-support');
+sourceMapSupport.install();
 
 import express = require('express');
 import jade = require('jade');
@@ -7,6 +10,7 @@ import pg = require('pg');
 import r_io = require('socket.io');
 import http = require('http');
 import r_sock = require('./lib/socket');
+import path = require('path');
 
 function main() {
 
@@ -57,7 +61,7 @@ function main() {
     app.use('/static', express.static('../static/'));
 
     // Favicon
-    app.use(require('serve-favicon')(__dirname + '/../static/ico/favicon.ico'));
+    app.use(require('serve-favicon')(path.join(__dirname, 'static/ico/favicon.ico')));
 
     // When route not found, raise not found
     app.use(function(req, res) {

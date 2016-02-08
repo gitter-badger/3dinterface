@@ -1,6 +1,10 @@
-var hash = require('sha256');
-var secretKey = require('../private.js').microSecretKey;
-var campaignId = require('../private.js').microCampaignId;
+///<reference path="../manual_typings/sha256.d.ts" />
+
+import priv = require('../private');
+import hash = require('sha256');
+
+var secretKey  = priv.microSecretKey;
+var campaignId = priv.microCampaignId;
 
 export = function(workerId : string) : string {
 

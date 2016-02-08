@@ -1,14 +1,14 @@
-import ExpCreator      = require('./ExpCreator');
-import ExpGetter       = require('./ExpGetter');
-import ExpIdChecker    = require('./ExpIdChecker');
-import Info            = require('./Info');
-import LastExpGetter   = require('./LastExpGetter');
-import TutorialCreator = require('./TutorialCreator');
-import UserCreator     = require('./UserCreator');
-import UserGetter      = require('./UserGetter');
-import UserIdChecker   = require('./UserIdChecker');
-import UserNameChecker = require('./UserNameChecker');
-import UserVerifier    = require('./UserVerifier');
+import { ExpCreator      } from './ExpCreator';
+import { ExpGetter       } from './ExpGetter';
+import { ExpIdChecker    } from './ExpIdChecker';
+import { Info            } from './Info';
+import { LastExpGetter   } from './LastExpGetter';
+import { TutorialCreator } from './TutorialCreator';
+import { UserCreator     } from './UserCreator';
+import { UserGetter      } from './UserGetter';
+import { UserIdChecker   } from './UserIdChecker';
+import { UserNameChecker } from './UserNameChecker';
+import { UserVerifier    } from './UserVerifier';
 
 module DBReq {
 

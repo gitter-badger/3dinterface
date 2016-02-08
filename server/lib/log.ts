@@ -19,15 +19,15 @@ export enum Color {
 
 function getColorCode(c : Color) : string {
     switch (c) {
-        case Color.DEFAULT: return '\033[0m';
-        case Color.BLACK:   return '\033[30m';
-        case Color.RED:     return '\033[31m';
-        case Color.GREEN:   return '\033[32m';
-        case Color.YELLOW:  return '\033[33m';
-        case Color.BLUE:    return '\033[34m';
-        case Color.MAGENTA: return '\033[35m';
-        case Color.CYAN:    return '\033[36m';
-        case Color.ORANGE:  return '\033[38;5;202m';
+        case Color.DEFAULT: return '\u001b[0m';
+        case Color.BLACK:   return '\u001b[30m';
+        case Color.RED:     return '\u001b[31m';
+        case Color.GREEN:   return '\u001b[32m';
+        case Color.YELLOW:  return '\u001b[33m';
+        case Color.BLUE:    return '\u001b[34m';
+        case Color.MAGENTA: return '\u001b[35m';
+        case Color.CYAN:    return '\u001b[36m';
+        case Color.ORANGE:  return '\u001b[38;5;202m';
     }
 }
 

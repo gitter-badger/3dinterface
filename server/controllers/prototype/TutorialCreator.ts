@@ -101,4 +101,4 @@ module DBReq {
 
 }
 
-export = DBReq.TutorialCreator;
+export = DBReq;
