@@ -61,5 +61,5 @@ var config = {
 
 gulp.task('build-server', function(done) {
     process.chdir(path.join(__dirname, '../server/'));
-    exec('tsc');
+    exec('tsc', done);
 });

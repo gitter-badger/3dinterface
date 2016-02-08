@@ -4,10 +4,12 @@ all:
 	cd .. && \
 	rm -rf doc/out/* && \
 	$(TYPEDOC) \
-			js/l3d/src/ server/geo/ server/controllers/prototype/ \
+			js/L3D/ server/geo/ server/controllers/prototype/ \
 			--exclude server/controllers/prototype/index.ts \
 			--exclude server/controllers/prototype/urls.ts \
-			--includes js/l3d/ --includes server/geo/ \
+			--exclude js/L3D/node_modules \
+			--exclude server/node_modules \
+			--includes js/L3D/ --includes server/geo/ \
 			--out doc/out/ \
 			--mode file \
 			--name L3D \

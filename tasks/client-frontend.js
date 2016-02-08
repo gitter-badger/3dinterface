@@ -39,7 +39,6 @@ var frontendConfig = {
 gulp.task('build-L3D-frontend', function(done) {
     process.chdir(path.join(__dirname, '../'));
     mkdirp('./build/server/static/js/L3D');
-    console.log(process.cwd());
     webpack(frontendConfig).run(function(err, stats) {
         if (err) {
             console.log('Error ', err);
