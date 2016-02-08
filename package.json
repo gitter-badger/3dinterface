@@ -1,0 +1,27 @@
+{
+  "name": "3dinterface",
+  "version": "1.0.0",
+  "description": "This is the beginning of the typescript version of 3D interface : A prototype for a user-friendly 3D interface allowing to browse 3D scenes / models written with Node.js.",
+  "dependencies": {
+    "gulp": "^3.9.0",
+    "merge-dirs": "^0.2.1",
+    "mkdirp": "^0.5.1",
+    "mv": "^2.1.1",
+    "ncp": "^2.0.0",
+    "require-dir": "^0.3.0",
+    "rimraf": "^2.5.1",
+    "ts-loader": "^0.8.0",
+    "typescript": "^1.9.0-dev.20160205",
+    "webpack": "^1.12.13"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tforgione/3dinterface.git"
+  },
+  "author": "Thomas FORGIONE",
+  "bugs": {
+    "url": "https://github.com/tforgione/3dinterface/issues"
+  },
+  "homepage": "https://github.com/tforgione/3dinterface#readme"
+}
