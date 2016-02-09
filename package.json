@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "This is the beginning of the typescript version of 3D interface : A prototype for a user-friendly 3D interface allowing to browse 3D scenes / models written with Node.js.",
   "dependencies": {
+    "event-stream": "^3.3.2",
     "gulp": "^3.9.0",
+    "gulp-changed": "^1.3.0",
+    "gulp-shell": "^0.5.2",
     "merge-dirs": "^0.2.1",
     "mkdirp": "^0.5.1",
     "mv": "^2.1.1",
