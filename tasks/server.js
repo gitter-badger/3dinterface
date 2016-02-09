@@ -15,7 +15,12 @@ var rootServer = path.join(root, 'server');
 var build = path.join(root, 'build');
 var buildServer = path.join(build, 'server');
 
-gulp.task('compile-server', function(done) {
+gulp.task('prepare-server', function(done) {
+    exec('cd ' + rootServer + ' && tsd install', done)
+        .stdout.on('data', (data) => process.stdout.write(data));
+});
+
+gulp.task('compile-server', ['prepare-server'], function(done) {
     exec('cd ' + rootServer + ' && tsc', done)
         .stdout.on('data', (data) => process.stdout.write(data));
 });
@@ -29,6 +34,7 @@ gulp.task('install-server-L3D', ['compile-server', 'build-L3D-backend'], functio
     exec('cd ' + buildServer + ' && npm install ../L3D', done)
         .stdout.on('data', (data) => process.stdout.write(data));
 });
+
 
 gulp.task('controllers-views', function(done) {
     process.chdir(rootServer);
