@@ -16,8 +16,6 @@ var buildL3D = path.join(build, 'L3D');
 
 gulp.task('compile-L3D-backend', ['prepare-L3D'], function(done) {
 
-    console.log("Cool");
-
     var nodeModules = {};
     fs.readdirSync(path.join(root, 'js/L3D/node_modules'))
         .filter(function(x) {
