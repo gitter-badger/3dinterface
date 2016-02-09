@@ -37,7 +37,7 @@ gulp.task('install-server-L3D', ['compile-server', 'build-L3D-backend'], functio
 
 
 gulp.task('install-dev-L3D', ['build-L3D-backend'], function(done) {
-    exec('cd ' + rootServer + ' && npm install ../L3D', done)
+    exec('cd ' + rootServer + ' && npm install ../build/L3D', done)
         .stdout.on('data', (data) => process.stdout.write(data));
 });
 
