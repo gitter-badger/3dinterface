@@ -6,7 +6,6 @@ var fs = require('fs');
 var ncp = require('ncp');
 var path = require('path');
 var mkdirp = require('mkdirp');
-var merge = require('merge-dirs').default;
 var rmdir = require('rimraf');
 var exec = require('child_process').exec;
 
@@ -15,13 +14,9 @@ var rootL3D = path.join(root, 'js/L3D');
 var build = path.join(root, 'build');
 var buildL3D = path.join(build, 'L3D');
 
-gulp.task('install-L3D', function(done) {
+gulp.task('compile-L3D-backend', ['prepare-L3D'], function(done) {
 
-    exec('cd ' + rootL3D + ' && npm install && tsd install', done);
-
-});
-
-gulp.task('compile-L3D-backend', ['install-L3D'], function(done) {
+    console.log("Cool");
 
     var nodeModules = {};
     fs.readdirSync(path.join(root, 'js/L3D/node_modules'))

@@ -42,7 +42,7 @@ var frontendConfig = {
     }
 };
 
-gulp.task('build-L3D-frontend', function(done) {
+gulp.task('build-L3D-frontend', ['prepare-L3D'], function() {
     process.chdir(root);
     mkdirp('./build/server/static/js/L3D');
     webpack(frontendConfig).run(function(err, stats) {

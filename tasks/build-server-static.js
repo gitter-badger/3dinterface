@@ -12,7 +12,7 @@ var exec = require('child_process').exec;
 
 var root = path.join(__dirname, '..');
 
-gulp.task('static', function(done) {
+gulp.task('build-server-static', function(done) {
     process.chdir(root);
     mkdirp('./build/server/static');
     merge('./static', './build/server/static');
