@@ -21,7 +21,7 @@ function main(app : express.Application) : void {
 
         // allow specifying the view engine
         if (obj.engine) app.set('view engine', obj.engine);
-        app.set('views', __dirname + '/../controllers/' + name + '/views');
+        // app.set('views', __dirname + '/../controllers/' + name + '/views');
 
         // generate routes based
         // on the exported methods

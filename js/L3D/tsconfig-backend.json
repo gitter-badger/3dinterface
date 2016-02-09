@@ -1,0 +1,19 @@
+{
+    "compilerOptions" : {
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "outDir":"../../build/L3D",
+        "sourceMap": true,
+        "declaration":true,
+        "rootDir":"./"
+    },
+    "filesGlob":[
+        "./*.ts",
+        "./d.ts/*.ts",
+        "./d.ts/*/*.ts",
+        "./typings/*/*.d.ts",
+        "./typings/threejs/*.d.ts",
+        "./typings/*.d.ts"
+    ]
+}

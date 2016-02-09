@@ -10,56 +10,55 @@ var merge = require('merge-dirs').default;
 var rmdir = require('rimraf');
 var exec = require('child_process').exec;
 
-var nodeModules = {};
-fs.readdirSync(path.join(__dirname, '../server/node_modules'))
-.filter(function(x) {
-    return ['.bin'].indexOf(x) === -1;
-})
-.forEach(function(mod) {
-    nodeModules[mod] = 'commonjs ' + mod;
-});
-
-var rootServer = path.join(__dirname, '../server');
-var build = path.join(__dirname, '../build');
+var root = path.join(__dirname, '..');
+var rootServer = path.join(root, 'server');
+var build = path.join(root, 'build');
 var buildServer = path.join(build, 'server');
 
-var config = {
-    entry: path.join(rootServer, 'server.ts'),
-    output: {
-        filename: path.join(buildServer, 'server.js'),
-        libraryTarget: 'commonjs'
-    },
-    target: 'node',
-    resolve: {
-        extensions: ['', '.webpack.js', '.web.js', '.ts', '.js']
-    },
-    module: {
-        loaders: [
-            // note that babel-loader is configured to run after ts-loader
-        { test: /\.ts(x?)$/, loader: 'ts-loader' }
-        ]
-    },
-    externals: nodeModules,
-    plugins: [
-        new webpack.BannerPlugin('require("source-map-support").install();',
-                { raw: true, entryOnly: false })
-    ],
-    devtool:'sourcemap',
-    ts: {
-        compilerOptions : {
-            "module":"commonjs",
-            "noImplicitAny": true,
-            "removeComments": true,
-            "preserveConstEnums": true,
-            "outDir":path.join(rootServer, '../build/server'),
-            "sourceMap": true,
-            "declaration":true,
-            "rootDir":rootServer
-        }
-    }
-};
+gulp.task('compile-server', function(done) {
+    exec('cd ' + rootServer + ' && tsc', done)
+        .stdout.on('data', (data) => process.stdout.write(data));
+});
 
-gulp.task('build-server', function(done) {
-    process.chdir(path.join(__dirname, '../server/'));
-    exec('tsc', done);
+gulp.task('install-server-packages', ['compile-server', 'build-L3D-backend'], function(done) {
+    exec('cd ' + buildServer + ' && npm install', done)
+        .stdout.on('data', (data) => process.stdout.write(data));
+});
+
+gulp.task('install-server-L3D', ['compile-server', 'build-L3D-backend'], function(done) {
+    exec('cd ' + buildServer + ' && npm install ../L3D', done)
+        .stdout.on('data', (data) => process.stdout.write(data));
+});
+
+gulp.task('controllers-views', function(done) {
+    process.chdir(rootServer);
+
+    async.forEach(fs.readdirSync('controllers'), function(name, done) {
+
+        try {
+            if (fs.statSync(path.join('./controllers', name, 'views')).isDirectory()) {
+                mkdirp(path.join('../build/server/controllers', name, 'views'));
+                merge(path.join('./controllers/', name, 'views'), path.join('../build/server/controllers', name, 'views'),done);
+            }
+        } catch(e) {
+            done();
+        }
+
+    }, done);
+});
+
+gulp.task('global-views', function(done) {
+    process.chdir(root);
+    mkdirp('./build/server/views');
+    merge('./server/views', './build/server/views', done);
+});
+
+gulp.task('views', ['controllers-views', 'global-views'], function(done) { done(); });
+
+gulp.task('install-server-dependencies', ['install-server-packages', 'install-server-L3D'], function(done) {
+    done();
+});
+
+gulp.task('build-server', ['compile-server', 'install-server-dependencies', 'static', 'views'], function(done) {
+    done();
 });

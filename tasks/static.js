@@ -10,8 +10,10 @@ var merge = require('merge-dirs').default;
 var rmdir = require('rimraf');
 var exec = require('child_process').exec;
 
+var root = path.join(__dirname, '..');
+
 gulp.task('static', function(done) {
-    process.chdir(path.join(__dirname, '../'));
+    process.chdir(root);
     mkdirp('./build/server/static');
     merge('./static', './build/server/static');
     done();

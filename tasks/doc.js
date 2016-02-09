@@ -10,8 +10,10 @@ var merge = require('merge-dirs').default;
 var rmdir = require('rimraf');
 var exec = require('child_process').exec;
 
+var root = path.join(__dirname, '..');
+
 gulp.task('client-doc', function(done) {
-    process.chdir(path.join(__dirname, '../'));
+    process.chdir(root);
     rmdir('./doc/client', function(err) {
 
         if (err)
@@ -32,7 +34,7 @@ gulp.task('client-doc', function(done) {
 });
 
 gulp.task('server-doc', function(done) {
-    process.chdir(path.join(__dirname, '../'));
+    process.chdir(root);
     rmdir('./doc/server', function(err) {
 
         if (err)
@@ -57,7 +59,7 @@ gulp.task('server-doc', function(done) {
 gulp.task('doc', ['client-doc', 'server-doc'], function(done) { done(); });
 
 gulp.task('all-doc', function(done) {
-    process.chdir(path.join(__dirname, '../'));
+    process.chdir(root);
     rmdir('./doc/server', function(err) {
 
         if (err)

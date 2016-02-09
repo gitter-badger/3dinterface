@@ -6,6 +6,9 @@ var fs = require('fs');
 var ncp = require('ncp');
 var path = require('path');
 var mkdirp = require('mkdirp');
+var rimraf = require('rimraf');
+
+var root = path.join(__dirname, '..');
 
 var frontendConfig = {
     entry: './js/L3D/L3D.ts',
@@ -33,19 +36,24 @@ var frontendConfig = {
         'socket.io': 'io',
         'socket.io-client':'io'
     },
-    devtool:'sourcemap'
+    devtool:'sourcemap',
+    ts: {
+        configFileName: path.join(root, 'js/L3D/tsconfig-frontend.json')
+    }
 };
 
 gulp.task('build-L3D-frontend', function(done) {
-    process.chdir(path.join(__dirname, '../'));
+    process.chdir(root);
     mkdirp('./build/server/static/js/L3D');
     webpack(frontendConfig).run(function(err, stats) {
-        if (err) {
-            console.log('Error ', err);
-        } else {
-            console.log(stats.toString());
-            done();
-        }
+        rimraf('./build/tmp', {}, function() {
+            if (err) {
+                console.log('Error ', err);
+            } else {
+                console.log(stats.toString());
+                done();
+            }
+        });
     });
 });
 
