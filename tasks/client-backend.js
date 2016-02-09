@@ -17,7 +17,7 @@ var buildL3D = path.join(build, 'L3D');
 
 gulp.task('install-L3D', function(done) {
 
-    exec('cd ' + rootL3D + ' && npm install', done);
+    exec('cd ' + rootL3D + ' && npm install && tsd install', done);
 
 });
 
