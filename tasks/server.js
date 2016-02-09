@@ -20,7 +20,7 @@ gulp.task('prepare-server', function(done) {
         .stdout.on('data', (data) => process.stdout.write(data));
 });
 
-gulp.task('compile-server', ['prepare-server'], function(done) {
+gulp.task('compile-server', ['prepare-server', 'install-dev-L3D'], function(done) {
     exec('cd ' + rootServer + ' && tsc', done)
         .stdout.on('data', (data) => process.stdout.write(data));
 });
@@ -31,18 +31,15 @@ gulp.task('install-server-packages', ['compile-server', 'build-L3D-backend'], fu
 });
 
 gulp.task('install-server-L3D', ['compile-server', 'build-L3D-backend'], function(done) {
-    async.parallel([
-        function(done) {
-            exec('cd ' + buildServer + ' && npm install ../L3D', done)
-                .stdout.on('data', (data) => process.stdout.write(data));
-        },
-        function(done) {
-            exec('cd ' + rootServer + ' && npm install ../L3D', done)
-                .stdout.on('data', (data) => process.stdout.write(data));
-        }
-    ], done);
+    exec('cd ' + buildServer + ' && npm install ../L3D', done)
+        .stdout.on('data', (data) => process.stdout.write(data));
 });
 
+
+gulp.task('install-dev-L3D', ['build-L3D-backend'], function(done) {
+    exec('cd ' + rootServer + ' && npm install ../L3D', done)
+        .stdout.on('data', (data) => process.stdout.write(data));
+});
 
 gulp.task('controllers-views', function(done) {
     process.chdir(rootServer);
