@@ -31,8 +31,16 @@ gulp.task('install-server-packages', ['compile-server', 'build-L3D-backend'], fu
 });
 
 gulp.task('install-server-L3D', ['compile-server', 'build-L3D-backend'], function(done) {
-    exec('cd ' + buildServer + ' && npm install ../L3D', done)
-        .stdout.on('data', (data) => process.stdout.write(data));
+    async.parallel([
+        function(done) {
+            exec('cd ' + buildServer + ' && npm install ../L3D', done)
+                .stdout.on('data', (data) => process.stdout.write(data));
+        },
+        function(done) {
+            exec('cd ' + rootServer + ' && npm install ../L3D', done)
+                .stdout.on('data', (data) => process.stdout.write(data));
+        }
+    ], done);
 });
 
 
