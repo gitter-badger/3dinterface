@@ -66,7 +66,8 @@ function main() {
         res.setHeader('Content-Type', 'text/html');
 
         res.render('404.jade', res.locals, function(err, result) {
-            console.log(err);
+            if (err)
+                console.log(err);
             res.send(result);
         });
     });

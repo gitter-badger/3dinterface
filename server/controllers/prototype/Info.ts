@@ -499,7 +499,6 @@ module DBReq {
                 (err, result) => {
                     if (err !== null) {
                         Log.dberror(err + ' in loadSceneInfo');
-                        console.log(err);
                     } else {
                         this.finalResult.sceneInfo = {
                             recommendationStyle : result.rows[0].recommendationStyle,
