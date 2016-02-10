@@ -4,14 +4,17 @@ var changed = require('gulp-changed');
 var path = require('path');
 var mkdirp = require('mkdirp');
 var exec = require('child_process').exec;
+var cleaner = require('./gulp-cleaner.js');
 
 var root = path.join(__dirname, '..');
+var rootChanged = path.join(root, '.changed');
 var rootL3D = path.join(root, 'js/L3D');
+var rootChangedL3D = path.join(rootChanged, 'js/L3D');
 
 gulp.task('prepare-L3D-npm', function(done) {
 
     var src = path.join(rootL3D, 'package.json');
-    var dest = path.join(rootL3D, 'node_modules');
+    var dest = rootChangedL3D;
 
     return gulp.src(src)
         .pipe(changed(dest))
@@ -22,7 +25,7 @@ gulp.task('prepare-L3D-npm', function(done) {
 gulp.task('prepare-L3D-tsd-typings', function(done) {
 
     var src = path.join(rootL3D, 'tsd.json');
-    var dest = path.join(rootL3D, 'typings');
+    var dest = path.join(rootChangedL3D);
 
     return gulp.src(src)
         .pipe(changed(dest))
@@ -34,7 +37,7 @@ gulp.task('prepare-L3D-tsd-typings', function(done) {
 gulp.task('prepare-L3D-custom-typings', function(done) {
 
     var src = path.join(root, 'custom_typings') + '/*';
-    var dest = path.join(rootL3D, 'typings');
+    var dest = path.join(rootChanged, 'js/L3D/custom_typings');
 
     return gulp.src(src)
         .pipe(changed(dest))
