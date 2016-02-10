@@ -3,6 +3,7 @@ var glob = require('glob').sync;
 var touch = require('touch');
 var fs = require('fs');
 var path = require('path');
+var argv = require('yargs').argv;
 
 var changed = path.join(__dirname, '../.changed.json');
 
@@ -15,11 +16,11 @@ var dates = {};
         data = fs.readFileSync(changed, 'utf-8');
         dates = JSON.parse(fs.readFileSync(changed, 'utf-8'));
     } catch (e) {
-        if (data === undefined) {
-            console.log('File did not exist, creating it.');
-        } else {
-            console.log('File existed, but was not parsable : ' + data);
-        }
+        // if (data === undefined) {
+        //     console.log('File did not exist, creating it.');
+        // } else {
+        //     console.log('File existed, but was not parsable : ' + data);
+        // }
         fs.writeFileSync(changed, '{}');
     }
 })();
@@ -102,14 +103,14 @@ module.exports = function(_taskName, _deps, _srcPattern, _callback) {
             srcPattern === undefined ||
             lastTimeTaskWasExecuted < getLatestModificationTime(srcPattern);
 
-        if (shouldExecuteTask) {
+        if (shouldExecuteTask || argv.force || argv.f) {
 
             // Compile and update date
             console.log(`[\u001b[38;5;238m${new Date().toString().substr(16,8)}\u001b[0m] Doing    '\u001b[36m${taskName}\u001b[0m'`);
             try {
                 callback(done);
                 dates[taskName] = Date.now();
-                fs.writeFile(changed, JSON.stringify(dates));
+                fs.writeFileSync(changed, JSON.stringify(dates));
             } catch (err) {
                 throw err;
             }

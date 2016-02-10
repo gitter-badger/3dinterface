@@ -30,7 +30,7 @@ task('prepare-L3D-custom-typings', path.join(root, 'custom_typings') + "/**", fu
 
     process.chdir(root);
     mkdirp('./js/L3D/typings');
-    merge('./custom_typings', './server/typings', 'overwrite');
+    merge('./custom_typings', './js/L3D/typings', 'overwrite');
     done();
 
 });
