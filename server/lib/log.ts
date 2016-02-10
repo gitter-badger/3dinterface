@@ -125,7 +125,7 @@ export function warning(message : any) {
 
     write(
         '[WRN] ' + new Date() + ' ' + message,
-        Color.Orange
+        Color.ORANGE
     );
 
 }
