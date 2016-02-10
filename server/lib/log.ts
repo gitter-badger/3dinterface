@@ -109,7 +109,7 @@ export function debug(info? : any, force? : boolean) {
     if (isDev || force === true) {
         write(
             '[DBG] ' + (info !== undefined ? info : ''),
-            Color.ORANGE
+            Color.YELLOW
         );
     }
 }
@@ -119,6 +119,15 @@ export function jadeerror(error : any) {
         '[JER] ' + new Date() + ' ' + error,
         Color.RED
     );
+}
+
+export function warning(message : any) {
+
+    write(
+        '[WRN] ' + new Date() + ' ' + message,
+        Color.Orange
+    );
+
 }
 
 }
