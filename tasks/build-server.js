@@ -51,7 +51,7 @@ task(
 task(
     'compile-server',
     ['build-L3D-backend', 'prepare-server'],
-    path.join(rootServer) + '/*.json',
+    path.join(rootServer) + "/**",
     function(done) {
         async.parallel([
                 function(done) {
