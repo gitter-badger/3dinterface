@@ -7,6 +7,7 @@ import { Normal         } from './Normal';
 import { TexCoord       } from './TexCoord';
 import { Transformation } from './Transformation';
 import { Vertex         } from './Vertex';
+import * as log from '../lib/log';
 
 module geo {
 
@@ -77,6 +78,16 @@ module geo {
 
             // Be carefule : use this
             fs.readFile(path, {encoding : 'utf-8'}, (err : any, data : any) => {
+
+                if (err != null && err.code === 'ENOENT') {
+
+                    let dirs = path.split('/');
+                    let filename = dirs[dirs.length-1];
+
+                    log.warning('Model ' + filename + ' could not be loaded !');
+                    return;
+
+                }
 
                 let currentMesh : Mesh = null;
                 let lines = data.toString('utf-8').split('\n');
