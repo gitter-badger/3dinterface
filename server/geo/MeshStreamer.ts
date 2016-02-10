@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as THREE from 'three';
 import * as L3D from 'L3D';
+import * as log from '../lib/log';
 
 import { Face } from './Face';
 import { Vector, Sendable, CameraItf, Frustum, Data, Plane } from './Interfaces';
@@ -64,7 +65,8 @@ module geo {
         ];
 
     } catch (e) {
-        process.stderr.write('No prefetching will be done !');
+        log.warning('Error occured while reading prefetching files');
+        log.warning('No prefetching will be done !');
         predictionTables = [];
     }
 
@@ -350,7 +352,7 @@ module geo {
                         this.predictionTable = predictionTables[3];
                 };
 
-                console.log(prefetch);
+                log.debug('Prefetch is : ' + prefetch);
                 this.generator = createConfigFromString(prefetch, this);
                 this.backupGenerator = new ConfigGenerator(this);
 
@@ -491,7 +493,7 @@ module geo {
 
                 }
 
-                console.log('Chunk of size ' + next.size + ' (generated in ' + (Date.now() - oldTime) + 'ms)');
+                log.debug('Chunk of size ' + next.size + ' (generated in ' + (Date.now() - oldTime) + 'ms)');
 
                 if (next.data.length === 0) {
 
