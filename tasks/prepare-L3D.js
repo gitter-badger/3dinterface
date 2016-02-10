@@ -3,48 +3,38 @@ var shell = require('gulp-shell');
 var changed = require('gulp-changed');
 var path = require('path');
 var mkdirp = require('mkdirp');
+var merge = require('merge-dirs').default;
 var exec = require('child_process').exec;
-var cleaner = require('./gulp-cleaner.js');
+var task = require('./create-task.js');
 
 var root = path.join(__dirname, '..');
 var rootChanged = path.join(root, '.changed');
 var rootL3D = path.join(root, 'js/L3D');
 var rootChangedL3D = path.join(rootChanged, 'js/L3D');
 
-gulp.task('prepare-L3D-npm', function(done) {
+task('prepare-L3D-npm', path.join(rootL3D, 'package.json'), function(done) {
 
-    var src = path.join(rootL3D, 'package.json');
-    var dest = rootChangedL3D;
-
-    return gulp.src(src)
-        .pipe(changed(dest))
-        .pipe(shell('npm install', {cwd:rootL3D}))
-        .pipe(gulp.dest(dest));
-});
-
-gulp.task('prepare-L3D-tsd-typings', function(done) {
-
-    var src = path.join(rootL3D, 'tsd.json');
-    var dest = path.join(rootChangedL3D);
-
-    return gulp.src(src)
-        .pipe(changed(dest))
-        .pipe(shell('tsd install', {cwd:rootL3D}))
-        .pipe(gulp.dest(dest));
+    exec('npm install', {cwd:rootL3D}, done)
+        .stdout.on('data', (data) => process.stdout.write(data));
 
 });
 
-gulp.task('prepare-L3D-custom-typings', function(done) {
+task('prepare-L3D-tsd-typings', path.join(rootL3D, 'tsd.json'), function(done) {
 
-    var src = path.join(root, 'custom_typings') + '/*';
-    var dest = path.join(rootChanged, 'js/L3D/custom_typings');
-
-    return gulp.src(src)
-        .pipe(changed(dest))
-        .pipe(gulp.dest(dest));
+    exec('tsd install', {cwd:rootL3D}, done)
+        .stdout.on('data', (data) => process.stdout.write(data));
 
 });
 
-gulp.task('prepare-L3D-typings', ['prepare-L3D-tsd-typings', 'prepare-L3D-custom-typings']);
+task('prepare-L3D-custom-typings', path.join(root, 'custom_typings') + "/**", function(done) {
 
-gulp.task('prepare-L3D', ['prepare-L3D-npm', 'prepare-L3D-typings']);
+    process.chdir(root);
+    mkdirp('./js/L3D/typings');
+    merge('./custom_typings', './server/typings', 'overwrite');
+    done();
+
+});
+
+task('prepare-L3D-typings', ['prepare-L3D-tsd-typings', 'prepare-L3D-custom-typings']);
+
+task('prepare-L3D', ['prepare-L3D-npm', 'prepare-L3D-typings']);

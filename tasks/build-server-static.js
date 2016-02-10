@@ -9,10 +9,11 @@ var mkdirp = require('mkdirp');
 var merge = require('merge-dirs').default;
 var rmdir = require('rimraf');
 var exec = require('child_process').exec;
+var task = require('./create-task.js');
 
 var root = path.join(__dirname, '..');
 
-gulp.task('build-server-static', function(done) {
+task('build-server-static', path.join(root, 'static') + "/**", function(done) {
     process.chdir(root);
     mkdirp('./build/server/static');
     merge('./static', './build/server/static');

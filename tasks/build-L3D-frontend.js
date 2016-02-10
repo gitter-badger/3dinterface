@@ -7,8 +7,10 @@ var ncp = require('ncp');
 var path = require('path');
 var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
+var task = require('./create-task.js');
 
 var root = path.join(__dirname, '..');
+var rootL3D = path.join(root, 'js/L3D');
 
 var frontendConfig = {
     entry: './js/L3D/L3D.ts',
@@ -42,7 +44,7 @@ var frontendConfig = {
     }
 };
 
-gulp.task('build-L3D-frontend', ['prepare-L3D'], function() {
+task('build-L3D-frontend', ['prepare-L3D'], rootL3D + "/**", function(done) {
     process.chdir(root);
     mkdirp('./build/server/static/js/L3D');
     webpack(frontendConfig).run(function(err, stats) {

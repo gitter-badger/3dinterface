@@ -8,13 +8,14 @@ var path = require('path');
 var mkdirp = require('mkdirp');
 var rmdir = require('rimraf');
 var exec = require('child_process').exec;
+var task = require('./create-task.js');
 
 var root = path.join(__dirname, '..');
 var rootL3D = path.join(root, 'js/L3D');
 var build = path.join(root, 'build');
 var buildL3D = path.join(build, 'L3D');
 
-gulp.task('compile-L3D-backend', ['prepare-L3D'], function(done) {
+task('compile-L3D-backend', ['prepare-L3D'], path.join(rootL3D) + "/**", function(done) {
 
     var nodeModules = {};
     fs.readdirSync(path.join(root, 'js/L3D/node_modules'))
@@ -82,9 +83,9 @@ gulp.task('compile-L3D-backend', ['prepare-L3D'], function(done) {
     });
 });
 
-gulp.task('build-L3D-backend', ['compile-L3D-backend'], function(done) {
+task('build-L3D-backend', ['compile-L3D-backend'], path.join(buildL3D, 'package.json'), function(done) {
 
-    exec('cd ' + buildL3D + ' && npm install', done)
+    exec('npm install', {cwd:buildL3D}, done)
         .stdout.on('data', (data) => process.stdout.write(data));
 
 });
