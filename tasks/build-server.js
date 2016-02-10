@@ -25,7 +25,7 @@ task('build-server-views-controllers', rootServer + "/**", function(done) {
         try {
             if (fs.statSync(path.join('./controllers', name, 'views')).isDirectory()) {
                 mkdirp(path.join('../build/server/controllers', name, 'views'));
-                merge(path.join('./controllers/', name, 'views'), path.join('../build/server/controllers', name, 'views'));
+                merge(path.join('./controllers/', name, 'views'), path.join('../build/server/controllers', name, 'views'), 'overwrite');
                 done();
             }
         } catch(e) {
@@ -39,7 +39,7 @@ task('build-server-views-controllers', rootServer + "/**", function(done) {
 task('build-server-views-global', path.join(rootServer, 'views') + "/**",  function(done) {
     process.chdir(root);
     mkdirp('./build/server/views');
-    merge('./server/views', './build/server/views');
+    merge('./server/views', './build/server/views', 'overwrite');
     done();
 });
 

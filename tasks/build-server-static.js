@@ -16,6 +16,6 @@ var root = path.join(__dirname, '..');
 task('build-server-static', path.join(root, 'static') + "/**", function(done) {
     process.chdir(root);
     mkdirp('./build/server/static');
-    merge('./static', './build/server/static');
+    merge('./static', './build/server/static', 'overwrite');
     done();
 });
