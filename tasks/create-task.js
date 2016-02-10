@@ -105,7 +105,7 @@ module.exports = function(_taskName, _deps, _srcPattern, _callback) {
         if (shouldExecuteTask) {
 
             // Compile and update date
-            console.log(`[${new Date().toString().substr(16,8)}] Doing    '\u001b[37m${taskName}\u001b[0m'`);
+            console.log(`[\u001b[38;5;238m${new Date().toString().substr(16,8)}\u001b[0m] Doing    '\u001b[36m${taskName}\u001b[0m'`);
             try {
                 callback(done);
                 dates[taskName] = Date.now();
@@ -117,7 +117,7 @@ module.exports = function(_taskName, _deps, _srcPattern, _callback) {
         } else {
 
             // Nothing to do in that case
-            console.log(`[${new Date().toString().substr(16,8)}] Ignoring '\u001b[37m${taskName}\u001b[0m'`);
+            console.log(`[\u001b[38;5;238m${new Date().toString().substr(16,8)}\u001b[0m] Ignoring '\u001b[36m${taskName}\u001b[0m'`);
             done();
 
         }
