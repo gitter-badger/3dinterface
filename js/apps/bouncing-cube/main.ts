@@ -1,4 +1,10 @@
-///<reference path="./BouncingCube.ts" />
+///<reference path="../typings/tsd.d.ts"/>
+///<reference path="../typings/polyfills.d.ts"/>
+///<reference path="../typings/threejs-examples/three.examples.d.ts"/>
+
+import * as THREE from 'three';
+import * as L3D from 'L3D';
+import * as geo from './BouncingCube';
 
 (function() {
 

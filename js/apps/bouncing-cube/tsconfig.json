@@ -1,0 +1,11 @@
+{
+    "compilerOptions" : {
+        "noImplicitAny": true,
+        "removeComments": true,
+        "module":"commonjs",
+        "preserveConstEnums": true,
+        "outDir":"../../../build/boucing-cube",
+        "sourceMap": true,
+        "rootDir":"./"
+    }
+}
