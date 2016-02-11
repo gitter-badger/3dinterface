@@ -2,9 +2,8 @@
     "compilerOptions" : {
         "noImplicitAny": true,
         "removeComments": true,
-        "module":"commonjs",
         "preserveConstEnums": true,
-        "outDir":"../../../build/boucing-cube",
+        "outDir":"../../../tmp/boucing-cube",
         "sourceMap": true,
         "rootDir":"./"
     }

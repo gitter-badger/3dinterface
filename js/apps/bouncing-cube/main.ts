@@ -3,8 +3,9 @@
 ///<reference path="../typings/threejs-examples/three.examples.d.ts"/>
 
 import * as THREE from 'three';
-import * as L3D from 'L3D';
 import * as geo from './BouncingCube';
+
+import * as L3D from 'L3D';
 
 (function() {
 

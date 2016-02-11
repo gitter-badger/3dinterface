@@ -1,5 +1,6 @@
-import * as L3D from '../../L3D/L3D';
 import * as THREE from 'three';
+
+import * as L3D from 'L3D';
 
 export class Cube extends THREE.Mesh {
 

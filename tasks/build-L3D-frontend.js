@@ -17,7 +17,7 @@ var frontendConfig = {
     output: {
         libraryTarget: 'var',
         library: 'L3D',
-        filename: './build/server/static/js/L3D/L3D.js',
+        filename: './build/server/static/js/L3D.js',
     },
     resolve: {
         extensions: ['', '.webpack.js', '.web.js', '.ts', '.js', '.json']
@@ -46,7 +46,7 @@ var frontendConfig = {
 
 task('build-L3D-frontend', ['prepare-L3D'], rootL3D + "/**", function(done) {
     process.chdir(root);
-    mkdirp('./build/server/static/js/L3D');
+    mkdirp('./build/server/static/js/');
     webpack(frontendConfig).run(function(err, stats) {
         rimraf('./build/tmp', {}, function() {
             if (err) {
