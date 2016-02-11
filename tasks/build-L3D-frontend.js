@@ -7,7 +7,7 @@ var ncp = require('ncp');
 var path = require('path');
 var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
-var task = require('./create-task.js');
+var task = require('./create-task.js')(__filename);
 
 var root = path.join(__dirname, '..');
 var rootL3D = path.join(root, 'js/L3D');

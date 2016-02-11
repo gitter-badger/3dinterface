@@ -31,99 +31,104 @@ function isString(string) {
 
 }
 
-module.exports = function(_taskName, _deps, _srcPattern, _callback) {
+module.exports = function(filename) {
 
-    var taskName, deps, srcPattern, callback;
+    return function(_taskName, _deps, _srcPattern, _callback) {
 
-    if (!isString(_taskName)) {
-        throw new Error('taskName should be a string !');
-    }
+        var taskName, deps, srcPattern, callback;
 
-    // taskName is now correct
-    taskName = _taskName;
-
-
-    if (_deps instanceof Array) {
-
-        // Deps is correct
-        deps = _deps;
-
-    } else if (isString(_deps)) {
-
-        // No deps : the string corresponding to srcPattern was given
-        deps = [];
-        srcPattern = _deps;
-
-    } else {
-
-        throw new Error('Unable to parse arguments');
-
-    }
-
-    if (isString(_srcPattern)) {
-
-        // srcPattern is correct
-        srcPattern = _srcPattern;
-
-        if (typeof _callback === 'function') {
-            callback = _callback;
-        } else {
-            callback = function(done) { done(); };
+        if (!isString(_taskName)) {
+            throw new Error('taskName should be a string !');
         }
 
-    } else if (typeof _srcPattern === 'function') {
+        // taskName is now correct
+        taskName = _taskName;
 
-        // We had taskName, pattern, and callback
-        callback = _srcPattern;
 
-    } else {
+        if (_deps instanceof Array) {
 
-        callback = function(done) { done(); };
+            // Deps is correct
+            deps = _deps;
 
-    }
+        } else if (isString(_deps)) {
 
-    if (!typeof callback === 'function') {
-        throw new Error('Callback was not a function');
-    }
+            // No deps : the string corresponding to srcPattern was given
+            deps = [];
+            srcPattern = _deps;
 
-    // Debug mode
-    // console.log('Added task ' + taskName);
-    // console.log('\tdeps : ' + (deps.length));
-    // console.log('\tsrcPattern : ' + srcPattern);
-    // console.log('\tcallback : ' + typeof callback);
-    // console.log();
+        } else {
 
-    gulp.task(taskName, deps, function(done) {
+            throw new Error('Unable to parse arguments');
 
-        // var dates = JSON.parse(fs.readFileSync(changed, 'utf-8'));
-        var lastTimeTaskWasExecuted = dates[taskName];
+        }
 
-        var shouldExecuteTask =
-            lastTimeTaskWasExecuted === undefined ||
-            srcPattern === undefined ||
-            lastTimeTaskWasExecuted < getLatestModificationTime(srcPattern);
+        if (isString(_srcPattern)) {
 
-        if (shouldExecuteTask || argv.force || argv.f) {
+            // srcPattern is correct
+            srcPattern = _srcPattern;
 
-            // Compile and update date
-            console.log(`[\u001b[38;5;238m${new Date().toString().substr(16,8)}\u001b[0m] Doing    '\u001b[36m${taskName}\u001b[0m'`);
-            try {
-                callback(done);
-                dates[taskName] = Date.now();
-                fs.writeFileSync(changed, JSON.stringify(dates));
-            } catch (err) {
-                throw err;
+            if (typeof _callback === 'function') {
+                callback = _callback;
+            } else {
+                callback = function(done) { done(); };
             }
 
+        } else if (typeof _srcPattern === 'function') {
+
+            // We had taskName, pattern, and callback
+            callback = _srcPattern;
+
         } else {
 
-            // Nothing to do in that case
-            console.log(`[\u001b[38;5;238m${new Date().toString().substr(16,8)}\u001b[0m] Ignoring '\u001b[36m${taskName}\u001b[0m'`);
-            done();
+            callback = function(done) { done(); };
 
         }
 
-    });
+        if (!typeof callback === 'function') {
+            throw new Error('Callback was not a function');
+        }
+
+        // Debug mode
+        // console.log('Added task ' + taskName);
+        // console.log('\tdeps : ' + (deps.length));
+        // console.log('\tsrcPattern : ' + srcPattern);
+        // console.log('\tcallback : ' + typeof callback);
+        // console.log();
+
+        gulp.task(taskName, deps, function(done) {
+
+            // var dates = JSON.parse(fs.readFileSync(changed, 'utf-8'));
+            var lastTimeTaskWasExecuted = dates[taskName];
+
+            var shouldExecuteTask =
+                lastTimeTaskWasExecuted === undefined ||
+                srcPattern === undefined ||
+                lastTimeTaskWasExecuted < getLatestModificationTime(srcPattern) ||
+                lastTimeTaskWasExecuted < getLatestModificationTime(filename);
+
+            if (shouldExecuteTask || argv.force || argv.f) {
+
+                // Compile and update date
+                console.log(`[\u001b[38;5;238m${new Date().toString().substr(16,8)}\u001b[0m] Doing    '\u001b[36m${taskName}\u001b[0m'`);
+                try {
+                    callback(done);
+                    dates[taskName] = Date.now();
+                    fs.writeFileSync(changed, JSON.stringify(dates));
+                } catch (err) {
+                    throw err;
+                }
+
+            } else {
+
+                // Nothing to do in that case
+                console.log(`[\u001b[38;5;238m${new Date().toString().substr(16,8)}\u001b[0m] Ignoring '\u001b[36m${taskName}\u001b[0m'`);
+                done();
+
+            }
+
+        });
+
+    }
 
 };
 
@@ -131,9 +136,9 @@ function getLatestModificationTime(pattern) {
 
     // Functionnal programming is so beautiful
     return (
-        glob(pattern)
+            glob(pattern)
             .map((name) => fs.statSync(name).mtime.getTime())
             .reduce((prev, next) => Math.max(prev, next))
-    );
+           );
 
 };

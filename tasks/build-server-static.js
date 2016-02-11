@@ -9,7 +9,7 @@ var mkdirp = require('mkdirp');
 var merge = require('merge-dirs').default;
 var rmdir = require('rimraf');
 var exec = require('child_process').exec;
-var task = require('./create-task.js');
+var task = require('./create-task.js')(__filename);
 
 var root = path.join(__dirname, '..');
 

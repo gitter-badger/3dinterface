@@ -5,7 +5,7 @@ var path = require('path');
 var mkdirp = require('mkdirp');
 var merge = require('merge-dirs').default;
 var exec = require('child_process').exec;
-var task = require('./create-task.js');
+var task = require('./create-task.js')(__filename);
 
 var root = path.join(__dirname, '..');
 var rootChanged = path.join(root, '.changed');
