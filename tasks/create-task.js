@@ -111,9 +111,13 @@ module.exports = function(filename) {
                 // Compile and update date
                 console.log(`[\u001b[38;5;238m${new Date().toString().substr(16,8)}\u001b[0m] Doing    '\u001b[36m${taskName}\u001b[0m'`);
                 try {
-                    callback(done);
-                    dates[taskName] = Date.now();
-                    fs.writeFileSync(changed, JSON.stringify(dates));
+                    callback(function(err) {
+                        done.apply(null,arguments);
+                        if (err == null) {
+                            dates[taskName] = Date.now();
+                            fs.writeFileSync(changed, JSON.stringify(dates));
+                        }
+                    });
                 } catch (err) {
                     throw err;
                 }
@@ -136,9 +140,9 @@ function getLatestModificationTime(pattern) {
 
     // Functionnal programming is so beautiful
     return (
-            glob(pattern)
+        glob(pattern)
             .map((name) => fs.statSync(name).mtime.getTime())
             .reduce((prev, next) => Math.max(prev, next))
-           );
+   );
 
 };
