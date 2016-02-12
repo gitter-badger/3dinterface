@@ -44,7 +44,7 @@ var frontendConfig = {
     }
 };
 
-task('build-bouncing-cube', ['prepare-apps-typings', 'build-L3D-frontend', 'build-L3D-backend'], path.join(rootApps, 'bouncing-cube') + "/**", function(done) {
+task('build-bouncing-cube', ['prepare-apps'], path.join(rootApps, 'bouncing-cube') + "/**", function(done) {
 
     process.chdir(root);
     mkdirp('./build/server/static/js/L3D');
