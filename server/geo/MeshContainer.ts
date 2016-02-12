@@ -79,18 +79,24 @@ module geo {
             // Be carefule : use this
             fs.readFile(path, {encoding : 'utf-8'}, (err : any, data : any) => {
 
+                let lines : string[];
+
                 if (err != null && err.code === 'ENOENT') {
 
                     let dirs = path.split('/');
                     let filename = dirs[dirs.length-1];
 
                     log.warning('Model ' + filename + ' could not be loaded !');
-                    return;
+
+                    lines = [];
+
+                } else {
+
+                    lines = data.toString('utf-8').split('\n');
 
                 }
 
                 let currentMesh : Mesh = null;
-                let lines = data.toString('utf-8').split('\n');
 
                 for (let i = 0; i < lines.length; i++) {
 
