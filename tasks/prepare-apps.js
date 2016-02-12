@@ -30,3 +30,12 @@ task('prepare-apps-custom-typings', path.join(root, 'custom_typings') + "/**", f
 
 task('prepare-apps-typings', ['prepare-apps-tsd-typings', 'prepare-apps-custom-typings']);
 
+task('prepare-apps-npm', ['build-L3D-backend'], path.join(root, 'js/L3D') + "/**", function(done) {
+
+    exec('npm install ../../build/L3D', {cwd:rootApps}, done)
+        .stdout.on('data', (data) => process.stdout.write(data));
+
+
+});
+
+task('prepare-apps', ['prepare-apps-typings', 'prepare-apps-npm']);
