@@ -60,23 +60,9 @@ task('compile-L3D-backend', ['prepare-L3D'], path.join(rootL3D) + "/**", functio
         if (err) {
             console.log('Error ', err);
         } else {
-            async.parallel([
-                    function(callback) {
-                        ncp(path.join(rootL3D, 'd.ts'), path.join(buildL3D, 'd.ts'), function(err) {
-                            if (err)
-                                console.log(err);
-                            callback();
-                        });
-                    },
-                    function(callback) {
-                        ncp(path.join(rootL3D,'package.json'), path.join(buildL3D,'package.json'), function(err) {
-                            if (err)
-                                console.log(err);
-                            callback();
-                        });
-                    }
-            ], function() {
-                console.log(stats.toString());
+            ncp(path.join(rootL3D,'package.json'), path.join(buildL3D,'package.json'), function(err) {
+                if (err)
+                    console.log(err);
                 done();
             });
         }
