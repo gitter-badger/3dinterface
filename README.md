@@ -1,59 +1,56 @@
 # 3D Interface
-This is the beginning of the typescript version of 3D interface : A prototype
+This is the beginning of the typescript version of 3D interface : a prototype
 for a user-friendly 3D interface allowing to browse 3D scenes / models written
 with Node.js.
 
 It is hosted by [OpenShift](https://www.openshift.com/) at
 [3dinterface.no-ip.org](http://3dinterface.no-ip.org).
 
-## Database setup
-First you need to configure the database. You can create a postgres database
-where you want, and you can initialize it by running the script
-`sql/backup.pgsql`.
+**Note : this is not quite ready yet, lots of functionalityies are missing, but 
+it should be really simpler to build from nothing. Check [what is supported for the moment] out.**
 
-## Nodejs configuration
-Then, you have to set up nodejs to access to your database. Basically, you have
-to create a file `private.js` in the `server` directory at the root of the
-repository looking like this :
+## Build
+### Prerequisites
+To build this project, you'll need some software :
+  - [NodeJS and NPM](https://nodejs.org/), because it is nodejs based
+  - [Gulp-cli](http://gulpjs.com/), to be able to use the compilation scripts
+  - [TSC](http://www.typescriptlang.org/), the typescript compiler
+  - [TSD](http://definitelytyped.org/tsd/), a ressource to have type definitions for plain javascript modules
+  
+... and normally, you should be good with that.
 
-``` javascript
-module.exports.url = ... // the url to connect to your database
+### Building
+  - First of all, get the sources and switch to the typescript branch
 
-module.exports.secret = ... // A secret string used to hash stuff
-```
+    ``` sh
+    git clone https://github.com/tforgione/3dinterface
+    git checkout typescript
+    ```
+  - Install the compiling modules dependencies
 
-## Compiling the static js files
-First, `cd` to `utils/`. Here you'll find a script `build_all.sh` that, as its
-name suggests, builds all. By default, it minifies the code, but you can pass
-the option `--dev` to avoid minifying (which is a quite long operation).
+    ``` sh
+    npm install
+    ```
+    
+  - Build everything with gulp
+  
+    ``` sh
+    gulp
+    ```
+    
+... and normally, you should be good with that.
 
-If it worked, you should see lots of files in `*.min.js` in your `static/js`
-directory, and a `geo.min.js` in your `lib` (at the root of the repository).
+### Testing
+Now, you probably want to test if everything is working. If everything went well, you should have a `build` directory at the root of your clone, which should contain a `server` directory. Go to that directory and start the server like so
 
-## Running the server
-As usual with NodeJS, it's quite easy to test. Just ensure you have `node`
-installed on your machine, clone this repo somewhere, and then, in the repo do
-
-``` sh
-cd server
-npm install
+```sh
 node server.js
 ```
 
-*Note : you will need to compile the static js files first in order to start
-the server*
+You should see lots of logs, and some warnings due to the fact that some of the binary files are not present on this repository. You can try to go to [localhost:4000](http://localhost:4000/) and if everything went well, you should see the index page of the website.
 
-You should be able to go to [localhost:4000](http://localhost:4000) and see the
-result.
+## What is supported for the moment
+Huh... for the moment... pretty much nothing. The server should start, and those two pages should be fully working :
 
-Please note that some static files (some meshes / textures) are not on this
-repository (especially the heavy ones).
-
-## Developping
-If you want to dev on this project, the `utils/demon.sh` may help you : it is
-based on [nodemon](https://github.com/remy/nodemon) (that basically restarts
-the server everytime there is a change in the code) and
-[inotifywait](http://linux.die.net/man/1/inotifywait) (that basically
-recompiles everything when there is a modification). To use it, just `cd` to
-`utils` and run `demon.sh` (note that it doesn't minify the code since this
-operation is heavy and too long to redo everytime there is a change).
+  - the [index](http://localhost:4000/)
+  - the [demo of the bouncing cube](http://localhost:4000/boucing/)
