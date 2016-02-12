@@ -7,7 +7,7 @@ It is hosted by [OpenShift](https://www.openshift.com/) at
 [3dinterface.no-ip.org](http://3dinterface.no-ip.org).
 
 **Note : this is not quite ready yet, lots of functionalityies are missing, but 
-it should be really simpler to build from nothing. Check [what is supported for the moment] out.**
+it should be really simpler to build from nothing. Check [what is supported for the moment](#what-is-supported-for-the-moment) out.**
 
 ## Build
 ### Prerequisites
