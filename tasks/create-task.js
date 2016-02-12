@@ -100,11 +100,21 @@ module.exports = function(filename) {
             // var dates = JSON.parse(fs.readFileSync(changed, 'utf-8'));
             var lastTimeTaskWasExecuted = dates[taskName];
 
-            var shouldExecuteTask =
-                lastTimeTaskWasExecuted === undefined ||
-                srcPattern === undefined ||
-                lastTimeTaskWasExecuted < getLatestModificationTime(srcPattern) ||
-                lastTimeTaskWasExecuted < getLatestModificationTime(filename);
+            var shouldExecuteTask;
+
+            try {
+                shouldExecuteTask =
+                    lastTimeTaskWasExecuted === undefined ||
+                    srcPattern === undefined ||
+                    lastTimeTaskWasExecuted < getLatestModificationTime(srcPattern) ||
+                    lastTimeTaskWasExecuted < getLatestModificationTime(filename);
+            } catch (err) {
+                if (err instanceof TypeError) {
+                    shouldExecuteTask = true;
+                } else {
+                    throw err;
+                }
+            }
 
             if (shouldExecuteTask || argv.force || argv.f) {
 
@@ -142,7 +152,7 @@ function getLatestModificationTime(pattern) {
     return (
         glob(pattern)
             .map((name) => fs.statSync(name).mtime.getTime())
-            .reduce((prev, next) => Math.max(prev, next))
+            .reduce((prev, next) => Math.max(prev, next), -Infinity)
    );
 
 };
