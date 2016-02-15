@@ -142,6 +142,18 @@ module.exports = function(filename) {
 
         });
 
+
+        if (argv.w || argv.watch) {
+
+            gulp.watch(srcPattern, function() {
+
+                gulp.start(taskName);
+
+            });
+
+        }
+
+
     }
 
 };
