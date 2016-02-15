@@ -63,3 +63,14 @@ those two pages should be fully working :
 
   - the [index](http://localhost:4000/)
   - the [demo of the bouncing cube](http://localhost:4000/boucing/)
+
+
+## Dev
+If you want to contribute to this project (or just modify stuff), you can use
+some dev tools. If you have [nodemon](https://github.com/remy/nodemon)
+installed on your computer, you can launch
+``` sh
+gulp dev
+```
+and it will watch for file changes and re-build everything that is necessary (a
+little more in fact...)
