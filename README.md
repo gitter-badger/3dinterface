@@ -73,4 +73,4 @@ installed on your computer, you can launch
 gulp dev
 ```
 and it will watch for file changes and re-build everything that is necessary (a
-little more in fact...)
+little more actually...)
