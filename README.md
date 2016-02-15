@@ -8,7 +8,7 @@ It is hosted by [OpenShift](https://www.openshift.com/) at
 
 **Note : this is not quite ready yet, lots of functionalityies are missing, but
 it should be really simpler to build from nothing. Check [what is supported for
-the moment](#what-is-supported-for-the-moment) out.**
+the moment](#what-is-supported-for-the-moment).**
 
 ## Build
 ### Prerequisites
