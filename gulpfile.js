@@ -16,7 +16,8 @@ fs.readdirSync(path.join(__dirname, 'tasks')).forEach(function(name) {
 
 gulp.task('dev', function(done) {
 
-    exec('nodemon build/server/server.js --watch build/server/', done)
+    process.chdir('build/server');
+    exec('nodemon server.js', done)
         .stdout.on('data', (lines) => {
             for (var data of lines.toString().split('\n')) {
                 if (data.length > 1)
