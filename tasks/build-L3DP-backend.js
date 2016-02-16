@@ -22,7 +22,7 @@ task('prepare-L3DP', ['prepare-apps', 'build-L3D-backend'], path.join(rootL3DP, 
 
 });
 
-task('compile-L3DP-backend', ['prepare-L3D'], path.join(rootL3DP) + "/**", function(done) {
+task('compile-L3DP-backend', ['prepare-L3DP'], path.join(rootL3DP) + "/**", function(done) {
 
     var nodeModules = {};
     fs.readdirSync(path.join(root, 'js/apps/L3DP/node_modules'))
