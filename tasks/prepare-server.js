@@ -49,6 +49,15 @@ task(
     }
 );
 
+task(
+    'prepare-server-L3DP',
+    ['build-L3DP-backend'],
+    path.join(build, 'L3D') + "/**",
+    function(done) {
+        exec('npm install ../build/L3D', {cwd:rootServer}, done);
+    }
+);
+
 
 // Global
 task(

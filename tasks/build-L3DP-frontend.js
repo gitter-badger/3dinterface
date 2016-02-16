@@ -44,11 +44,11 @@ var frontendConfig = {
     },
     devtool:'sourcemap',
     ts: {
-        configFileName: path.join(root, 'js/apps/L3DP/tsconfig.json')
+        configFileName: path.join(root, 'js/apps/L3DP/tsconfig-frontend.json')
     }
 };
 
-task('build-L3DP', ['prepare-apps'], rootL3DP + "/**", function(done) {
+task('build-L3DP-frontend', ['prepare-apps'], rootL3DP + "/**", function(done) {
     process.chdir(root);
     mkdirp('./build/server/static/js/');
     webpack(frontendConfig).run(function(err, stats) {

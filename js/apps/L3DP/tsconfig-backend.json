@@ -1,0 +1,11 @@
+{
+    "compilerOptions" : {
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "outDir":"../../build/L3DP",
+        "sourceMap": true,
+        "declaration":true,
+        "rootDir":"./"
+    }
+}
