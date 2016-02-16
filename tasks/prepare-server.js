@@ -52,9 +52,9 @@ task(
 task(
     'prepare-server-L3DP',
     ['build-L3DP-backend'],
-    path.join(build, 'L3D') + "/**",
+    path.join(build, 'L3DP') + "/**",
     function(done) {
-        exec('npm install ../build/L3D', {cwd:rootServer}, done);
+        exec('npm install ../build/L3DP', {cwd:rootServer}, done);
     }
 );
 
@@ -62,6 +62,6 @@ task(
 // Global
 task(
     'prepare-server',
-    ['prepare-server-packages-typings', 'prepare-server-packages-npm', 'prepare-server-L3D']
+    ['prepare-server-packages-typings', 'prepare-server-packages-npm', 'prepare-server-L3D', 'prepare-server-L3DP']
 );
 
