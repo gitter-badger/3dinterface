@@ -3,7 +3,7 @@ import * as L3D from 'L3D';
 
 import { SceneWithCoins } from './SceneWithCoins';
 
-module Proto {
+module L3DP {
 
     export class SponzaScene extends SceneWithCoins {
 
@@ -111,4 +111,4 @@ module Proto {
 
 }
 
-export = Proto;
+export = L3DP;

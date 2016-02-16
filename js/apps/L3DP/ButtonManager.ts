@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import * as L3D from 'L3D';
 
-module Proto {
+module L3DP {
 
     export class ButtonManager {
 
@@ -79,4 +79,4 @@ module Proto {
 
 }
 
-export = Proto;
+export = L3DP;

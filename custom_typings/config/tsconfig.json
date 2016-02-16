@@ -1,0 +1,10 @@
+{
+    "compilerOptions" : {
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "outDir":"../../../tmp/config",
+        "sourceMap": true,
+        "rootDir":"./"
+    }
+}

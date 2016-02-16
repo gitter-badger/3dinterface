@@ -2,9 +2,9 @@ import * as THREE from 'three';
 import * as L3D from 'L3D';
 
 import { Coin } from './Coin';
-import { ConfigType, CoinConfig } from '../config';
+import { ConfigType, CoinConfig } from 'config';
 
-module Proto {
+module L3DP {
 
     /**
      * Class that represents a scene that can contains recommendations and coins
@@ -93,4 +93,4 @@ module Proto {
 
 }
 
-export = Proto;
+export = L3DP;

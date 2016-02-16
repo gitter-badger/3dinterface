@@ -1,4 +1,4 @@
-module Proto {
+declare module Config {
 
     export enum Scene {
         PeachCastle,
@@ -43,7 +43,8 @@ module Proto {
         recommendationStyle : RecommendationStyle;
 
     }
-
 }
 
-export = Proto;
+declare module 'config' {
+    export = Config;
+}

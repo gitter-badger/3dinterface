@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 import * as L3D from 'L3D';
 
+import { CoinConfig } from 'config';
 import { SceneWithCoins } from './SceneWithCoins';
-import { CoinConfig } from '../config';
 import { RecommendationData } from './RecommendationData';
 import { CoinData } from './CoinData';
 
-module Proto {
+module L3DP {
 
     export class BobombScene extends SceneWithCoins {
 
@@ -89,4 +89,4 @@ module Proto {
 
 }
 
-export = Proto;
+export = L3DP;

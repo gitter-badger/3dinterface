@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import * as L3D from 'L3D';
 
-module Proto {
+module L3DP {
 
     export function logfps(fps : number) {
         var event = new L3D.DB.Event.Fps();
@@ -80,4 +80,4 @@ module Proto {
 
 }
 
-export = Proto;
+export = L3DP;
