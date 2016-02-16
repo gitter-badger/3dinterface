@@ -17,7 +17,7 @@ var buildL3DP = path.join(build, 'L3DP');
 
 task('prepare-L3DP', ['prepare-apps', 'build-L3D-backend'], path.join(rootL3DP, 'package.json'), function(done) {
 
-    exec('npm install', {cwd:buildL3DP}, done)
+    exec('npm install', {cwd:rootL3DP}, done)
         .stdout.on('data', (data) => process.stdout.write(data));
 
 });
