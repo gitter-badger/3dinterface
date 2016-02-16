@@ -5,7 +5,7 @@
 
 import * as THREE from 'three';
 import * as L3D from 'L3D';
-import * as Proto from './module/Proto';
+import * as L3DP from 'L3DP';
 import { Stats } from 'stats';
 
 L3D.DB.disable();
