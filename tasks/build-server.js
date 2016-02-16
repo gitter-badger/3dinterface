@@ -17,7 +17,7 @@ var build = path.join(root, 'build');
 var buildServer = path.join(build, 'server');
 
 // Views
-task('build-server-views-controllers', rootServer + "/**", function(done) {
+task('build-server-views-controllers', rootServer + "/**.js", function(done) {
     process.chdir(rootServer);
 
     async.forEach(fs.readdirSync('controllers'), function(name, done) {

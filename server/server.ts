@@ -39,6 +39,7 @@ function main() {
         });
         res.locals.title = "3DUI";
         res.locals.urls = require('./urls');
+        res.locals.session = req.session;
         next();
     });
 

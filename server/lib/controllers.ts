@@ -4,7 +4,8 @@
 
 import express = require('express');
 import fs = require('fs');
-var log = require('./log');
+
+import log = require('./log');
 
 function main(app : express.Application) : void {
 
@@ -28,17 +29,29 @@ function main(app : express.Application) : void {
 
         log.debug('   ' + name + ':');
 
-        for (var key in urls) {
-            app.get(key, function(req, res, next) {
+        for (let key in urls) {
+
+            app.get(key, ((key : string) => function(req : express.Request, res : express.Response, next : Function) {
+
                 var path = obj[urls[key]](req, res, function(view : string) {
-                    res.render(__dirname + '/../controllers/' + name + '/views/' + view, res.locals, function(err : Error, out : string) {
-                        if (err !== null) {
-                            log.jadeerror(err);
+                    res.render(
+                        __dirname +
+                        '/../controllers/' +
+                        name + '/views/' +
+                        view,
+                        res.locals,
+                        function(err : Error, out : string) {
+                            if (err !== null) {
+                                log.jadeerror(err);
+                            }
+                            res.send(out);
                         }
-                        res.send(out);
-                    });
+                    );
+
                 }, next);
-            });
+
+            })(key));
+
             log.debug('      ' + key + ' -> ' + name + '.' + urls[key]);
         }
 
