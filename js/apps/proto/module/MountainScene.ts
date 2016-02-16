@@ -8,7 +8,7 @@ import { CoinData } from './CoinData';
 
 module Proto {
 
-    export class WhompScene extends SceneWithCoins {
+    export class MountainScene extends SceneWithCoins {
 
         constructor() {
             super();
@@ -17,7 +17,7 @@ module Proto {
         setCamera(camera : L3D.PointerCamera) {
 
             super.setCamera(camera);
-            this.camera.speed = 0.002;
+            this.camera.speed = 0.005;
 
         }
 
@@ -28,8 +28,9 @@ module Proto {
             }
 
             var path = lowRes === true ?
-                '/static/data/whomp/Whomps Fortress.obj':
-                '/static/data/whomp/Whomps Fortress_sub.obj';
+                '/static/data/mountain/coocoolmountain.obj':
+                '/static/data/mountain/coocoolmountain_sub.obj';
+
 
             this.loader = new L3D.ProgressiveLoader(
                 path,
@@ -38,23 +39,27 @@ module Proto {
                 (object : THREE.Mesh) => {
 
                     this.clickableObjects.push(object);
+
                     object.raycastable = true;
-                    if (object.material.name === 'Shape_088' ||
-                        object.material.name === 'Shape_089') {
 
-                        object.raycastable = false;
-                        object.material.transparent = true;
+                    if (object.material.name === 'Material.070_13F025D5_c2.png' ||
+                        object.material.name === 'Material.068_5972FC88_c.bmp' ||
+                        object.material.name === 'Material.073_76F611AD_c.bmp' ||
+                        object.material.name === 'Material.071_76F611AD_c.bmp' ||
+                        object.material.name === 'Material.072_1723CCC7_c.bmp' ||
+                        object.material.name === 'Material.069_78B64DC7_c.bmp' ||
+                        object.material.name === 'Material.070_13F025D5_c.bmp' ||
+                        object.material.name === 'Material.078_3165B23A_c.bmp' ||
+                        object.material.name === 'Material.067_1723CCC7_c.bmp' ||
+                        object.material.name === 'Material.066_36DB292F_c.bmp') {
 
-                    } else if (object.material.name === 'Shape_113') {
+                            object.raycastable = false;
+                            object.material.transparent = true;
 
+                    } else if (object.material.name === 'Material.082_6DAF90F6_c.bmp') {
                         object.raycastable = false;
                         object.material.transparent = true;
                         object.material.opacity = 0.5;
-
-                    } else if (object.material.name === 'Shape_076' ||
-                               object.material.name === 'Shape_098' ||
-                               object.material.name === 'Shape_092') {
-                        object.visible = false;
                     }
 
                 },
@@ -75,32 +80,22 @@ module Proto {
         getResetElements() {
 
             return {
-                position : new THREE.Vector3(-6.725817925071645,1.4993570618328055,-10.356480813212423),
-                target : new THREE.Vector3(-4.8541705829784604,1.3192268872752742,-6.825972443720941)
+                position : new THREE.Vector3(-20.558328115300082,23.601312087942762,-10.220633604814038),
+                target : new THREE.Vector3(11.025356711105232,11.969889531789319,11.393733425161644)
             }
 
         }
 
-        addCoins(coinConfig : CoinConfig) {
-
-            return super.addCoins(coinConfig, 0.002);
-
-        }
-
-        addRecommendations(ClassToInstanciate : any, width : number, height : number) {
-
-            return super.addRecommendations(ClassToInstanciate, width, height, 0.2);
-
-        }
-
         getRawRecommendations() : L3D.CameraItf[] {
-            return RecommendationData.whompRecommendations;
+            return RecommendationData.mountainRecommendations;
         }
 
         getRawCoins() : L3D.Vector3[] {
-            return CoinData.whompCoins;
+            return CoinData.mountainCoins;
         }
 
     }
 
 }
+
+export = Proto;
