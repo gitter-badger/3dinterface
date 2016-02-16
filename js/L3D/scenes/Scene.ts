@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+
 import { PointerCamera } from '../cameras/PointerCamera';
 import { ProgressiveLoader } from '../loaders/ProgressiveLoader';
 import { BaseRecommendation } from '../recommendations/BaseRecommendation';

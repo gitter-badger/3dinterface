@@ -1,3 +1,6 @@
+import * as THREE from 'three';
+import * as L3D from 'L3D';
+
 module Proto {
 
     function create(a:number,b:number,c:number,d:number,e:number,f:number) : L3D.CameraItf {
@@ -176,3 +179,5 @@ module Proto {
     }
 
 }
+
+export = Proto;

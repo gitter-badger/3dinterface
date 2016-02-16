@@ -11,10 +11,10 @@ var task = require('./create-task.js')(__filename);
 
 var root = path.join(__dirname, '..');
 var rootApps = path.join(root, 'js/apps');
-var rootBuildApps = path.join(root, 'build/server/static/js/bouncing.min.js');
+var rootBuildApps = path.join(root, 'build/server/static/js/proto.min.js');
 
 var frontendConfig = {
-    entry: path.join(rootApps, 'bouncing-cube', 'main.ts'),
+    entry: path.join(rootApps, 'proto', 'main.ts'),
     output: {
         filename: rootBuildApps,
     },
@@ -36,21 +36,23 @@ var frontendConfig = {
         three : 'THREE',
         L3D : 'L3D',
         'socket.io': 'io',
-        'socket.io-client':'io'
+        'socket.io-client':'io',
+        stats : 'Stats'
     },
     devtool:'sourcemap',
     ts: {
-        configFileName: path.join(rootApps, 'bouncing-cube', 'tsconfig.json')
+        configFileName: path.join(rootApps, 'proto', 'tsconfig.json')
     }
 };
 
-task('build-bouncing-cube', ['prepare-apps'], path.join(rootApps, 'bouncing-cube') + "/**", function(done) {
+task('build-proto', ['prepare-apps'], path.join(rootApps, 'proto') + "/**", function(done) {
 
     process.chdir(root);
     webpack(frontendConfig).run(function(err, stats) {
-        rimraf('./tmp/bouncing-cube', {}, function() {
+        rimraf('./proto', {}, function() {
             if (err) {
                 console.log('Error ', err);
+                done(err);
             } else {
                 console.log(stats.toString());
                 done();

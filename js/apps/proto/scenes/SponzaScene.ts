@@ -1,3 +1,8 @@
+import * as THREE from 'three';
+import * as L3D from 'L3D';
+
+import { SceneWithCoins } from './SceneWithCoins';
+
 module Proto {
 
     export class SponzaScene extends SceneWithCoins {

@@ -1,4 +1,18 @@
-///<reference path="./includes.d.ts"/>
+///<reference path="../typings/tsd.d.ts"/>
+///<reference path="../typings/polyfills.d.ts"/>
+///<reference path="../typings/threejs-examples/three.examples.d.ts"/>
+///<reference path="../typings/stats/stats.d.ts"/>
+
+import * as THREE from 'three';
+import * as L3D from 'L3D';
+import { Stats } from 'stats';
+
+import { Coin } from './scenes/Coin';
+import { CoinCanvas } from './scenes/CoinCanvas';
+import { SceneWithCoins } from './scenes/SceneWithCoins';
+import { ButtonManager } from './scenes/ButtonManager';
+
+import { logfps, appendTo, resizeElements, show, hide, resetCameraAspect } from './functions';
 
 module Proto {
 

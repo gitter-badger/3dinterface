@@ -1,3 +1,6 @@
+import * as THREE from 'three';
+import * as L3D from 'L3D';
+
 module Proto {
 
     function createCoin(a : number, b : number, c : number) : L3D.Vector3 { return {x:a, y:b, z:c}; }
@@ -223,3 +226,5 @@ module Proto {
     }
 
 }
+
+export = Proto;

@@ -1,3 +1,9 @@
+import * as THREE from 'three';
+import * as L3D from 'L3D';
+
+import { Coin } from './Coin';
+import { ConfigType, CoinConfig } from '../config';
+
 module Proto {
 
     /**
@@ -86,3 +92,5 @@ module Proto {
     }
 
 }
+
+export = Proto;

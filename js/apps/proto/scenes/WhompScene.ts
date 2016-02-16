@@ -1,3 +1,11 @@
+import * as THREE from 'three';
+import * as L3D from 'L3D';
+
+import { SceneWithCoins } from './SceneWithCoins';
+import { CoinConfig } from '../config';
+import { RecommendationData } from './RecommendationData';
+import { CoinData } from './CoinData';
+
 module Proto {
 
     export class WhompScene extends SceneWithCoins {

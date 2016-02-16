@@ -45,3 +45,5 @@ module Proto {
     }
 
 }
+
+export = Proto;

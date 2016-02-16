@@ -16,4 +16,5 @@ var rootServer = path.join(root, 'server');
 var build = path.join(root, 'build');
 var buildServer = path.join(build, 'server');
 
-task('default', ['build-L3D-frontend', 'build-bouncing-cube', 'build-server']);
+task('build-apps', ['build-bouncing-cube', 'build-proto']);
+task('default', ['build-L3D-frontend', 'build-apps', 'build-server']);

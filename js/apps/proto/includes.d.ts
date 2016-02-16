@@ -1,4 +1,4 @@
-///<reference path="../../../../typings/includes.d.ts"/>
+// ///<reference path="../../../../typings/includes.d.ts"/>
 
 ///<reference path="config.ts"/>
 ///<reference path="functions.ts"/>

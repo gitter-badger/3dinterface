@@ -1,3 +1,6 @@
+import * as THREE from 'three';
+import * as L3D from 'L3D';
+
 module Proto {
 
     export class ButtonManager {
@@ -75,3 +78,5 @@ module Proto {
     }
 
 }
+
+export = Proto;

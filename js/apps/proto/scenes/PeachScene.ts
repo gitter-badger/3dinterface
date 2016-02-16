@@ -1,8 +1,18 @@
+import * as THREE from 'three';
+import * as L3D from 'L3D';
+
+import { SceneWithCoins } from './SceneWithCoins';
+import { CoinConfig } from '../config';
+import { RecommendationData } from './RecommendationData';
+import { CoinData } from './CoinData';
+import { Coin } from './Coin';
+
 module Proto {
 
     export class PeachScene extends SceneWithCoins {
 
         coinScale : number;
+        loader : L3D.ProgressiveLoader;
 
         constructor() {
 

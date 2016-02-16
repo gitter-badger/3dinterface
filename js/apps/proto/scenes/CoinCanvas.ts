@@ -1,3 +1,6 @@
+import * as THREE from 'three';
+import * as L3D from 'L3D';
+
 module Proto {
 
     function instantToColor(instant : number) {
@@ -54,7 +57,7 @@ module Proto {
 
                 if (this.colorInstant < 0 || this.colorInstant > 1) {
 
-                    this.colorInstant = L3D.clamp(this.colorInstant, 0, 1);
+                    this.colorInstant = L3D.Tools.clamp(this.colorInstant, 0, 1);
                     this.blinkingToRed = !this.blinkingToRed;
 
                 }
@@ -119,3 +122,5 @@ module Proto {
     }
 
 }
+
+export = Proto;

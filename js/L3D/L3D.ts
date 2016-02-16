@@ -1,3 +1,4 @@
+export { Scene } from './scenes/Scene';
 export { MousePointer } from './canvases/MousePointer';
 export { StartCanvas } from './canvases/StartCanvas';
 export { Previewer } from './canvases/Previewer';

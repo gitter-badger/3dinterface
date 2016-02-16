@@ -1,3 +1,6 @@
+import * as THREE from 'three';
+import * as L3D from 'L3D';
+
 module Proto {
 
     export function logfps(fps : number) {
@@ -76,3 +79,5 @@ module Proto {
     }
 
 }
+
+export = Proto;
