@@ -30,7 +30,6 @@ build/static/.dirstamp: ../static/*
 	touch $@
 
 build/controllers/%/views: src/controllers/%/views
-	mkdir -p $@
 	cp -r $< $@
 	touch $@
 
