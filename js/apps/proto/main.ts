@@ -5,7 +5,7 @@
 
 import * as THREE from 'three';
 import * as L3D from 'L3D';
-import * as L3DP from 'L3DP';
+import * as L3DP from 'l3dp';
 import { Stats } from 'stats';
 
 L3D.DB.disable();
@@ -41,20 +41,20 @@ window.onWindowResize = (function() {
 
     var stats : Stats,
         renderer : THREE.WebGLRenderer,
-        scene : Proto.SceneWithCoins,
+        scene : L3DP.SceneWithCoins,
         container : HTMLElement,
         clickableObjects : THREE.Object3D[] = [],
         recommendations : L3D.BaseRecommendation[],
         objectClicker : L3D.ObjectClicker,
         previewer : L3D.Previewer,
         camera : L3D.PointerCamera,
-        coins : Proto.Coin[] = [],
+        coins : L3DP.Coin[] = [],
         previousTime : number,
         pointer : L3D.MousePointer,
         startCanvas : L3D.StartCanvas,
         loadingCanvas : L3D.LoadingCanvas,
-        coinCanvas : Proto.CoinCanvas,
-        buttonManager : Proto.ButtonManager;
+        coinCanvas : L3DP.CoinCanvas,
+        buttonManager : L3DP.ButtonManager;
 
     // window.onbeforeunload = function() {
     //
@@ -90,10 +90,10 @@ window.onWindowResize = (function() {
         initListeners();
 
         if (GLOB.hideBeforeLoading === true) {
-            Proto.appendTo(container)(stats, coinCanvas, startCanvas, pointer, previewer, loadingCanvas, renderer);
+            L3DP.appendTo(container)(stats, coinCanvas, startCanvas, pointer, previewer, loadingCanvas, renderer);
             loadingCanvas.render();
         } else
-            Proto.appendTo(container)(startCanvas, pointer, previewer, renderer);
+            L3DP.appendTo(container)(startCanvas, pointer, previewer, renderer);
 
         // Set the good size of cameras
         onWindowResize();
@@ -204,7 +204,7 @@ window.onWindowResize = (function() {
         stats.domElement.style.cssFloat = "top-left";
 
         // Initialize coin counter
-        coinCanvas = new Proto.CoinCanvas();
+        coinCanvas = new L3DP.CoinCanvas();
         coinCanvas.domElement.style.position = 'absolute';
         coinCanvas.domElement.style.cssFloat = 'top-left';
 
@@ -238,7 +238,7 @@ window.onWindowResize = (function() {
         window.addEventListener('resize', onWindowResize, false);
 
         // HTML Bootstrap buttons
-        buttonManager = new Proto.ButtonManager(camera, recommendations, previewer);
+        buttonManager = new L3DP.ButtonManager(camera, recommendations, previewer);
 
         // Object clicker for hover and clicking recommendations
         objectClicker = new L3D.ObjectClicker();
@@ -255,14 +255,14 @@ window.onWindowResize = (function() {
         // Update recommendations (set raycastable if shown)
         scene.recommendations.map(function(reco : L3D.BaseRecommendation) {
             if (reco instanceof L3D.BaseRecommendation) {
-                reco.traverse(function(elt) {
+                reco.traverse(function(elt : THREE.Object3D) {
                     elt.visible = elt.raycastable = buttonManager.showArrows;
                 });
             }
         });
 
         // Update coins
-        scene.coins.forEach(function(coin : Proto.Coin) { coin.update(); });
+        scene.coins.forEach(function(coin : L3DP.Coin) { coin.update(); });
 
         // Update main camera
         var currentTime = Date.now() - previousTime;
@@ -290,7 +290,7 @@ window.onWindowResize = (function() {
         // Hide arrows in recommendation
         scene.recommendations.map(function(reco : L3D.BaseRecommendation) {
             if (reco instanceof L3D.BaseRecommendation)
-                Proto.hide(reco);
+                L3DP.hide(reco);
         });
 
         // Update transparent elements
@@ -307,10 +307,10 @@ window.onWindowResize = (function() {
 
     function onWindowResize() {
 
-        Proto.resizeElements(renderer, container, previewer, coinCanvas, pointer, startCanvas, loadingCanvas);
+        L3DP.resizeElements(renderer, container, previewer, coinCanvas, pointer, startCanvas, loadingCanvas);
 
         scene.recommendations.forEach(function(reco : L3D.BaseRecommendation) {
-            Proto.resetCameraAspect(reco.camera, window.containerSize.width(), window.containerSize.height());
+            L3DP.resetCameraAspect(reco.camera, window.containerSize.width(), window.containerSize.height());
         });
 
         render();

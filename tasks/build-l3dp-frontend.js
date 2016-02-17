@@ -8,16 +8,18 @@ var path = require('path');
 var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
 var task = require('./create-task.js')(__filename);
+var exec = require('child_process').exec;
 
 var root = path.join(__dirname, '..');
-var rootL3DP = path.join(root, 'js/apps/L3DP');
+var rootApps = path.join(root, 'js/apps');
+var rootl3dp = path.join(rootApps, 'l3dp');
 
 var frontendConfig = {
-    entry: './js/apps/L3DP/L3DP.ts',
+    entry: './js/apps/l3dp/l3dp.ts',
     output: {
         libraryTarget: 'var',
-        library: 'L3DP',
-        filename: './build/server/static/js/L3DP.js',
+        library: 'l3dp',
+        filename: './build/server/static/js/l3dp.js',
     },
     resolve: {
         extensions: ['', '.webpack.js', '.web.js', '.ts', '.js', '.json']
@@ -44,11 +46,18 @@ var frontendConfig = {
     },
     devtool:'sourcemap',
     ts: {
-        configFileName: path.join(root, 'js/apps/L3DP/tsconfig-frontend.json')
+        configFileName: path.join(root, 'js/apps/l3dp/tsconfig-frontend.json')
     }
 };
 
-task('build-L3DP-frontend', ['prepare-apps'], rootL3DP + "/**", function(done) {
+task('prepare-l3dp', ['build-L3D-backend'], path.join(rootl3dp, 'package.json'), function(done) {
+
+    exec('npm install ../../build/L3D', {cwd:rootApps}, done)
+        .stdout.on('data', (data)=>process.stdout.write(data));
+
+});
+
+task('build-l3dp-frontend', ['prepare-apps', 'prepare-l3dp'], rootl3dp + "/**", function(done) {
     process.chdir(root);
     mkdirp('./build/server/static/js/');
     webpack(frontendConfig).run(function(err, stats) {

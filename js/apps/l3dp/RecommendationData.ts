@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import * as L3D from 'L3D';
 
-module L3DP {
+module l3dp {
 
     function create(a:number,b:number,c:number,d:number,e:number,f:number) : L3D.CameraItf {
         return {position:{x:a,y:b,z:c}, target:{x:d,y:e,z:f}};
@@ -180,4 +180,4 @@ module L3DP {
 
 }
 
-export = L3DP;
+export = l3dp;

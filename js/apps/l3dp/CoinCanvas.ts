@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import * as L3D from 'L3D';
 
-module L3DP {
+module l3dp {
 
     function instantToColor(instant : number) {
 
@@ -123,4 +123,4 @@ module L3DP {
 
 }
 
-export = L3DP;
+export = l3dp;

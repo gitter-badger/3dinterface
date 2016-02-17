@@ -6,7 +6,7 @@ import { CoinConfig } from 'config';
 import { RecommendationData } from './RecommendationData';
 import { CoinData } from './CoinData';
 
-module L3DP {
+module l3dp {
 
     export class MountainScene extends SceneWithCoins {
 
@@ -98,4 +98,4 @@ module L3DP {
 
 }
 
-export = L3DP;
+export = l3dp;

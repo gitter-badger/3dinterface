@@ -1,14 +1,18 @@
 import * as THREE from 'three';
 import * as L3D from 'L3D';
 
-import { SceneWithCoins } from './SceneWithCoins';
 import { CoinConfig } from 'config';
+import { SceneWithCoins } from './SceneWithCoins';
 import { RecommendationData } from './RecommendationData';
 import { CoinData } from './CoinData';
 
-module L3DP {
+module l3dp {
 
-    export class WhompScene extends SceneWithCoins {
+    export class BobombScene extends SceneWithCoins {
+
+        prefetchType : string;
+        loader : L3D.ProgressiveLoader;
+        camera : L3D.PointerCamera;
 
         constructor() {
             super();
@@ -17,7 +21,7 @@ module L3DP {
         setCamera(camera : L3D.PointerCamera) {
 
             super.setCamera(camera);
-            this.camera.speed = 0.002;
+            this.camera.speed = 0.005;
 
         }
 
@@ -28,42 +32,28 @@ module L3DP {
             }
 
             var path = lowRes === true ?
-                '/static/data/whomp/Whomps Fortress.obj':
-                '/static/data/whomp/Whomps Fortress_sub.obj';
+                '/static/data/bobomb/bobomb battlefeild.obj' :
+                '/static/data/bobomb/bobomb battlefeild_sub.obj';
 
             this.loader = new L3D.ProgressiveLoader(
                 path,
                 this,
                 this.camera,
                 (object : THREE.Mesh) => {
-
                     this.clickableObjects.push(object);
                     object.raycastable = true;
-                    if (object.material.name === 'Shape_088' ||
-                        object.material.name === 'Shape_089') {
-
-                        object.raycastable = false;
+                    if (object.material.name === 'Material.071_574B138E_c.bmp' ||
+                        object.material.name === 'Material.070_41A41EE3_c.bmp') {
                         object.material.transparent = true;
-
-                    } else if (object.material.name === 'Shape_113') {
-
-                        object.raycastable = false;
-                        object.material.transparent = true;
-                        object.material.opacity = 0.5;
-
-                    } else if (object.material.name === 'Shape_076' ||
-                               object.material.name === 'Shape_098' ||
-                               object.material.name === 'Shape_092') {
-                        object.visible = false;
+                    object.raycastable = false;
                     }
-
                 },
                 ()=>{},// L3D.LogFunction,
-                false,
+                    false,
                 this.prefetchType
             );
 
-            this.loader.onFinished = () => { this.finish(); }
+            this.loader.onFinished = function() { this.finish(); }
             this.loader.load();
 
             this.collidableObjects.push(this.loader.obj);
@@ -75,15 +65,9 @@ module L3DP {
         getResetElements() {
 
             return {
-                position : new THREE.Vector3(-6.725817925071645,1.4993570618328055,-10.356480813212423),
-                target : new THREE.Vector3(-4.8541705829784604,1.3192268872752742,-6.825972443720941)
+                position: new THREE.Vector3(38.115627509754646,10.829803024792419,-19.862035691341315),
+                target: new THREE.Vector3(-1.4518898576752122,5.048214777643772,-18.869661407832535)
             }
-
-        }
-
-        addCoins(coinConfig : CoinConfig) {
-
-            return super.addCoins(coinConfig, 0.002);
 
         }
 
@@ -94,15 +78,15 @@ module L3DP {
         }
 
         getRawRecommendations() : L3D.CameraItf[] {
-            return RecommendationData.whompRecommendations;
+            return RecommendationData.bobombRecommendations;
         }
 
         getRawCoins() : L3D.Vector3[] {
-            return CoinData.whompCoins;
+            return CoinData.bobombCoins;
         }
 
     }
 
 }
 
-export = L3DP;
+export = l3dp;

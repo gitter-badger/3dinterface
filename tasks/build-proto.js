@@ -35,7 +35,7 @@ var frontendConfig = {
     externals: {
         three : 'THREE',
         L3D : 'L3D',
-        L3DP:'L3DP',
+        l3dp:'l3dp',
         'socket.io': 'io',
         'socket.io-client':'io',
         stats : 'Stats'
@@ -46,7 +46,14 @@ var frontendConfig = {
     }
 };
 
-task('build-proto', ['prepare-apps'], path.join(rootApps, 'proto') + "/**", function(done) {
+task('prepare-proto', ['build-l3dp-backend'], path.join(rootApps, 'proto') + "/**", function(done) {
+
+    exec('npm install ../../build/l3dp/', {cwd:rootApps}, done)
+        .stdout.on('data', (data)=>process.stdout.write(data));
+
+});
+
+task('build-proto', ['prepare-apps', 'prepare-proto', 'build-l3dp-frontend'], path.join(rootApps, 'proto') + "/**", function(done) {
 
     process.chdir(root);
     webpack(frontendConfig).run(function(err, stats) {

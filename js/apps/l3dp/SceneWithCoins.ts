@@ -4,7 +4,7 @@ import * as L3D from 'L3D';
 import { Coin } from './Coin';
 import { ConfigType, CoinConfig } from 'config';
 
-module L3DP {
+module l3dp {
 
     /**
      * Class that represents a scene that can contains recommendations and coins
@@ -93,4 +93,4 @@ module L3DP {
 
 }
 
-export = L3DP;
+export = l3dp;
