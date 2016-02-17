@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import * as L3D from 'L3D';
+import * as l3d from 'l3d';
 
 import { CoinConfig } from 'config';
 import { SceneWithCoins } from './SceneWithCoins';
@@ -11,14 +11,14 @@ module l3dp {
     export class BobombScene extends SceneWithCoins {
 
         prefetchType : string;
-        loader : L3D.ProgressiveLoader;
-        camera : L3D.PointerCamera;
+        loader : l3d.ProgressiveLoader;
+        camera : l3d.PointerCamera;
 
         constructor() {
             super();
         }
 
-        setCamera(camera : L3D.PointerCamera) {
+        setCamera(camera : l3d.PointerCamera) {
 
             super.setCamera(camera);
             this.camera.speed = 0.005;
@@ -35,7 +35,7 @@ module l3dp {
                 '/static/data/bobomb/bobomb battlefeild.obj' :
                 '/static/data/bobomb/bobomb battlefeild_sub.obj';
 
-            this.loader = new L3D.ProgressiveLoader(
+            this.loader = new l3d.ProgressiveLoader(
                 path,
                 this,
                 this.camera,
@@ -48,7 +48,7 @@ module l3dp {
                     object.raycastable = false;
                     }
                 },
-                ()=>{},// L3D.LogFunction,
+                ()=>{},// l3d.LogFunction,
                     false,
                 this.prefetchType
             );
@@ -71,17 +71,17 @@ module l3dp {
 
         }
 
-        addRecommendations(ClassToInstanciate : any, width : number, height : number) {
+        addRecommendations(ClassToInstanciate : any, width : number, height : number) : l3d.BaseRecommendation[] {
 
             return super.addRecommendations(ClassToInstanciate, width, height, 0.2);
 
         }
 
-        getRawRecommendations() : L3D.CameraItf[] {
+        getRawRecommendations() : l3d.CameraItf[] {
             return RecommendationData.bobombRecommendations;
         }
 
-        getRawCoins() : L3D.Vector3[] {
+        getRawCoins() : l3d.Vector3[] {
             return CoinData.bobombCoins;
         }
 

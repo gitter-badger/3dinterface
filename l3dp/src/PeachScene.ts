@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import * as L3D from 'L3D';
+import * as l3d from 'l3d';
 
 import { SceneWithCoins } from './SceneWithCoins';
 import { CoinConfig } from 'config';
@@ -12,7 +12,7 @@ module l3dp {
     export class PeachScene extends SceneWithCoins {
 
         coinScale : number;
-        loader : L3D.ProgressiveLoader;
+        loader : l3d.ProgressiveLoader;
 
         constructor() {
 
@@ -27,7 +27,7 @@ module l3dp {
                 this.prefetchType = prefetch;
             }
 
-            this.loader = new L3D.ProgressiveLoader(
+            this.loader = new l3d.ProgressiveLoader(
                 '/static/data/castle/princess peaches castle (outside).obj',
                 this,
                 this.camera,
@@ -52,7 +52,7 @@ module l3dp {
                         object.material.side = THREE.FrontSide;
                     }
                 },
-                ()=>{},// L3D.LogFunction,
+                ()=>{},// l3d.LogFunction,
                     false,
                 this.prefetchType
             );
@@ -66,7 +66,7 @@ module l3dp {
 
         }
 
-        setCamera(camera : L3D.PointerCamera) {
+        setCamera(camera : l3d.PointerCamera) {
 
             super.setCamera(camera);
             this.camera.speed = 0.001;
@@ -88,7 +88,7 @@ module l3dp {
 
         }
 
-        createCoin(position : L3D.Vector3, scale = this.coinScale, visible = true, callback = ()=>{}) {
+        createCoin(position : l3d.Vector3, scale = this.coinScale, visible = true, callback = ()=>{}) {
 
             var coin = new Coin(position, scale, visible, callback);
             this.add(coin);
@@ -98,7 +98,7 @@ module l3dp {
 
         }
 
-        addRecommendations(ClassToInstanciate : any, width : number, height : number) {
+        addRecommendations(ClassToInstanciate : any, width : number, height : number) : l3d.BaseRecommendation[] {
 
             return super.addRecommendations(ClassToInstanciate, width, height, 0.2);
 
@@ -110,11 +110,11 @@ module l3dp {
 
         }
 
-        getRawRecommendations() : L3D.CameraItf[] {
+        getRawRecommendations() : l3d.CameraItf[] {
             return RecommendationData.peachRecommendations;
         }
 
-        getRawCoins() : L3D.Vector3[] {
+        getRawCoins() : l3d.Vector3[] {
             return CoinData.peachCoins;
         }
 

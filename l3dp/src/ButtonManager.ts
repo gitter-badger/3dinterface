@@ -1,13 +1,13 @@
 import * as THREE from 'three';
-import * as L3D from 'L3D';
+import * as l3d from 'l3d';
 
 module l3dp {
 
     export class ButtonManager {
 
-        camera : L3D.PointerCamera;
-        recommendations : L3D.BaseRecommendation[];
-        previewer : L3D.Previewer;
+        camera : l3d.PointerCamera;
+        recommendations : l3d.BaseRecommendation[];
+        previewer : l3d.Previewer;
         showArrows : boolean;
         beenFullscreen : boolean;
 
@@ -19,7 +19,7 @@ module l3dp {
         showArrowsElement :  JQuery;
 
 
-        constructor(camera : L3D.PointerCamera, recommendations : L3D.BaseRecommendation[], previewer : L3D.Previewer) {
+        constructor(camera : l3d.PointerCamera, recommendations : l3d.BaseRecommendation[], previewer : l3d.Previewer) {
 
             this.camera = camera;
             this.recommendations = recommendations;
@@ -41,16 +41,16 @@ module l3dp {
                 this.camera.shouldLock = this.pointerLockElement.prop('checked');
                 this.camera.onPointerLockChange();
 
-                var bakup = L3D.DB.isEnabled();
+                var bakup = l3d.DB.isEnabled();
                 if (!bakup)
-                    L3D.DB.enable();
+                    l3d.DB.enable();
 
-                var event = new L3D.DB.Event.SwitchedLockOption();
+                var event = new l3d.DB.Event.SwitchedLockOption();
                 event.locked = this.pointerLockElement.prop('checked');
                 event.send();
 
                 if (!bakup)
-                    L3D.DB.disable();
+                    l3d.DB.disable();
 
             });
 

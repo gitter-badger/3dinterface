@@ -13,8 +13,6 @@
         "build"
     ],
     "filesGlob":[
-        "./*.ts",
-        "./typings/*.d.ts",
-        "./typings/*/*.d.ts"
+        "./typings/*.d.ts"
     ]
 }

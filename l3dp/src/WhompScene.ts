@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import * as L3D from 'L3D';
+import * as l3d from 'l3d';
 
 import { SceneWithCoins } from './SceneWithCoins';
 import { CoinConfig } from 'config';
@@ -14,7 +14,7 @@ module l3dp {
             super();
         }
 
-        setCamera(camera : L3D.PointerCamera) {
+        setCamera(camera : l3d.PointerCamera) {
 
             super.setCamera(camera);
             this.camera.speed = 0.002;
@@ -31,7 +31,7 @@ module l3dp {
                 '/static/data/whomp/Whomps Fortress.obj':
                 '/static/data/whomp/Whomps Fortress_sub.obj';
 
-            this.loader = new L3D.ProgressiveLoader(
+            this.loader = new l3d.ProgressiveLoader(
                 path,
                 this,
                 this.camera,
@@ -58,7 +58,7 @@ module l3dp {
                     }
 
                 },
-                ()=>{},// L3D.LogFunction,
+                ()=>{},// l3d.LogFunction,
                 false,
                 this.prefetchType
             );
@@ -87,17 +87,17 @@ module l3dp {
 
         }
 
-        addRecommendations(ClassToInstanciate : any, width : number, height : number) {
+        addRecommendations(ClassToInstanciate : any, width : number, height : number) : l3d.BaseRecommendation[] {
 
             return super.addRecommendations(ClassToInstanciate, width, height, 0.2);
 
         }
 
-        getRawRecommendations() : L3D.CameraItf[] {
+        getRawRecommendations() : l3d.CameraItf[] {
             return RecommendationData.whompRecommendations;
         }
 
-        getRawCoins() : L3D.Vector3[] {
+        getRawCoins() : l3d.Vector3[] {
             return CoinData.whompCoins;
         }
 

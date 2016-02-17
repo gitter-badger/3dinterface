@@ -7,5 +7,6 @@
         "outDir":"./build/",
         "sourceMap": true,
         "rootDir":"./"
-    }
+    },
+    "exclude":["build"]
 }

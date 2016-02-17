@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import * as L3D from 'L3D';
+import * as l3d from 'l3d';
 
 module l3dp {
 
@@ -14,7 +14,7 @@ module l3dp {
         static BasicMesh : THREE.Mesh;
         static Sounds : any[];
 
-        constructor(position : L3D.Vector3, scale : number, visible = true, callback = ()=>{}) {
+        constructor(position : l3d.Vector3, scale : number, visible = true, callback = ()=>{}) {
 
             super();
 

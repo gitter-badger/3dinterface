@@ -3,7 +3,6 @@
         "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
-        "outDir":"../tmp/l3d",
         "sourceMap": true,
         "declaration":true,
         "rootDir":"./"
@@ -13,8 +12,6 @@
         "build"
     ],
     "filesGlob":[
-        "./*.ts",
-        "./typings/*.d.ts",
-        "./typings/*/*.d.ts"
+        "./typings/*.d.ts"
     ]
 }

@@ -1,10 +1,10 @@
 import * as THREE from 'three';
-import * as L3D from 'L3D';
+import * as l3d from 'l3d';
 
 module l3dp {
 
     export function logfps(fps : number) {
-        var event = new L3D.DB.Event.Fps();
+        var event = new l3d.DB.Event.Fps();
         event.fps = fps;
         event.send();
     }

@@ -1,13 +1,13 @@
 import * as THREE from 'three';
-import * as L3D from 'L3D';
+import * as l3d from 'l3d';
 
 module l3dp {
 
-    function createCoin(a : number, b : number, c : number) : L3D.Vector3 { return {x:a, y:b, z:c}; }
+    function createCoin(a : number, b : number, c : number) : l3d.Vector3 { return {x:a, y:b, z:c}; }
 
     export module CoinData {
 
-        export var peachCoins : L3D.Vector3[] = [
+        export var peachCoins : l3d.Vector3[] = [
             createCoin(-5.235079904099125,0.07417208986595411,-8.599114448384936),
             createCoin(-5.413573667252937,0.19509035740202668,-1.1941904950328774),
             createCoin(1.6988486739201933,0.4340094146515885,-8.231743908517105),
@@ -51,7 +51,7 @@ module l3dp {
             createCoin(-5.8186922804859575,1.9702855951309464,-11.82608205655542)
         ];
 
-        export var bobombCoins : L3D.Vector3[] = [
+        export var bobombCoins : l3d.Vector3[] = [
             createCoin(22.280706560196638,13.725108184127997,32.63987169581496),
             createCoin(33.68386996752998,9.149049511822032,-18.87096639845466),
             createCoin(33.31162234976524,12.32414579919045,-6.836946838344371),
@@ -98,7 +98,7 @@ module l3dp {
             createCoin(-15.465717624639543,27.567776547579495,23.421347833030055)
         ];
 
-        export var whompCoins : L3D.Vector3[] = [
+        export var whompCoins : l3d.Vector3[] = [
 
             createCoin(-2.4157344935197114,1.017684060480547,-10.032591045262926),
             createCoin(-7.341855309456012,1.1322896589120628,-9.769992599277385),
@@ -152,7 +152,7 @@ module l3dp {
             createCoin(7.889237207270521,4.24944490880045,1.0821639403210213)
         ];
 
-        export var mountainCoins : L3D.Vector3[] = [
+        export var mountainCoins : l3d.Vector3[] = [
 
             createCoin(-26.77972359627476,-19.23929063656664,23.6807547145596),
             createCoin(-24.921450642761087,-18.790469255696,12.598715548243229),

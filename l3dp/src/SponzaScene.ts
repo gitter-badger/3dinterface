@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import * as L3D from 'L3D';
+import * as l3d from 'l3d';
 
 import { SceneWithCoins } from './SceneWithCoins';
 
@@ -11,7 +11,7 @@ module l3dp {
             super();
         }
 
-        setCamera(camera : L3D.PointerCamera) {
+        setCamera(camera : l3d.PointerCamera) {
 
             super.setCamera(camera);
             this.camera.speed = 0.002;
@@ -24,7 +24,7 @@ module l3dp {
                 this.prefetchType = prefetch;
             }
 
-            this.loader = new L3D.ProgressiveLoader(
+            this.loader = new l3d.ProgressiveLoader(
                 '/static/data/sponza/sponza.obj',
                 this,
                 this.camera,
@@ -43,7 +43,7 @@ module l3dp {
                     object.raycastable = true;
 
                 },
-                ()=>{},// L3D.LogFunction,
+                ()=>{},// l3d.LogFunction,
                 false,
                 this.prefetchType
             );
@@ -66,7 +66,7 @@ module l3dp {
 
         }
 
-        addRecommendations(ClassToInstanciate : any, width : number, height : number) {
+        addRecommendations(ClassToInstanciate : any, width : number, height : number) : l3d.BaseRecommendation[] {
 
             this.createRecommendations.apply(this, arguments);
 
@@ -84,7 +84,7 @@ module l3dp {
 
         createRecommendations(ClassToInstanciate : any, width : number, height : number) {
 
-            var createRecommendation = function(position : L3D.Vector3, target : L3D.Vector3) {
+            var createRecommendation = function(position : l3d.Vector3, target : l3d.Vector3) {
                 return new ClassToInstanciate(
                     50,
                     width/height,
@@ -104,8 +104,8 @@ module l3dp {
 
         }
 
-        getRawRecommendations() : L3D.CameraItf[] { return []; }
-        getRawCoins() : L3D.Vector3[] { return []; }
+        getRawRecommendations() : l3d.CameraItf[] { return []; }
+        getRawCoins() : l3d.Vector3[] { return []; }
 
     }
 

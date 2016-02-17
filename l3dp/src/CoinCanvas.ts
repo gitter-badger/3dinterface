@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import * as L3D from 'L3D';
+import * as l3d from 'l3d';
 
 module l3dp {
 
@@ -57,7 +57,7 @@ module l3dp {
 
                 if (this.colorInstant < 0 || this.colorInstant > 1) {
 
-                    this.colorInstant = L3D.Tools.clamp(this.colorInstant, 0, 1);
+                    this.colorInstant = l3d.Tools.clamp(this.colorInstant, 0, 1);
                     this.blinkingToRed = !this.blinkingToRed;
 
                 }

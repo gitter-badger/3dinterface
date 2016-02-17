@@ -3,8 +3,14 @@
         "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
-        "outDir":"../tmp/l3dp",
         "sourceMap": true,
         "rootDir":"./"
-    }
+    },
+    "exclude":[
+        "node_modules",
+        "build"
+    ],
+    "globFiles": [
+        "./typings/*.d.ts"
+    ]
 }
