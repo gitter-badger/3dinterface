@@ -3,8 +3,10 @@
         "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
-        "outDir":"./build/",
         "sourceMap": true,
         "rootDir":"./"
-    }
+    },
+    "globFiles":[
+        "./typings/*.d.ts"
+    ]
 }
