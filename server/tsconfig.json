@@ -14,9 +14,6 @@
         "static"
     ],
     "filesGlob": [
-        "./*.ts",
-        "./typings/*.d.ts",
-        "./typings/*/*.d.ts",
-        "./manual_typings/*.d.ts"
+        "./typings/*.d.ts"
     ]
 }
