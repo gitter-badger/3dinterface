@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import * as L3D from 'L3D';
+import * as l3d from 'l3d';
 
 export class Cube extends THREE.Mesh {
 

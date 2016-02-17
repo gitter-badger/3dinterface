@@ -3,7 +3,7 @@
         "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
-        "outDir":"../../../tmp/boucing-cube",
+        "outDir":"./build/",
         "sourceMap": true,
         "rootDir":"./"
     }

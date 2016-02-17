@@ -1,11 +1,7 @@
-///<reference path="../typings/tsd.d.ts"/>
-///<reference path="../typings/polyfills.d.ts"/>
-///<reference path="../typings/threejs-examples/three.examples.d.ts"/>
-
 import * as THREE from 'three';
 import * as geo from './BouncingCube';
 
-import * as L3D from 'L3D';
+import * as l3d from 'l3d';
 
 (function() {
 
@@ -39,7 +35,7 @@ import * as L3D from 'L3D';
     scene.add(ambientLight);
 
     // on initialise la camera que l’on place ensuite sur la scène
-    let camera = new L3D.Camera(50, containerSize.width / containerSize.height, 1, 10000);
+    let camera = new l3d.Camera(50, containerSize.width / containerSize.height, 1, 10000);
     scene.add(camera);
 
     window.addEventListener('resize', onWindowResize, false);

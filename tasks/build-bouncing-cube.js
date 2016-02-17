@@ -10,13 +10,13 @@ var exec = require('child_process').exec;
 var task = require('./create-task.js')(__filename);
 
 var root = path.join(__dirname, '..');
-var rootApps = path.join(root, 'js/apps');
-var rootBuildApps = path.join(root, 'build/server/static/js/bouncing.min.js');
+var rootCube = path.join(root, 'bouncing-cube');
+var rootBuild = path.join(root, '/server/build/static/js/bouncing.min.js');
 
 var frontendConfig = {
-    entry: path.join(rootApps, 'bouncing-cube', 'main.ts'),
+    entry: path.join(rootCube, 'main.ts'),
     output: {
-        filename: rootBuildApps,
+        filename: rootBuild,
     },
     resolve: {
         extensions: ['', '.webpack.js', '.web.js', '.ts', '.js', '.json']
@@ -40,13 +40,12 @@ var frontendConfig = {
     },
     devtool:'sourcemap',
     ts: {
-        configFileName: path.join(rootApps, 'bouncing-cube', 'tsconfig.json')
+        configFileName: path.join(rootCube, 'tsconfig.json')
     }
 };
 
-task('build-bouncing-cube', ['prepare-apps'], path.join(rootApps, 'bouncing-cube') + "/**", function(done) {
+task('build-bouncing-cube', [], rootCube + "/**", function(done) {
 
-    process.chdir(root);
     webpack(frontendConfig).run(function(err, stats) {
         rimraf('./tmp/bouncing-cube', {}, function() {
             if (err) {

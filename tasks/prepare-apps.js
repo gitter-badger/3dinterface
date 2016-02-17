@@ -14,8 +14,9 @@ var rootApps = path.join(root, 'js/apps');
 
 task('prepare-apps-tsd-typings', path.join(rootApps, 'tsd.json'), function(done) {
 
-    exec('tsd install', {cwd:rootApps}, done)
-        .stdout.on('data', (data) => process.stdout.write(data));
+    done();
+    // exec('tsd install', {cwd:rootApps}, done)
+    //     .stdout.on('data', (data) => process.stdout.write(data));
 
 });
 
@@ -32,8 +33,9 @@ task('prepare-apps-typings', ['prepare-apps-tsd-typings', 'prepare-apps-custom-t
 
 task('prepare-apps-npm', ['build-l3d-backend'], path.join(root, 'js/l3d') + "/**", function(done) {
 
-    exec('npm install ../../build/l3d', {cwd:rootApps}, done)
-        .stdout.on('data', (data) => process.stdout.write(data));
+    done();
+    // exec('npm install ../../build/l3d', {cwd:rootApps}, done)
+    //     .stdout.on('data', (data) => process.stdout.write(data));
 
 
 });

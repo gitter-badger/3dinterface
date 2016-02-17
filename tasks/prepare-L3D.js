@@ -21,8 +21,9 @@ task('prepare-l3d-npm', path.join(rootl3d, 'package.json'), function(done) {
 
 task('prepare-l3d-tsd-typings', path.join(rootl3d, 'tsd.json'), function(done) {
 
-    exec('tsd install', {cwd:rootl3d}, done)
-        .stdout.on('data', (data) => process.stdout.write(data));
+    done();
+    // exec('tsd install', {cwd:rootl3d}, done)
+    //     .stdout.on('data', (data) => process.stdout.write(data));
 
 });
 

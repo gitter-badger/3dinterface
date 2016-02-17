@@ -43,10 +43,7 @@ task(
 task(
     'prepare-server-l3d',
     ['build-l3d-backend'],
-    path.join(build, 'l3d') + "/**",
-    function(done) {
-        exec('npm install ../build/l3d', {cwd:rootServer}, done);
-    }
+    path.join(build, 'l3d') + "/**"
 );
 
 task(

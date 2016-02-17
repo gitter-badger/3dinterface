@@ -18,9 +18,9 @@ export function demo(req : express.Request, res : express.Response, render : Fun
     }
 
     switch (req.query.bookmark) {
-        case '0': res.locals.bookmark = 'L3D.BaseRecommendation'; break;
-        case '1': res.locals.bookmark = 'L3D.ViewportRecommendation'; break;
-        case '2': res.locals.bookmark = 'L3D.ArrowRecommendation'; break;
+        case '0': res.locals.bookmark = 'l3d.BaseRecommendation'; break;
+        case '1': res.locals.bookmark = 'l3d.ViewportRecommendation'; break;
+        case '2': res.locals.bookmark = 'l3d.ArrowRecommendation'; break;
     }
 
     res.locals.prefetch = req.query.prefetch;

@@ -1,0 +1,8 @@
+{
+  "name": "bouncing-cube",
+  "version": "1.0.0",
+  "dependencies": {
+    "l3d":"../l3d",
+    "three":"*"
+  }
+}
