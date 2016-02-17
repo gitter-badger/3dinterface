@@ -14,7 +14,7 @@ typings/custom/.dirstamp: ../custom_typings/*
 node_modules/.dirstamp: package.json ../l3d ../config
 	npm install && touch $@
 
-build/.dirstamp: src/* node_modules/.dirstamp tsconfig-backend.json backend.config.js
+build/.dirstamp: src/* node_modules/.dirstamp tsconfig-backend.json backend.config.js typings
 	webpack --config backend.config.js && touch $@
 
 build: build/.dirstamp

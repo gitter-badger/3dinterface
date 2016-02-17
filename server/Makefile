@@ -15,7 +15,7 @@ node_modules/.dirstamp: package.json ../l3d ../l3dp ../config
 	npm install
 	touch $@
 
-build/.dirstamp: src/* node_modules/.dirstamp
+build/.dirstamp: src/* node_modules/.dirstamp typings
 	tsc
 	touch $@
 

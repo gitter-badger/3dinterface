@@ -15,7 +15,7 @@ node_modules/.dirstamp: package.json
 	npm install
 	touch $@
 
-build/.dirstamp: src/* node_modules/.dirstamp tsconfig-backend.json backend.config.js
+build/.dirstamp: src/* node_modules/.dirstamp tsconfig-backend.json backend.config.js typings
 	webpack --config backend.config.js
 	touch $@
 
