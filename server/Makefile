@@ -21,7 +21,7 @@ build/.dirstamp: src/* node_modules/.dirstamp typings
 
 build/views/.dirstamp: src/views/*
 	mkdir -p build/views/
-	cp -r src/views build/views
+	cp -r src/views/* build/views
 	touch $@
 
 build/static/.dirstamp: ../static/*
@@ -30,7 +30,8 @@ build/static/.dirstamp: ../static/*
 	touch $@
 
 build/controllers/%/views: src/controllers/%/views
-	cp -r $< $@
+	mkdirp $@
+	cp -r $</* $@
 	touch $@
 
 
