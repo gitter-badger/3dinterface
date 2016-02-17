@@ -2,5 +2,6 @@
   "name": "config",
   "version": "1.0.0",
   "typings":"./config.d.ts",
-  "main":"./config.js"
+  "main":"./build/config.js",
+  "typings":"./build/config.d.ts"
 }

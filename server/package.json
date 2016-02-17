@@ -14,7 +14,10 @@
         "three":"0.71.0",
         "sha256":"0.2.0",
         "async":"1.4.2",
-        "source-map-support":"0.4.0"
+        "source-map-support":"0.4.0",
+        "l3d":"../l3d",
+        "l3dp":"../l3dp",
+        "config":"../config"
     },
     "repository" : {
         "type" : "git",

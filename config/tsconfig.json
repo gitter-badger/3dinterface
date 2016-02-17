@@ -4,7 +4,7 @@
         "removeComments": true,
         "preserveConstEnums": true,
         "declaration":true,
-        "outDir":"../../build/config",
+        "outDir":"./build/",
         "sourceMap": true,
         "rootDir":"./"
     }
