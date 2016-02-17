@@ -50,7 +50,7 @@ task(
 
 task(
     'compile-server',
-    ['build-L3D-backend', 'prepare-server'],
+    ['build-l3d-backend', 'prepare-server'],
     path.join(rootServer) + "/**",
     function(done) {
         async.parallel([
@@ -75,9 +75,9 @@ task(
     }
 );
 
-task('build-server-L3D', ['compile-server', 'build-L3D-backend'], path.join(build, 'L3D') + "/**", function(done) {
-    exec('npm install ../L3D', {cwd:buildServer}, done)
+task('build-server-l3d', ['compile-server', 'build-l3d-backend'], path.join(build, 'l3d') + "/**", function(done) {
+    exec('npm install ../l3d', {cwd:buildServer}, done)
         .stdout.on('data', (data) => process.stdout.write(data));
 });
 
-task('build-server', ['build-server-packages', 'build-server-L3D']);
+task('build-server', ['build-server-packages', 'build-server-l3d']);

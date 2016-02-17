@@ -20,8 +20,8 @@ gulp.task('client-doc', function(done) {
             console.log(err);
 
         exec('typedoc ' +
-            'js/L3D/ '  +
-            '--includes js/L3D/ ' +
+            'js/l3d/ '  +
+            '--includes js/l3d/ ' +
             '--out doc/client/ ' +
             '--mode file ' +
             '--name l3d ' +
@@ -66,10 +66,10 @@ gulp.task('all-doc', function(done) {
             console.log(err);
 
         exec('typedoc ' +
-            'js/L3D/ server/geo/ server/controllers/prototype/ '  +
+            'js/l3d/ server/geo/ server/controllers/prototype/ '  +
             '--exclude server/controllers/prototype/index.ts ' +
             '--exclude server/controllers/prototype/urls.ts ' +
-            '--includes js/L3D/ --includes server/geo/ ' +
+            '--includes js/l3d/ --includes server/geo/ ' +
             '--out doc/all/ ' +
             '--mode file ' +
             '--name l3d ' +

@@ -9,32 +9,32 @@ var task = require('./create-task.js')(__filename);
 
 var root = path.join(__dirname, '..');
 var rootChanged = path.join(root, '.changed');
-var rootL3D = path.join(root, 'js/L3D');
-var rootChangedL3D = path.join(rootChanged, 'js/L3D');
+var rootl3d = path.join(root, 'js/l3d');
+var rootChangedl3d = path.join(rootChanged, 'js/l3d');
 
-task('prepare-L3D-npm', path.join(rootL3D, 'package.json'), function(done) {
+task('prepare-l3d-npm', path.join(rootl3d, 'package.json'), function(done) {
 
-    exec('npm install', {cwd:rootL3D}, done)
+    exec('npm install', {cwd:rootl3d}, done)
         .stdout.on('data', (data) => process.stdout.write(data));
 
 });
 
-task('prepare-L3D-tsd-typings', path.join(rootL3D, 'tsd.json'), function(done) {
+task('prepare-l3d-tsd-typings', path.join(rootl3d, 'tsd.json'), function(done) {
 
-    exec('tsd install', {cwd:rootL3D}, done)
+    exec('tsd install', {cwd:rootl3d}, done)
         .stdout.on('data', (data) => process.stdout.write(data));
 
 });
 
-task('prepare-L3D-custom-typings', path.join(root, 'custom_typings') + "/**", function(done) {
+task('prepare-l3d-custom-typings', path.join(root, 'custom_typings') + "/**", function(done) {
 
     process.chdir(root);
-    mkdirp('./js/L3D/typings');
-    merge('./custom_typings', './js/L3D/typings', 'overwrite');
+    mkdirp('./js/l3d/typings');
+    merge('./custom_typings', './js/l3d/typings', 'overwrite');
     done();
 
 });
 
-task('prepare-L3D-typings', ['prepare-L3D-tsd-typings', 'prepare-L3D-custom-typings']);
+task('prepare-l3d-typings', ['prepare-l3d-tsd-typings', 'prepare-l3d-custom-typings']);
 
-task('prepare-L3D', ['prepare-L3D-npm', 'prepare-L3D-typings']);
+task('prepare-l3d', ['prepare-l3d-npm', 'prepare-l3d-typings']);

@@ -11,26 +11,17 @@ var exec = require('child_process').exec;
 var task = require('./create-task.js')(__filename);
 
 var root = path.join(__dirname, '..');
-var rootl3dp = path.join(root, 'l3dp');
-var buildl3dp = path.join(rootl3dp, 'build');
+var rootl3d = path.join(root, 'l3d');
+var buildl3d = path.join(root, 'l3d', 'build');
 
-task('prepare-l3dp', ['prepare-apps', 'build-l3d-backend'], path.join(rootl3dp, 'package.json'), function(done) {
-
-    console.log("Fuck it");
-    done();
-    // exec('npm install', {cwd:rootl3dp}, done)
-    //     .stdout.on('data', (data) => process.stdout.write(data));
-
-});
-
-task('compile-l3dp-backend', ['prepare-l3dp'], path.join(rootl3dp) + "/**", function(done) {
+task('compile-l3d-backend', ['prepare-l3d'], path.join(rootl3d) + "/**", function(done) {
 
     var nodeModules = {};
     try {
-        fs.readdirSync(path.join(root, 'l3dp/node_modules'))
-        .filter(function(x) {
-            return ['.bin'].indexOf(x) === -1;
-        })
+        fs.readdirSync(path.join(root, 'l3d/node_modules'))
+            .filter(function(x) {
+                return ['.bin'].indexOf(x) === -1;
+            })
         .forEach(function(mod) {
             nodeModules[mod] = 'commonjs ' + mod;
         });
@@ -40,9 +31,9 @@ task('compile-l3dp-backend', ['prepare-l3dp'], path.join(rootl3dp) + "/**", func
 
 
     var backendConfig = {
-        entry: path.join(rootl3dp, 'src', 'l3dp.ts'),
+        entry: path.join(rootl3d, 'src', 'l3d.ts'),
         output: {
-            filename: path.join(buildl3dp, 'l3dp.js'),
+            filename: path.join(buildl3d, 'l3d.js'),
             libraryTarget: 'commonjs'
         },
         target: 'node',
@@ -62,7 +53,7 @@ task('compile-l3dp-backend', ['prepare-l3dp'], path.join(rootl3dp) + "/**", func
         ],
         devtool:'sourcemap',
         ts: {
-            configFileName: path.join(rootl3dp, 'tsconfig-backend.json')
+            configFileName: path.join(rootl3d, 'tsconfig-backend.json')
         }
     };
 
@@ -70,14 +61,10 @@ task('compile-l3dp-backend', ['prepare-l3dp'], path.join(rootl3dp) + "/**", func
         if (err) {
             console.log('Error ', err);
         } else {
+            console.log(stats.toString());
             done();
         }
     });
 });
 
-task('build-l3dp-backend', ['compile-l3dp-backend'], path.join(buildl3dp, 'package.json'), function(done) {
-
-    // exec('npm install', {cwd:buildl3dp}, done)
-    //     .stdout.on('data', (data) => process.stdout.write(data));
-
-});
+task('build-l3d-backend', ['compile-l3d-backend']);

@@ -8,18 +8,16 @@ var path = require('path');
 var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
 var task = require('./create-task.js')(__filename);
-var exec = require('child_process').exec;
 
 var root = path.join(__dirname, '..');
-var rootApps = path.join(root, 'js/apps');
-var rootl3dp = path.join(rootApps, 'l3dp');
+var rootl3d = path.join(root, 'l3d');
 
 var frontendConfig = {
-    entry: path.join(rootl3dp, 'src', 'l3dp.ts'),
+    entry: './l3d/src/l3d.ts',
     output: {
         libraryTarget: 'var',
-        library: 'l3dp',
-        filename: './server/build/static/js/l3dp.js',
+        library: 'l3d',
+        filename: './server/build/static/js/l3d.js',
     },
     resolve: {
         extensions: ['', '.webpack.js', '.web.js', '.ts', '.js', '.json']
@@ -38,26 +36,21 @@ var frontendConfig = {
     externals: {
         three : 'THREE',
         'socket.io': 'io',
-        'socket.io-client':'io',
-        'stats':'Stats',
-        'config':'Config',
-        'jQuery':'$',
-        'l3d':'l3d'
+        'socket.io-client':'io'
     },
     devtool:'sourcemap',
     ts: {
-        configFileName: path.join(root, 'js/apps/l3dp/tsconfig-frontend.json')
+        configFileName: path.join(root, 'l3d/tsconfig-frontend.json')
     }
 };
 
-task('build-l3dp-frontend', ['prepare-apps', 'prepare-l3dp'], rootl3dp + "/**", function(done) {
+task('build-l3d-frontend', ['prepare-l3d'], rootl3d + "/**", function(done) {
     process.chdir(root);
     mkdirp('./server/build/static/js/');
     webpack(frontendConfig).run(function(err, stats) {
-        rimraf('./tmp/l3dp', {}, function() {
+        rimraf('./tmp/l3d/', {}, function() {
             if (err) {
                 console.log('Error ', err);
-                done(err);
             } else {
                 console.log(stats.toString());
                 done();

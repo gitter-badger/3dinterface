@@ -34,7 +34,7 @@ var frontendConfig = {
     },
     externals: {
         three : 'THREE',
-        L3D : 'L3D',
+        l3d : 'l3d',
         'socket.io': 'io',
         'socket.io-client':'io'
     },

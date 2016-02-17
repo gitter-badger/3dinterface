@@ -1,0 +1,20 @@
+{
+    "compilerOptions" : {
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "outDir":"../tmp/l3d",
+        "sourceMap": true,
+        "declaration":true,
+        "rootDir":"./"
+    },
+    "exclude":[
+        "node_modules",
+        "build"
+    ],
+    "filesGlob":[
+        "./*.ts",
+        "./typings/*.d.ts",
+        "./typings/*/*.d.ts"
+    ]
+}

@@ -25,7 +25,7 @@ task('prepare-server-packages-npm', path.join(rootServer, 'package.json'), funct
 // Typings
 task('prepare-server-packages-custom-typings', path.join(root, 'custom_typings') + "/**", function(done) {
     process.chdir(root);
-    mkdirp('./js/L3D/typings');
+    mkdirp('./js/l3d/typings');
     merge('./custom_typings', './server/typings', 'overwrite');
     done();
 });
@@ -41,11 +41,11 @@ task(
 );
 
 task(
-    'prepare-server-L3D',
-    ['build-L3D-backend'],
-    path.join(build, 'L3D') + "/**",
+    'prepare-server-l3d',
+    ['build-l3d-backend'],
+    path.join(build, 'l3d') + "/**",
     function(done) {
-        exec('npm install ../build/L3D', {cwd:rootServer}, done);
+        exec('npm install ../build/l3d', {cwd:rootServer}, done);
     }
 );
 
@@ -62,6 +62,6 @@ task(
 // Global
 task(
     'prepare-server',
-    ['prepare-server-packages-typings', 'prepare-server-packages-npm', 'prepare-server-L3D', 'prepare-server-l3dp']
+    ['prepare-server-packages-typings', 'prepare-server-packages-npm', 'prepare-server-l3d', 'prepare-server-l3dp']
 );
 
