@@ -3,7 +3,8 @@
         "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
-        "outDir":"../../../tmp/config",
+        "declaration":true,
+        "outDir":"../../build/config",
         "sourceMap": true,
         "rootDir":"./"
     }

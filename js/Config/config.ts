@@ -1,4 +1,4 @@
-declare module Config {
+module config {
 
     export enum Scene {
         PeachCastle,
@@ -43,8 +43,7 @@ declare module Config {
         recommendationStyle : RecommendationStyle;
 
     }
+
 }
 
-declare module 'config' {
-    export = Config;
-}
+export = config;
