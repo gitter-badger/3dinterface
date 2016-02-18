@@ -1,3 +1,3 @@
 MERGE=copy /E /y
-TOUCH=copy /b $@+,,
+TOUCH_DIRSTAMP=copy /b $@+,,
 MKDIRP=mkdir

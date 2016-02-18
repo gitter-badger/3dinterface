@@ -2,35 +2,35 @@ server/typings: server/typings/typings/.dirstamp server/typings/custom/.dirstamp
 
 server/typings/typings/.dirstamp: server/typings/tsd.json
 	$(CD) server/typings && $(TSD) install
-	$(TOUCH) $@
+	$(TOUCH_DIRSTAMP)
 
 server/typings/custom/.dirstamp: ./custom_typings/*
 	$(MKDIRP) server/typings/custom/
 	$(MERGE) custom_typings server/typings/custom
-	$(TOUCH) $@
+	$(TOUCH_DIRSTAMP)
 
 server/node_modules/.dirstamp: server/package.json l3d l3dp config
 	$(CD) server && $(NPM) install
-	$(TOUCH) $@
+	$(TOUCH_DIRSTAMP)
 
 server/build/.dirstamp: server/src/* server/node_modules/.dirstamp server/typings
 	$(CD) server && $(TSC)
-	$(TOUCH) $@
+	$(TOUCH_DIRSTAMP)
 
 server/build/views/.dirstamp: server/src/views/*
 	$(MKDIRP) server/build/views/
 	$(MERGE) server/src/views server/build/views
-	$(TOUCH) $@
+	$(TOUCH_DIRSTAMP)
 
 server/build/static/.dirstamp: static/*
 	$(MKDIRP) server/build/static/
 	$(MERGE) static server/build/static/
-	$(TOUCH) $@
+	$(TOUCH_DIRSTAMP)
 
 server/build/controllers/%/views: server/src/controllers/%/views
 	$(MKDIRP) $@
 	$(MERGE) $< $@
-	$(TOUCH) $@
+	$(TOUCH_DIRSTAMP)
 
 SRC_VIEWS=$(wildcard server/src/controllers/*/views)
 OBJ_VIEWS=$(subst src,build,$(SRC_VIEWS))

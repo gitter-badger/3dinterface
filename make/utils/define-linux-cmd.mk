@@ -1,3 +1,3 @@
 MERGE=sh -c 'cp -r $$0/* $$1'
-TOUCH=touch
+TOUCH_DIRSTAMP=touch $@
 MKDIRP=mkdir -p
