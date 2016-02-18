@@ -6,7 +6,7 @@ server/typings/typings/.dirstamp: server/typings/tsd.json
 
 server/typings/custom/.dirstamp: ./custom_typings/*
 	$(MKDIRP) server/typings/custom/
-	$(MERGE) custom_typings typings/custom
+	$(MERGE) custom_typings server/typings/custom
 	$(TOUCH) $@
 
 server/node_modules/.dirstamp: server/package.json
