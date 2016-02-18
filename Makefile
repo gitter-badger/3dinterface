@@ -4,7 +4,7 @@ all: server bouncing-cube
 
 ./node_modules/.dirstamp:
 	npm install typescript@next ts-loader webpack
-	$(TOUCH) $@
+	$(TOUCH_DIRSTAMP)
 
 prepare: ./node_modules/.dirstamp
 
