@@ -3,7 +3,7 @@ l3d: l3d/build/.dirstamp
 l3d/typings: l3d/typings/typings/.dirstamp l3d/typings/custom/.dirstamp
 
 l3d/typings/typings/.dirstamp: l3d/typings/tsd.json
-	$(CD) l3d/typings && tsd install
+	$(CD) l3d/typings && $(TSD) install
 	$(TOUCH) $@
 
 l3d/typings/custom/.dirstamp: ./custom_typings/*

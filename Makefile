@@ -10,6 +10,7 @@ endif
 
 NPM=npm
 TSC=tsc
+TSD=tsd
 WEBPACK=webpack
 
 CD=cd
