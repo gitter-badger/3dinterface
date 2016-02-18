@@ -7,7 +7,7 @@ l3dp/typings/typings/.dirstamp: l3dp/typings/tsd.json
 	$(TOUCH) $@
 
 l3dp/typings/custom/.dirstamp: ./custom_typings/*
-	$(MKDIR) -p l3dp/typings/custom/
+	$(MKDIRP) l3dp/typings/custom/
 	$(MERGE) ./custom_typings ./l3dp/typings/custom
 	$(TOUCH) $@
 
