@@ -12,7 +12,7 @@ src/l3d/typings/custom/.dirstamp: ./custom_typings/*
 	$(TOUCH_DIRSTAMP)
 
 src/l3d/node_modules/.dirstamp: src/l3d/package.json
-	$(CD) l3d && npm install
+	$(CD) src/l3d/ && npm install
 	$(TOUCH_DIRSTAMP)
 
 src/l3d/build/.dirstamp: src/l3d/src/* src/l3d/node_modules/.dirstamp src/l3d/tsconfig-backend.json src/l3d/backend.config.js src/l3d/typings

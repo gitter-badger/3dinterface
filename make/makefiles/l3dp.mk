@@ -8,11 +8,11 @@ src/l3dp/typings/typings/.dirstamp: src/l3dp/typings/tsd.json
 
 src/l3dp/typings/custom/.dirstamp: ./custom_typings/*
 	$(MKDIRP) src/l3dp/typings/custom/
-	$(MERGE) ./custom_typings ./src/l3dp/typings/custom
+	$(MERGE) custom_typings src/l3dp/typings/custom
 	$(TOUCH_DIRSTAMP)
 
 src/l3dp/node_modules/.dirstamp: src/l3dp/package.json l3d config
-	$(CD) l3dp && $(NPM) install
+	$(CD) src/l3dp/ && $(NPM) install
 	$(TOUCH_DIRSTAMP)
 
 src/l3dp/build/.dirstamp: src/l3dp/src/* src/l3dp/node_modules/.dirstamp src/l3dp/tsconfig-backend.json src/l3dp/backend.config.js src/l3dp/typings
