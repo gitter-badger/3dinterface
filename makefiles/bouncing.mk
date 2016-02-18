@@ -14,7 +14,7 @@ bouncing-cube/node_modules/.dirstamp: bouncing-cube/package.json
 	$(TOUCH) $@
 
 server/build/static/js/bouncing.min.js: bouncing-cube/src/* bouncing-cube/node_modules/.dirstamp bouncing-cube/tsconfig.json bouncing-cube/typings
-	$(WEBPACK) --config config.js
+	$(WEBPACK) --config bouncing-cube/config.js
 
 bouncing-cube: server/build/static/js/bouncing.min.js
 

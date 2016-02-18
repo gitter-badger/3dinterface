@@ -1,9 +1,9 @@
+var path = require('path');
+
 module.exports = {
-    entry: './src/main.ts',
+    entry: path.join(__dirname, 'src/main.ts'),
     output: {
-        libraryTarget: 'var',
-        library: 'l3d',
-        filename: '../server/build/static/js/bouncing.min.js',
+        filename: path.join(__dirname, '../server/build/static/js/bouncing.min.js'),
     },
     resolve: {
         extensions: ['', '.webpack.js', '.web.js', '.ts', '.js', '.json']
@@ -27,6 +27,6 @@ module.exports = {
     },
     devtool:'sourcemap',
     ts: {
-        configFileName:'./tsconfig.json'
+        configFileName:path.join(__dirname, './tsconfig.json')
     }
 };
