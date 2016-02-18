@@ -1,19 +1,4 @@
-ifeq ($(OS),Windows_NT)
-	MERGE=copy /E /y
-	TOUCH=copy /b $@+,,
-	MKDIRP=mkdir
-else
-	MERGE=sh -c 'cp -r $$0/* $$1'
-	TOUCH=touch
-	MKDIRP=mkdir -p
-endif
-
-NPM=npm
-TSC=tsc
-TSD=tsd
-WEBPACK=webpack
-
-CD=cd
+include ./make/utils/define-cmd.mk
 
 all: server bouncing-cube
 
@@ -23,4 +8,4 @@ all: server bouncing-cube
 
 prepare: ./node_modules/.dirstamp
 
-include makefiles/*
+include ./make/makefiles/*.mk
