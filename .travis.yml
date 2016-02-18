@@ -1,10 +1,6 @@
 language: node_js
 node_js: "4.1"
 before_install:
-    - sudo apt-get install npm
-    - sudo npm install -g n
-    - sudo n stable
-    - sudo ln -sf /usr/local/n/versions/node/<VERSION>/bin/node /usr/bin/node
-    - sudo npm install -g typescript@next tsd webpack
+    - npm install -g typescript@next tsd webpack
 install: make prepare
 build: make
