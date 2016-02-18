@@ -6,4 +6,21 @@ with Node.js.
 It is hosted by [OpenShift](https://www.openshift.com/) at
 [3dinterface.no-ip.org](http://3dinterface.no-ip.org).
 
-Compiling is not stable yet... come back later !
+# Prerequisites
+  - [Node](https://nodejs.org/en/)
+  - [NPM](https://www.npmjs.com/)
+  - [TypeScript](http://www.typescriptlang.org/) : `sudo npm install -g typescript@next`
+  - [TSD](http://definitelytyped.org/tsd/) : `sudo npm install -g tsd`
+  - [Webpack](https://webpack.github.io/docs/) : `sudo npm install -g webpack`
+
+# Install
+```sh
+make prepare
+make
+```
+
+# Start server
+``` sh
+cd server/build
+node server.js
+```
