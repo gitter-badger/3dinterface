@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/tforgione/3dinterface.svg?branch=master)](https://travis-ci.org/tforgione/3dinterface)
+[![Build Status](https://api.travis-ci.org/tforgione/3dinterface.svg?branch=typescript)](https://travis-ci.org/tforgione/3dinterface)
 # 3D Interface
 This is the beginning of the typescript version of 3D interface : a prototype
 for a user-friendly 3D interface allowing to browse 3D scenes / models written
