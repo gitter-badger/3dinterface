@@ -14,4 +14,6 @@ WEBPACK=webpack
 
 CD=cd
 
+all: server bouncing-cube
+
 include makefiles/*
