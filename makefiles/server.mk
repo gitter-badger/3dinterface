@@ -9,11 +9,11 @@ server/typings/custom/.dirstamp: ./custom_typings/*
 	$(MERGE) custom_typings server/typings/custom
 	$(TOUCH) $@
 
-server/node_modules/.dirstamp: server/package.json
+server/node_modules/.dirstamp: server/package.json l3d l3dp config
 	$(CD) server && $(NPM) install
 	$(TOUCH) $@
 
-server/build/.dirstamp: server/src/* server/node_modules/.dirstamp server/typings l3d l3dp config
+server/build/.dirstamp: server/src/* server/node_modules/.dirstamp server/typings
 	$(CD) server && $(TSC)
 	$(TOUCH) $@
 
