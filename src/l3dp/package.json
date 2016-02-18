@@ -5,7 +5,8 @@
     "l3d": "file:../l3d",
     "config":"file:../config",
     "socket.io": "^1.4.5",
-    "socket.io-client": "^1.4.5"
+    "socket.io-client": "^1.4.5",
+    "three":"*"
   },
   "typings": "./build/src/l3dp.d.ts",
   "main": "./build/l3dp.js"
