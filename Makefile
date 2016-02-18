@@ -15,6 +15,9 @@ WEBPACK=webpack
 
 CD=cd
 
+prepare:
+	npm install typescript@next ts-loader webpack
+
 all: server bouncing-cube
 
 include makefiles/*

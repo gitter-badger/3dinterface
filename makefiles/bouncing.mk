@@ -9,11 +9,11 @@ bouncing-cube/typings/custom/.dirstamp: custom_typings/*
 	$(MERGE) custom_typings bouncing-cube/typings/custom
 	touch $@
 
-bouncing-cube/node_modules/.dirstamp: bouncing-cube/package.json
+bouncing-cube/node_modules/.dirstamp: bouncing-cube/package.json l3d
 	$(CD) bouncing-cube && $(NPM) install
 	$(TOUCH) $@
 
-server/build/static/js/bouncing.min.js: bouncing-cube/src/* bouncing-cube/node_modules/.dirstamp bouncing-cube/tsconfig.json bouncing-cube/typings
+server/build/static/js/bouncing.min.js: bouncing-cube/src/* bouncing-cube/node_modules/.dirstamp bouncing-cube/tsconfig.json bouncing-cube/typings l3d
 	$(WEBPACK) --config bouncing-cube/config.js
 
 bouncing-cube: server/build/static/js/bouncing.min.js
