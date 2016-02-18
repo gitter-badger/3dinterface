@@ -1,9 +1,10 @@
 var fs = require('fs');
 var webpack = require('webpack');
+var path = require('path');
 
 var nodeModules = {};
 try {
-    fs.readdirSync('./node_modules')
+    fs.readdirSync(path.join(__dirname, 'node_modules'))
     .filter(function(x) {
         return ['.bin'].indexOf(x) === -1;
     })
@@ -15,7 +16,7 @@ try {
 }
 
 module.exports = {
-    entry: './src/l3dp.ts',
+    entry: path.join(__dirname, 'src/l3dp.ts'),
     output: {
         filename: './build/l3dp.js',
         libraryTarget: 'commonjs'
