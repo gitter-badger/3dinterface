@@ -1,9 +1,9 @@
 ifeq ($(OS),Windows_NT)
-	CP=copy /E /y
+	MERGE=copy /E /y
 	TOUCH=copy /b $@+,,
 	MKDIRP=mkdir
 else
-	CP=cp -r
+	MERGE=sh -c 'cp $$0/* $$1'
 	TOUCH=touch
 	MKDIRP=mkdir -p
 endif
