@@ -3,7 +3,7 @@ ifeq ($(OS),Windows_NT)
 	TOUCH=copy /b $@+,,
 	MKDIRP=mkdir
 else
-	MERGE=sh -c 'cp $$0/* $$1'
+	MERGE=sh -c 'cp -r $$0/* $$1'
 	TOUCH=touch
 	MKDIRP=mkdir -p
 endif
