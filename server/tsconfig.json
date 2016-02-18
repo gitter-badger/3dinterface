@@ -4,7 +4,7 @@
         "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
-        "outDir": "../build/server/",
+        "outDir": "./build/",
         "sourceMap": true
     },
     "exclude": [
@@ -14,9 +14,6 @@
         "static"
     ],
     "filesGlob": [
-        "./*.ts",
-        "./typings/*.d.ts",
-        "./typings/*/*.d.ts",
-        "./manual_typings/*.d.ts"
+        "./typings/*.d.ts"
     ]
 }

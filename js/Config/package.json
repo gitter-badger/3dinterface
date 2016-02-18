@@ -1,6 +1,0 @@
-{
-  "name": "config",
-  "version": "1.0.0",
-  "typings":"./config.d.ts",
-  "main":"./config.js"
-}

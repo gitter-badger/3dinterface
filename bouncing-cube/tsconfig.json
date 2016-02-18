@@ -1,0 +1,12 @@
+{
+    "compilerOptions" : {
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": true,
+        "rootDir":"./"
+    },
+    "globFiles":[
+        "./typings/*.d.ts"
+    ]
+}

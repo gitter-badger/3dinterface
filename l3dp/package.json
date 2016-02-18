@@ -1,0 +1,12 @@
+{
+  "name": "l3dp",
+  "version": "1.0.0",
+  "dependencies": {
+    "l3d": "file:../l3d",
+    "config":"file:../config",
+    "socket.io": "^1.4.5",
+    "socket.io-client": "^1.4.5"
+  },
+  "typings": "./build/src/l3dp.d.ts",
+  "main": "./build/l3dp.js"
+}

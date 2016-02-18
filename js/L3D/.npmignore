@@ -1,7 +1,0 @@
-./node_modules
-./src
-./Makefile
-./gulpfile.js
-./tsconfig.json
-./tsd.json
-./build-frontend
