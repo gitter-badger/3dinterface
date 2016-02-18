@@ -15,12 +15,12 @@ WEBPACK=webpack
 
 CD=cd
 
+all: server bouncing-cube
+
 ./node_modules/.dirstamp:
 	npm install typescript@next ts-loader webpack
 	$(TOUCH) $@
 
 prepare: ./node_modules/.dirstamp
-
-all: server bouncing-cube
 
 include makefiles/*
