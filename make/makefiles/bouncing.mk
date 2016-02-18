@@ -1,20 +1,20 @@
-bouncing-cube/typings: bouncing-cube/typings/typings/.dirstamp bouncing-cube/typings/custom/.dirstamp
+src/bouncing-cube/typings: src/bouncing-cube/typings/typings/.dirstamp src/bouncing-cube/typings/custom/.dirstamp
 
-bouncing-cube/typings/typings/.dirstamp: bouncing-cube/typings/tsd.json
-	$(CD) bouncing-cube/typings && $(TSD) install
+src/bouncing-cube/typings/typings/.dirstamp: src/bouncing-cube/typings/tsd.json
+	$(CD) src/bouncing-cube/typings && $(TSD) install
 	$(TOUCH_DIRSTAMP)
 
-bouncing-cube/typings/custom/.dirstamp: custom_typings/*
-	$(MKDIRP) bouncing-cube/typings/custom/
-	$(MERGE) custom_typings bouncing-cube/typings/custom
+src/bouncing-cube/typings/custom/.dirstamp: custom_typings/*
+	$(MKDIRP) src/bouncing-cube/typings/custom/
+	$(MERGE) custom_typings src/bouncing-cube/typings/custom
 	touch $@
 
-bouncing-cube/node_modules/.dirstamp: bouncing-cube/package.json l3d
+src/bouncing-cube/node_modules/.dirstamp: src/bouncing-cube/package.json l3d
 	$(CD) bouncing-cube && $(NPM) install
 	$(TOUCH_DIRSTAMP)
 
-server/build/static/js/bouncing.min.js: bouncing-cube/src/* bouncing-cube/node_modules/.dirstamp bouncing-cube/tsconfig.json bouncing-cube/typings l3d
-	$(WEBPACK) --config bouncing-cube/config.js
+src/server/build/src/static/js/bouncing.min.js: src/bouncing-cube/src/* src/bouncing-cube/node_modules/.dirstamp src/bouncing-cube/tsconfig.json src/bouncing-cube/typings l3d
+	$(WEBPACK) --config src/bouncing-cube/config.js
 
-bouncing-cube: server/build/static/js/bouncing.min.js
+bouncing-cube: src/server/build/src/static/js/bouncing.min.js
 
