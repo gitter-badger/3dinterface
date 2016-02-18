@@ -24,7 +24,7 @@ server/build/views/.dirstamp: server/src/views/*
 
 server/build/static/.dirstamp: static/*
 	$(MKDIRP) server/build/static/
-	$(MERGE) server/static server/build/static/
+	$(MERGE) static server/build/static/
 	$(TOUCH) $@
 
 server/build/controllers/%/views: server/src/controllers/%/views
