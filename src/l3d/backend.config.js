@@ -5,9 +5,9 @@ var webpack = require('webpack');
 var nodeModules = {};
 try {
     fs.readdirSync(path.join(__dirname, 'node_modules'))
-        .filter(function(x) {
-            return ['.bin'].indexOf(x) === -1;
-        })
+    .filter(function(x) {
+        return ['.bin'].indexOf(x) === -1;
+    })
     .forEach(function(mod) {
         nodeModules[mod] = 'commonjs ' + mod;
     });

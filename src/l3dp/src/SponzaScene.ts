@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import * as l3d from 'l3d';
+import * as mth from 'mth';
 
 import { SceneWithCoins } from './SceneWithCoins';
 
@@ -84,7 +85,7 @@ module l3dp {
 
         createRecommendations(ClassToInstanciate : any, width : number, height : number) {
 
-            var createRecommendation = function(position : l3d.Vector3, target : l3d.Vector3) {
+            var createRecommendation = function(position : mth.Vector3, target : mth.Vector3) {
                 return new ClassToInstanciate(
                     50,
                     width/height,
@@ -105,7 +106,7 @@ module l3dp {
         }
 
         getRawRecommendations() : l3d.CameraItf[] { return []; }
-        getRawCoins() : l3d.Vector3[] { return []; }
+        getRawCoins() : mth.Vector3[] { return []; }
 
     }
 

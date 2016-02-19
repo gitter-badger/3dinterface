@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import * as l3d from 'l3d';
+import * as mth from 'mth';
 
 import { SceneWithCoins } from './SceneWithCoins';
 import { CoinConfig } from 'config';
@@ -88,7 +89,7 @@ module l3dp {
 
         }
 
-        createCoin(position : l3d.Vector3, scale = this.coinScale, visible = true, callback = ()=>{}) {
+        createCoin(position : mth.Vector3, scale = this.coinScale, visible = true, callback = ()=>{}) {
 
             var coin = new Coin(position, scale, visible, callback);
             this.add(coin);
@@ -114,7 +115,7 @@ module l3dp {
             return RecommendationData.peachRecommendations;
         }
 
-        getRawCoins() : l3d.Vector3[] {
+        getRawCoins() : mth.Vector3[] {
             return CoinData.peachCoins;
         }
 

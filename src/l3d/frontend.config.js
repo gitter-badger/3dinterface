@@ -22,7 +22,8 @@ module.exports = {
     externals: {
         three : 'THREE',
         'socket.io': 'io',
-        'socket.io-client':'io'
+        'socket.io-client':'io',
+        'mth':'mth'
     },
     plugins: [
         require('webpack-fail-plugin')
