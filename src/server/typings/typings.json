@@ -9,7 +9,6 @@
     "jade": "github:DefinitelyTyped/DefinitelyTyped/jade/jade.d.ts#c69185b594b5a846b84ce1f89864b44cda727df1",
     "method-override": "github:DefinitelyTyped/DefinitelyTyped/method-override/method-override.d.ts#2b58083c57296eca8691d258edb9cbb6b17f2b95",
     "mime": "github:DefinitelyTyped/DefinitelyTyped/mime/mime.d.ts#cb5206a8ac1c9a3ddfd126f5ecea6729b2361452",
-    "mongodb": "github:DefinitelyTyped/DefinitelyTyped/mongodb/mongodb.d.ts#3cf5221c92ba0cef413449fb4fb2fd1ffbfbcfbf",
     "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#263705d313346e093d95cb62cef6fed848e46978",
     "pg": "github:DefinitelyTyped/DefinitelyTyped/pg/pg.d.ts#8fb6309e8d96aefa1f2b2e6c9961d10cc136ae06",
     "serve-static": "github:DefinitelyTyped/DefinitelyTyped/serve-static/serve-static.d.ts#0fa4e9e61385646ea6a4cba2aef357353d2ce77f",

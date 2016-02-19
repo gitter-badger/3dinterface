@@ -6,5 +6,9 @@
         "outDir":"../../../tmp/proto",
         "sourceMap": true,
         "rootDir":"./"
-    }
+    },
+    "exclude": [
+        "typings/browser",
+        "typings/browser.d.ts"
+    ]
 }
