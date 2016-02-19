@@ -1,6 +1,7 @@
 import * as THREE from 'three';
+import * as mth from 'mth';
+
 import { FixedCamera } from '../cameras/FixedCamera';
-import { Vector3, Tools } from '../math/Tools';
 
 module l3d {
 
@@ -13,13 +14,13 @@ module l3d {
 
         camera : FixedCamera;
 
-        constructor(arg1:number, arg2:number, arg3:number, arg4:number, position:Vector3, target:Vector3) {
+        constructor(arg1:number, arg2:number, arg3:number, arg4:number, position:mth.Vector3, target:mth.Vector3) {
 
             super();
 
             this.camera = new FixedCamera(arg1,arg2,arg3,arg4,position,target);
-            Tools.copy(position, this.camera.position);
-            this.camera.target = Tools.copy(target);
+            mth.copy(position, this.camera.position);
+            this.camera.target = mth.copy(target);
 
         }
 

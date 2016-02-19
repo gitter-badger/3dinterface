@@ -1,7 +1,8 @@
 import * as THREE from 'three';
+import * as mth from 'mth';
+
 import { MouseCursor } from '../cameras/PointerCamera';
 import { Camera } from '../cameras/Camera';
-import { Tools } from '../math/Tools';
 
 module l3d {
 
@@ -78,7 +79,7 @@ module l3d {
                     }
 
                     // Translate box if too on the side
-                    left = Tools.clamp(left, width / 5, this.renderer.domElement.width - 6 * width / 5);
+                    left = mth.clamp(left, width / 5, this.renderer.domElement.width - 6 * width / 5);
 
                 } else {
                     left = 20;

@@ -35,7 +35,8 @@ module.exports = {
     externals: nodeModules,
     plugins: [
         new webpack.BannerPlugin('require("source-map-support").install();',
-                { raw: true, entryOnly: false })
+                { raw: true, entryOnly: false }),
+        require('webpack-fail-plugin')
     ],
     devtool:'sourcemap',
     ts: {

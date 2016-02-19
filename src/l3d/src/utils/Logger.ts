@@ -1,12 +1,13 @@
+import * as mth from 'mth';
+
 import { PointerCamera } from '../cameras/PointerCamera';
-import { Vector3 } from '../math/Tools';
 
 module l3d {
 
     export interface CameraItf {
 
-        position : Vector3;
-        target : Vector3;
+        position : mth.Vector3;
+        target : mth.Vector3;
 
     }
 

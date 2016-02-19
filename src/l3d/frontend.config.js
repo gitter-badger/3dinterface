@@ -24,6 +24,9 @@ module.exports = {
         'socket.io': 'io',
         'socket.io-client':'io'
     },
+    plugins: [
+        require('webpack-fail-plugin')
+    ],
     devtool:'sourcemap',
     ts: {
         configFileName:'./tsconfig-frontend.json'
