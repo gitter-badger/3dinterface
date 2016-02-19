@@ -3,8 +3,8 @@ l3dp: $(L3DP_DEPENDENCY)
 
 src/l3dp/typings: src/l3dp/typings/typings/.dirstamp src/l3dp/typings/custom/.dirstamp
 
-src/l3dp/typings/typings/.dirstamp: src/l3dp/typings/tsd.json
-	$(CD) src/l3dp/typings && $(TSD) install
+src/l3dp/typings/typings/.dirstamp: src/l3dp/typings/typings.json
+	$(CD) src/l3dp/typings && $(TYPINGS) install
 	$(TOUCH_DIRSTAMP)
 
 src/l3dp/typings/custom/.dirstamp: ./custom_typings/*

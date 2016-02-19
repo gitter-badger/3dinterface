@@ -1,7 +1,7 @@
 src/bouncing-cube/typings: src/bouncing-cube/typings/typings/.dirstamp src/bouncing-cube/typings/custom/.dirstamp
 
-src/bouncing-cube/typings/typings/.dirstamp: src/bouncing-cube/typings/tsd.json
-	$(CD) src/bouncing-cube/typings && $(TSD) install
+src/bouncing-cube/typings/typings/.dirstamp: src/bouncing-cube/typings/typings.json
+	$(CD) src/bouncing-cube/typings && $(TYPINGS) install
 	$(TOUCH_DIRSTAMP)
 
 src/bouncing-cube/typings/custom/.dirstamp: custom_typings/*

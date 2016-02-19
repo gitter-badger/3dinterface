@@ -1,7 +1,7 @@
 src/server/typings: src/server/typings/typings/.dirstamp src/server/typings/custom/.dirstamp
 
-src/server/typings/typings/.dirstamp: src/server/typings/tsd.json
-	$(CD) src/server/typings && $(TSD) install
+src/server/typings/typings/.dirstamp: src/server/typings/typings.json
+	$(CD) src/server/typings && $(TYPINGS) install
 	$(TOUCH_DIRSTAMP)
 
 src/server/typings/custom/.dirstamp: ./custom_typings/*

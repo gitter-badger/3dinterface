@@ -6,7 +6,7 @@ endif
 
 NPM=npm
 TSC=tsc
-TSD=tsd
+TYPINGS=typings
 WEBPACK=webpack
 
 CD=cd
