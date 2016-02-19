@@ -1,11 +1,11 @@
 var path = require('path');
 
 module.exports = {
-    entry: './src/l3d.ts',
+    entry: './config.ts',
     output: {
         libraryTarget: 'var',
-        library: 'l3d',
-        filename: path.join(__dirname, '../server/build/static/js/l3d.js'),
+        library: 'config',
+        filename: path.join(__dirname, '../server/build/static/js/config.js'),
     },
     resolve: {
         extensions: ['', '.webpack.js', '.web.js', '.ts', '.js', '.json']
@@ -22,16 +22,13 @@ module.exports = {
         exclude: /node_modules/
     },
     externals: {
-        three : 'THREE',
-        'socket.io': 'io',
-        'socket.io-client':'io',
-        'mth':'mth'
+
     },
     plugins: [
         require('webpack-fail-plugin')
     ],
     devtool:'sourcemap',
     ts: {
-        configFileName:'./tsconfig-frontend.json'
+        configFileName:'./tsconfig.json'
     }
 };

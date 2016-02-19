@@ -9,7 +9,7 @@ src/server/typings/custom/.dirstamp: ./custom_typings/*
 	$(MERGE) custom_typings src/server/typings/custom
 	$(TOUCH_DIRSTAMP)
 
-src/server/node_modules/.dirstamp: src/server/package.json l3d l3dp config mth
+src/server/node_modules/.dirstamp: src/server/package.json $(L3D_DEPENDENCY) $(L3DP_DEPENDENCY) $(CONFIG_DEPENDENCY) $(MTH_DEPENDENCY)
 	$(CD) src/server/ && $(NPM) install
 	$(TOUCH_DIRSTAMP)
 
@@ -44,6 +44,9 @@ src/server/build/static/js/l3dp.js: ./src/l3dp/build/.dirstamp
 	$(CD) src/l3dp/ && $(WEBPACK) --config frontend.config.js
 
 src/server/build/static/js/config.js: ./src/config/build/.dirstamp
-	$(CD) src/config/ && $(TSC)
+	$(CD) src/config/ && $(WEBPACK) --config config.js
 
-server: src/server/build/.dirstamp src/server/build/views/.dirstamp src/server/build/static/.dirstamp views src/server/build/static/js/l3d.js src/server/build/static/js/l3dp.js src/server/build/static/js/config.js
+src/server/build/static/js/mth.js: ./src/mth/build/.dirstamp
+	$(CD) src/mth/ && $(WEBPACK) --config config.js
+
+server: src/server/build/.dirstamp src/server/build/views/.dirstamp src/server/build/static/.dirstamp $(OBJ_VIEWS) src/server/build/static/js/l3d.js src/server/build/static/js/l3dp.js src/server/build/static/js/config.js src/server/build/static/js/mth.js
