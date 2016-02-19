@@ -9,5 +9,5 @@
     "globFiles":[
         "./typings/*.d.ts"
     ],
-    "exclude":["build", "typings/typings/browser", "typings/typings/browser.d.ts"]
+    "exclude":["node_modules", "build", "typings/typings/browser", "typings/typings/browser.d.ts"]
 }
