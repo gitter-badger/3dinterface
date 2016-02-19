@@ -1,5 +1,5 @@
-MTH_DEPENDENCY=src/mth/build/.dirstamp
-mth: $(MTH_DEPENDENCY)
+MTH_COMMONJS_DEPENDENCY=src/mth/build/.dirstamp
+mth: $(MTH_COMMONJS_DEPENDENCY)
 
 src/mth/typings/.dirstamp: src/mth/tsd.json
 	$(CD) src/mth/ && $(TSD) install

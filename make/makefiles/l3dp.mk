@@ -12,7 +12,7 @@ src/l3dp/typings/custom/.dirstamp: ./custom_typings/*
 	$(MERGE) custom_typings src/l3dp/typings/custom
 	$(TOUCH_DIRSTAMP)
 
-src/l3dp/node_modules/.dirstamp: src/l3dp/package.json $(L3D_DEPENDENCY) $(CONFIG_DEPENDENCY) $(MTH_DEPENDENCY)
+src/l3dp/node_modules/.dirstamp: src/l3dp/package.json $(L3D_DEPENDENCY) $(CONFIG_DEPENDENCY) $(MTH_COMMONJS_DEPENDENCY)
 	$(CD) src/l3dp/ && $(NPM) install
 	$(TOUCH_DIRSTAMP)
 
