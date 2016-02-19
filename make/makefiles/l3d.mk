@@ -1,5 +1,4 @@
-l3d:src/l3d/build/.dirstamp
-l3d=src/l3d/build/.dirstamp
+l3d: src/l3d/build/.dirstamp
 
 src/l3d/typings: src/l3d/typings/typings/.dirstamp src/l3d/typings/custom/.dirstamp
 
@@ -12,7 +11,7 @@ src/l3d/typings/custom/.dirstamp: ./custom_typings/*
 	$(MERGE) ./custom_typings src/l3d/typings/custom
 	$(TOUCH_DIRSTAMP)
 
-src/l3d/node_modules/.dirstamp: src/l3d/package.json  $(mth)
+src/l3d/node_modules/.dirstamp: src/l3d/package.json mth
 	$(CD) src/l3d/ && $(NPM) install
 	$(TOUCH_DIRSTAMP)
 

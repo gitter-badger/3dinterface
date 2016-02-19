@@ -9,7 +9,7 @@ src/server/typings/custom/.dirstamp: ./custom_typings/*
 	$(MERGE) custom_typings src/server/typings/custom
 	$(TOUCH_DIRSTAMP)
 
-src/server/node_modules/.dirstamp: src/server/package.json $(l3d) $(l3dp) $(config) $(mth)
+src/server/node_modules/.dirstamp: src/server/package.json l3d l3dp config mth
 	$(CD) src/server/ && $(NPM) install
 	$(TOUCH_DIRSTAMP)
 
