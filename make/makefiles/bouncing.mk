@@ -16,5 +16,6 @@ src/bouncing-cube/node_modules/.dirstamp: src/bouncing-cube/package.json l3d
 src/server/build/static/js/bouncing.min.js: src/bouncing-cube/src/* src/bouncing-cube/node_modules/.dirstamp src/bouncing-cube/tsconfig.json src/bouncing-cube/typings l3d
 	$(WEBPACK) --config src/bouncing-cube/config.js
 
-bouncing-cube: src/server/build/static/js/bouncing.min.js
+$(BOUNCING_CUBE_DEPENDENCY): src/server/build/static/js/bouncing.min.js
+bouncing-cube: $(BOUNCING_CUBE_DEPENDENCY)
 
