@@ -8,4 +8,4 @@ all: server bouncing-cube
 
 prepare: ./node_modules/.dirstamp
 
-include ./make/makefiles/*.mk
+include ./make/include.mk
