@@ -1,5 +1,8 @@
 import express = require('express');
 import http = require('http');
+import yargs = require('yargs');
+
+var argv = yargs.argv;
 
 module log {
 
@@ -36,6 +39,10 @@ var write : (elt : any, color : Color) => void;
 if (isDev) {
     write = function(elt : any, color : Color) {
         console.log(getColorCode(color) + elt + getColorCode(Color.DEFAULT));
+    }
+} else if (argv.nolisten || argv.n) {
+    write = function(elt : any, color : Color) {
+
     }
 } else {
     write = function(elt : any, color : Color) {

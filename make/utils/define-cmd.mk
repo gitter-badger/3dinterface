@@ -4,6 +4,7 @@ else
 	include ./make/utils/define-linux-cmd.mk
 endif
 
+NODE=node
 NPM=npm
 TSC=tsc
 TYPINGS=typings
