@@ -12,5 +12,8 @@
         "build",
         "typings/browser",
         "typings/browser.d.ts"
+    ],
+    "globFiles":[
+        "typings/*.d.ts"
     ]
 }

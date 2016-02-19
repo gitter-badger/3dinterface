@@ -8,3 +8,6 @@ src/mth/typings/.dirstamp: src/mth/typings.json
 src/mth/build/.dirstamp: src/mth/*.ts src/mth/package.json src/mth/tsconfig.json src/mth/typings/.dirstamp
 	$(CD) src/mth/ && $(TSC)
 	$(TOUCH_DIRSTAMP)
+
+mth_test: $(MTH_COMMONJS_DEPENDENCY) src/mth/tests/*.ts
+	$(NODEUNIT) src/mth/build/tests/main.js
