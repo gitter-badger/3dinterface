@@ -5,5 +5,8 @@
   "typings":"./build/mth.d.ts",
   "dependencies":{
     "three":"*"
+  },
+  "devDependencies":{
+    "nodeunit":"*"
   }
 }

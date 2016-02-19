@@ -8,5 +8,6 @@ NPM=npm
 TSC=tsc
 TYPINGS=typings
 WEBPACK=webpack
+NODEUNIT=nodeunit
 
 CD=cd
