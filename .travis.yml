@@ -1,7 +1,7 @@
 language: node_js
 node_js: "4.1"
 before_install:
-    - npm install -g typescript@next tsd webpack
+    - npm install -g typescript@next typings webpack
 branches:
     only:
         - typescript

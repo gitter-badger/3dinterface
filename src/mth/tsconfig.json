@@ -8,5 +8,9 @@
         "sourceMap": true,
         "rootDir":"./"
     },
-    "exclude":["build"]
+    "exclude":[
+        "build",
+        "typings/browser",
+        "typings/browser.d.ts"
+    ]
 }

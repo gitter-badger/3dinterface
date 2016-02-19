@@ -8,5 +8,6 @@
     },
     "globFiles":[
         "./typings/*.d.ts"
-    ]
+    ],
+    "exclude":["build", "typings/browser", "typings/browser.d.ts"]
 }

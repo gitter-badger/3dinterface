@@ -8,7 +8,9 @@
     },
     "exclude":[
         "node_modules",
-        "build"
+        "build",
+        "typings/typings/browser",
+        "typings/typings/browser.d.ts"
     ],
     "filesGlob":[
         "./typings/*.d.ts"
