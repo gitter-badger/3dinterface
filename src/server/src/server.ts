@@ -88,7 +88,7 @@ function main() {
     }
 
     if (argv.nolisten || argv.n) {
-        log.ready('Initialization successful');
+        log.ready('✔ Server can start without crashing');
     } else {
         http.listen(serverPort, serverIpAddress, function() {
             log.ready('Now listening ' + serverIpAddress + ':' + serverPort);

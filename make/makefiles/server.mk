@@ -50,3 +50,6 @@ src/server/build/static/js/mth.js: ./src/mth/build/.dirstamp
 	$(CD) src/mth/ && $(WEBPACK) --config config.js
 
 server: src/server/build/.dirstamp src/server/build/views/.dirstamp src/server/build/static/.dirstamp $(OBJ_VIEWS) src/server/build/static/js/l3d.js src/server/build/static/js/l3dp.js src/server/build/static/js/config.js src/server/build/static/js/mth.js
+
+server_test: server
+	$(CD) src/server/build/ && $(NODE) server.js --nolisten
