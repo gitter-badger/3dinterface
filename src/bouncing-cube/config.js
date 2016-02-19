@@ -26,6 +26,9 @@ module.exports = {
         'l3d':'l3d'
     },
     devtool:'sourcemap',
+    plugins: [
+        require('webpack-fail-plugin')
+    ],
     ts: {
         configFileName:path.join(__dirname, './tsconfig.json')
     }
