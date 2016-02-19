@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { Vector3, Tools } from './Tools';
+import * as Tools from './Tools';
 
-module l3d {
+module mth {
 
     /**
      * Contains eveything linked to hermite polynoms
@@ -10,41 +10,41 @@ module l3d {
 
         function sum<T> (a:T, b:T) : T;
         function sum(a : number, b : number) : number;
-        function sum(a:Vector3, b:Vector3) : Vector3;
+        function sum(a:Tools.Vector3, b:Tools.Vector3) : Tools.Vector3;
         function sum(a : any, b : any) : any {
             if (typeof a === 'number') {
                 return a + b;
             } else {
-                return sum(a,b);
+                return Tools.sum(a,b);
             }
         }
 
 
         function diff<T> (a:T, b:T) : T;
-        function diff(a:Vector3, b:Vector3) : Vector3;
+        function diff(a:Tools.Vector3, b:Tools.Vector3) : Tools.Vector3;
         function diff(a:number, b:number) : number;
         function diff(a : any, b : any) : any {
             if (typeof a === 'number') {
                 return a - b;
             } else {
-                return diff(a,b);
+                return Tools.diff(a,b);
             }
         }
 
         function mul<T> (a:T, b:number) : T;
         function mul(a:number, b:number) : number;
-        function mul(a:Vector3, b:number) : Vector3;
+        function mul(a:Tools.Vector3, b:number) : Tools.Vector3;
         function mul(a : any, b : any) : any {
             if (typeof a === 'number') {
                 return a * b;
             } else {
-                return mul(a,b);
+                return Tools.mul(a,b);
             }
         }
 
         function clone<T>(a:T) : T;
         function clone(a:number) : number;
-        function clone(v:Vector3) : Vector3;
+        function clone(v:Tools.Vector3) : Tools.Vector3;
         function clone(a : any) : any {
             if (typeof a === 'number') {
                 return a;
@@ -90,7 +90,7 @@ module l3d {
                 this.baseFunctions = [];
 
                 for (var i = 0; i < this.times.length; i++) {
-                    this.baseFunctions.push(new l3d.Hermite.BaseFunction(this.times[i], this.times));
+                    this.baseFunctions.push(new BaseFunction(this.times[i], this.times));
                 }
 
                 // Let's do something at least a little reusable
@@ -362,4 +362,4 @@ module l3d {
     }
 }
 
-export = l3d;
+export = mth;

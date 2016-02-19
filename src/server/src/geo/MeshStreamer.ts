@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as THREE from 'three';
 import * as l3d from 'l3d';
 import * as log from '../lib/log';
+import * as mth from 'mth';
 
 import { Face } from './Face';
 import { Vector, Sendable, CameraItf, Frustum, Data, Plane } from './Interfaces';
@@ -240,10 +241,10 @@ module geo {
          */
         isBackFace(camera : CameraItf, face: Face) : boolean {
 
-            var directionCamera = l3d.Tools.diff(
-                l3d.Tools.mul(
-                    l3d.Tools.sum(
-                        l3d.Tools.sum(
+            var directionCamera = mth.diff(
+                mth.mul(
+                    mth.sum(
+                        mth.sum(
                             this.mesh.vertices[face.a],
                             this.mesh.vertices[face.b]
                         ),
@@ -253,12 +254,12 @@ module geo {
                     camera.position
             );
 
-            var v1 = l3d.Tools.diff(this.mesh.vertices[face.b], this.mesh.vertices[face.a]);
-            var v2 = l3d.Tools.diff(this.mesh.vertices[face.c], this.mesh.vertices[face.a]);
+            var v1 = mth.diff(this.mesh.vertices[face.b], this.mesh.vertices[face.a]);
+            var v2 = mth.diff(this.mesh.vertices[face.c], this.mesh.vertices[face.a]);
 
-            var normal = l3d.Tools.cross(v1, v2);
+            var normal = mth.cross(v1, v2);
 
-            return l3d.Tools.dot(directionCamera, normal) > 0;
+            return mth.dot(directionCamera, normal) > 0;
 
         }
 

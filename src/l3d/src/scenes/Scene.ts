@@ -1,10 +1,10 @@
 import * as THREE from 'three';
+import * as mth from 'mth';
 
 import { PointerCamera } from '../cameras/PointerCamera';
 import { ProgressiveLoader } from '../loaders/ProgressiveLoader';
 import { BaseRecommendation } from '../recommendations/BaseRecommendation';
 import { CameraItf } from '../utils/Logger';
-import { Vector3, Tools } from  '../math/Tools';
 
 module l3d {
     /**
@@ -116,8 +116,8 @@ module l3d {
                     width/height,
                     1,
                     100000,
-                    Tools.copy(position.position),
-                    Tools.copy(position.target)
+                    mth.copy(position.position),
+                    mth.copy(position.target)
                 );
             }
 
@@ -146,8 +146,8 @@ module l3d {
                     width/height,
                     1,
                     100000,
-                    Tools.copy(position.position),
-                    Tools.copy(position.target)
+                    mth.copy(position.position),
+                    mth.copy(position.target)
                 );
             }
 

@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import { Vector3, Tools } from '../math/Tools';
+import * as mth from 'mth';
+
 import { History } from '../utils/History';
 import { CameraItf } from '../utils/Logger';
 import { MousePointer, Color } from '../canvases/MousePointer';
-import { Hermite } from '../math/Hermite';
 import { DB } from '../utils/Logger';
 
 module l3d {
@@ -19,8 +19,8 @@ module l3d {
 
     export interface TargetMove {
 
-        camera   : Vector3;
-        target   : Vector3;
+        camera   : mth.Vector3;
+        target   : mth.Vector3;
 
     }
 
@@ -171,9 +171,9 @@ module l3d {
         /**
          *
          */
-        newTarget : Vector3;
+        newTarget : mth.Vector3;
 
-        newPosition : Vector3;
+        newPosition : mth.Vector3;
 
         mouseMoved : boolean;
 
@@ -186,11 +186,11 @@ module l3d {
 
         movingHermite : boolean;
 
-        hermitePosition : Hermite.special.Polynom<Vector3>;
+        hermitePosition : mth.Hermite.special.Polynom<mth.Vector3>;
 
-        hermiteAngles : Hermite.special.Polynom<Vector3>;
+        hermiteAngles : mth.Hermite.special.Polynom<mth.Vector3>;
 
-        hermite : Hermite.Polynom<Vector3>;
+        hermite : mth.Hermite.Polynom<mth.Vector3>;
 
         collidableObjects : any[];
 
@@ -371,14 +371,14 @@ module l3d {
          * @param time number of milliseconds between the previous and the next frame
          */
         linearMotion(time : number) {
-            var positionDirection = Tools.diff(this.newPosition, this.position);
-            var targetDirection = Tools.diff(this.newTarget, this.target);
+            var positionDirection = mth.diff(this.newPosition, this.position);
+            var targetDirection = mth.diff(this.newTarget, this.target);
 
-            this.position.add(Tools.mul(positionDirection, 0.05 * time / 20));
-            this.target.add(Tools.mul(targetDirection, 0.05 * time / 20));
+            this.position.add(mth.mul(positionDirection, 0.05 * time / 20));
+            this.target.add(mth.mul(targetDirection, 0.05 * time / 20));
 
-            if (Tools.norm2(Tools.diff(this.position, this.newPosition)) < 0.01 &&
-                Tools.norm2(Tools.diff(this.target, this.newTarget))  < 0.01) {
+            if (mth.norm2(mth.diff(this.position, this.newPosition)) < 0.01 &&
+                mth.norm2(mth.diff(this.target, this.newTarget))  < 0.01) {
                 this.moving = false;
                 this.anglesFromVectors();
             }
@@ -390,9 +390,9 @@ module l3d {
          */
         hermiteMotion(time : number) {
             var e = this.hermitePosition.eval(this.t);
-            Tools.copy(e, this.position);
+            mth.copy(e, this.position);
 
-            this.target = Tools.sum(this.position, this.hermiteAngles.eval(this.t));
+            this.target = mth.sum(this.position, this.hermiteAngles.eval(this.t));
 
             this.t += 0.01 * time / 20;
 
@@ -464,10 +464,10 @@ module l3d {
             var direction = new THREE.Vector3();
 
             if (this.motion.boost) speed *= 10;
-            if (this.motion.moveForward)  {direction.add(Tools.mul(forward, speed)); this.changed = true;}
-            if (this.motion.moveBackward) {direction.sub(Tools.mul(forward, speed)); this.changed = true;}
-            if (this.motion.moveLeft)     {direction.add(Tools.mul(left,    speed)); this.changed = true;}
-            if (this.motion.moveRight)    {direction.sub(Tools.mul(left,    speed)); this.changed = true;}
+            if (this.motion.moveForward)  {direction.add(mth.mul(forward, speed)); this.changed = true;}
+            if (this.motion.moveBackward) {direction.sub(mth.mul(forward, speed)); this.changed = true;}
+            if (this.motion.moveLeft)     {direction.add(mth.mul(left,    speed)); this.changed = true;}
+            if (this.motion.moveRight)    {direction.sub(mth.mul(left,    speed)); this.changed = true;}
 
             if (!this.collisions || !this.isColliding(direction)) {
                 this.position.add(direction);
@@ -492,8 +492,8 @@ module l3d {
          * Reset the position of th camera
          */
         resetPosition() {
-            Tools.copy(this.resetElements.position, this.position);
-            Tools.copy(this.resetElements.target, this.target);
+            mth.copy(this.resetElements.position, this.position);
+            mth.copy(this.resetElements.target, this.target);
             this.anglesFromVectors();
         }
 
@@ -515,7 +515,7 @@ module l3d {
          * Computes theta and phi according to the vectors (forward, left, ...)
          */
         anglesFromVectors() {
-            var forward = Tools.diff(this.target, this.position);
+            var forward = mth.diff(this.target, this.position);
             forward.normalize();
 
             this.phi = Math.asin(forward.y);
@@ -543,8 +543,8 @@ module l3d {
             this.newPosition = otherCamera.position.clone();
             var t = [0,1];
             var f = [this.position.clone(), this.newPosition];
-            var fp = [Tools.diff(this.target, this.position), Tools.diff(this.newTarget, this.newPosition)];
-            this.hermite = new Hermite.Polynom(t,f,fp);
+            var fp = [mth.diff(this.target, this.position), mth.diff(this.newTarget, this.newPosition)];
+            this.hermite = new mth.Hermite.Polynom(t,f,fp);
             this.t = 0;
 
             if (toSave) {
@@ -573,15 +573,15 @@ module l3d {
             this.movingHermite = true;
             this.t = 0;
 
-            this.hermitePosition = new Hermite.special.Polynom(
+            this.hermitePosition = new mth.Hermite.special.Polynom(
                 this.position.clone(),
                 otherCamera.position.clone(),
-                Tools.mul(Tools.diff(otherCamera.target, otherCamera.position).normalize(),4)
+                mth.mul(mth.diff(otherCamera.target, otherCamera.position).normalize(),4)
             );
 
-            this.hermiteAngles = new Hermite.special.Polynom(
-                Tools.diff(this.target, this.position),
-                Tools.diff(otherCamera.target, otherCamera.position),
+            this.hermiteAngles = new mth.Hermite.special.Polynom(
+                mth.diff(this.target, this.position),
+                mth.diff(otherCamera.target, otherCamera.position),
                 new THREE.Vector3()
             );
 
@@ -600,12 +600,12 @@ module l3d {
          * @param direction the direction of the camera
          * @returns true if there is a collision, false otherwise
          */
-        isColliding(direction : Vector3) {
-            this.raycaster.set(this.position, Tools.copy(direction).normalize());
+        isColliding(direction : mth.Vector3) {
+            this.raycaster.set(this.position, mth.copy(direction).normalize());
             var intersects = this.raycaster.intersectObjects(this.collidableObjects, true);
 
             for (var i in intersects) {
-                if (intersects[i].distance < Tools.norm(direction) + this.speed * 300 &&
+                if (intersects[i].distance < mth.norm(direction) + this.speed * 300 &&
                     intersects[i].object.raycastable) {
                     return true;
                 }

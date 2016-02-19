@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import * as l3d from 'l3d';
+import * as mth from 'mth';
 
 import { Coin } from './Coin';
 import { ConfigType, CoinConfig } from 'config';
@@ -16,7 +17,7 @@ module l3dp {
         coins : Coin[];
         coinScale : number;
 
-        static coins : l3d.Vector3[];
+        static coins : mth.Vector3[];
 
         constructor() {
 
@@ -53,7 +54,7 @@ module l3dp {
                 case ConfigType.Some:
                     case ConfigType.All:
 
-                    var arr : l3d.Vector3[];
+                    var arr : mth.Vector3[];
 
                 if (coinConfig.type === ConfigType.Some) {
                     // Get only the coordinates for ids that are requested
@@ -87,7 +88,7 @@ module l3dp {
 
         abstract getRawRecommendations() : l3d.CameraItf[];
 
-        abstract getRawCoins() : l3d.Vector3[];
+        abstract getRawCoins() : mth.Vector3[];
 
     }
 

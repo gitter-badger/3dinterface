@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { Vector3, Tools } from '../math/Tools';
+import * as mth from 'mth';
 
 module l3d {
 
@@ -10,7 +10,7 @@ module l3d {
 
         target : THREE.Vector3;
 
-        constructor(arg1:number, arg2:number, arg3:number, arg4:number, position:Vector3, target:Vector3) {
+        constructor(arg1:number, arg2:number, arg3:number, arg4:number, position:mth.Vector3, target:mth.Vector3) {
 
             super(arg1, arg2, arg3, arg4)
 
@@ -26,8 +26,8 @@ module l3d {
 
             }
 
-            Tools.copy(position, this.position);
-            this.target = Tools.copy(target);
+            mth.copy(position, this.position);
+            this.target = mth.copy(target);
 
         }
 

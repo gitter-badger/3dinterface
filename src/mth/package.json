@@ -1,0 +1,9 @@
+{
+  "name": "mth",
+  "version": "1.0.0",
+  "main":"./build/mth.js",
+  "typings":"./build/mth.d.ts",
+  "dependencies":{
+    "three":"*"
+  }
+}

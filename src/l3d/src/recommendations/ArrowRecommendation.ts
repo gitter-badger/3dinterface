@@ -1,8 +1,8 @@
 import * as THREE from 'three';
+import * as mth from 'mth';
+
 import { FixedCamera } from '../cameras/FixedCamera';
 import { BaseRecommendation } from './BaseRecommendation';
-import { Vector3, Tools } from '../math/Tools';
-import { Hermite } from '../math/Hermite';
 
 module l3d {
 
@@ -40,14 +40,14 @@ module l3d {
          */
         fullArrow : boolean;
 
-        constructor(arg1:number, arg2:number, arg3:number, arg4:number, position:Vector3, target:Vector3) {
+        constructor(arg1:number, arg2:number, arg3:number, arg4:number, position:mth.Vector3, target:mth.Vector3) {
 
             super(arg1, arg2, arg3, arg4, position, target);
 
             this.camera = new FixedCamera(arg1, arg2, arg3, arg4, position, target);
             this.add(this.camera);
 
-            var direction = Tools.copy(target);
+            var direction = mth.copy(target);
             direction.sub(this.camera.position);
             direction.normalize();
 
@@ -115,21 +115,21 @@ module l3d {
             direction.sub(this.camera.position);
             direction.normalize();
 
-            var left  = Tools.cross(direction, this.up);
-            var other = Tools.cross(direction, left);
+            var left  = mth.cross(direction, this.up);
+            var other = mth.cross(direction, left);
 
 
             left.normalize();
             other.normalize();
-            left  = Tools.mul(left, this.size);
-            other = Tools.mul(other, this.size);
+            left  = mth.mul(left, this.size);
+            other = mth.mul(other, this.size);
 
             geometry.vertices.push(
-                Tools.sum (Tools.sum( this.camera.position, left),  other),
-                Tools.diff(Tools.sum( this.camera.position, other), left),
-                Tools.diff(Tools.diff(this.camera.position, left),  other),
-                Tools.sum (Tools.diff(this.camera.position, other), left),
-                Tools.sum(this.camera.position, direction)
+                mth.sum (mth.sum( this.camera.position, left),  other),
+                mth.diff(mth.sum( this.camera.position, other), left),
+                mth.diff(mth.diff(this.camera.position, left),  other),
+                mth.sum (mth.diff(this.camera.position, other), left),
+                mth.sum(this.camera.position, direction)
             );
 
             geometry.faces.push(
@@ -163,21 +163,21 @@ module l3d {
             direction.sub(this.camera.position.clone());
             direction.normalize();
 
-            var left  = Tools.cross(direction, this.up);
-            var other = Tools.cross(direction, left);
+            var left  = mth.cross(direction, this.up);
+            var other = mth.cross(direction, left);
 
             left.normalize();
             other.normalize();
-            left  = Tools.mul(left, this.size);
-            other = Tools.mul(other, this.size);
+            left  = mth.mul(left, this.size);
+            other = mth.mul(other, this.size);
 
             var geometry = <THREE.Geometry>(this.mesh.geometry);
 
-            geometry.vertices[0] = Tools.sum (Tools.sum( this.camera.position, left),  other);
-            geometry.vertices[1] = Tools.diff(Tools.sum( this.camera.position, other), left);
-            geometry.vertices[2] = Tools.diff(Tools.diff(this.camera.position, left),  other);
-            geometry.vertices[3] = Tools.sum (Tools.diff(this.camera.position, other), left);
-            geometry.vertices[4] = Tools.sum(this.camera.position, direction);
+            geometry.vertices[0] = mth.sum (mth.sum( this.camera.position, left),  other);
+            geometry.vertices[1] = mth.diff(mth.sum( this.camera.position, other), left);
+            geometry.vertices[2] = mth.diff(mth.diff(this.camera.position, left),  other);
+            geometry.vertices[3] = mth.sum (mth.diff(this.camera.position, other), left);
+            geometry.vertices[4] = mth.sum(this.camera.position, direction);
 
             geometry.computeFaceNormals();
             geometry.verticesNeedUpdate = true;
@@ -203,7 +203,7 @@ module l3d {
          */
         update(mainCamera : THREE.Camera) {
             // Compute distance between center of camera and position
-            var dist = Tools.norm2(Tools.diff(mainCamera.position, this.center));
+            var dist = mth.norm2(mth.diff(mainCamera.position, this.center));
 
             var lowBound = 1;
             var highBound = 5;
@@ -242,18 +242,18 @@ module l3d {
 
             // First point of curve
             var f0 = mainCamera.position.clone();
-            f0.add(Tools.mul(Tools.sum(new THREE.Vector3(0,-0.5,0), Tools.diff(this.camera.target, this.camera.position).normalize()),2));
+            f0.add(mth.mul(mth.sum(new THREE.Vector3(0,-0.5,0), mth.diff(this.camera.target, this.camera.position).normalize()),2));
 
             // Last point of curve
             var f1 = this.camera.position.clone();
 
             // Last derivative of curve
-            var fp1 = Tools.diff(this.camera.target, this.camera.position);
+            var fp1 = mth.diff(this.camera.target, this.camera.position);
             fp1.normalize();
             fp1.multiplyScalar(2);
 
             // Camera direction
-            var dir = Tools.diff(this.camera.position, mainCamera.position);
+            var dir = mth.diff(this.camera.position, mainCamera.position);
             dir.normalize();
 
             if (fp1.dot(dir) < -0.5) {
@@ -268,7 +268,7 @@ module l3d {
 
             fp1.multiplyScalar(4);
 
-            var hermite = new Hermite.special.Polynom(f0, f1, fp1);
+            var hermite = new mth.Hermite.special.Polynom(f0, f1, fp1);
 
             var up = this.up.clone();
             var point : THREE.Vector3;
@@ -286,14 +286,14 @@ module l3d {
                 up.normalize();
 
                 var coeff = this.size / 2;
-                var left  = Tools.cross(up, deriv);     left.normalize(); left.multiplyScalar(coeff);
-                var other = Tools.cross(deriv, left);  other.normalize(); other.multiplyScalar(coeff);
+                var left  = mth.cross(up, deriv);     left.normalize(); left.multiplyScalar(coeff);
+                var other = mth.cross(deriv, left);  other.normalize(); other.multiplyScalar(coeff);
 
                 vertices.push(
-                    Tools.sum (Tools.sum(point, left), other),
-                    Tools.sum (Tools.diff(point, left), other),
-                    Tools.diff(point, Tools.sum(other,left)),
-                    Tools.sum (Tools.diff(point, other), left)
+                    mth.sum (mth.sum(point, left), other),
+                    mth.sum (mth.diff(point, left), other),
+                    mth.diff(point, mth.sum(other,left)),
+                    mth.sum (mth.diff(point, other), left)
                 );
             }
 

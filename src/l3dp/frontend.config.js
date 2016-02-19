@@ -28,6 +28,9 @@ module.exports = {
         'jQuery':'$',
         'l3d':'l3d'
     },
+    plugins: [
+        require('webpack-fail-plugin')
+    ],
     devtool:'sourcemap',
     ts: {
         configFileName: './tsconfig-frontend.json'

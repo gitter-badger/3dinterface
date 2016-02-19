@@ -11,7 +11,7 @@ src/l3dp/typings/custom/.dirstamp: ./custom_typings/*
 	$(MERGE) custom_typings src/l3dp/typings/custom
 	$(TOUCH_DIRSTAMP)
 
-src/l3dp/node_modules/.dirstamp: src/l3dp/package.json l3d config
+src/l3dp/node_modules/.dirstamp: src/l3dp/package.json l3d config mth
 	$(CD) src/l3dp/ && $(NPM) install
 	$(TOUCH_DIRSTAMP)
 

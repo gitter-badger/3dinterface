@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import * as io from 'socket.io';
+import * as mth from 'mth';
+
 import { PointerCamera } from '../cameras/PointerCamera';
-import { Face3 } from '../math/Tools';
 
 module l3d {
 
@@ -328,7 +329,7 @@ module l3d {
 
         }
 
-        hasFace(face : Face3) : boolean {
+        hasFace(face : mth.Face3) : boolean {
 
             return this.mapFace[(face.a) + '-' + (face.b) + '-' + (face.c)] === true;
 

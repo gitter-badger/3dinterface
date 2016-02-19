@@ -9,6 +9,7 @@ import r_io = require('socket.io');
 import http = require('http');
 import r_sock = require('./lib/socket');
 import path = require('path');
+import yargs = require('yargs');
 
 function main() {
 
@@ -16,6 +17,8 @@ function main() {
     let http = require('http').Server(app);
     let io = r_io(http);
     let log = require('./lib/log');
+    let argv = yargs.argv;
+
     r_sock(io);
 
     let bodyParser = require('body-parser');
@@ -84,9 +87,13 @@ function main() {
         serverIpAddress = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
     }
 
-    http.listen(serverPort, serverIpAddress, function() {
-        log.ready('Now listening ' + serverIpAddress + ':' + serverPort);
-    });
+    if (argv.nolisten || argv.n) {
+        log.ready('Initialization successful');
+    } else {
+        http.listen(serverPort, serverIpAddress, function() {
+            log.ready('Now listening ' + serverIpAddress + ':' + serverPort);
+        });
+    }
 }
 
 if (require.main === module) {

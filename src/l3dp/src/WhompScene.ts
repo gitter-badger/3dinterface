@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import * as l3d from 'l3d';
+import * as mth from 'mth';
 
 import { SceneWithCoins } from './SceneWithCoins';
 import { CoinConfig } from 'config';
@@ -97,7 +98,7 @@ module l3dp {
             return RecommendationData.whompRecommendations;
         }
 
-        getRawCoins() : l3d.Vector3[] {
+        getRawCoins() : mth.Vector3[] {
             return CoinData.whompCoins;
         }
 

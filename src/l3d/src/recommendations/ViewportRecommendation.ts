@@ -1,6 +1,7 @@
 import * as THREE from 'three';
+import * as mth from 'mth';
+
 import { ArrowRecommendation } from './ArrowRecommendation';
-import { Vector3, Tools } from '../math/Tools';
 
 module l3d {
 
@@ -13,28 +14,28 @@ module l3d {
 
         collidingObject : THREE.Mesh;
 
-        constructor(arg1:number, arg2:number, arg3:number, arg4:number, position:Vector3, target:Vector3) {
+        constructor(arg1:number, arg2:number, arg3:number, arg4:number, position:mth.Vector3, target:mth.Vector3) {
 
             super(arg1, arg2, arg3, arg4, position, target);
 
-            let direction = Tools.copy(target);
+            let direction = mth.copy(target);
             direction.sub(this.camera.position);
             direction.normalize();
 
             let geometry = new THREE.Geometry();
 
-            let left = Tools.cross(direction, this.up);
-            let other = Tools.cross(direction, left);
+            let left = mth.cross(direction, this.up);
+            let other = mth.cross(direction, left);
             left.normalize();
             other.normalize();
-            left = Tools.mul(left, 1);
-            other  = Tools.mul(other, 1);
+            left = mth.mul(left, 1);
+            other  = mth.mul(other, 1);
 
             geometry.vertices.push(
-                Tools.sum(Tools.sum(this.camera.position, left), other),
-                Tools.diff(Tools.sum(this.camera.position, other),left),
-                Tools.diff(Tools.diff(this.camera.position, left),other),
-                Tools.sum(Tools.diff(this.camera.position, other), left)
+                mth.sum(mth.sum(this.camera.position, left), other),
+                mth.diff(mth.sum(this.camera.position, other),left),
+                mth.diff(mth.diff(this.camera.position, left),other),
+                mth.sum(mth.diff(this.camera.position, other), left)
             );
 
             geometry.faces.push(
@@ -46,28 +47,28 @@ module l3d {
 
                 let material = new THREE.LineBasicMaterial({ color: '0x000000', linewidth: 3});
                 let geometry = new THREE.Geometry();
-                let tmpDirection = Tools.mul(direction, -2);
-                let target = Tools.sum(this.camera.position, tmpDirection);
+                let tmpDirection = mth.mul(direction, -2);
+                let target = mth.sum(this.camera.position, tmpDirection);
 
                 geometry.vertices.push(
-                    Tools.sum(Tools.sum(this.camera.position, left), other),
-                    Tools.diff(Tools.sum(this.camera.position, other),left),
-                    Tools.diff(Tools.diff(this.camera.position, left),other),
-                    Tools.sum(Tools.diff(this.camera.position, other), left),
-                    Tools.sum(Tools.sum(this.camera.position, left), other),
-                    Tools.sum(Tools.diff(this.camera.position, other), left),
+                    mth.sum(mth.sum(this.camera.position, left), other),
+                    mth.diff(mth.sum(this.camera.position, other),left),
+                    mth.diff(mth.diff(this.camera.position, left),other),
+                    mth.sum(mth.diff(this.camera.position, other), left),
+                    mth.sum(mth.sum(this.camera.position, left), other),
+                    mth.sum(mth.diff(this.camera.position, other), left),
 
-                    Tools.sum(this.camera.position, tmpDirection),
-                    Tools.sum(Tools.sum(this.camera.position, left), other),
+                    mth.sum(this.camera.position, tmpDirection),
+                    mth.sum(mth.sum(this.camera.position, left), other),
 
-                    Tools.sum(this.camera.position, tmpDirection),
-                    Tools.diff(Tools.sum(this.camera.position, other),left),
+                    mth.sum(this.camera.position, tmpDirection),
+                    mth.diff(mth.sum(this.camera.position, other),left),
 
-                    Tools.sum(this.camera.position, tmpDirection),
-                    Tools.diff(Tools.diff(this.camera.position, left),other),
+                    mth.sum(this.camera.position, tmpDirection),
+                    mth.diff(mth.diff(this.camera.position, left),other),
 
-                    Tools.sum(this.camera.position, tmpDirection),
-                    Tools.sum(Tools.diff(this.camera.position, other), left)
+                    mth.sum(this.camera.position, tmpDirection),
+                    mth.sum(mth.diff(this.camera.position, other), left)
                 );
 
                 this.line = new THREE.Line(geometry, material);
@@ -77,14 +78,14 @@ module l3d {
 
                 let material = new THREE.MeshBasicMaterial();
                 let geometry = new THREE.Geometry();
-                let tmpDirection = Tools.mul(direction, -2);
+                let tmpDirection = mth.mul(direction, -2);
 
                 geometry.vertices = [
-                    Tools.sum(Tools.sum(this.camera.position, left), other),
-                    Tools.diff(Tools.sum(this.camera.position, other),left),
-                    Tools.diff(Tools.diff(this.camera.position, left),other),
-                    Tools.sum(Tools.diff(this.camera.position, other), left),
-                    Tools.sum(this.camera.position, tmpDirection)
+                    mth.sum(mth.sum(this.camera.position, left), other),
+                    mth.diff(mth.sum(this.camera.position, other),left),
+                    mth.diff(mth.diff(this.camera.position, left),other),
+                    mth.sum(mth.diff(this.camera.position, other), left),
+                    mth.sum(this.camera.position, tmpDirection)
                 ];
 
                 geometry.faces = [
@@ -144,7 +145,7 @@ module l3d {
         // Update function
         update(position : THREE.Camera) {
             // Compute distance between center of camera and position
-            let dist = Tools.norm2(Tools.diff(position.position, this.camera.position));
+            let dist = mth.norm2(mth.diff(position.position, this.camera.position));
 
             let lowBound = 0.5;
             let highBound = 5;
@@ -170,47 +171,47 @@ module l3d {
             direction.sub(this.camera.position);
             direction.normalize();
 
-            let left = Tools.cross(direction, this.up);
-            let other = Tools.cross(direction, left);
+            let left = mth.cross(direction, this.up);
+            let other = mth.cross(direction, left);
             left.normalize();
             other.normalize();
-            left = Tools.mul(left, size);
-            other  = Tools.mul(other, size);
+            left = mth.mul(left, size);
+            other  = mth.mul(other, size);
 
             let geometry = <THREE.Geometry>this.mesh.geometry;
             geometry.vertices = [
-                Tools.sum(Tools.sum(this.camera.position, left), other),
-                Tools.diff(Tools.sum(this.camera.position, other),left),
-                Tools.diff(Tools.diff(this.camera.position, left),other),
-                Tools.sum(Tools.diff(this.camera.position, other), left)
+                mth.sum(mth.sum(this.camera.position, left), other),
+                mth.diff(mth.sum(this.camera.position, other),left),
+                mth.diff(mth.diff(this.camera.position, left),other),
+                mth.sum(mth.diff(this.camera.position, other), left)
             ];
 
             geometry.verticesNeedUpdate = true;
 
             {
 
-                let tmpDirection = Tools.mul(direction, -2 * size);
-                let target = Tools.sum(this.camera.position, tmpDirection);
+                let tmpDirection = mth.mul(direction, -2 * size);
+                let target = mth.sum(this.camera.position, tmpDirection);
 
                 let vertices = [
-                    Tools.sum(Tools.sum(this.camera.position, left), other),
-                    Tools.diff(Tools.sum(this.camera.position, other),left),
-                    Tools.diff(Tools.diff(this.camera.position, left),other),
-                    Tools.sum(Tools.diff(this.camera.position, other), left),
-                    Tools.sum(Tools.sum(this.camera.position, left), other),
-                    Tools.sum(Tools.diff(this.camera.position, other), left),
+                    mth.sum(mth.sum(this.camera.position, left), other),
+                    mth.diff(mth.sum(this.camera.position, other),left),
+                    mth.diff(mth.diff(this.camera.position, left),other),
+                    mth.sum(mth.diff(this.camera.position, other), left),
+                    mth.sum(mth.sum(this.camera.position, left), other),
+                    mth.sum(mth.diff(this.camera.position, other), left),
 
-                    Tools.sum(this.camera.position, tmpDirection),
-                    Tools.sum(Tools.sum(this.camera.position, left), other),
+                    mth.sum(this.camera.position, tmpDirection),
+                    mth.sum(mth.sum(this.camera.position, left), other),
 
-                    Tools.sum(this.camera.position, tmpDirection),
-                    Tools.diff(Tools.sum(this.camera.position, other),left),
+                    mth.sum(this.camera.position, tmpDirection),
+                    mth.diff(mth.sum(this.camera.position, other),left),
 
-                    Tools.sum(this.camera.position, tmpDirection),
-                    Tools.diff(Tools.diff(this.camera.position, left),other),
+                    mth.sum(this.camera.position, tmpDirection),
+                    mth.diff(mth.diff(this.camera.position, left),other),
 
-                    Tools.sum(this.camera.position, tmpDirection),
-                    Tools.sum(Tools.diff(this.camera.position, other), left)
+                    mth.sum(this.camera.position, tmpDirection),
+                    mth.sum(mth.diff(this.camera.position, other), left)
                 ];
 
                 let geometry = <THREE.Geometry>this.line.geometry;
@@ -221,14 +222,14 @@ module l3d {
 
             {
 
-                let tmpDirection = Tools.mul(direction, -2 * size);
+                let tmpDirection = mth.mul(direction, -2 * size);
 
                 (<THREE.Geometry>this.collidingObject.geometry).vertices = [
-                    Tools.sum(Tools.sum(this.camera.position, left), other),
-                    Tools.diff(Tools.sum(this.camera.position, other),left),
-                    Tools.diff(Tools.diff(this.camera.position, left),other),
-                    Tools.sum(Tools.diff(this.camera.position, other), left),
-                    Tools.sum(this.camera.position, tmpDirection)
+                    mth.sum(mth.sum(this.camera.position, left), other),
+                    mth.diff(mth.sum(this.camera.position, other),left),
+                    mth.diff(mth.diff(this.camera.position, left),other),
+                    mth.sum(mth.diff(this.camera.position, other), left),
+                    mth.sum(this.camera.position, tmpDirection)
                 ];
 
             }

@@ -15,9 +15,11 @@
         "sha256":"0.2.0",
         "async":"1.4.2",
         "source-map-support":"0.4.0",
+        "yargs":"*",
         "l3d":"../l3d",
         "l3dp":"../l3dp",
-        "config":"../config"
+        "config":"../config",
+        "mth":"../mth"
     },
     "repository" : {
         "type" : "git",
