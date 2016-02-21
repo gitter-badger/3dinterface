@@ -36,13 +36,11 @@ var isDev = require('express')().get('env') === 'development';
 
 var write : (elt : any, color : Color) => void;
 
-if (isDev) {
+if (argv.nolisten || argv.n) {
+    write = function(elt : any, color : Color) { }
+} else if (isDev) {
     write = function(elt : any, color : Color) {
         console.log(getColorCode(color) + elt + getColorCode(Color.DEFAULT));
-    }
-} else if (argv.nolisten || argv.n) {
-    write = function(elt : any, color : Color) {
-
     }
 } else {
     write = function(elt : any, color : Color) {
