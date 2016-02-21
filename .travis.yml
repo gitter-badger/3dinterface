@@ -6,11 +6,8 @@ branches:
     only:
         - typescript
 install: make prepare
-script:
-    - make
-    - make test
-after_script:
-    - jscoverage src/mth/build/tests/main.js && nodeunit --reporter=lcov src/mth/build/tests/main-cov.js| coveralls
+script: make
+after_script: make coveralls
 notifications:
     on_failure: always
     on_success: never

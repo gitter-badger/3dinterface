@@ -12,6 +12,3 @@ src/mth/node_modules/.dirstamp: src/mth/package.json
 src/mth/build/.dirstamp: src/mth/*.ts src/mth/package.json src/mth/tsconfig.json src/mth/typings/.dirstamp src/mth/node_modules/.dirstamp src/mth/tests/*.ts
 	$(CD) src/mth/ && $(TSC)
 	$(TOUCH_DIRSTAMP)
-
-mth_test: $(MTH_COMMONJS_DEPENDENCY)
-	$(NODEUNIT) src/mth/build/tests/main.js

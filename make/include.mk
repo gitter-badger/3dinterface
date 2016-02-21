@@ -4,5 +4,4 @@ include ./make/makefiles/l3d.mk
 include ./make/makefiles/l3dp.mk
 include ./make/makefiles/bouncing.mk
 include ./make/makefiles/server.mk
-
-test: mth_test server_test
+include ./make/tests.mk
