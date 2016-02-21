@@ -1,4 +1,6 @@
 TEST_FILES_SRC=$(wildcard src/*/tests/main.ts)
+TEST_OBJ=$(subst tests/main.ts,build/tests/main.js,$(TEST_FILES_SRC))
+TEST_COV=$(TEST_OBJ:.js=-cov.js)
 
 src/%/build/tests/main-cov.js: src/%/build/tests/main.js
 	jscoverage $<
@@ -6,8 +8,8 @@ src/%/build/tests/main-cov.js: src/%/build/tests/main.js
 test-%: src/%/build/tests/main-cov.js
 	nodeunit $<
 
-test: $(TEST_FILES_SRC)
+test: $(TEST_COV)
 	nodeunit src/mth/build/tests/main-cov.js
 
-coveralls: $(TEST_FILES_SRC)
+coveralls: $(TEST_COV)
 	nodeunit --reporter=lcov src/mth/build/tests/main-cov.js | coveralls
