@@ -16,7 +16,7 @@
   },
   "scripts": {
     "test": "nodeunit src/mth/build/tests/main.js",
-    "coveralls":"nodeunit --reporter=lcov src/mth/build/tests/main-cov.js | coveralls"
+    "coveralls":"nodeunit --reporter=lcov src/mth/build/tests/main.js | coveralls"
   },
   "repository": {
     "type": "git",
