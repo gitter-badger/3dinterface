@@ -10,7 +10,7 @@ script:
     - make
     - make test
 after_script:
-    - jscoverage src/mth/build/tests/main-cov.js && nodeunit --reporter=lcov src/mth/build/tests/main-cov.js| coveralls
+    - jscoverage src/mth/build/tests/main.js && nodeunit --reporter=lcov src/mth/build/tests/main-cov.js| coveralls
 notifications:
     on_failure: always
     on_success: never
