@@ -11,7 +11,7 @@ It is hosted by [OpenShift](https://www.openshift.com/) at
   - [Node](https://nodejs.org/en/)
   - [NPM](https://www.npmjs.com/)
   - [TypeScript](http://www.typescriptlang.org/) : `sudo npm install -g typescript@next`
-  - [TSD](http://definitelytyped.org/tsd/) : `sudo npm install -g tsd`
+  - [Typings](https://github.com/typings/typings) : `sudo npm install -g typings`
   - [Webpack](https://webpack.github.io/docs/) : `sudo npm install -g webpack`
 
 # Install
