@@ -17,16 +17,16 @@ function cmp_vector(test : t.Test, v1 : mth.Vector3, v2 : mth.Vector3) {
 
 }
 
-export function equals_test(test : t.Test) {
-
-    test.ok(mth.equals(v1,v1));
-    test.ok(mth.equals(v2,v2));
-    test.ok(!mth.equals(v1,v2));
-    test.ok(!mth.equals(v2,v1));
-
-    test.done();
-
-}
+// export function equals_test(test : t.Test) {
+//
+//     test.ok(mth.equals(v1,v1));
+//     test.ok(mth.equals(v2,v2));
+//     test.ok(!mth.equals(v1,v2));
+//     test.ok(!mth.equals(v2,v1));
+//
+//     test.done();
+//
+// }
 
 export function sum_test(test : t.Test) {
 

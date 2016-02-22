@@ -12,4 +12,4 @@ test: $(TEST_COV)
 	nodeunit src/mth/build/tests/main-cov.js
 
 coveralls: $(TEST_COV)
-	nodeunit --reporter=lcov src/mth/build/tests/main-cov.js | coveralls
+	nodeunit --reporter=lcov src/mth/build/tests/main-cov.js
