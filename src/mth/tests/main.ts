@@ -56,11 +56,11 @@ export function diff_test(test : t.Test) {
 
 }
 
-export function cross_test(test : t.Test) {
+export function dot_test(test : t.Test) {
 
     let v5 = mth.dot(v1,v2);
 
-    test.equal(v5, v1.x * v2.x + v1.y * v2.y + v1.z * v2.z+1);
+    test.equal(v5, v1.x * v2.x + v1.y * v2.y + v1.z * v2.z);
 
     cmp_vector(test, v1, v1Bak);
     cmp_vector(test, v2, v2Bak);
