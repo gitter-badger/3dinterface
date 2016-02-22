@@ -21,6 +21,7 @@ module l3d {
             this.camera = new FixedCamera(arg1,arg2,arg3,arg4,position,target);
             mth.copy(position, this.camera.position);
             this.camera.target = mth.copy(target);
+            this.raycastable = true;
 
         }
 

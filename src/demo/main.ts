@@ -84,6 +84,7 @@ $(function() {
 
         scene = l3dp.createSceneFromConfig(CONFIG);
         scene.load('NV-PN');
+
         // scene = new GLOB.SceneClass();
         scene.addEventListener('onload', function() { loadingCanvas.clear(); });
         renderer = new THREE.WebGLRenderer({alpha:true, antialias:true});
@@ -151,6 +152,7 @@ $(function() {
 
         // Object clicker for hover and clicking recommendations
         objectClicker = new l3d.ObjectClicker();
+        scene.recommendations.map(function(a) { objectClicker.objects.push(a); });
         objectClicker.camera = camera;
 
     }
