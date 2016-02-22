@@ -1,7 +1,5 @@
 [![Build
 Status](https://api.travis-ci.org/tforgione/3dinterface.svg?branch=typescript)](https://travis-ci.org/tforgione/3dinterface)
-[![Coverage
-Status](https://coveralls.io/repos/github/tforgione/3dinterface/badge.svg?branch=typescript-dev)](https://coveralls.io/github/tforgione/3dinterface?branch=typescript-dev)
 # 3D Interface
 This is the beginning of the typescript version of 3D interface : a prototype
 for a user-friendly 3D interface allowing to browse 3D scenes / models written
