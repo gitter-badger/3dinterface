@@ -17,7 +17,7 @@ src/demo/node_modules/.dirstamp: src/demo/package.json $(L3D_DEPENDENCY) $(L3DP_
 	$(CD) src/demo/ && $(NPM) install
 	$(TOUCH_DIRSTAMP)
 
-src/demo/build/.dirstamp: $(wildcard src/demo/*.ts) src/demo/tsconfig.json src/demo/typings/.dirstamp src/demo/config.js
+src/demo/build/.dirstamp: $(wildcard src/demo/*.ts) src/demo/node_modules/.dirstamp src/demo/tsconfig.json src/demo/typings/.dirstamp src/demo/config.js
 	$(WEBPACK) --config src/demo/config.js
 	$(TOUCH_DIRSTAMP)
 
