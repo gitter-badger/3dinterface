@@ -9,3 +9,9 @@ export { WhompScene } from './WhompScene';
 export { CoinData } from './CoinData';
 export { CoinCanvas } from './CoinCanvas';
 export { logfps, resizeElements, show, hide, resetCameraAspect, appendTo } from './functions';
+export { createSceneFromConfig } from './createFromConfig';
+
+window.containerSize = {
+    width : () => { return 1134; },
+    height: () => { return 768;  }
+}

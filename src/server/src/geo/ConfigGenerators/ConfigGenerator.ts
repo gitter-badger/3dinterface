@@ -65,7 +65,6 @@ module geo {
          */
         generateMainConfig(frustum? : Frustum, recoClicked? : number) : Config {
 
-            process.stderr.write('Warning : empty config generator used\n');
             return [];
 
         };
@@ -76,7 +75,6 @@ module geo {
          */
         generateFillingConfig(previousConfig? : Config, previousData? : Data, cameraFrustum? : Frustum, recommendationClicked? : number) : Config {
 
-            process.stderr.write('Warning : empty config generator used\n');
             return [];
 
         }

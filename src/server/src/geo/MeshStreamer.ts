@@ -358,7 +358,7 @@ module geo {
                 this.backupGenerator = new ConfigGenerator(this);
 
                 if (this.mesh === undefined) {
-                    process.stderr.write('Wrong path for model : ' + path);
+                    process.stderr.write('Wrong path for model : ' + path + "\n");
                     socket.emit('refused');
                     socket.disconnect();
                     return;
@@ -394,6 +394,8 @@ module geo {
             });
 
             socket.on('next', (_camera? : any[]) => {
+
+                var oldTime = Date.now();
 
                 var cameraFrustum : Frustum;
                 var beginning = this.beginning;
@@ -442,7 +444,6 @@ module geo {
                     var config = this.generator.generateMainConfig(cameraFrustum, recommendationClicked);
 
                     // Send next elements
-                    var oldTime = Date.now();
                     var next = this.nextElements(config);
 
                     // console.log(

@@ -306,7 +306,7 @@ module l3d {
             //         _moveReco.apply(this.camera, [param]);
             //     };
 
-            // } else if (this.camera instanceof PointerCamera) {
+            if (this.camera instanceof PointerCamera) {
 
                 // Only good for sponza model
                 var _moveHermite = this.camera.moveHermite;
@@ -316,7 +316,7 @@ module l3d {
                     _moveHermite.apply(this.camera, [a,b,c]);
                 };
 
-            // }
+            }
 
             this.numberOfFaces = -1;
             this.numberOfFacesReceived = 0;

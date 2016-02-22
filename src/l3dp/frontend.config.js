@@ -24,7 +24,7 @@ module.exports = {
         'socket.io': 'io',
         'socket.io-client':'io',
         'stats':'Stats',
-        'config':'Config',
+        'config':'config',
         'jQuery':'$',
         'l3d':'l3d'
     },

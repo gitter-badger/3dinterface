@@ -23,7 +23,7 @@ module l3d {
         /**
          * Element on which we will listen
          */
-        domElement : Element;
+        domElement : any;// Element;
 
         /**
          * Element currently hovered
@@ -46,6 +46,14 @@ module l3d {
         previousPointedObject : THREE.Intersection;
 
         constructor() {
+
+            this.mouse = {x:0, y:0};
+
+            this.domElement = document;
+
+            this.raycaster = new THREE.Raycaster();
+
+            this.objects = [];
 
             // Add event listeners
             this.domElement.addEventListener('mousemove', (event : any) => { this.update(event); });

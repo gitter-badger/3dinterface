@@ -8,7 +8,7 @@ module l3d {
     /**
      * Reprensents a recommendation as a viewport (3D representation of a camera)
      */
-    class ViewportRecommendation extends ArrowRecommendation {
+    export class ViewportRecommendation extends ArrowRecommendation {
 
         line : THREE.Line;
 

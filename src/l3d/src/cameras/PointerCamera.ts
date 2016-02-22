@@ -204,6 +204,8 @@ module l3d {
 
             super(arg0, arg1, arg2, arg3);
 
+            this.collidableObjects = [];
+
             this.renderer = arguments[4];
 
             let listenerTarget : any;

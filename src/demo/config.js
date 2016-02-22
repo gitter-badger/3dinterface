@@ -25,7 +25,8 @@ module.exports = {
         "config":"config",
         "l3d":"l3d",
         "l3dp":"l3dp",
-        "three":"THREE"
+        "three":"THREE",
+        "Stats":"Stats"
     },
     plugins: [
         require('webpack-fail-plugin')
