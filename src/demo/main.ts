@@ -46,7 +46,7 @@ $(function() {
         //     l3dp.appendTo(container)(stats, coinCanvas, startCanvas, pointer, previewer, loadingCanvas, renderer);
         //     loadingCanvas.render();
         // } else
-        //     l3dp.appendTo(container)(startCanvas, pointer, previewer, renderer);
+        l3dp.appendTo(container)(startCanvas, pointer, previewer, renderer);
 
         // Set the good size of cameras
         onWindowResize();
@@ -96,7 +96,7 @@ $(function() {
             0.01, 100000, renderer, container
         );
 
-        // scene.setCamera(camera);
+        scene.setCamera(camera);
 
         // scene.load(GLOB.prefetch, GLOB.lowRes);
 
