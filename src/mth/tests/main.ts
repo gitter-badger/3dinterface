@@ -17,16 +17,16 @@ function cmp_vector(test : t.Test, v1 : mth.Vector3, v2 : mth.Vector3) {
 
 }
 
-// export function equals_test(test : t.Test) {
-//
-//     test.ok(mth.equals(v1,v1));
-//     test.ok(mth.equals(v2,v2));
-//     test.ok(!mth.equals(v1,v2));
-//     test.ok(!mth.equals(v2,v1));
-//
-//     test.done();
-//
-// }
+export function equals_test(test : t.Test) {
+
+    test.ok(mth.equals(v1,v1));
+    test.ok(mth.equals(v2,v2));
+    test.ok(!mth.equals(v1,v2));
+    test.ok(!mth.equals(v2,v1));
+
+    test.done();
+
+}
 
 export function sum_test(test : t.Test) {
 
@@ -60,7 +60,7 @@ export function cross_test(test : t.Test) {
 
     let v5 = mth.dot(v1,v2);
 
-    test.equal(v5, v1.x * v2.x + v1.y * v2.y + v1.z * v2.z+1);
+    test.equal(v5, v1.x * v2.x + v1.y * v2.y + v1.z * v2.z);
 
     cmp_vector(test, v1, v1Bak);
     cmp_vector(test, v2, v2Bak);

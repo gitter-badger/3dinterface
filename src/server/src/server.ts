@@ -10,13 +10,13 @@ import http = require('http');
 import r_sock = require('./lib/socket');
 import path = require('path');
 import yargs = require('yargs');
+import log = require('./lib/log');
 
 function main() {
 
     let app = express();
     let http = require('http').Server(app);
     let io = r_io(http);
-    let log = require('./lib/log');
     let argv = yargs.argv;
 
     r_sock(io);
@@ -94,6 +94,12 @@ function main() {
             log.ready('Now listening ' + serverIpAddress + ':' + serverPort);
         });
     }
+
+    // On sigint, stop the server
+    process.on('SIGINT', function() {
+        log.debug('Stopping server...');
+        process.exit(0);
+    });
 }
 
 if (require.main === module) {

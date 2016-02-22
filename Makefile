@@ -9,3 +9,5 @@ all: server bouncing-cube
 prepare: ./node_modules/.dirstamp
 
 include ./make/include.mk
+
+test: test-mth test-server

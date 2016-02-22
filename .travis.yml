@@ -1,13 +1,13 @@
 language: node_js
 node_js: "4.1"
 before_install:
-    - npm install -g typescript@next typings webpack nodeunit coveralls jscoverage
+    - npm install -g typescript@next typings webpack nodeunit
 branches:
     only:
         - typescript
 install: make prepare
 script: make
-after_script: make coveralls
+after_script: make test
 notifications:
     on_failure: always
     on_success: never
