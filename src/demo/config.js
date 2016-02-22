@@ -22,7 +22,10 @@ module.exports = {
         exclude: /node_modules/
     },
     externals: {
-
+        "config":"config",
+        "l3d":"l3d",
+        "l3dp":"l3dp",
+        "three":"THREE"
     },
     plugins: [
         require('webpack-fail-plugin')

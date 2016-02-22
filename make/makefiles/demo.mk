@@ -13,6 +13,10 @@ src/demo/typings/custom/.dirstamp: $(CUSTOM_TYPINGS_SRC)
 src/demo/typings/.dirstamp: src/demo/typings/typings/.dirstamp src/demo/typings/custom/.dirstamp
 	$(TOUCH_DIRSTAMP)
 
+src/demo/node_modules/.dirstamp: src/demo/package.json $(L3D_DEPENDENCY) $(L3DP_DEPENDENCY)
+	$(CD) src/demo/ && $(NPM) install
+	$(TOUCH_DIRSTAMP)
+
 src/demo/build/.dirstamp: $(wildcard src/demo/*.ts) src/demo/tsconfig.json src/demo/typings/.dirstamp src/demo/config.js
 	$(WEBPACK) --config src/demo/config.js
 	$(TOUCH_DIRSTAMP)
