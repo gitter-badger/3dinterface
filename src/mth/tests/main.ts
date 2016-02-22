@@ -56,7 +56,7 @@ export function diff_test(test : t.Test) {
 
 }
 
-export function cross_test(test : t.Test) {
+export function dot_test(test : t.Test) {
 
     let v5 = mth.dot(v1,v2);
 
