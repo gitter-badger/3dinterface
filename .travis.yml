@@ -6,8 +6,7 @@ branches:
     only:
         - typescript
 install: make prepare
-script: make
-after_script: make test
+script: make && make test
 notifications:
     on_failure: always
     on_success: never
