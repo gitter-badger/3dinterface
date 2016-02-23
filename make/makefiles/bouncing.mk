@@ -10,7 +10,7 @@ src/bouncing-cube/typings/custom/.dirstamp: $(CUSTOM_TYPINGS_SRC)
 	touch $@
 
 src/bouncing-cube/node_modules/.dirstamp: src/bouncing-cube/package.json $(L3D_DEPENDENCY)
-	$(CD) src/bouncing-cube/ && $(NPM) install
+	$(CD) src/bouncing-cube/ && $(NPM_INSTALL)
 	$(TOUCH_DIRSTAMP)
 
 src/server/build/static/js/bouncing.min.js: $(wildcard src/bouncing-cube/src/*) src/bouncing-cube/node_modules/.dirstamp src/bouncing-cube/tsconfig.json src/bouncing-cube/typings

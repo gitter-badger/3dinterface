@@ -10,7 +10,7 @@ src/server/typings/custom/.dirstamp: ./custom_typings/*
 	$(TOUCH_DIRSTAMP)
 
 src/server/node_modules/.dirstamp: src/server/package.json $(L3D_DEPENDENCY) $(L3DP_DEPENDENCY) $(CONFIG_DEPENDENCY) $(MTH_DEPENDENCY)
-	$(CD) src/server/ && $(NPM) install
+	$(CD) src/server/ && $(NPM_INSTALL)
 	$(TOUCH_DIRSTAMP)
 
 src/server/build/.dirstamp: $(shell find src/server/src/ -name "*.ts" -o -name "*.jade") src/server/node_modules/.dirstamp src/server/typings

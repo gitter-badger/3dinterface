@@ -14,7 +14,7 @@ src/demo/typings/.dirstamp: src/demo/typings/typings/.dirstamp src/demo/typings/
 	$(TOUCH_DIRSTAMP)
 
 src/demo/node_modules/.dirstamp: src/demo/package.json $(L3D_DEPENDENCY) $(L3DP_DEPENDENCY)
-	$(CD) src/demo/ && $(NPM) install
+	$(CD) src/demo/ && $(NPM_INSTALL)
 	$(TOUCH_DIRSTAMP)
 
 src/demo/build/.dirstamp: $(wildcard src/demo/*.ts) src/demo/node_modules/.dirstamp src/demo/tsconfig.json src/demo/typings/.dirstamp src/demo/config.js
