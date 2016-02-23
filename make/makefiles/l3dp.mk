@@ -13,7 +13,7 @@ src/l3dp/typings/custom/.dirstamp: $(CUSTOM_TYPINGS_SRC)
 	$(TOUCH_DIRSTAMP)
 
 src/l3dp/node_modules/.dirstamp: src/l3dp/package.json $(L3D_DEPENDENCY) $(CONFIG_DEPENDENCY) $(MTH_COMMONJS_DEPENDENCY)
-	$(CD) src/l3dp/ && $(NPM_INSTALL)
+	$(CD) src/l3dp/ && $(NPM_UNINSTALL) config l3d mth && $(NPM_INSTALL)
 	$(TOUCH_DIRSTAMP)
 
 src/l3dp/build/.dirstamp: $(wildcard src/l3dp/src/*) src/l3dp/node_modules/.dirstamp src/l3dp/tsconfig-backend.json src/l3dp/backend.config.js src/l3dp/typings
