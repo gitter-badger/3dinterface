@@ -564,8 +564,8 @@ module l3d {
          * @param recommendation Camera to move to
          * @param toSave if you want to save the current state of the camera
          */
-        moveHermite(recommendation : CameraItf, toSave : boolean, recommendationId ?: number) : void;
-        moveHermite(recommendation : TargetMove, toSave : boolean, recommendationId ?: number) : void;
+        moveHermite(recommendation : CameraItf, toSave ?: boolean, recommendationId ?: number) : void;
+        moveHermite(recommendation : TargetMove, toSave ?: boolean, recommendationId ?: number) : void;
         moveHermite(recommendation : any, toSave = true, recommendationId ?: number) : void {
 
             this.recommendationClicked = recommendationId;

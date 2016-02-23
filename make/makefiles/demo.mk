@@ -17,7 +17,7 @@ src/demo/node_modules/.dirstamp: src/demo/package.json $(L3D_DEPENDENCY) $(L3DP_
 	$(CD) src/demo/ && $(NPM_UNINSTALL) l3d l3dp && $(NPM_INSTALL)
 	$(TOUCH_DIRSTAMP)
 
-src/demo/build/.dirstamp: $(wildcard src/demo/*.ts) src/demo/node_modules/.dirstamp src/demo/tsconfig.json src/demo/typings/.dirstamp src/demo/config.js
+src/demo/build/.dirstamp: $(wildcard src/demo/*.ts) src/demo/node_modules/.dirstamp src/demo/tsconfig.json src/demo/typings/.dirstamp src/demo/config.js src/server/build/static/js/l3d.js src/server/build/static/js/l3dp.js src/server/build/static/js/config.js src/server/build/static/js/mth.js
 	$(WEBPACK) --config src/demo/config.js
 	$(TOUCH_DIRSTAMP)
 

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { PointerCamera } from '../cameras/PointerCamera';
+import { CursorChangeEvent } from '../events/CursorChangeEvent';
 
 module l3d {
 
@@ -23,7 +24,7 @@ module l3d {
         /**
          * Element on which we will listen
          */
-        domElement : any;// Element;
+        domElement : HTMLElement;
 
         /**
          * Element currently hovered
@@ -45,11 +46,11 @@ module l3d {
          */
         previousPointedObject : THREE.Intersection;
 
-        constructor() {
+        constructor(domElement ?: HTMLElement) {
 
             this.mouse = {x:0, y:0};
 
-            this.domElement = document;
+            this.domElement = domElement || document.body;
 
             this.raycaster = new THREE.Raycaster();
 
@@ -66,6 +67,12 @@ module l3d {
                 this.domElement.addEventListener('click', (event : any) => { this.click(event); });
                 this.domElement.addEventListener('contextmenu', (event : any) => { event.button = 2; this.click(event); });
             }
+
+            this.domElement.addEventListener('cursorchange', (event : CursorChangeEvent) => {
+
+                this.domElement.style.cursor = event.cursor;
+
+            });
 
         }
 
@@ -116,17 +123,20 @@ module l3d {
 
                 var p = this.pointerCheck();
 
-                if (this.previousPointedObject !== undefined)
+                if (this.previousPointedObject !== undefined) {
                     if (this.previousPointedObject.object !== undefined) {
-                        document.body.style.cursor = 'auto';
+                        var e : CursorChangeEvent = new Event('cursorchange');
+                        e.cursor = '';
+                        this.domElement.dispatchEvent(e);
                         if (typeof this.previousPointedObject.object.onMouseLeave === 'function') {
                             this.previousPointedObject.object.onMouseLeave();
                         }
                     }
+                }
 
-                if (this.currentPointedObject !== undefined)
-                    if (this.currentPointedObject.object !== undefined)
-                        if (typeof this.currentPointedObject.object.onMouseEnter === 'function')
+                if (this.currentPointedObject !== undefined) {
+                    if (this.currentPointedObject.object !== undefined) {
+                        if (typeof this.currentPointedObject.object.onMouseEnter === 'function') {
                             if (
                                 this.currentPointedObject.object.onMouseEnter({
                                     x : p ? window.containerSize.width()  / 2 : this.mouse.x,
@@ -134,10 +144,14 @@ module l3d {
                                 })
                             ) {
 
-                                document.body.style.cursor = 'poiner';
+                                var e : CursorChangeEvent = new Event('cursorchange');
+                                e.cursor = 'pointer';
+                                this.domElement.dispatchEvent(e);
 
                             }
-
+                        }
+                    }
+                }
             }
 
         }

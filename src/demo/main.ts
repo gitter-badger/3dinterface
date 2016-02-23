@@ -55,7 +55,7 @@ $(function() {
 
 
         // if (GLOB.locked !== undefined && GLOB.locked)
-        //     startCanvas.render();
+        startCanvas.render();
 
         // startCanvas.render(l3d.StartCanvas.Black);
 
@@ -109,9 +109,9 @@ $(function() {
         camera.collisions = true;
 
         // Get default param for camera lock
-        // $('#lock').prop('checked', GLOB.locked);
-        // camera.shouldLock = GLOB.locked;
-        // camera.onPointerLockChange();
+        $('#lock').prop('checked', true);
+        camera.shouldLock = true;
+        camera.onPointerLockChange();
     }
 
     function initCanvases() {
@@ -151,23 +151,23 @@ $(function() {
         buttonManager = new l3dp.ButtonManager(camera, recommendations, previewer);
 
         // Object clicker for hover and clicking recommendations
-        objectClicker = new l3d.ObjectClicker();
+        objectClicker = new l3d.ObjectClicker(container);
 
         scene.recommendations.map(function(a) {
 
             a.onMouseEnter = function(event : { x : number, y : number }) : boolean {
-
                 previewer.setCamera(a.camera);
                 previewer.setPosition(event.x, event.y);
                 return true;
-
             };
 
             a.onMouseLeave = function() {
-
                 previewer.setCamera(null);
-
             };
+
+            a.onClick = function() {
+                camera.moveHermite(a.camera);
+            }
 
             objectClicker.objects.push(a);
 
