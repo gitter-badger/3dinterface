@@ -5,7 +5,7 @@ else
 endif
 
 NODE=node
-NPM_INSTALL=npm install & linklocal
+NPM_INSTALL=npm install && linklocal
 TSC=tsc
 TYPINGS=typings
 WEBPACK=webpack
