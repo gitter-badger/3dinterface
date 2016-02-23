@@ -1,9 +1,13 @@
+module l3d {
 
-export interface CursorChangeEvent extends Event {
+    export interface CursorChangeEvent extends Event {
 
-    cursor ?: string;
+        cursor ?: string;
+
+    }
+
+    export class Dummy {}
 
 }
 
-export class Dummy { x : number }
-
+export = l3d;
