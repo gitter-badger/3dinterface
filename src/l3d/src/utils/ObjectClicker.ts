@@ -1,8 +1,13 @@
 import * as THREE from 'three';
 import { PointerCamera } from '../cameras/PointerCamera';
-import { CursorChangeEvent } from '../events/CursorChangeEvent';
 
 module l3d {
+
+    export interface CursorChangeEvent extends Event {
+
+        cursor ?: string;
+
+    }
 
     export class ObjectClicker {
 
