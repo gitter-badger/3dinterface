@@ -3,7 +3,7 @@ import * as l3d from 'l3d';
 import * as mth from 'mth';
 
 import { Coin } from './Coin';
-import { ConfigType, CoinConfig } from 'config';
+import { ConfigType, CoinConfig, ExpConfig, Scene, RecommendationStyle } from 'config';
 
 module l3dp {
 

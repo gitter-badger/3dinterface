@@ -3,6 +3,7 @@ import * as mth from 'mth';
 
 import { MouseCursor } from '../cameras/PointerCamera';
 import { Camera } from '../cameras/Camera';
+import { BaseCamera } from '../cameras/BaseCamera';
 
 module l3d {
 
@@ -39,10 +40,10 @@ module l3d {
         mouse : MouseCursor;
 
         /** Camera to use for the preview */
-        camera : Camera;
+        camera : BaseCamera;
 
         /** Previous camera used */
-        prevCamera : Camera;
+        prevCamera : BaseCamera;
 
         /** Indicates wether the canvas needs to be cleared or not */
         clearNeeded : boolean;
@@ -162,7 +163,7 @@ module l3d {
          * Changes the camera used for the preview
          * @param camera the new camera for preview
          */
-        setCamera(camera : Camera) {
+        setCamera(camera : BaseCamera) {
             this.camera = camera;
         }
 

@@ -5,7 +5,7 @@ declare module THREE {
         raycastable ?: boolean;
         onClick ?: () => void;
         onMouseEnter ?: (param : {x:number, y:number}) => boolean;
-        onMouseLeave ?: () => boolean;
+        onMouseLeave ?: () => void;
 
     }
 

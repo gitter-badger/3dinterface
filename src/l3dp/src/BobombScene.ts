@@ -54,7 +54,7 @@ module l3dp {
                 this.prefetchType
             );
 
-            this.loader.onFinished = function() { this.finish(); }
+            this.loader.onFinished = () => { this.finish(); }
             this.loader.load();
 
             this.collidableObjects.push(this.loader.obj);

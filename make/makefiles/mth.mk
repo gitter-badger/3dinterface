@@ -6,7 +6,7 @@ src/mth/typings/.dirstamp: src/mth/typings.json
 	$(TOUCH_DIRSTAMP)
 
 src/mth/node_modules/.dirstamp: src/mth/package.json
-	$(CD) src/mth/ && $(NPM) install
+	$(CD) src/mth/ && $(NPM_INSTALL)
 	$(TOUCH_DIRSTAMP)
 
 src/mth/build/.dirstamp: $(wildcard src/mth/*.ts) src/mth/package.json src/mth/tsconfig.json src/mth/typings/.dirstamp src/mth/node_modules/.dirstamp $(wildcard src/mth/tests/*.ts)

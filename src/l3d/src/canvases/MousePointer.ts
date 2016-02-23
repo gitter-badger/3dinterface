@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { PointerCamera } from '../cameras/PointerCamera';
+import { CursorChangeEvent } from '../utils/ObjectClicker';
 
 module l3d {
 
@@ -65,6 +66,12 @@ module l3d {
             camera.mousePointer = this;
 
             this.color = Color.NONE;
+
+            document.getElementById('container').addEventListener('cursorchange', (e : CursorChangeEvent) => {
+                if (this.color !== Color.NONE) {
+                    this.render( e.cursor === 'pointer' ? Color.RED : Color.BLACK);
+                }
+            });
 
         }
 

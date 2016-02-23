@@ -5,23 +5,24 @@ block title
 
 block prepend js
     script.
+        CONFIG = !{config};
         GLOB = typeof GLOB !== 'undefined' ? GLOB : {};
         GLOB.DB_DISABLED = true;
 
 block extrajs
-    script(src="/static/js/l3dp.min.js")
-    script.
+    script(src="/static/js/l3dp.js")
+    //-script.
         GLOB = typeof GLOB !== 'undefined' ? GLOB : {};
         GLOB.SceneClass = #{scene};
         GLOB.Recommendation = #{bookmark};
         GLOB.prefetch = "#{prefetch}";
         GLOB.locked = #{session.locked === undefined ? 'true' : session.locked};
     block configjs
-    script.
+    //-script.
         GLOB = typeof GLOB !== 'undefined' ? GLOB : {};
         GLOB.coinConfig={ids:[], type: Coin.Config.NONE};
 
-    script(src="/static/js/prototypeinteractive.min.js")
+    script(src="/static/js/demo.js")
     script document.getElementById('music').volume = 0.5;
 
 

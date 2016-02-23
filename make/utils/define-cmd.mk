@@ -5,7 +5,8 @@ else
 endif
 
 NODE=node
-NPM=npm
+NPM_INSTALL=npm install
+NPM_UNINSTALL=npm uninstall
 TSC=tsc
 TYPINGS=typings
 WEBPACK=webpack

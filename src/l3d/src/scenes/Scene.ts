@@ -175,7 +175,6 @@ module l3d {
 
         finish() {
 
-            console.log(this.onLoad);
             this.onLoad.map(function(f) { f(); });
 
         }

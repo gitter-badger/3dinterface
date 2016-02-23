@@ -5,6 +5,7 @@ import { History } from '../utils/History';
 import { CameraItf } from '../utils/Logger';
 import { MousePointer, Color } from '../canvases/MousePointer';
 import { DB } from '../utils/Logger';
+import { BaseCamera } from './BaseCamera';
 
 module l3d {
     /**
@@ -45,7 +46,7 @@ module l3d {
     /**
      * Represents a camera that can be used easily
      */
-    export class PointerCamera extends THREE.PerspectiveCamera {
+    export class PointerCamera extends BaseCamera {
 
         /**
          * A reference to the renderer
@@ -203,6 +204,8 @@ module l3d {
         ) {
 
             super(arg0, arg1, arg2, arg3);
+
+            this.collidableObjects = [];
 
             this.renderer = arguments[4];
 
@@ -561,8 +564,8 @@ module l3d {
          * @param recommendation Camera to move to
          * @param toSave if you want to save the current state of the camera
          */
-        moveHermite(recommendation : CameraItf, toSave : boolean, recommendationId ?: number) : void;
-        moveHermite(recommendation : TargetMove, toSave : boolean, recommendationId ?: number) : void;
+        moveHermite(recommendation : CameraItf, toSave ?: boolean, recommendationId ?: number) : void;
+        moveHermite(recommendation : TargetMove, toSave ?: boolean, recommendationId ?: number) : void;
         moveHermite(recommendation : any, toSave = true, recommendationId ?: number) : void {
 
             this.recommendationClicked = recommendationId;

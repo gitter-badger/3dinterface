@@ -1,9 +1,11 @@
+var path = require('path');
+
 module.exports = {
-    entry: './src/l3dp.ts',
+    entry: path.join(__dirname, './main.ts'),
     output: {
         libraryTarget: 'var',
-        library: 'l3dp',
-        filename: '../server/build/static/js/l3dp.js',
+        library: 'config',
+        filename: path.join(__dirname, '../server/build/static/js/demo.js'),
     },
     resolve: {
         extensions: ['', '.webpack.js', '.web.js', '.ts', '.js', '.json']
@@ -20,19 +22,17 @@ module.exports = {
         exclude: /node_modules/
     },
     externals: {
-        three : 'THREE',
-        'socket.io': 'io',
-        'socket.io-client':'io',
-        'stats':'Stats',
-        'config':'config',
-        'jQuery':'$',
-        'l3d':'l3d'
+        "config":"config",
+        "l3d":"l3d",
+        "l3dp":"l3dp",
+        "three":"THREE",
+        "Stats":"Stats"
     },
     plugins: [
         require('webpack-fail-plugin')
     ],
     devtool:'sourcemap',
     ts: {
-        configFileName: './tsconfig-frontend.json'
+        configFileName:'./tsconfig.json'
     }
 };

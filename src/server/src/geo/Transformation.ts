@@ -4,17 +4,28 @@ module geo {
 
     export function clone(v : Vector) : Vector { return {x:v.x, y:v.y, z:v.z}; }
 
+    export interface TransformationInfo {
+
+        translation ?: Vector;
+        rotation ?: Vector;
+        scale ?: number;
+
+    }
+
     export class Transformation {
 
         translation : Vector;
         rotation : Vector;
         scale : number;
 
-        constructor(translation? : Vector, rotation? : Vector, scale? : number) {
+        constructor(transfo ?: TransformationInfo) {
 
-            this.translation = translation === undefined ? {x:0, y:0, z:0} : translation;
-            this.rotation = rotation === undefined ? {x:0, y:0, z:0} : rotation;
-            this.scale = scale === undefined ? 1 : scale;
+            if (transfo === undefined)
+                transfo = {};
+
+            this.translation = transfo.translation === undefined ? {x:0, y:0, z:0} : transfo.translation;
+            this.rotation = transfo.rotation === undefined ? {x:0, y:0, z:0} : transfo.rotation;
+            this.scale = transfo.scale === undefined ? 1 : transfo.scale;
 
         }
 

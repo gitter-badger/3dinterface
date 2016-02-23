@@ -4,6 +4,13 @@ import log = require('../lib/log');
 
 module geo {
 
+    export module Meshes {
+
+        export var dict : {[id:string] :  MeshContainer} = {};
+
+    }
+
+
     module MeshLoader {
 
         function isLoaded() : boolean {
@@ -39,6 +46,7 @@ module geo {
                     MeshNames.dict[name].transformation,
                     () => { MeshNames.dict[name].done = true; trySetLoaded(); }
                 );
+                Meshes.dict[name] = container;
 
 
             } else {
@@ -66,12 +74,6 @@ module geo {
         var startedTime : number;
 
         load();
-
-    }
-
-    export module Meshes {
-
-        export var dict : {[id:string] :  MeshContainer} = {};
 
     }
 

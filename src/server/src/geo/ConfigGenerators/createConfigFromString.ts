@@ -5,6 +5,8 @@ import { V_PP_Generator } from './V_PP';
 import { V_PD_Generator } from './V_PD';
 import { V_PP_PD_Generator } from './V_PP_PD';
 
+import * as log from '../../lib/log';
+
 module geo {
 
     export class Dummy {
@@ -23,7 +25,7 @@ module geo {
                 case 'V-PP'   : return new V_PP_Generator(streamer);
                 case 'V-PP-PD': return new V_PP_PD_Generator(streamer);
                 default:
-                    process.stderr.write('Warning : prefetch type not recognized, using default');
+                    log.warning('Warning : prefetch type not recognized, using default');
                     return new ConfigGenerator(streamer);
 
             }
