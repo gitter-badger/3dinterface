@@ -118,16 +118,24 @@ module l3d {
 
                 if (this.previousPointedObject !== undefined)
                     if (this.previousPointedObject.object !== undefined)
-                        if (typeof this.previousPointedObject.object.onMouseLeave === 'function')
+                        if (typeof this.previousPointedObject.object.onMouseLeave === 'function') {
+                            document.body.style.cursor = 'auto';
                             this.previousPointedObject.object.onMouseLeave();
+                        }
 
                 if (this.currentPointedObject !== undefined)
                     if (this.currentPointedObject.object !== undefined)
                         if (typeof this.currentPointedObject.object.onMouseEnter === 'function')
-                            this.currentPointedObject.object.onMouseEnter({
-                                x : p ? window.containerSize.width()  / 2 : this.mouse.x,
-                                y : p ? window.containerSize.height() / 2 : this.mouse.y
-                            });
+                            if (
+                                this.currentPointedObject.object.onMouseEnter({
+                                    x : p ? window.containerSize.width()  / 2 : this.mouse.x,
+                                    y : p ? window.containerSize.height() / 2 : this.mouse.y
+                                })
+                            ) {
+
+                                document.body.style.cursor = 'poiner';
+
+                            }
 
             }
 

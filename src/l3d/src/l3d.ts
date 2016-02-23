@@ -15,6 +15,7 @@ export { TargetMove } from './cameras/PointerCamera';
 export { CameraMotion } from './cameras/PointerCamera';
 export { PointerCamera } from './cameras/PointerCamera';
 export { FixedCamera } from './cameras/FixedCamera';
+export { BaseCamera } from './cameras/BaseCamera';
 export { Camera } from './cameras/Camera';
 export { ReplayCamera } from './cameras/ReplayCamera';
 

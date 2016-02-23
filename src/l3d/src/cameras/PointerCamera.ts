@@ -5,6 +5,7 @@ import { History } from '../utils/History';
 import { CameraItf } from '../utils/Logger';
 import { MousePointer, Color } from '../canvases/MousePointer';
 import { DB } from '../utils/Logger';
+import { BaseCamera } from './BaseCamera';
 
 module l3d {
     /**
@@ -45,7 +46,7 @@ module l3d {
     /**
      * Represents a camera that can be used easily
      */
-    export class PointerCamera extends THREE.PerspectiveCamera {
+    export class PointerCamera extends BaseCamera {
 
         /**
          * A reference to the renderer

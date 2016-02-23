@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 
+import { BaseCamera } from './BaseCamera';
+
 module l3d {
 
     /**
@@ -8,11 +10,10 @@ module l3d {
      * @memberof l3d
      * @extends THREE.PerspectiveCamera
      */
-    export class Camera extends THREE.PerspectiveCamera {
+    export class Camera extends BaseCamera {
 
         theta : number;
         position : THREE.Vector3;
-        target : THREE.Vector3;
 
         constructor(fov : number, aspect : number, near : number, far : number) {
 

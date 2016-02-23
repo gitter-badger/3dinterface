@@ -152,7 +152,21 @@ $(function() {
 
         // Object clicker for hover and clicking recommendations
         objectClicker = new l3d.ObjectClicker();
-        scene.recommendations.map(function(a) { objectClicker.objects.push(a); });
+
+        scene.recommendations.map(function(a) {
+
+            a.onMouseEnter = function(event : { x : number, y : number }) : boolean {
+
+                previewer.setCamera(a.camera);
+                previewer.setPosition(event.x, event.y);
+                return true;
+
+            };
+
+            objectClicker.objects.push(a);
+
+        });
+
         objectClicker.camera = camera;
 
     }

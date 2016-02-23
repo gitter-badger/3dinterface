@@ -1,14 +1,14 @@
 import * as THREE from 'three';
 import * as mth from 'mth';
 
+import { BaseCamera } from './BaseCamera';
+
 module l3d {
 
     /**
      * Represents a fixed camera
      */
-    export class FixedCamera extends THREE.PerspectiveCamera {
-
-        target : THREE.Vector3;
+    export class FixedCamera extends BaseCamera {
 
         constructor(arg1:number, arg2:number, arg3:number, arg4:number, position:mth.Vector3, target:mth.Vector3) {
 
