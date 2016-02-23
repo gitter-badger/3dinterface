@@ -19,3 +19,4 @@ export { BaseCamera } from './cameras/BaseCamera';
 export { Camera } from './cameras/Camera';
 export { ReplayCamera } from './cameras/ReplayCamera';
 export { CursorChangeEvent } from './events/CursorChangeEvent';
+export { Dummy } from './events/CursorChangeEvent';
