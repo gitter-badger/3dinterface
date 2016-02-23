@@ -163,6 +163,12 @@ $(function() {
 
             };
 
+            a.onMouseLeave = function() {
+
+                previewer.setCamera(null);
+
+            };
+
             objectClicker.objects.push(a);
 
         });

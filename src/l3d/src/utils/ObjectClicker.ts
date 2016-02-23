@@ -117,11 +117,12 @@ module l3d {
                 var p = this.pointerCheck();
 
                 if (this.previousPointedObject !== undefined)
-                    if (this.previousPointedObject.object !== undefined)
+                    if (this.previousPointedObject.object !== undefined) {
+                        document.body.style.cursor = 'auto';
                         if (typeof this.previousPointedObject.object.onMouseLeave === 'function') {
-                            document.body.style.cursor = 'auto';
                             this.previousPointedObject.object.onMouseLeave();
                         }
+                    }
 
                 if (this.currentPointedObject !== undefined)
                     if (this.currentPointedObject.object !== undefined)
