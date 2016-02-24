@@ -1,26 +1,26 @@
 src/server/typings: src/server/typings/typings/.dirstamp src/server/typings/custom/.dirstamp
 
 src/server/typings/typings/.dirstamp: src/server/typings/typings.json
-	@$(ECHO) $(STYLE_PREPARE)Installing typings of "server"$(COLOR_DEFAULT)
+	@$(call LOG_TYPINGS,server)
 	@$(CD) src/server/typings && $(TYPINGS) install
 	@$(TOUCH_DIRSTAMP)
 
 src/server/typings/custom/.dirstamp: ./custom_typings/*
-	@$(ECHO) $(STYLE_PREPARE)Installing custom typings of "server"$(COLOR_DEFAULT)
+	@$(call LOG_CUSTOM,server)
 	@$(MKDIRP) src/server/typings/custom/
 	@$(MERGE) custom_typings src/server/typings/custom
 	@$(TOUCH_DIRSTAMP)
 
 src/server/node_modules/.dirstamp: src/server/package.json $(L3D_DEPENDENCY) $(L3DP_DEPENDENCY) $(CONFIG_DEPENDENCY) $(MTH_DEPENDENCY)
-	@$(ECHO) $(STYLE_PREPARE)Installing dependencies of "server"$(COLOR_DEFAULT)
+	@$(call LOG_DEPENDENCIES,server)
 	@$(CD) src/server/ && $(NPM_UNINSTALL) l3d l3dp config mth && $(NPM_INSTALL)
 	@$(TOUCH_DIRSTAMP)
 
-src/server/build/.dirstamp: $(shell find src/server/src/ -name "*.ts" -o -name "*.jade") src/server/node_modules/.dirstamp src/server/typings
-	@$(ECHO) $(STYLE_BUILD)Building module "server"$(COLOR_DEFAULT)
+src/server/build/.dirstamp: $(call FIND,src/server/src/,*.ts) $(call FIND,src/server/src,*.jade) src/server/node_modules/.dirstamp src/server/typings
+	@$(call LOG_BUILDING,server)
 	@$(CD) src/server/ && $(TSC)
 	@$(TOUCH_DIRSTAMP)
-	@$(ECHO) Built module "server"
+	@$(call LOG_BUILT,server)
 
 src/server/build/views/.dirstamp: src/server/src/views/*
 	@$(ECHO) $(STYLE_PREPARE)Installing views of "server"$(COLOR_DEFAULT)
