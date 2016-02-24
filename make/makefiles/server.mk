@@ -6,7 +6,7 @@ src/server/typings/typings/.dirstamp: src/server/typings/typings.json
 	@$(TOUCH_DIRSTAMP)
 
 src/server/typings/custom/.dirstamp: ./custom_typings/*
-	@$(ECHO) $(STYLE_PREPARE)Install custom typings of "server"$(COLOR_DEFAULT)
+	@$(ECHO) $(STYLE_PREPARE)Installing custom typings of "server"$(COLOR_DEFAULT)
 	@$(MKDIRP) src/server/typings/custom/
 	@$(MERGE) custom_typings src/server/typings/custom
 	@$(TOUCH_DIRSTAMP)

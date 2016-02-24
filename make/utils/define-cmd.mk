@@ -5,8 +5,8 @@ else
 endif
 
 NODE=node>$(DEVNULL)
-NPM_INSTALL=npm install --loglevel error>$(DEVNULL)
-NPM_UNINSTALL=npm uninstall --loglevel error>$(DEVNULL)
+NPM_INSTALL=npm install --loglevel error --progress false>$(DEVNULL)
+NPM_UNINSTALL=npm uninstall --loglevel error --progress false>$(DEVNULL)
 TSC=tsc>$(DEVNULL)
 TYPINGS=typings>$(DEVNULL)
 WEBPACK=webpack>$(DEVNULL)

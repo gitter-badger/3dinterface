@@ -9,7 +9,7 @@ src/l3d/typings/typings/.dirstamp: src/l3d/typings/typings.json
 	@$(TOUCH_DIRSTAMP)
 
 src/l3d/typings/custom/.dirstamp: $(CUSTOM_TYPINGS_SRC)
-	@$(ECHO) $(STYLE_PREPARE)Install custom typings of "l3d"$(COLOR_DEFAULT)
+	@$(ECHO) $(STYLE_PREPARE)Installing custom typings of "l3d"$(COLOR_DEFAULT)
 	@$(MKDIRP) src/l3d/typings/custom/
 	@$(MERGE) ./custom_typings src/l3d/typings/custom
 	@$(TOUCH_DIRSTAMP)

@@ -7,7 +7,7 @@ src/demo/typings/typings/.dirstamp: src/demo/typings/typings.json
 	@$(TOUCH_DIRSTAMP)
 
 src/demo/typings/custom/.dirstamp: $(CUSTOM_TYPINGS_SRC)
-	@$(ECHO) $(STYLE_PREPARE)Install custom typings of "demo"$(COLOR_DEFAULT)
+	@$(ECHO) $(STYLE_PREPARE)Installing custom typings of "demo"$(COLOR_DEFAULT)
 	@$(MKDIRP) src/demo/typings/custom
 	@$(MERGE) ./custom_typings src/demo/typings/custom
 	@$(TOUCH_DIRSTAMP)
