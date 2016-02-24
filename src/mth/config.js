@@ -1,7 +1,7 @@
 var path = require('path');
 
 module.exports = {
-    entry: './mth.ts',
+    entry: './src/mth.ts',
     output: {
         libraryTarget: 'var',
         library: 'mth',

@@ -1,7 +1,7 @@
 CONFIG_DEPENDENCY=src/config/build/.dirstamp
 config: $(CONFIG_DEPENDENCY)
 
-src/config/build/.dirstamp: $(call FIND,src/config/,*.js) $(call FIND,src/config/,*.ts) $(call FIND,src/config/*.json) src/config/package.json src/config/tsconfig.json
+src/config/build/.dirstamp:  src/config/config.ts src/config/package.json src/config/tsconfig.json
 	@$(call LOG_BUILDING,config)
 	@$(CD) src/config/ && $(TSC)
 	@$(TOUCH_DIRSTAMP)
