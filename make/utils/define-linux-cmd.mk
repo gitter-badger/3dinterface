@@ -15,3 +15,5 @@ ifeq ($(TRAVIS),true)
 else
 	ECHO=echo -e
 endif
+
+FIND=$(shell find $1 -name "$2")
