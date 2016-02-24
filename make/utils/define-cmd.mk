@@ -9,7 +9,6 @@ NPM_INSTALL=npm install --loglevel error --progress false>$(DEVNULL)
 NPM_UNINSTALL=npm uninstall --loglevel error --progress false>$(DEVNULL)
 TSC=tsc
 TYPINGS=typings>$(DEVNULL)
-WEBPACK=webpack
 NODEUNIT=nodeunit>$(DEVNULL)
 TO_NULL=> (DEVNULL)
 CD=cd

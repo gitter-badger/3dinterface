@@ -4,7 +4,8 @@
         "removeComments": true,
         "preserveConstEnums": true,
         "sourceMap": true,
-        "rootDir":"./"
+        "rootDir":"./",
+        "noEmitOnError":true
     },
     "exclude":[
         "node_modules",

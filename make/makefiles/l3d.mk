@@ -21,7 +21,7 @@ src/l3d/node_modules/.dirstamp: src/l3d/package.json $(MTH_COMMONJS_DEPENDENCY)
 
 src/l3d/build/.dirstamp: $(call FIND,src/l3d/src,*) src/l3d/node_modules/.dirstamp src/l3d/tsconfig-backend.json src/l3d/backend.config.js src/l3d/typings/typings/.dirstamp src/l3d/typings/custom/.dirstamp
 	@$(call LOG_BUILDING,l3d)
-	@$(WEBPACK) --config src/l3d/backend.config.js
+	@$(NODE) src/l3d/backend.config.js
 	@$(TOUCH_DIRSTAMP)
 	@$(call LOG_BUILT,l3d)
 

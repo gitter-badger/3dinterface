@@ -1,4 +1,6 @@
-module.exports = {
+var webpack = require('webpack');
+
+webpack({
     entry: './src/l3dp.ts',
     output: {
         libraryTarget: 'var',
@@ -37,4 +39,7 @@ module.exports = {
         silent:true
 
     }
-};
+}, function(err, stats) {
+    if (err !== null)
+        process.stderr.write(stats.toString('errors-only') + '\n');
+});
