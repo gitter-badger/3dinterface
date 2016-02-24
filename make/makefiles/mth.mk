@@ -18,7 +18,7 @@ src/mth/build/.dirstamp: $(call FIND,src/mth/src/,*.ts) src/mth/package.json src
 	@$(call LOG_BUILT,mth)
 
 test-mth: $(MTH_COMMONJS_DEPENDENCY)
-	@$(NODEUNIT) src/mth/build/tests/main.js
+	@$(NODEUNIT) src/mth/build/src/tests/main.js
 
 clean-mth:
 	@$(RMRF) \
