@@ -11,7 +11,7 @@ src/mth/node_modules/.dirstamp: src/mth/package.json
 	@$(CD) src/mth/ && $(NPM_INSTALL)
 	@$(TOUCH_DIRSTAMP)
 
-src/mth/build/.dirstamp: $(call FIND,src/mth/,*.ts) src/mth/package.json src/mth/tsconfig.json src/mth/typings/.dirstamp src/mth/node_modules/.dirstamp
+src/mth/build/.dirstamp: $(call FIND,src/mth/src/,*.ts) src/mth/package.json src/mth/tsconfig.json src/mth/typings/.dirstamp src/mth/node_modules/.dirstamp
 	@$(call LOG_BUILDING,mth)
 	@$(CD) src/mth/ && $(TSC)
 	@$(TOUCH_DIRSTAMP)
