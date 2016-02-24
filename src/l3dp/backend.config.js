@@ -40,6 +40,8 @@ module.exports = {
     ],
     devtool:'sourcemap',
     ts: {
-        configFileName: './tsconfig-backend.json'
+        configFileName: './tsconfig-backend.json',
+        silent:true
+
     }
 };

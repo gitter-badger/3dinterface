@@ -33,6 +33,8 @@ module.exports = {
     ],
     devtool:'sourcemap',
     ts: {
-        configFileName:'./tsconfig.json'
+        configFileName:'./tsconfig.json',
+        silent:true
+
     }
 };

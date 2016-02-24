@@ -30,6 +30,8 @@ module.exports = {
         require('webpack-fail-plugin')
     ],
     ts: {
-        configFileName:path.join(__dirname, './tsconfig.json')
+        configFileName:path.join(__dirname, './tsconfig.json'),
+        silent:true
+
     }
 };

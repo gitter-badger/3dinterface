@@ -40,7 +40,9 @@ module.exports = {
     ],
     devtool:'sourcemap',
     ts: {
-        configFileName: path.join(__dirname, 'tsconfig-backend.json')
+        configFileName: path.join(__dirname, 'tsconfig-backend.json'),
+        silent:true
+
     }
 
 };
