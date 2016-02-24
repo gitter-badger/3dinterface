@@ -9,4 +9,9 @@ COLOR_GREEN="\033[32m"
 STYLE_BOLD="\033[1m"
 STYLE_PREPARE=$(COLOR_GREEN)
 STYLE_BUILD=$(COLOR_GREEN)$(STYLE_BOLD)
-ECHO=echo -e
+
+ifeq('TRAVIS', 'true')
+	ECHO=echo
+else
+	ECHO=echo -e
+endif
