@@ -1,9 +1,6 @@
 include ./make/utils/define-cmd.mk
 
-all: travis server bouncing-cube
-
-travis:
-	echo $(TRAVIS) $(CI)
+all: server bouncing-cube
 
 ./node_modules/.dirstamp:
 	npm install typescript@next ts-loader webpack webpack-fail-plugin
