@@ -21,7 +21,7 @@ src/l3dp/node_modules/.dirstamp: src/l3dp/package.json $(L3D_DEPENDENCY) $(CONFI
 
 src/l3dp/build/.dirstamp: $(call FIND,src/l3dp/src/,*) src/l3dp/node_modules/.dirstamp src/l3dp/tsconfig-backend.json src/l3dp/backend.config.js src/l3dp/typings
 	@$(call LOG_BUILDING,l3dp)
-	@$(WEBPACK) --config src/l3dp/backend.config.js
+	@$(NODE) src/l3dp/backend.config.js
 	@$(TOUCH_DIRSTAMP)
 	@$(call LOG_BUILT,l3dp)
 

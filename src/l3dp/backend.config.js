@@ -15,7 +15,7 @@ try {
     // nodeModules will stay empty
 }
 
-module.exports = {
+webpack({
     entry: path.join(__dirname, 'src/l3dp.ts'),
     output: {
         filename: path.join(__dirname, './build/l3dp.js'),
@@ -44,4 +44,8 @@ module.exports = {
         silent:true
 
     }
-};
+}, function(err, stats) {
+    if (err !== null)
+        process.stderr.write(stats.toString('errors-only') + '\n');
+});
+

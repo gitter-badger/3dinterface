@@ -45,16 +45,16 @@ OBJ_VIEWS=$(subst src/controllers/,build/controllers/,$(SRC_VIEWS))
 views: $(OBJ_VIEWS)
 
 src/server/build/static/js/l3d.js: ./src/l3d/build/.dirstamp src/l3d/frontend.config.js
-	@$(CD) src/l3d/ && $(WEBPACK) --config frontend.config.js
+	@$(CD) src/l3d/ && $(NODE) frontend.config.js
 
 src/server/build/static/js/l3dp.js: ./src/l3dp/build/.dirstamp src/l3dp/frontend.config.js
-	@$(CD) src/l3dp/ && $(WEBPACK) --config frontend.config.js
+	@$(CD) src/l3dp/ && $(NODE) frontend.config.js
 
 src/server/build/static/js/config.js: ./src/config/build/.dirstamp src/config/config.js
-	@$(CD) src/config/ && $(WEBPACK) --config config.js
+	@$(CD) src/config/ && $(NODE) config.js
 
 src/server/build/static/js/mth.js: ./src/mth/build/.dirstamp src/mth/config.js
-	@$(CD) src/mth/ && $(WEBPACK) --config config.js
+	@$(CD) src/mth/ && $(NODE) config.js
 
 server: src/server/build/.dirstamp src/server/build/views/.dirstamp src/server/build/static/.dirstamp $(OBJ_VIEWS) src/server/build/static/js/l3d.js src/server/build/static/js/l3dp.js src/server/build/static/js/config.js src/server/build/static/js/mth.js src/server/build/static/js/demo.js
 

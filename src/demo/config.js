@@ -1,6 +1,7 @@
+var webpack = require('webpack');
 var path = require('path');
 
-module.exports = {
+webpack({
     entry: path.join(__dirname, './main.ts'),
     output: {
         libraryTarget: 'var',
@@ -37,4 +38,7 @@ module.exports = {
         silent:true
 
     }
-};
+}, function(err, stats) {
+    if (err !== null)
+        process.stderr.write(stats.toString('errors-only') + '\n');
+});

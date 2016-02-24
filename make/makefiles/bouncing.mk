@@ -16,9 +16,9 @@ src/bouncing-cube/node_modules/.dirstamp: src/bouncing-cube/package.json $(L3D_D
 	@$(CD) src/bouncing-cube/ && $(NPM_UNINSTALL) l3d && $(NPM_INSTALL)
 	@$(TOUCH_DIRSTAMP)
 
-src/server/build/static/js/bouncing.min.js: $(call FIND,src/bouncing-cube/src/,*) src/bouncing-cube/node_modules/.dirstamp src/bouncing-cube/tsconfig.json src/bouncing-cube/typings
+src/server/build/static/js/bouncing.min.js: $(call FIND,src/bouncing-cube/src/,*) src/bouncing-cube/node_modules/.dirstamp src/bouncing-cube/tsconfig.json src/bouncing-cube/typings src/bouncing-cube/config.js
 	@$(call LOG_BUILDING,bouncing-cube)
-	@$(WEBPACK) --config src/bouncing-cube/config.js
+	@$(NODE) src/bouncing-cube/config.js
 	@$(call LOG_BUILT,bouncing-cube)
 
 BOUNCING_CUBE_DEPENDENCY=src/server/build/static/js/bouncing.min.js

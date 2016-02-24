@@ -15,7 +15,7 @@ try {
     // nodeModules will stay empty
 }
 
-module.exports = {
+webpack({
 
     entry: path.join(__dirname, 'src', 'l3d.ts'),
     output: {
@@ -45,4 +45,7 @@ module.exports = {
 
     }
 
-};
+}, function(err, stats) {
+    if (err !== null)
+        process.stderr.write(stats.toString('errors-only') + '\n');
+});

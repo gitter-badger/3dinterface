@@ -6,7 +6,8 @@
         "declaration":true,
         "outDir":"./build/",
         "sourceMap": true,
-        "rootDir":"./"
+        "rootDir":"./",
+        "noEmitOnError":true
     },
     "exclude":[
         "build",
