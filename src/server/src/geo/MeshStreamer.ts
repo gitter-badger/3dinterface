@@ -69,6 +69,7 @@ module geo {
         log.warning('Error occured while reading prefetching files');
         log.warning('No prefetching will be done !');
         predictionTables = [];
+        facesToSend = [];
     }
 
     /**
