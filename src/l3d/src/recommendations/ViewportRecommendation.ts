@@ -139,7 +139,7 @@ module l3d {
 
         initExtremity() : THREE.Mesh {
             // Do nothing
-            return null;
+            return;
         }
 
         // Update function
